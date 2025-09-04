@@ -748,6 +748,25 @@
 </html>
 <!-- partial -->
   <script  src="./script.js"></script>
+<!-- Netlify Build Hook -->
+<script>
+  async function triggerNetlifyBuild() {
+      await fetch("https://api.netlify.com/build_hooks/68b9fce5fd957fbb06d65de1", { 
+          method: "POST",
+          body: "{}"
+      });
+      console.log("✅ تم إرسال التحديث وسيظهر للزوار قريبًا!");
+  }
 
+  document.addEventListener("DOMContentLoaded", () => {
+      // اختيار كل الأزرار التي لها id يحتوي Save أو Add
+      const saveButtons = document.querySelectorAll("button[id*='Save'], button[id*='Add']");
+      saveButtons.forEach(btn => {
+          btn.addEventListener("click", () => {
+              triggerNetlifyBuild();
+          });
+      });
+  });
+</script>
 </body>
 </html>

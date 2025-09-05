@@ -1,7 +1,7 @@
- /********************
+/********************
  * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v3'; // Updated to v3 for new features
+const LS_KEY = 'lx-data-v3';
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
@@ -11,6 +11,7 @@ const uid = () => 'id-' + Math.random().toString(36).slice(2,10);
 const getData = () => {
   const raw = localStorage.getItem(LS_KEY);
   if (!raw) {
+    // استخدام البيانات التي قدمتها مباشرة
     const demo = {
       "students": [
         {
@@ -108,6 +109,7 @@ const getData = () => {
   }
   try { return JSON.parse(raw); } catch { localStorage.removeItem(LS_KEY); return getData(); }
 };
+
 const setData = (data) => localStorage.setItem(LS_KEY, JSON.stringify(data));
 let DB = getData();
 let currentStudent = null;
@@ -115,7 +117,7 @@ let currentQuiz = null;
 let quizTimer = null;
 let currentQuestionIndex = 0;
 let studentAnswers = {};
-
+ 
 // Update announcement text and image on page load
 document.getElementById('announcementText').textContent = DB.announcement;
 document.getElementById('announcementInput').value = DB.announcement;

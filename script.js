@@ -1304,24 +1304,3 @@ function login(username, password) {
     }
 }
 
-// ==========================
-// عرض درجات الطالب بعد تسجيل الدخول
-// ==========================
-function displayGrades(studentId) {
-    const studentGrades = grades[studentId] || [];
-    if(studentGrades.length === 0){
-        console.log("لا توجد درجات لهذا الطالب بعد.");
-        return;
-    }
-
-    console.log(=== درجات الطالب ===);
-    studentGrades.forEach(g => {
-        console.log(${g.date} - ${g.subject} - ${g.title} : ${g.score} (${g.note}));
-    });
-}
-
-// ==========================
-// مثال استخدام تسجيل الدخول
-// ==========================
-// login("ahmed.amine", "1234")
-}

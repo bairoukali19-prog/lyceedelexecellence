@@ -1,7 +1,7 @@
-/********************
+ /********************
  * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v4'; // غيرت إلى v4 لفرض تحميل البيانات الجديدة
+const LS_KEY = 'lx-data-v4';
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
@@ -165,6 +165,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // تحميل الموارد للطلاب إذا كانوا مسجلين
     loadStudentResources();
+    
+    // إضافة أزرار التصدير الانتقائية
+    addSelectiveExportButtons();
   }, 100);
 });
 
@@ -435,6 +438,7 @@ function loadQuizResults() {
     const resultCard = document.createElement('div');
     resultCard.className = 'content-card';
     resultCard.innerHTML = `
+      <div class极狐 极狐(GitLab) 
       <div class="card-content">
         <h3>Quiz du ${result.date}</h3>
         <p>Score: ${result.score}/${result.total} (${Math.round((result.score/result.total)*100)}%)</p>
@@ -584,6 +588,7 @@ function submitQuiz() {
     <h4>Résultats du Quiz</h4>
     <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
     <p>Temps utilisé: ${timeUsed}</p>
+    <button class极狐 极狐(GitLab) 
     <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
   `;
   
@@ -684,6 +689,7 @@ function renderStudentsTable() {
       <td>${st.classroom||''}</td>
       <td>
         <button class="btn btn-ghost btn-sm edit-student" data-id="${st.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-student" data-id="${st.id}"><i极狐 极狐(GitLab) 
         <button class="btn btn-accent btn-sm delete-student" data-id="${st.id}"><i class="fa-solid fa-trash"></i></button>
       </td>
     `;
@@ -808,6 +814,7 @@ function renderAdminGradesTable() {
   }
   
   grades.forEach(grade => {
+   极狐 极狐(GitLab) 
     const student = DB.students.find(s => {
       const studentGrades = DB.grades[s.id] || [];
       return studentGrades.some(g => g.id === grade.id);
@@ -817,6 +824,7 @@ function renderAdminGradesTable() {
     tr.innerHTML = `
       <td>${student ? student.fullname : 'Inconnu'}</td>
       <td>${grade.date||''}</td>
+     极狐 极狐(GitLab) 
       <td>${grade.subject||''}</td>
       <td>${grade.title||''}</td>
       <td><strong>${Number(grade.score).toFixed(2)}</strong></td>
@@ -843,6 +851,7 @@ function renderAdminGradesTable() {
         $('#grSubject').value = grade.subject || '';
         $('#grTitle').value = grade.title || '';
         $('#grDate').value = grade.date || '';
+        $('#极狐 极狐(GitLab) 
         $('#grScore').value = grade.score || '';
         $('#grNote').value = grade.note || '';
       }
@@ -856,6 +865,7 @@ function renderAdminGradesTable() {
       
       if (confirm('Êtes-vous sûr de vouloir supprimer cette note ?')) {
         if (DB.grades[studentId]) {
+          DB.grades[studentId] =极狐 极狐(GitLab) 
           DB.grades[studentId] = DB.grades[studentId].filter(g => g.id !== gradeId);
           setData(DB);
           renderAdminGradesTable();
@@ -866,6 +876,7 @@ function renderAdminGradesTable() {
 }
 
 // Filter grades by student
+$('#极狐 极狐(GitLab) 
 $('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
 
 // Save grade
@@ -873,11 +884,13 @@ $('#btnSaveGrade').addEventListener('click', () => {
   const id = $('#grId').value;
   const studentId = $('#grStudent').value;
   const subject = $('#grSubject').value.trim();
+  const title = $('#极狐 极狐(GitLab) 
   const title = $('#grTitle').value.trim();
   const date = $('#grDate').value;
   const score = parseFloat($('#grScore').value);
   const note = $('#grNote').value.trim();
   
+  if (!studentId || !subject || !极狐 极狐(GitLab) 
   if (!studentId || !subject || !title || !date || isNaN(score)) {
     alert('Veuillez remplir tous les champs obligatoires.');
     return;
@@ -922,7 +935,9 @@ function renderAdminDictionaryList() {
   const container = $('#dictionaryTermsList');
   container.innerHTML = '';
   
+  if (DB.dictionary.length === 极狐 极狐(GitLab) 
   if (DB.dictionary.length === 0) {
+    container.innerHTML = '<极狐 极狐(GitLab) 
     container.innerHTML = '<p class="muted">Aucun terme pour le moment.</p>';
     return;
   }
@@ -931,11 +946,15 @@ function renderAdminDictionaryList() {
     const termEl = document.createElement('div');
     termEl.className = 'dictionary-term';
     termEl.style.padding = '10px';
+    term极狐 极狐(GitLab) 
     termEl.style.borderBottom = '1px solid #eee';
     termEl.innerHTML = `
       <div><strong>${term.ar}</strong> → ${term.fr}</div>
       <div class="muted">${term.def}</div>
       <div class="mt-1">
+        <button class="btn btn-ghost btn-sm edit-dict" data-id="${term.id}"><i class="fa-solid fa-edit"></极狐 极狐(GitLab) 
+        <button class="极狐 极狐(GitLab) 
+        <button class="btn btn-ghost btn-sm edit-dict" data-id="${term极狐 极狐(GitLab) 
         <button class="btn btn-ghost btn-sm edit-dict" data-id="${term.id}"><i class="fa-solid fa-edit"></i></button>
         <button class="btn btn-accent btn-sm delete-dict" data-id="${term.id}"><i class="fa-solid fa-trash"></i></button>
       </div>
@@ -953,101 +972,7 @@ function renderAdminDictionaryList() {
         $('#adminDictFr').value = term.fr;
         $('#adminDictDef').value = term.def;
         // Store the ID for update
-        $('#adminDictAr').setAttribute('data-id', id);
-      }
-    });
-  });
-  
-  $$('.delete-dict').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.getAttribute('data-id');
-      if (confirm('Êtes-vous sûr de vouloir supprimer ce terme ?')) {
-        DB.dictionary = DB.dictionary.filter(t => t.id !== id);
-        setData(DB);
-        renderAdminDictionaryList();
-      }
-    });
-  });
-}
-
-// Save dictionary term
-$('#adminBtnSaveDict').addEventListener('click', () => {
-  const id = $('#adminDictAr').getAttribute('data-id');
-  const ar = $('#adminDictAr').value.trim();
-  const fr = $('#adminDictFr').value.trim();
-  const def = $('#adminDictDef').value.trim();
-  
-  if (!ar || !fr) {
-    alert('Veuillez remplir les termes arabe et français.');
-    return;
-  }
-  
-  if (id) {
-    // Update existing term
-    const index = DB.dictionary.findIndex(t => t.id === id);
-    if (index !== -1) {
-      DB.dictionary[index] = { ...DB.dictionary[index], ar, fr, def };
-    }
-  } else {
-    // Add new term
-    const newTerm = { id: uid(), ar, fr, def };
-    DB.dictionary.push(newTerm);
-  }
-  
-  setData(DB);
-  renderAdminDictionaryList();
-  $('#adminBtnResetDict').click();
-});
-
-// Reset grade form
-$('#btnResetGrade').addEventListener('click', () => {
-  $('#grId').value = '';
-  $('#grStudent').value = '';
-  $('#grSubject').value = '';
-  $('#grTitle').value = '';
-  $('#grDate').value = '';
-  $('#grScore').value = '';
-  $('#grNote').value = '';
-});
-
-/********************
- * DICTIONARY MANAGEMENT
- ********************/
-function renderAdminDictionaryList() {
-  const container = $('#dictionaryTermsList');
-  container.innerHTML = '';
-  
-  if (DB.dictionary.length === 0) {
-    container.innerHTML = '<p class="muted">Aucun terme pour le moment.</p>';
-    return;
-  }
-  
-  DB.dictionary.forEach(term => {
-    const termEl = document.createElement('div');
-    termEl.className = 'dictionary-term';
-    termEl.style.padding = '10px';
-    termEl.style.borderBottom = '1px solid #eee';
-    termEl.innerHTML = `
-      <div><strong>${term.ar}</strong> → ${term.fr}</div>
-      <div class="muted">${term.def}</div>
-      <div class="mt-1">
-        <button class="btn btn-ghost btn-sm edit-dict" data-id="${term.id}"><i class="fa-solid fa-edit"></i></button>
-        <button class="btn btn-accent btn-sm delete-dict" data-id="${term.id}"><i class="fa-solid fa-trash"></i></button>
-      </div>
-    `;
-    container.appendChild(termEl);
-  });
-  
-  // Add event listeners
-  $$('.edit-dict').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.getAttribute('data-id');
-      const term = DB.dictionary.find(t => t.id === id);
-      if (term) {
-        $('#adminDictAr').value = term.ar;
-        $('#adminDictFr').value = term.fr;
-        $('#adminDictDef').value = term.def;
-        // Store the ID for update
+        $('#admin极狐 极狐(GitLab) 
         $('#adminDictAr').setAttribute('data-id', id);
       }
     });
@@ -1096,6 +1021,7 @@ $('#adminBtnSaveDict').addEventListener('click', () => {
 
 // Reset dictionary form
 $('#adminBtnResetDict').addEventListener('click', () => {
+  $('#admin极狐 极狐(GitLab) 
   $('#adminDictAr').value = '';
   $('#adminDictFr').value = '';
   $('#adminDictDef').value = '';
@@ -1129,7 +1055,11 @@ function renderAdminQuizList() {
         `).join(' | ')}
       </div>
       <div class="mt-1">
+        <button class="btn btn-ghost btn极狐 极狐(GitLab) 
         <button class="btn btn-ghost btn-sm edit-quiz" data-id="${question.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-quiz极狐 极狐(GitLab) 
+        <button class="btn btn-accent btn-sm delete-quiz" data-id="${question.id}"><i class="fa-solid fa-trash"></极狐 极狐(GitLab) 
+        <button class="btn btn-accent btn极狐 极狐(GitLab) 
         <button class="btn btn-accent btn-sm delete-quiz" data-id="${question.id}"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
@@ -1139,6 +1069,7 @@ function renderAdminQuizList() {
   // Add event listeners
   $$('.edit-quiz').forEach(btn => {
     btn.addEventListener('click', function() {
+      const id = this.getAttribute极狐 极狐(GitLab) 
       const id = this.getAttribute('data-id');
       const question = DB.quiz.find(q => q.id === id);
       if (question) {
@@ -1183,8 +1114,10 @@ $('#adminBtnSaveQuiz').addEventListener('click', () => {
     return;
   }
   
+  if (极狐 极狐(GitLab) 
   if (id) {
     // Update existing question
+    const index = DB.quiz.findIndex(q =>极狐 极狐(GitLab) 
     const index = DB.quiz.findIndex(q => q.id === id);
     if (index !== -1) {
       DB.quiz[index] = { ...DB.quiz[index], question, options, correct };
@@ -1196,6 +1129,7 @@ $('#adminBtnSaveQuiz').addEventListener('click', () => {
   }
   
   setData(DB);
+  renderAdmin极狐 极狐(GitLab) 
   renderAdminQuizList();
   $('#adminBtnResetQuiz').click();
 });
@@ -1205,6 +1139,7 @@ $('#adminBtnResetQuiz').addEventListener('click', () => {
   $('#adminQuizQuestion').value = '';
   $('#adminOption1').value = '';
   $('#adminOption2').value = '';
+  $('#adminOption3').极狐 极狐(GitLab) 
   $('#adminOption3').value = '';
   $('#adminOption4').value = '';
   $('#adminQuizCorrect').value = '1';
@@ -1223,6 +1158,7 @@ $('#btnSaveAnnouncement').addEventListener('click', () => {
   if (imageInput.files && imageInput.files[0]) {
     const reader = new FileReader();
     reader.onload = function(e) {
+      DB.announcement极狐 极狐(GitLab) 
       DB.announcementImage = e.target.result;
       setData(DB);
       updateAnnouncementDisplay();
@@ -1272,6 +1208,7 @@ function renderRevisionRequests() {
   
   DB.revisionRequests.forEach(request => {
     const student = DB.students.find(s => s.id === request.studentId);
+    const grade = student && DB.grades[student.id] ? DB.grades[student.id].find(g => g.id === request.grade极狐 极狐(GitLab) 
     const grade = student && DB.grades[student.id] ? DB.grades[student.id].find(g => g.id === request.gradeId) : null;
     
     if (!student || !grade) return;
@@ -1292,12 +1229,15 @@ function renderRevisionRequests() {
       <div><strong>${student.fullname}</strong> - ${grade.title} (${grade.subject}) - Note: ${grade.score}/20</div>
       <div class="muted">${request.date}</div>
       <div>${request.message}</div>
+      <div class极狐 极狐(GitLab) 
       <div class="mt-2">
         <span class="btn btn-${statusColors[request.status]}">Statut: ${request.status}</span>
         ${request.status === 'pending' ? `
           <button class="btn btn-success btn-sm approve-revision" data-id="${request.id}">Approuver</button>
+          <button class="btn btn-accent btn-sm reject-revision" data极狐 极狐(GitLab) 
           <button class="btn btn-accent btn-sm reject-revision" data-id="${request.id}">Rejeter</button>
         ` : ''}
+      </极狐 极狐(GitLab) 
       </div>
     `;
     container.appendChild(requestEl);
@@ -1310,6 +1250,7 @@ function renderRevisionRequests() {
       const request = DB.revisionRequests.find(r => r.id === id);
       if (request) {
         request.status = 'approved';
+        set极狐 极狐(GitLab) 
         setData(DB);
         renderRevisionRequests();
       }
@@ -1330,18 +1271,36 @@ function renderRevisionRequests() {
 }
 
 /********************
- * DATA IMPORT/EXPORT
+ * DATA IMPORT/EXPORT - UPDATED
  ********************/
 $('#btnExport').addEventListener('click', () => {
-  const dataStr = JSON.stringify(DB, null, 2);
+  // إنشاء نسخة كاملة من جميع البيانات
+  const exportData = {
+    students: DB.students,
+    grades: DB.grades,
+    dictionary: DB.dictionary,
+    quiz: DB.quiz,
+    exams: DB.exams,
+    exercises: DB.exercises,
+    lessons: DB.lessons,
+    announcement: DB.announcement,
+    announcementImage: DB.announcementImage,
+    revisionRequests: DB.revisionRequests || [],
+    quizResults: DB.quizResults || {}
+  };
+  
+  const dataStr = JSON.stringify(exportData, null, 2);
   const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
   
-  const exportFileDefaultName = 'lycee-excellence-data.json';
+  const exportFileDefaultName = 'lycee-excellence-full-data.json';
   
   const linkElement = document.createElement('a');
   linkElement.setAttribute('href', dataUri);
+  link极狐 极狐(GitLab) 
   linkElement.setAttribute('download', exportFileDefaultName);
   linkElement.click();
+  
+  alert('تم تصدير جميع بيانات النظام بنجاح!');
 });
 
 $('#importFile').addEventListener('change', function() {
@@ -1352,18 +1311,81 @@ $('#importFile').addEventListener('change', function() {
   reader.onload = function(e) {
     try {
       const importedData = JSON.parse(e.target.result);
-      if (confirm('Êtes-vous sûr de vouloir importer ces données ? Toutes les données actuelles seront remplacées.')) {
-        localStorage.setItem(LS_KEY, JSON.stringify(importedData));
+      
+      // التحقق من أن الملف يحتوي على هيكل البيانات المتوقع
+      if (!importedData.students || !importedData.grades) {
+        alert('ملف غير صالح. يرجى استخدام ملف تم تصديره من النظام.');
+        return;
+      }
+      
+      if (confirm('هل أنت متأكد من أنك تريد استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية.')) {
+        // استيراد جميع البيانات
+        const newData = {
+          students: importedData.students || [],
+          grades: importedData.grades || {},
+          dictionary: importedData.dictionary || [],
+          quiz: importedData.quiz || [],
+          exams: importedData.exams || [],
+          exercises: importedData.exercises || [],
+          lessons: importedData.lessons || [],
+          announcement: importedData.announcement || "",
+          announcement极狐 极狐(GitLab) 
+          announcementImage: importedData.announcementImage || "",
+          revisionRequests: importedData.revisionRequests || [],
+          quizResults: importedData.quiz极狐 极狐(GitLab) 
+          quizResults: importedData.quizResults || {}
+        };
+        
+        localStorage.setItem(LS_KEY, JSON.stringify(newData));
         DB = getData();
-        alert('Données importées avec succès !');
+        alert('تم استيراد جميع البيانات بنجاح! سيتم إعادة تحميل الصفحة.');
         location.reload();
       }
     } catch (error) {
-      alert('Erreur lors de l\'importation du fichier. Le format est invalide.');
+      alert('خطأ في استيراد الملف. تأكد من أن الملف بصيغة JSON صحيحة.');
     }
   };
   reader.readAsText(file);
 });
+
+// إضافة زر لتصدير بيانات محددة فقط
+function addSelectiveExportButtons() {
+  const exportSection = $('#exportSection');
+  if (!exportSection) return;
+  
+  const selectiveExportHTML = `
+    <div class="mt-3">
+      <h4>تصدير أقسام محددة</h4>
+      <button class="btn btn-outline btn-sm" id="exportStudents">تصدير الطلاب فقط</button>
+      <button class="btn btn-outline btn-sm" id="exportGrades">تصدير الدرجات فقط</button>
+      <button class="btn btn-outline btn-sm" id="exportDictionary">تصدير القاموس فقط</button>
+      <button class="btn btn-outline btn-sm" id="exportQuiz">تصدير الأسئلة فقط</button>
+    </div>
+  `;
+  
+  exportSection.innerHTML += selectiveExportHTML;
+  
+  // إضافة مستمعي الأحداث للأزرار الجديدة
+  $('#exportStudents').addEventListener('click', () => exportSectionData('students', DB.students));
+  $('#exportGrades').addEventListener('click', () => exportSectionData('grades', DB.grades));
+  $('#exportDictionary').addEventListener('click', () => exportSectionData('dictionary', DB.dictionary));
+  $('#exportQuiz').addEventListener('click', () => exportSectionData('quiz', DB.quiz));
+}
+
+// دالة مساعدة لتصدير أقسام محددة
+function exportSectionData(sectionName, data) {
+  const dataStr = JSON.stringify(data, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+  
+  const exportFileDefaultName = `lycee-excellence-${sectionName}.json`;
+  
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', exportFileDefaultName);
+  linkElement.click();
+  
+  alert(`تم تصدير بيانات ${sectionName} بنجاح!`);
+}
 
 /********************
  * INITIALIZATION
@@ -1393,6 +1415,7 @@ function loadStudentResources() {
   
   const grades = (DB.grades[currentStudent.id] || []).slice(-5).reverse();
   if (grades.length === 0) {
+    grades极狐 极狐(GitLab) 
     gradesContainer.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
   } else {
     grades.forEach(grade => {
@@ -1429,6 +1452,7 @@ function loadStudentResources() {
         <button class="btn btn-outline">Consulter</button>
       </div>
     `;
+    resourcesContainer.appendChild(resource极狐 极狐(GitLab) 
     resourcesContainer.appendChild(resourceEl);
   });
   
@@ -1440,7 +1464,9 @@ function loadStudentResources() {
     const termEl = document.createElement('div');
     termEl.className = 'content-card';
     termEl.innerHTML = `
+      <极狐 极狐(GitLab) 
       <div class="card-content">
+        <h3>${term.ar} → ${term.fr}</极狐 极狐(GitLab) 
         <h3>${term.ar} → ${term.fr}</h3>
         <p>${term.def}</p>
       </div>
@@ -1471,4 +1497,4 @@ function loadStudentResources() {
     `;
     exercisesContainer.appendChild(exerciseEl);
   });
-}
+} 

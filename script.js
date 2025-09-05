@@ -1323,4 +1323,5 @@ function displayGrades(studentId) {
 // ==========================
 // مثال استخدام تسجيل الدخول
 // ==========================
-// login("ahmed.amine", "1234");
+// login("ahmed.amine", "1234")
+}

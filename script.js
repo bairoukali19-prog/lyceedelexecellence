@@ -1,4 +1,4 @@
-/********************
+********************
  * UTIL & STORAGE
  ********************/
 const LS_KEY = 'lx-data-v3'; // Updated to v3 for new features

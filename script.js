@@ -1,7 +1,7 @@
 /********************
  * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v3';
+const LS_KEY = 'lx-data-v4'; // غيرت إلى v4 لفرض تحميل البيانات الجديدة
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
@@ -9,9 +9,21 @@ const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 const uid = () => 'id-' + Math.random().toString(36).slice(2,10);
 
 const getData = () => {
+  // أولاً، احذف أي بيانات قديمة لتجنب المشاكل
+  localStorage.removeItem('lx-data-v1');
+  localStorage.removeItem('lx-data-v2');
+  localStorage.removeItem('lx-data-v3');
+  
   const raw = localStorage.getItem(LS_KEY);
+  
+  // إذا كانت البيانات موجودة ولكنها فارغة أو تالفة، احذفها
+  if (raw && (raw === 'null' || raw === 'undefined' || !raw.startsWith('{'))) {
+    localStorage.removeItem(LS_KEY);
+    return getData();
+  }
+  
   if (!raw) {
-    // استخدام البيانات التي قدمتها مباشرة
+    console.log('إنشاء بيانات جديدة...');
     const demo = {
       "students": [
         {
@@ -107,24 +119,54 @@ const getData = () => {
     localStorage.setItem(LS_KEY, JSON.stringify(demo));
     return demo;
   }
-  try { return JSON.parse(raw); } catch { localStorage.removeItem(LS_KEY); return getData(); }
+  
+  try { 
+    const data = JSON.parse(raw);
+    console.log('تم تحميل البيانات من التخزين:', data);
+    return data; 
+  } catch (e) { 
+    console.error('خطأ في تحليل البيانات:', e);
+    localStorage.removeItem(LS_KEY); 
+    return getData(); 
+  }
 };
 
-const setData = (data) => localStorage.setItem(LS_KEY, JSON.stringify(data));
+const setData = (data) => {
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+  DB = data; // تأكد من تحديث المتغير العالمي
+};
+
 let DB = getData();
 let currentStudent = null;
 let currentQuiz = null;
 let quizTimer = null;
 let currentQuestionIndex = 0;
 let studentAnswers = {};
- 
+
+// تأكد من أن البيانات محملة بشكل صحيح
+console.log('بيانات التطبيق:', DB);
+console.log('الطلاب:', DB.students);
+console.log('الدرجات:', DB.grades);
+
 // Update announcement text and image on page load
-document.getElementById('announcementText').textContent = DB.announcement;
-document.getElementById('announcementInput').value = DB.announcement;
-if (DB.announcementImage) {
-  document.getElementById('announcementImage').src = DB.announcementImage;
-  document.getElementById('announcementImage').style.display = 'block';
-}
+document.addEventListener('DOMContentLoaded', function() {
+  // تأخير قليل لضمان تحميل DOM بالكامل
+  setTimeout(() => {
+    if (document.getElementById('announcementText')) {
+      document.getElementById('announcementText').textContent = DB.announcement;
+    }
+    if (document.getElementById('announcementInput')) {
+      document.getElementById('announcementInput').value = DB.announcement;
+    }
+    if (document.getElementById('announcementImage') && DB.announcementImage) {
+      document.getElementById('announcementImage').src = DB.announcementImage;
+      document.getElementById('announcementImage').style.display = 'block';
+    }
+    
+    // تحميل الموارد للطلاب إذا كانوا مسجلين
+    loadStudentResources();
+  }, 100);
+});
 
 /********************
  * NAVIGATION
@@ -192,8 +234,12 @@ function fillGradesFor(student){
   const tbody = $('#gradesTable tbody');
   tbody.innerHTML = '';
   const list = (DB.grades[student.id] || []).slice().sort((a,b)=>(a.date||'').localeCompare(b.date));
-  if(!list.length){ $('#noGradesMsg').style.display='block'; }
-  else { $('#noGradesMsg').style.display='none'; }
+  if(!list.length){ 
+    $('#noGradesMsg').style.display='block'; 
+  }
+  else { 
+    $('#noGradesMsg').style.display='none'; 
+  }
   list.forEach(g=>{
     const tr = document.createElement('tr');
     tr.innerHTML = `<td>${g.date||''}</td><td>${g.subject||''}</td><td>${g.title||''}</td><td><strong>${Number(g.score).toFixed(2)}</strong></td><td>${g.note||''}</td>`;
@@ -549,8 +595,6 @@ function submitQuiz() {
 }
 
 function calculateTimeUsed() {
-  // This would normally be calculated based on the actual time taken
-  // For simplicity, we'll just return a placeholder
   return "25:30";
 }
 
@@ -602,7 +646,6 @@ function updateDashboardStats() {
   const activityContainer = $('#recent-activity');
   activityContainer.innerHTML = '';
   
-  // Add some sample activity (in a real app, this would come from a log)
   const activities = [
     { action: 'Nouvel étudiant inscrit', details: 'Ahmed Amine', time: 'Il y a 2 heures' },
     { action: 'Note ajoutée', details: 'Contrôle 1 - Mécanique', time: 'Il y a 5 heures' },
@@ -859,6 +902,101 @@ $('#btnSaveGrade').addEventListener('click', () => {
   setData(DB);
   renderAdminGradesTable();
   $('#btnResetGrade').click();
+});
+
+// Reset grade form
+$('#btnResetGrade').addEventListener('click', () => {
+  $('#grId').value = '';
+  $('#grStudent').value = '';
+  $('#grSubject').value = '';
+  $('#grTitle').value = '';
+  $('#grDate').value = '';
+  $('#grScore').value = '';
+  $('#grNote').value = '';
+});
+
+/********************
+ * DICTIONARY MANAGEMENT
+ ********************/
+function renderAdminDictionaryList() {
+  const container = $('#dictionaryTermsList');
+  container.innerHTML = '';
+  
+  if (DB.dictionary.length === 0) {
+    container.innerHTML = '<p class="muted">Aucun terme pour le moment.</p>';
+    return;
+  }
+  
+  DB.dictionary.forEach(term => {
+    const termEl = document.createElement('div');
+    termEl.className = 'dictionary-term';
+    termEl.style.padding = '10px';
+    termEl.style.borderBottom = '1px solid #eee';
+    termEl.innerHTML = `
+      <div><strong>${term.ar}</strong> → ${term.fr}</div>
+      <div class="muted">${term.def}</div>
+      <div class="mt-1">
+        <button class="btn btn-ghost btn-sm edit-dict" data-id="${term.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-dict" data-id="${term.id}"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `;
+    container.appendChild(termEl);
+  });
+  
+  // Add event listeners
+  $$('.edit-dict').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      const term = DB.dictionary.find(t => t.id === id);
+      if (term) {
+        $('#adminDictAr').value = term.ar;
+        $('#adminDictFr').value = term.fr;
+        $('#adminDictDef').value = term.def;
+        // Store the ID for update
+        $('#adminDictAr').setAttribute('data-id', id);
+      }
+    });
+  });
+  
+  $$('.delete-dict').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce terme ?')) {
+        DB.dictionary = DB.dictionary.filter(t => t.id !== id);
+        setData(DB);
+        renderAdminDictionaryList();
+      }
+    });
+  });
+}
+
+// Save dictionary term
+$('#adminBtnSaveDict').addEventListener('click', () => {
+  const id = $('#adminDictAr').getAttribute('data-id');
+  const ar = $('#adminDictAr').value.trim();
+  const fr = $('#adminDictFr').value.trim();
+  const def = $('#adminDictDef').value.trim();
+  
+  if (!ar || !fr) {
+    alert('Veuillez remplir les termes arabe et français.');
+    return;
+  }
+  
+  if (id) {
+    // Update existing term
+    const index = DB.dictionary.findIndex(t => t.id === id);
+    if (index !== -1) {
+      DB.dictionary[index] = { ...DB.dictionary[index], ar, fr, def };
+    }
+  } else {
+    // Add new term
+    const newTerm = { id: uid(), ar, fr, def };
+    DB.dictionary.push(newTerm);
+  }
+  
+  setData(DB);
+  renderAdminDictionaryList();
+  $('#adminBtnResetDict').click();
 });
 
 // Reset grade form

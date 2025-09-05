@@ -12,25 +12,154 @@ const getData = () => {
   const raw = localStorage.getItem(LS_KEY);
   if (!raw) {
     const demo = {
-      students: [
-        {id: uid(), fullname:'Ahmed Amine', username:'ahmed.amine', password:'1234', code:'P-2024-001', classroom:'2ème Bac SP'},
-        {id: uid(), fullname:'Sara El', username:'sara.el', password:'abcd', code:'P-2024-002', classroom:'2ème Bac SP'}
-      ],
-      grades: {},
-      dictionary: [
-        {id: uid(), ar: 'الطاقة', fr: 'Énergie', def: 'Capacité d\'un système à produire un travail.'},
-        {id: uid(), ar: 'السرعة', fr: 'Vitesse', def: 'Distance parcourue par unité de temps.'},
-        {id: uid(), ar: 'التسارع', fr: 'Accélération', def: 'Taux de changement de la vitesse.'},
-        {id: uid(), ar: 'القوة', fr: 'Force', def: 'Action mécanique modifiant le mouvement.'}
-      ],
-      quiz: [],
-      exams: [],
-      exercises: [],
-      lessons: [],
-      announcement: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
-      announcementImage: "", // New field for announcement image
-      revisionRequests: [],
-      quizResults: {} // New field for storing quiz results
+      {
+  "students": [
+    {
+      "id": "id-qtu7fy39",
+      "fullname": "Ahmed Amine",
+      "username": "ahmed.amine",
+      "password": "1234",
+      "code": "P-2024-001",
+      "classroom": "2ème Bac SP"
+    },
+    {
+      "id": "id-nzftxsgm",
+      "fullname": "Sara El",
+      "username": "sara.el",
+      "password": "abcd",
+      "code": "P-2024-002",
+      "classroom": "2ème Bac SP"
+    },
+    {
+      "id": "id-sz718lmr",
+      "fullname": "ali bairouè",
+      "username": "ali.bairouk",
+      "password": "abcd1",
+      "code": "P-2024-003",
+      "classroom": "2ème Bac SP"
+    },
+    {
+      "id": "id-aoj4g2fm",
+      "fullname": "Saad lmobi",
+      "username": "Saad.lmobi",
+      "password": "1234",
+      "code": "P-2024-004",
+      "classroom": "2ème Bac SP"
+    },
+    {
+      "id": "id-kjsylmlp",
+      "fullname": "Achraf amir",
+      "username": "Achraf.amir",
+      "password": "1234",
+      "code": "P-2024-005",
+      "classroom": "2ème Bac SP"
+    },
+    {
+      "id": "id-tqbv50to",
+      "fullname": "Ahmed omari",
+      "username": "Ahmed.omari",
+      "password": "1234",
+      "code": "P-2024-006",
+      "classroom": "2ème Bac SP"
+    }
+  ],
+  "grades": {
+    "id-qtu7fy39": [
+      {
+        "id": "id-12kd0imv",
+        "date": "2024-10-15",
+        "subject": "Mécanique",
+        "title": "Contrôle 1",
+        "score": 16.5,
+        "note": "Très bien"
+      }
+    ],
+    "id-sz718lmr": [
+      {
+        "id": "id-nzpmp2p8",
+        "subject": "physique",
+        "title": "Contrôle 1",
+        "date": "2025-09-05",
+        "score": 12,
+        "note": "P"
+      }
+    ],
+    "id-aoj4g2fm": [
+      {
+        "id": "id-gdj95evr",
+        "subject": "Contrôle 1",
+        "title": "Contrôle 1",
+        "date": "2025-09-05",
+        "score": 11,
+        "note": "P"
+      }
+    ],
+    "id-kjsylmlp": [
+      {
+        "id": "id-r4epgu3u",
+        "subject": "physique",
+        "title": "Contrôle 1",
+        "date": "2025-09-05",
+        "score": 5,
+        "note": "F"
+      }
+    ],
+    "id-tqbv50to": [
+      {
+        "id": "id-ix95ujev",
+        "subject": "physique",
+        "title": "Contrôle 1",
+        "date": "2025-09-05",
+        "score": 2,
+        "note": "F"
+      }
+    ],
+    "id-nzftxsgm": [
+      {
+        "id": "id-o3cjdbej",
+        "subject": "physique",
+        "title": "Contrôle 1",
+        "date": "2025-09-05",
+        "score": 1.25,
+        "note": "F"
+      }
+    ]
+  },
+  "dictionary": [
+    {
+      "id": "id-78801jpm",
+      "ar": "الطاقة",
+      "fr": "Énergie",
+      "def": "Capacité d'un système à produire un travail."
+    },
+    {
+      "id": "id-nq556ws2",
+      "ar": "السرعة",
+      "fr": "Vitesse",
+      "def": "Distance parcourue par unité de temps."
+    },
+    {
+      "id": "id-4cnz3uv9",
+      "ar": "التسارع",
+      "fr": "Accélération",
+      "def": "Taux de changement de la vitesse."
+    },
+    {
+      "id": "id-6b58jnbb",
+      "ar": "القوة",
+      "fr": "Force",
+      "def": "Action mécanique modifiant le mouvement."
+    }
+  ],
+  "quiz": [],
+  "exams": [],
+  "exercises": [],
+  "lessons": [],
+  "announcement": "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+  "announcementImage": "",
+  "revisionRequests": [],
+  "quizResults": {}
+} // New field for storing quiz results
     };
     // seed demo grades
     demo.grades[ demo.students[0].id ] = [

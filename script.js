@@ -13,7 +13,8 @@ const getData = () => {
   if (!raw) {
     const demo = {
       {
-  "students": 
+  "students": [
+    {
       "id": "id-qtu7fy39",
       "fullname": "Ahmed Amine",
       "username": "ahmed.amine",
@@ -110,16 +111,6 @@ const getData = () => {
         "title": "Contrôle 1",
         "date": "2025-09-05",
         "score": 2,
-        "note": "F"
-      }
-    ],
-    "id-nzftxsgm": [
-      {
-        "id": "id-o3cjdbej",
-        "subject": "physique",
-        "title": "Contrôle 1",
-        "date": "2025-09-05",
-        "score": 1.25,
         "note": "F"
       }
     ]

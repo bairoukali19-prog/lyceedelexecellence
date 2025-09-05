@@ -1,4 +1,4 @@
-/********************
+ /********************
  * UTIL & STORAGE
  ********************/
 const LS_KEY = 'lx-data-v3'; // Updated to v3 for new features
@@ -68,27 +68,41 @@ const getData = () => {
           }
         ]
       },
-      grades: {},
-      dictionary: [
-        {id: uid(), ar: 'الطاقة', fr: 'Énergie', def: 'Capacité d\'un système à produire un travail.'},
-        {id: uid(), ar: 'السرعة', fr: 'Vitesse', def: 'Distance parcourue par unité de temps.'},
-        {id: uid(), ar: 'التسارع', fr: 'Accélération', def: 'Taux de changement de la vitesse.'},
-        {id: uid(), ar: 'القوة', fr: 'Force', def: 'Action mécanique modifiant le mouvement.'}
+      "dictionary": [
+        {
+          "id": "id-78801jpm",
+          "ar": "الطاقة",
+          "fr": "Énergie",
+          "def": "Capacité d'un système à produire un travail."
+        },
+        {
+          "id": "id-nq556ws2",
+          "ar": "السرعة",
+          "fr": "Vitesse",
+          "def": "Distance parcourue par unité de temps."
+        },
+        {
+          "id": "id-4cnz3uv9",
+          "ar": "التسارع",
+          "fr": "Accélération",
+          "def": "Taux de changement de la vitesse."
+        },
+        {
+          "id": "id-6b58jnbb",
+          "ar": "القوة",
+          "fr": "Force",
+          "def": "Action mécanique modifiant le mouvement."
+        }
       ],
-      quiz: [],
-      exams: [],
-      exercises: [],
-      lessons: [],
-      announcement: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
-      announcementImage: "", // New field for announcement image
-      revisionRequests: [],
-      quizResults: {} // New field for storing quiz results
+      "quiz": [],
+      "exams": [],
+      "exercises": [],
+      "lessons": [],
+      "announcement": "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+      "announcementImage": "",
+      "revisionRequests": [],
+      "quizResults": {}
     };
-    // seed demo grades
-    demo.grades[ demo.students[0].id ] = [
-      {id:uid(), date:'2024-10-15', subject:'Mécanique', title:'Contrôle 1', score:16.5, note:'Très bien'},
-      {id:uid(), date:'2024-11-22', subject:'Électricité', title:'Contrôle 2', score:14, note:'Bon travail'}
-    ];
     localStorage.setItem(LS_KEY, JSON.stringify(demo));
     return demo;
   }

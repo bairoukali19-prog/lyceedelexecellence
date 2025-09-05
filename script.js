@@ -1,7 +1,7 @@
 /********************
  * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v3'; // Updated to v4 for new features
+const LS_KEY = 'lx-data-v4'; // Updated to v4 for new features
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx=document) => ctx.querySelector(sel);

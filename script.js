@@ -15,6 +15,7 @@ const getData = () => {
       students: [
         {id: uid(), fullname:'Ahmed Amine', username:'ahmed.amine', password:'1234', code:'P-2024-001', classroom:'2ème Bac SP'},
         {id: uid(), fullname:'Sara El', username:'sara.el', password:'abcd', code:'P-2024-002', classroom:'2ème Bac SP'}
+        {id: uid(), fullname:'ali ali', username:'ali.ali', password:'abcd', code:'P-2024-003', classroom:'2ème Bac SP'}
       ],
       grades: {},
       dictionary: [

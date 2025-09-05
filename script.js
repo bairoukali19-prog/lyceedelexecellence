@@ -13,8 +13,7 @@ const getData = () => {
   if (!raw) {
     const demo = {
       {
-  "students": [
-    {
+  "students": 
       "id": "id-qtu7fy39",
       "fullname": "Ahmed Amine",
       "username": "ahmed.amine",

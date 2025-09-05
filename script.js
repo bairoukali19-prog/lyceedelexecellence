@@ -1,12 +1,7 @@
-* UTIL & STORAGE
+ /********************
+ * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v4'; // Updated to v4 for new features
-function displayGrades(studentId) {
-    const studentGrades = data.grades[studentId] || [];
-    studentGrades.forEach(g => {
-        console.log(${g.date} - ${g.subject} - ${g.title} : ${g.score} (${g.note}));
-    });
-}
+const LS_KEY = 'lx-data-v3'; // Updated to v3 for new features
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
@@ -19,8 +14,7 @@ const getData = () => {
     const demo = {
       students: [
         {id: uid(), fullname:'Ahmed Amine', username:'ahmed.amine', password:'1234', code:'P-2024-001', classroom:'2ème Bac SP'},
-        {id: uid(), fullname:'Sara El', username:'sara.el', password:'abcd', code:'P-2024-002', classroom:'2ème Bac SP'},
-        {id: uid(), fullname:'ali bairouè', username:'ali.bairouk', password:'abcd1', code:'P-2024-003', classroom:'2ème Bac SP'}
+        {id: uid(), fullname:'Sara El', username:'sara.el', password:'abcd', code:'P-2024-002', classroom:'2ème Bac SP'}
       ],
       grades: {},
       dictionary: [

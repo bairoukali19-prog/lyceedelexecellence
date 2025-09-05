@@ -1,3 +1,32 @@
+// 1️⃣ تعريف متغير عام للبيانات
+let data = {};
+
+// 2️⃣ جلب البيانات من data.json
+async function fetchData() {
+    const res = await fetch("data.json"); // لازم الملف يكون في نفس مجلد script.js
+    data = await res.json();
+}
+
+// 3️⃣ استدعاء التحميل أول ما يفتح الموقع
+fetchData();
+
+// 4️⃣ دوال التعامل مع تسجيل الدخول والدرجات
+function login(username, password) {
+    const student = data.students.find(s => s.username === username && s.password === password);
+    if (student) {
+        alert(مرحباً ${student.fullname});
+        displayGrades(student.id);
+    } else {
+        alert("اسم المستخدم أو كلمة المرور خاطئة");
+    }
+}
+
+function displayGrades(studentId) {
+    const studentGrades = data.grades[studentId] || [];
+    studentGrades.forEach(g => {
+        console.log(${g.date} - ${g.subject} - ${g.title} : ${g.score} (${g.note}));
+    });
+}
 /********************
  * UTIL & STORAGE
  ********************/

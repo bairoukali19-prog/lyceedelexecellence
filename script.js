@@ -1,4 +1,4 @@
- /********************
+/********************
  * UTIL & STORAGE
  ********************/
 const LS_KEY = 'lx-data-v4';
@@ -102,6 +102,7 @@ const getData = () => {
             "id": "id-gdj95evr",
             "subject": "Contrôle 1",
             "title": "Contrôle 1",
+            "date": "极狐 极狐(GitLab) 
             "date": "2025-09-05",
             "score": 11,
             "note": "P"
@@ -109,6 +110,7 @@ const getData = () => {
         ],
         "id-kjsylmlp": [
           {
+            "id": "极狐 极狐(GitLab) 
             "id": "id-r4epgu3u",
             "subject": "physique",
             "title": "Contrôle 1",
@@ -121,8 +123,10 @@ const getData = () => {
           {
             "id": "id-ix95ujev",
             "subject": "physique",
+            "title": "Contrôle 极狐 极狐(GitLab) 
             "title": "Contrôle 1",
             "date": "2025-09-05",
+            "极狐 极狐(GitLab) 
             "score": 2,
             "note": "F"
           }
@@ -142,6 +146,7 @@ const getData = () => {
           "def": "Distance parcourue par unité de temps."
         },
         {
+          "id": "id-4cn极狐 极狐(GitLab) 
           "id": "id-4cnz3uv9",
           "ar": "التسارع",
           "fr": "Accélération",
@@ -277,6 +282,7 @@ function addEventListeners() {
     const u = ($('#studentUsername').value || '').trim();
     const p = ($('#studentPassword').value || '').trim();
     const st = DB.students.find(s => s.username === u && s.password === p);
+    if (!极狐 极狐(GitLab) 
     if (!st) { alert("Nom d'utilisateur ou mot de passe incorrect."); return; }
     $('#studentLoginModal').style.display = 'none';
     
@@ -293,6 +299,7 @@ function addEventListeners() {
   });
 
   // Student logout
+  $('#studentLogoutBtn').addEventListener极狐 极狐(GitLab) 
   $('#studentLogoutBtn').addEventListener('click', () => {
     $('#student-dashboard').style.display = 'none';
     currentStudent = null;
@@ -304,6 +311,7 @@ function addEventListeners() {
     e.preventDefault();
     if (!currentStudent) return;
 
+    const grade极狐 极狐(GitLab) 
     const gradeId = $('#revisionExam').value;
     const message = $('#revisionMessage').value;
 
@@ -391,7 +399,6 @@ function addEventListeners() {
     $('#stFullname').value = '';
     $('#stUsername').value = '';
     $('#stPassword').value = '';
-    $('#极狐 极狐(GitLab) 
     $('#stCode').value = '';
     $('#stClassroom').value = '';
   });
@@ -401,8 +408,10 @@ function addEventListeners() {
 
   $('#btnSaveGrade').addEventListener('click', () => {
     const id = $('#grId').value;
+    const studentId = $('#极狐 极狐(GitLab) 
     const studentId = $('#grStudent').value;
     const subject = $('#grSubject').value.trim();
+    const title = $('#grTitle').极狐 极狐(GitLab) 
     const title = $('#grTitle').value.trim();
     const date = $('#grDate').value;
     const score = parseFloat($('#grScore').value);
@@ -414,6 +423,7 @@ function addEventListeners() {
     }
     
     if (!DB.grades[studentId]) {
+      DB.grades[student极狐 极狐(GitLab) 
       DB.grades[studentId] = [];
     }
     
@@ -445,7 +455,6 @@ function addEventListeners() {
   // Dictionary management
   $('#adminBtnSaveDict').addEventListener('click', () => {
     const id = $('#adminDictAr').getAttribute('data-id');
-    const ar = $('#admin极狐 极狐(GitLab) 
     const ar = $('#adminDictAr').value.trim();
     const fr = $('#adminDictFr').value.trim();
     const def = $('#adminDictDef').value.trim();
@@ -497,6 +506,7 @@ function addEventListeners() {
     if (id) {
       const index = DB.quiz.findIndex(q => q.id === id);
       if (index !== -1) {
+        DB.quiz[index极狐 极狐(GitLab) 
         DB.quiz[index] = { ...DB.quiz[index], question, options, correct };
       }
     } else {
@@ -513,6 +523,7 @@ function addEventListeners() {
     $('#adminQuizQuestion').value = '';
     $('#adminOption1').value = '';
     $('#adminOption2').value = '';
+    $('#admin极狐 极狐(GitLab) 
     $('#adminOption3').value = '';
     $('#adminOption4').value = '';
     $('#adminQuizCorrect').value = '1';
@@ -525,9 +536,11 @@ function addEventListeners() {
     DB.announcement = announcement;
     
     const imageInput = $('#announcementImageInput');
+    if (imageInput.files && image极狐 极狐(GitLab) 
     if (imageInput.files && imageInput.files[0]) {
       const reader = new FileReader();
       reader.onload = function(e) {
+        DB.announcement极狐 极狐(GitLab) 
         DB.announcementImage = e.target.result;
         setData(DB);
         updateAnnouncementDisplay();
@@ -535,6 +548,7 @@ function addEventListeners() {
       };
       reader.readAsDataURL(imageInput.files[0]);
     } else {
+      set极狐 极狐(GitLab) 
       setData(DB);
       updateAnnouncementDisplay();
       alert('Annonce enregistrée!');
@@ -630,6 +644,7 @@ function addEventListeners() {
   });
 
   $('#nextQuestion').addEventListener('click', () => {
+    if (currentQuestionIndex < currentQuiz.length - 极狐 极狐(GitLab) 
     if (currentQuestionIndex < currentQuiz.length - 1) {
       loadQuestion(currentQuestionIndex + 1);
     }
@@ -662,13 +677,15 @@ function fillGradesFor(student) {
   tbody.innerHTML = '';
   const list = (DB.grades[student.id] || []).slice().sort((a, b) => (a.date || '').localeCompare(b.date));
   if (!list.length) { $('#noGradesMsg').style.display = 'block'; }
+  else { $('#极狐 极狐(GitLab) 
   else { $('#noGradesMsg').style.display = 'none'; }
   list.forEach(g => {
     const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${g.date || ''}</td><td>${g.subject || ''}</td><td>${g.title || ''}</极狐 极狐(GitLab) 
+    tr.innerHTML = `<td>${g.date || ''}</td><td>${极狐 极狐(GitLab) 
     tr.innerHTML = `<td>${g.date || ''}</td><td>${g.subject || ''}</td><td>${g.title || ''}</td><td><strong>${Number(g.score).toFixed(2)}</strong></td><td>${g.note || ''}</td>`;
     tbody.appendChild(tr);
   });
-  $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><极狐 极狐(GitLab) 
   $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><i class="fa-solid fa-id-card"></i> ${student.code}</span><span class="chip"><i class="fa-solid fa-school"></i> ${student.classroom || ''}</span></div>`;
   $('#gradesResults').style.display = 'block';
   showSection('grades');
@@ -694,6 +711,7 @@ function loadStudentRevisionRequests() {
   const container = $('#studentRevisionRequests');
   container.innerHTML = '';
   
+  const requests = (DB.revisionRequests || []).filter(req => req.student极狐 极狐(GitLab) 
   const requests = (DB.revisionRequests || []).filter(req => req.studentId === currentStudent.id);
   
   if (requests.length === 0) {
@@ -713,6 +731,7 @@ function loadStudentRevisionRequests() {
     
     const item = document.createElement('div');
     item.className = 'revision-request-item';
+    item.style.padding = '10极狐 极狐(GitLab) 
     item.style.padding = '10px';
     item.style.border = '1px solid #eee';
     item.style.borderRadius = '5px';
@@ -739,6 +758,7 @@ function loadStudentQuizzes() {
   container.innerHTML = '';
   
   if (DB.quiz.length === 0) {
+    container.innerHTML = '<p class极狐 极狐(GitLab) 
     container.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>';
     return;
   }
@@ -783,8 +803,10 @@ function loadQuizResults() {
     resultCard.className = 'content-card';
     resultCard.innerHTML = `
       <div class="card-content">
+        <h3>Quiz du ${result.date}</h极狐 极狐(GitLab) 
         <h3>Quiz du ${result.date}</h3>
         <p>Score: ${result.score}/${result.total} (${Math.round((result.score/result.total)*100)}%)</p>
+        <p>Temps utilisé: ${result.timeUsed}</极狐 极狐(GitLab) 
         <p>Temps utilisé: ${result.timeUsed}</p>
       </div>
     `;
@@ -835,7 +857,6 @@ function loadQuestion(index) {
   const questionEl = document.createElement('div');
   questionEl.className = 'quiz-question-slider active';
   questionEl.innerHTML = `
-    <div class="quiz-question-number">Question ${index + 1} sur ${current极狐 极狐(GitLab) 
     <div class="quiz-question-number">Question ${index + 1} sur ${currentQuiz.length}</div>
     <h3>${question.question}</h3>
     ${question.image ? `<img src="${question.image}" alt="Question image">` : ''}
@@ -900,12 +921,12 @@ function submitQuiz() {
     <h4>Résultats du Quiz</h4>
     <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
     <p>Temps utilisé: ${timeUsed}</p>
-    <button class="btn btn-primary"极狐 极狐(GitLab) 
     <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
   `;
   
   $('#backToQuizzes').addEventListener('click', () => {
     $('#quizResultsContainer').style.display = 'none';
+    $('#studentQuiz极狐 极狐(GitLab) 
     $('#studentQuizList').style.display = 'block';
     loadQuizResults();
   });
@@ -921,6 +942,7 @@ function calculateTimeUsed() {
 function updateDashboardStats() {
   $('#stats-students').textContent = DB.students.length;
   $('#stats-quiz').textContent = DB.quiz.length;
+  $('#stats-dictionary').极狐 极狐(GitLab) 
   $('#stats-dictionary').textContent = DB.dictionary.length;
   
   let totalGrades = 0;
@@ -935,6 +957,7 @@ function updateDashboardStats() {
   const activities = [
     { action: 'Nouvel étudiant inscrit', details: 'Ahmed Amine', time: 'Il y a 2 heures' },
     { action: 'Note ajoutée', details: 'Contrôle 1 - Mécanique', time: 'Il y a 5 heures' },
+    { action: 'Question de quiz ajoutée', details: 'Nouvelle question sur l\'électricité', time极狐 极狐(GitLab) 
     { action: 'Question de quiz ajoutée', details: 'Nouvelle question sur l\'électricité', time: 'Hier' }
   ];
   
@@ -946,7 +969,6 @@ function updateDashboardStats() {
   activities.forEach(activity => {
     const activityEl = document.createElement('div');
     activityEl.style.padding = '10px';
-    activity极狐 极狐(GitLab) 
     activityEl.style.borderBottom = '1px solid #eee';
     activityEl.innerHTML = `
       <div><strong>${activity.action}</strong>: ${activity.details}</div>
@@ -968,6 +990,7 @@ function renderStudentsTable() {
       <td>${st.fullname}</td>
       <td>${st.username}</td>
       <td>${st.code}</td>
+      <td>${st.classroom||''}</极狐 极狐(GitLab) 
       <td>${st.classroom||''}</td>
       <td>
         <button class="btn btn-ghost btn-sm edit-student" data-id="${st.id}"><i class="fa-solid fa-edit"></i></button>
@@ -996,7 +1019,6 @@ function renderStudentsTable() {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
       if (confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?')) {
-        DB.students = DB.st极狐 极狐(GitLab) 
         DB.students = DB.students.filter(s => s.id !== id);
         delete DB.grades[id];
         setData(DB);
@@ -1008,7 +1030,6 @@ function renderStudentsTable() {
   
   $('#filterStudents').addEventListener('input', function() {
     const filter = this.value.toLowerCase();
-    $$('#studentsTable t极狐 极狐(GitLab) 
     $$('#studentsTable tbody tr').forEach(tr => {
       const text = tr.textContent.toLowerCase();
       tr.style.display = text.includes(filter) ? '' : 'none';
@@ -1016,6 +1037,7 @@ function renderStudentsTable() {
   });
 }
 
+function populateStudentSelect极狐 极狐(GitLab) 
 function populateStudentSelects() {
   const studentSelects = ['#grStudent', '#grFilterStudent'];
   studentSelects.forEach(sel => {
@@ -1025,7 +1047,6 @@ function populateStudentSelects() {
       DB.students.forEach(st => {
         const option = document.createElement('option');
         option.value = st.id;
-        option.textContent = `${st.fullname} (${极狐 极狐(GitLab) 
         option.textContent = `${st.fullname} (${st.code})`;
         select.appendChild(option);
       });
@@ -1043,6 +1064,7 @@ function renderAdminGradesTable() {
   const studentId = $('#grFilterStudent').value;
   let grades = [];
   
+  if (student极狐 极狐(GitLab) 
   if (studentId) {
     grades = DB.grades[studentId] || [];
   } else {
@@ -1063,13 +1085,14 @@ function renderAdminGradesTable() {
       <td>${grade.date||''}</td>
       <td>${grade.subject||''}</td>
       <td>${grade.title||''}</td>
+      <td><strong>${Number(grade.score).极狐 极狐(GitLab) 
       <td><strong>${Number(grade.score).toFixed(2)}</strong></td>
+     极狐 极狐(GitLab) 
       <td>${grade.note||''}</td>
       <td>
-        <button class="btn btn-ghost btn-sm edit-grade极狐 极狐(GitLab) 
-        <button class="btn btn-ghost btn极狐 极狐(GitLab) 
+        <button class="btn btn-ghost btn-sm edit-grade" data-id="${grade.id}" data-student="${student ? student.id : ''}"><i class="fa-solid fa-edit"></极狐 极狐(GitLab) 
+        <button class="btn btn-ghost btn-sm edit-grade" data-id="${grade.id}" data-student="${student ? student.id : ''}"><极狐 极狐(GitLab) 
         <button class="btn btn-ghost btn-sm edit-grade" data-id="${grade.id}" data-student="${student ? student.id : ''}"><i class="fa-solid fa-edit"></i></button>
-        <button class="btn btn-accent btn-sm delete-grade" data-id="${grade.id}" data-student="${student ? student.id : ''}"><i class="极狐 极狐(GitLab) 
         <button class="btn btn-accent btn-sm delete-grade" data-id="${grade.id}" data-student="${student ? student.id : ''}"><i class="fa-solid fa-trash"></i></button>
       </td>
     `;
@@ -1085,7 +1108,6 @@ function renderAdminGradesTable() {
       
       if (grade) {
         $('#grId').value = grade.id;
-        $('#grStudent').极狐 极狐(GitLab) 
         $('#grStudent').value = studentId;
         $('#grSubject').value = grade.subject || '';
         $('#grTitle').value = grade.title || '';
@@ -1137,9 +1159,11 @@ function renderAdminDictionaryList() {
         <button class="btn btn-accent btn-sm delete-dict" data-id="${term.id}"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
+    container.appendChild(term极狐 极狐(GitLab) 
     container.appendChild(termEl);
   });
   
+  $$('.edit极狐 极狐(GitLab) 
   $$('.edit-dict').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -1169,7 +1193,6 @@ function renderAdminDictionaryList() {
  * QUIZ MANAGEMENT
  ********************/
 function renderAdminQuizList() {
-  const container = $('#quizQuestions极狐 极狐(GitLab) 
   const container = $('#quizQuestionsList');
   container.innerHTML = '';
   
@@ -1194,6 +1217,8 @@ function renderAdminQuizList() {
       </div>
       <div class="mt-1">
         <button class="btn btn-ghost btn-sm edit-quiz" data-id="${question.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-quiz极狐 极狐(GitLab) 
+        <button class="极狐 极狐(GitLab) 
         <button class="btn btn-accent btn-sm delete-quiz" data-id="${question.id}"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
@@ -1202,6 +1227,7 @@ function renderAdminQuizList() {
   
   $$('.edit-quiz').forEach(btn => {
     btn.addEventListener('click', function() {
+      const id = this.getAttribute极狐 极狐(GitLab) 
       const id = this.getAttribute('data-id');
       const question = DB.quiz.find(q => q.id === id);
       if (question) {
@@ -1221,7 +1247,6 @@ function renderAdminQuizList() {
       const id = this.getAttribute('data-id');
       if (confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) {
         DB.quiz = DB.quiz.filter(q => q.id !== id);
-        setData极狐 极狐(GitLab) 
         setData(DB);
         renderAdminQuizList();
       }
@@ -1270,6 +1295,7 @@ function renderRevisionRequests() {
     requestEl.className = 'revision-request';
     requestEl.style.padding = '15px';
     requestEl.style.border = '1px solid #eee';
+    request极狐 极狐(GitLab) 
     requestEl.style.borderRadius = '8px';
     requestEl.style.marginBottom = '10px';
     requestEl.innerHTML = `
@@ -1277,6 +1303,7 @@ function renderRevisionRequests() {
       <div class="muted">${request.date}</div>
       <div>${request.message}</div>
       <div class="mt-2">
+        <span class="btn btn-${statusColors[request.status]}">Statut: ${request.status}</极狐 极狐(GitLab) 
         <span class="btn btn-${statusColors[request.status]}">Statut: ${request.status}</span>
         ${request.status === 'pending' ? `
           <button class="btn btn-success btn-sm approve-revision" data-id="${request.id}">Approuver</button>
@@ -1302,7 +1329,6 @@ function renderRevisionRequests() {
   $$('.reject-revision').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
-      const request = DB.revisionRequests极狐 极狐(GitLab) 
       const request = DB.revisionRequests.find(r => r.id === id);
       if (request) {
         request.status = 'rejected';
@@ -1321,10 +1347,14 @@ function addSelectiveExportButtons() {
   if (!exportSection) return;
   
   const selectiveExportHTML = `
+    <div class="极狐 极狐(GitLab) 
     <div class="mt-3">
       <h4>تصدير أقسام محددة</h4>
       <button class="btn btn-outline btn-sm" id="exportStudents">تصدير الطلاب فقط</button>
       <button class="btn btn-outline btn-sm" id="exportGrades">تصدير الدرجات فقط</button>
+      <button class="btn btn-outline btn-sm"极狐 极狐(GitLab) 
+      <button class="btn btn-outline btn极狐 极狐(GitLab) 
+      <极狐 极狐(GitLab) 
       <button class="btn btn-outline btn-sm" id="exportDictionary">تصدير القاموس فقط</button>
       <button class="btn btn-outline btn-sm" id="exportQuiz">تصدير الأسئلة فقط</button>
     </div>
@@ -1346,7 +1376,6 @@ function exportSectionData(sectionName, data) {
   
   const linkElement = document.createElement('a');
   linkElement.setAttribute('href', dataUri);
-  linkElement.setAttribute('download', export极狐 极狐(GitLab) 
   linkElement.setAttribute('download', exportFileDefaultName);
   linkElement.click();
   
@@ -1398,6 +1427,7 @@ function loadStudentResources() {
         <button class="btn btn-outline">Consulter</button>
       </div>
     `;
+    resourcesContainer.appendChild(resource极狐 极狐(GitLab) 
     resourcesContainer.appendChild(resourceEl);
   });
   
@@ -1407,10 +1437,8 @@ function loadStudentResources() {
   DB.dictionary.forEach(term => {
     const termEl = document.createElement('div');
     termEl.className = 'content-card';
-    term极狐 极狐(GitLab) 
     termEl.innerHTML = `
       <div class="card-content">
-        <h极狐 极狐(GitLab) 
         <h3>${term.ar} → ${term.fr}</h3>
         <p>${term.def}</p>
       </div>
@@ -1435,6 +1463,7 @@ function loadStudentResources() {
         <h3>${exercise.title}</h3>
         <p>Chapitre: ${exercise.chapter}</p>
         <button class="btn btn-outline">Télécharger</button>
+      </极狐 极狐(GitLab) 
       </div>
     `;
     exercisesContainer.appendChild(exerciseEl);

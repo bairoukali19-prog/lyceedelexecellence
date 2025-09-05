@@ -12,10 +12,62 @@ const getData = () => {
   const raw = localStorage.getItem(LS_KEY);
   if (!raw) {
     const demo = {
-      students: [
-        {id: uid(), fullname:'Ahmed Amine', username:'ahmed.amine', password:'1234', code:'P-2024-001', classroom:'2ème Bac SP'},
-        {id: uid(), fullname:'Sara El', username:'sara.el', password:'abcd', code:'P-2024-002', classroom:'2ème Bac SP'}
+      "students": [
+        {
+          "id": "id-qtu7fy39",
+          "fullname": "Ahmed Amine",
+          "username": "ahmed.amine",
+          "password": "1234",
+          "code": "P-2024-001",
+          "classroom": "2ème Bac SP"
+        },
+        {
+          "id": "id-nzftxsgm",
+          "fullname": "Sara El",
+          "username": "sara.el",
+          "password": "abcd",
+          "code": "P-2024-002",
+          "classroom": "2ème Bac SP"
+        },
+        {
+          "id": "id-sz718lmr",
+          "fullname": "ali bairouè",
+          "username": "ali.bairouk",
+          "password": "abcd1",
+          "code": "P-2024-003",
+          "classroom": "2ème Bac SP"
+        }
       ],
+      "grades": {
+        "id-qtu7fy39": [
+          {
+            "id": "id-12kd0imv",
+            "date": "2024-10-15",
+            "subject": "Mécanique",
+            "title": "Contrôle 1",
+            "score": 16.5,
+            "note": "Très bien"
+          },
+          {
+            "id": "id-8uyq1zqy",
+            "date": "2024-11-22",
+            "subject": "Électricité",
+            "title": "Contrôle 2",
+            "score": 14,
+            "note": "Bon travail"
+          }
+        ],
+        "id-sz718lmr": [
+          {
+            "id": "id-egeydo2h",
+            "subject": "Physique",
+            "title": "Contrôle 1",
+            "date": "2025-08-11",
+            "score": 12,
+            "note": "T"
+          }
+        ]
+      },
       grades: {},
       dictionary: [
         {id: uid(), ar: 'الطاقة', fr: 'Énergie', def: 'Capacité d\'un système à produire un travail.'},

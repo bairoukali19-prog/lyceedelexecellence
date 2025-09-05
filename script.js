@@ -1,4 +1,4 @@
- /********************
+/********************
  * UTIL & STORAGE
  ********************/
 const LS_KEY = 'lx-data-v3'; // Updated to v3 for new features
@@ -7,19 +7,6 @@ const ADMIN = { user: 'admin7', pass: 'ali7800' };
 const $ = (sel, ctx=document) => ctx.querySelector(sel);
 const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
 const uid = () => 'id-' + Math.random().toString(36).slice(2,10);
-
-// جلب البيانات من students.json
-async function fetchExternalData() {
-  try {
-    const res = await fetch("students.json");
-    if (!res.ok) throw new Error("فشل في تحميل البيانات");
-    return await res.json();
-  } catch (error) {
-    console.error("خطأ في جلب البيانات:", error);
-    alert("حدث خطأ أثناء تحميل البيانات. تأكد من وجود students.json");
-    return null;
-  }
-}
 
 const getData = () => {
   const raw = localStorage.getItem(LS_KEY);
@@ -63,95 +50,13 @@ let quizTimer = null;
 let currentQuestionIndex = 0;
 let studentAnswers = {};
 
-// دالة لدمج البيانات من students.json مع البيانات المحلية
-async function mergeExternalData() {
-  const externalData = await fetchExternalData();
-  if (!externalData) return;
-  
-  // دمج الطلاب
-  if (externalData.students && Array.isArray(externalData.students)) {
-    // الاحتفاظ بالطلاب المحليين وإضافة الجدد من الملف الخارجي
-    const existingUsernames = new Set(DB.students.map(s => s.username));
-    externalData.students.forEach(externalStudent => {
-      if (!existingUsernames.has(externalStudent.username)) {
-        DB.students.push({
-          id: uid(),
-          fullname: externalStudent.fullname || '',
-          username: externalStudent.username || '',
-          password: externalStudent.password || '',
-          code: externalStudent.code || '',
-          classroom: externalStudent.classroom || ''
-        });
-      }
-    });
-  }
-  
-  // دمج الدرجات
-  if (externalData.grades && typeof externalData.grades === 'object') {
-    // البحث عن الطلاب المطابقين واستيراد درجاتهم
-    for (const [studentId, grades] of Object.entries(externalData.grades)) {
-      // البحث عن الطالب باستخدام المعرف أو اسم المستخدم
-      const student = DB.students.find(s => 
-        s.id === studentId || s.username === studentId
-      );
-      
-      if (student) {
-        // إذا كان الطالب موجوداً، نضيف درجاته
-        if (!DB.grades[student.id]) {
-          DB.grades[student.id] = [];
-        }
-        
-        grades.forEach(grade => {
-          // التحقق من عدم وجود الدرجة مسبقاً
-          const gradeExists = DB.grades[student.id].some(g => 
-            g.date === grade.date && 
-            g.subject === grade.subject && 
-            g.title === grade.title
-          );
-          
-          if (!gradeExists) {
-            DB.grades[student.id].push({
-              id: uid(),
-              date: grade.date || '',
-              subject: grade.subject || '',
-              title: grade.title || '',
-              score: grade.score || 0,
-              note: grade.note || ''
-            });
-          }
-        });
-      }
-    }
-  }
-  
-  setData(DB);
+// Update announcement text and image on page load
+document.getElementById('announcementText').textContent = DB.announcement;
+document.getElementById('announcementInput').value = DB.announcement;
+if (DB.announcementImage) {
+  document.getElementById('announcementImage').src = DB.announcementImage;
+  document.getElementById('announcementImage').style.display = 'block';
 }
-
-// استدعاء دمج البيانات عند التحميل
-document.addEventListener('DOMContentLoaded', function() {
-  mergeExternalData();
-  
-  // Update announcement text and image on page load
-  document.getElementById('announcementText').textContent = DB.announcement;
-  document.getElementById('announcementInput').value = DB.announcement;
-  if (DB.announcementImage) {
-    document.getElementById('announcementImage').src = DB.announcementImage;
-    document.getElementById('announcementImage').style.display = 'block';
-  }
-  
-  // Load student resources
-  loadStudentResources();
-  
-  // Set up admin functionality
-  if (document.body.classList.contains('admin-mode')) {
-    renderStudentsTable();
-    populateStudentSelects();
-    renderAdminGradesTable();
-    updateDashboardStats();
-    renderAdminDictionaryList();
-    renderAdminQuizList();
-  }
-});
 
 /********************
  * NAVIGATION
@@ -1257,6 +1162,21 @@ $('#importFile').addEventListener('change', function() {
 /********************
  * INITIALIZATION
  ********************/
+document.addEventListener('DOMContentLoaded', function() {
+  // Load student resources
+  loadStudentResources();
+  
+  // Set up admin functionality
+  if (document.body.classList.contains('admin-mode')) {
+    renderStudentsTable();
+    populateStudentSelects();
+    renderAdminGradesTable();
+    updateDashboardStats();
+    renderAdminDictionaryList();
+    renderAdminQuizList();
+  }
+});
+
 // Load student resources
 function loadStudentResources() {
   if (!currentStudent) return;
@@ -1345,4 +1265,4 @@ function loadStudentResources() {
     `;
     exercisesContainer.appendChild(exerciseEl);
   });
-}
+}  

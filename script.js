@@ -1,3 +1,72 @@
+// ==========================
+// بيانات الطلاب (يمكنك إضافة حسابات جديدة هنا بسهولة)
+// ==========================
+const students = [
+    { id: "id-6fncnyal", fullname: "Ahmed Amine", username: "ahmed.amine", password: "1234", code: "P-2024-001", classroom: "2ème Bac SP" },
+    { id: "id-x3484crj", fullname: "Sara El", username: "sara.el", password: "abcd", code: "P-2024-002", classroom: "2ème Bac SP" },
+    { id: "id-2rco0ox9", fullname: "Ali ali", username: "ali.ali", password: "1234", code: "P-2024-004", classroom: "Tc" }
+];
+
+// ==========================
+// درجات الطلاب (Grades)
+// ==========================
+const grades = {
+    "id-6fncnyal": [
+        { id: "id-vo6f4gq1", date: "2024-10-15", subject: "Mécanique", title: "Contrôle 1", score: 16.5, note: "Très bien" },
+        { id: "id-3dox0q8p", date: "2024-11-22", subject: "Électricité", title: "Contrôle 2", score: 14, note: "Bon travail" }
+    ],
+    "id-2rco0ox9": [
+        { id: "id-gnqi8ruj", subject: "Mécanique", title: "Contrôle 2", date: "2025-01-22", score: 5, note: "F" },
+        { id: "id-y8w478hu", subject: "Mécanique", title: "Contrôle 1", date: "2025-08-22", score: 12, note: "P" }
+    ]
+};
+
+// ==========================
+// دالة تسجيل الدخول
+// ==========================
+function login(username, password) {
+    const student = students.find(s => s.username === username && s.password === password);
+    if(student) {
+        alert(تم تسجيل الدخول بنجاح! أهلاً ${student.fullname});
+        displayGrades(student.id);
+        return true;
+    } else {
+        alert("اسم المستخدم أو كلمة المرور خاطئة");
+        return false;
+    }
+}
+
+// ==========================
+// عرض درجات الطالب بعد تسجيل الدخول
+// ==========================
+function displayGrades(studentId) {
+    const studentGrades = grades[studentId] || [];
+    const gradesList = document.getElementById("gradesList");
+
+    // تفريغ القائمة أولاً
+    gradesList.innerHTML = "";
+
+    if(studentGrades.length === 0){
+        gradesList.innerHTML = "<li>لا توجد درجات لهذا الطالب بعد.</li>";
+    } else {
+        studentGrades.forEach(g => {
+            const li = document.createElement("li");
+            li.textContent = ${g.date} - ${g.subject} - ${g.title} : ${g.score} (${g.note});
+            gradesList.appendChild(li);
+        });
+    }
+
+    document.getElementById("gradesBox").style.display = "block";
+}
+
+// ==========================
+// ربط نموذج تسجيل الدخول بزر HTML
+// ==========================
+function handleLogin() {
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+    login(username, password);
+}
 /********************
  * UTIL & STORAGE
  ********************/

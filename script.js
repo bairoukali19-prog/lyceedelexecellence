@@ -1,4 +1,7 @@
- /********************
+ ها هو كود JavaScript المحدث مع البيانات من JSON الذي قدمته:
+
+```javascript
+/********************
  * UTIL & STORAGE
  ********************/
 const LS_KEY = 'lx-data-v3'; // Updated to v3 for new features
@@ -12,31 +15,97 @@ const getData = () => {
   const raw = localStorage.getItem(LS_KEY);
   if (!raw) {
     const demo = {
-      students: [
-        {id: uid(), fullname:'Ahmed Amine', username:'ahmed.amine', password:'1234', code:'P-2024-001', classroom:'2ème Bac SP'},
-        {id: uid(), fullname:'Sara El', username:'sara.el', password:'abcd', code:'P-2024-002', classroom:'2ème Bac SP'}
+      "students": [
+        {
+          "id": "id-qtu7fy39",
+          "fullname": "Ahmed Amine",
+          "username": "ahmed.amine",
+          "password": "1234",
+          "code": "P-2024-001",
+          "classroom": "2ème Bac SP"
+        },
+        {
+          "id": "id-nzftxsgm",
+          "fullname": "Sara El",
+          "username": "sara.el",
+          "password": "abcd",
+          "code": "P-2024-002",
+          "classroom": "2ème Bac SP"
+        },
+        {
+          "id": "id-sz718lmr",
+          "fullname": "ali bairouè",
+          "username": "ali.bairouk",
+          "password": "abcd1",
+          "code": "P-2024-003",
+          "classroom": "2ème Bac SP"
+        }
       ],
-      grades: {},
-      dictionary: [
-        {id: uid(), ar: 'الطاقة', fr: 'Énergie', def: 'Capacité d\'un système à produire un travail.'},
-        {id: uid(), ar: 'السرعة', fr: 'Vitesse', def: 'Distance parcourue par unité de temps.'},
-        {id: uid(), ar: 'التسارع', fr: 'Accélération', def: 'Taux de changement de la vitesse.'},
-        {id: uid(), ar: 'القوة', fr: 'Force', def: 'Action mécanique modifiant le mouvement.'}
+      "grades": {
+        "id-qtu7fy39": [
+          {
+            "id": "id-12kd0imv",
+            "date": "2024-10-15",
+            "subject": "Mécanique",
+            "title": "Contrôle 1",
+            "score": 16.5,
+            "note": "Très bien"
+          },
+          {
+            "id": "id-8uyq1zqy",
+            "date": "2024-11-22",
+            "subject": "Électricité",
+            "title": "Contrôle 2",
+            "score": 14,
+            "note": "Bon travail"
+          }
+        ],
+        "id-sz718lmr": [
+          {
+            "id": "id-egeydo2h",
+            "subject": "Physique",
+            "title": "Contrôle 1",
+            "date": "2025-08-11",
+            "score": 12,
+            "note": "T"
+          }
+        ]
+      },
+      "dictionary": [
+        {
+          "id": "id-78801jpm",
+          "ar": "الطاقة",
+          "fr": "Énergie",
+          "def": "Capacité d'un système à produire un travail."
+        },
+        {
+          "id": "id-nq556ws2",
+          "ar": "السرعة",
+          "fr": "Vitesse",
+          "def": "Distance parcourue par unité de temps."
+        },
+        {
+          "id": "id-4cnz3uv9",
+          "ar": "التسارع",
+          "fr": "Accélération",
+          "def": "Taux de changement de la vitesse."
+        },
+        {
+          "id": "id-6b58jnbb",
+          "ar": "القوة",
+          "fr": "Force",
+          "def": "Action mécanique modifiant le mouvement."
+        }
       ],
-      quiz: [],
-      exams: [],
-      exercises: [],
-      lessons: [],
-      announcement: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
-      announcementImage: "", // New field for announcement image
-      revisionRequests: [],
-      quizResults: {} // New field for storing quiz results
+      "quiz": [],
+      "exams": [],
+      "exercises": [],
+      "lessons": [],
+      "announcement": "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+      "announcementImage": "",
+      "revisionRequests": [],
+      "quizResults": {}
     };
-    // seed demo grades
-    demo.grades[ demo.students[0].id ] = [
-      {id:uid(), date:'2024-10-15', subject:'Mécanique', title:'Contrôle 1', score:16.5, note:'Très bien'},
-      {id:uid(), date:'2024-11-22', subject:'Électricité', title:'Contrôle 2', score:14, note:'Bon travail'}
-    ];
     localStorage.setItem(LS_KEY, JSON.stringify(demo));
     return demo;
   }
@@ -1004,7 +1073,7 @@ $('#adminBtnResetQuiz').addEventListener('click', () => {
   $('#adminQuizCorrect').value = '1';
   $('#adminQuizQuestion').removeAttribute('data-id');
 });
-
+  
 /********************
  * ANNOUNCEMENT MANAGEMENT
  ********************/

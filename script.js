@@ -1,3 +1,4 @@
+/********************
 // 1️⃣ تعريف متغير عام للبيانات
 let data = {};
 
@@ -27,7 +28,6 @@ function displayGrades(studentId) {
         console.log(${g.date} - ${g.subject} - ${g.title} : ${g.score} (${g.note}));
     });
 }
-/********************
  * UTIL & STORAGE
  ********************/
 const LS_KEY = 'lx-data-v4'; // Updated to v4 for new features

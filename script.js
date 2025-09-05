@@ -1,7 +1,7 @@
  /********************
  * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v4';
+const LS_KEY = 'lx-data-v3';
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
@@ -9,171 +9,40 @@ const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 const uid = () => 'id-' + Math.random().toString(36).slice(2, 10);
 
 const getData = () => {
-  // Delete old data to avoid problems
-  localStorage.removeItem('lx-data-v1');
-  localStorage.removeItem('lx-data-v2');
-  localStorage.removeItem('lx-data-v3');
-  
   const raw = localStorage.getItem(LS_KEY);
-  
-  // If data exists but is empty or corrupted, delete it
-  if (raw && (raw === 'null' || raw === 'undefined' || !raw.startsWith('{'))) {
-    localStorage.removeItem(LS_KEY);
-    return getData();
-  }
-  
   if (!raw) {
-    console.log('Creating new data...');
-    // Use the provided data
     const demo = {
-      "students": [
-        {
-          "id": "id-qtu7fy39",
-          "fullname": "Ahmed Amine",
-          "username": "ahmed.amine",
-          "password": "1234",
-          "code": "P-2024-001",
-          "classroom": "2ème Bac SP"
-        },
-        {
-          "id": "id-nzftxsgm",
-          "fullname": "Sara El",
-          "username": "sara.el",
-          "password": "abcd",
-          "code": "P-2024-002",
-          "classroom": "2ème Bac SP"
-        },
-        {
-          "id": "id-sz718lmr",
-          "fullname": "ali bairouè",
-          "username": "ali.bairouk",
-          "password": "abcd1",
-          "code": "P-2024-003",
-          "classroom": "2ème Bac SP"
-        },
-        {
-          "id": "id-aoj4g2fm",
-          "fullname": "Saad lmobi",
-          "username": "Saad.lmobi",
-          "password": "1234",
-          "code": "P-2024-004",
-          "classroom": "2ème Bac SP"
-        },
-        {
-          "id": "id-kjsylmlp",
-          "fullname": "Achraf amir",
-          "username": "Achraf.amir",
-          "password": "1234",
-          "code": "P-2024-005",
-          "classroom": "2ème Bac SP"
-        },
-        {
-          "id": "id-tqbv50to",
-          "fullname": "Ahmed omari",
-          "username": "Ahmed.omari",
-          "password": "1234",
-          "code": "P-2024-006",
-          "classroom": "2ème Bac SP"
-        }
+      students: [
+        {id: uid(), fullname:'Ahmed Amine', username:'ahmed.amine', password:'1234', code:'P-2024-001', classroom:'2ème Bac SP'},
+        {id: uid(), fullname:'Sara El', username:'sara.el', password:'abcd', code:'P-2024-002', classroom:'2ème Bac SP'}
       ],
-      "grades": {
-        "id-qtu7fy39": [
-          {
-            "id": "id-12kd0imv",
-            "date": "2024-10-15",
-            "subject": "Mécanique",
-            "title": "Contrôle 1",
-            "score": 16.5,
-            "note": "Très bien"
-          }
-        ],
-        "id-sz718lmr": [
-          {
-            "id": "id-nzpmp2p8",
-            "subject": "physique",
-            "title": "Contrôle 1",
-            "date": "2025-09-05",
-            "score": 12,
-            "note": "P"
-          }
-        ],
-        "id-aoj4g2fm": [
-          {
-            "id": "id-gdj95evr",
-            "subject": "Contrôle 1",
-            "title": "Contrôle 1",
-            "date": "2025-09-05",
-            "score": 11,
-            "note": "P"
-          }
-        ],
-        "id-kjsylmlp": [
-          {
-            "id": "id-r4epgu3u",
-            "subject": "physique",
-            "title": "Contrôle 1",
-            "date": "2025-09-05",
-            "score": 5,
-            "note": "F"
-          }
-        ],
-        "id-tqbv50to": [
-          {
-            "id": "id-ix95ujev",
-            "subject": "physique",
-            "title": "Contrôle 1",
-            "date": "2025-09-05",
-            "score": 2,
-            "note": "F"
-          }
-        ]
-      },
-      "dictionary": [
-        {
-          "id": "id-78801jpm",
-          "ar": "الطاقة",
-          "fr": "Énergie",
-          "def": "Capacité d'un système à produire un travail."
-        },
-        {
-          "id": "id-nq556ws2",
-          "ar": "السرعة",
-          "fr": "Vitesse",
-          "def": "Distance parcourue par unité de temps."
-        },
-        {
-          "id": "极狐 极狐(GitLab) 
-          "id": "id-4cnz3uv9",
-          "ar": "التسارع",
-          "fr": "Accélération",
-          "def": "Taux de changement de la vitesse."
-        },
-        {
-          "id": "id-6b58jnbb",
-          "ar": "القوة",
-          "fr": "Force",
-          "def": "Action mécanique modifiant le mouvement."
-        }
+      grades: {},
+      dictionary: [
+        {id: uid(), ar: 'الطاقة', fr: 'Énergie', def: 'Capacité d\'un système à produire un travail.'},
+        {id: uid(), ar: 'السرعة', fr: 'Vitesse', def: 'Distance parcourue par unité de temps.'},
+        {id: uid(), ar: 'التسارع', fr: 'Accélération', def: 'Taux de changement de la vitesse.'},
+        {id: uid(), ar: 'القوة', fr: 'Force', def: 'Action mécanique modifiant le mouvement.'}
       ],
-      "quiz": [],
-      "exams": [],
-      "exercises": [],
-      "lessons": [],
-      "announcement": "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
-      "announcementImage": "",
-      "revisionRequests": [],
-      "quizResults": {}
+      quiz: [],
+      exams: [],
+      exercises: [],
+      lessons: [],
+      announcement: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+      announcementImage: "",
+      revisionRequests: [],
+      quizResults: {}
     };
+    // seed demo grades
+    demo.grades[demo.students[0].id] = [
+      {id: uid(), date:'2024-10-15', subject:'Mécanique', title:'Contrôle 1', score:16.5, note:'Très bien'},
+      {id: uid(), date:'2024-11-22', subject:'Électricité', title:'Contrôle 2', score:14, note:'Bon travail'}
+    ];
     localStorage.setItem(LS_KEY, JSON.stringify(demo));
     return demo;
   }
-  
   try { 
-    const data = JSON.parse(raw);
-    console.log('Data loaded from storage:', data);
-    return data; 
-  } catch (e) { 
-    console.error('Error parsing data:', e);
+    return JSON.parse(raw); 
+  } catch { 
     localStorage.removeItem(LS_KEY); 
     return getData(); 
   }
@@ -191,32 +60,21 @@ let quizTimer = null;
 let currentQuestionIndex = 0;
 let studentAnswers = {};
 
-// Make sure data is loaded correctly
-console.log('Application data:', DB);
-console.log('Students:', DB.students);
-console.log('Grades:', DB.grades);
-
 // Update announcement text and image on page load
 document.addEventListener('DOMContentLoaded', function() {
-  setTimeout(() => {
-    if (document.getElementById('announcementText')) {
-      document.getElementById('announcementText').textContent = DB.announcement;
-    }
-    if (document.getElementById('announcementInput')) {
-      document.getElementById('announcementInput').极狐 极狐(GitLab) 
-      document.getElementById('announcementInput').value = DB.announcement;
-    }
-    if (document.getElementById('announcementImage') && DB.announcementImage) {
-      document.getElementById('announcementImage').src = DB.announcementImage;
-      document.getElementById('announcementImage').style.display = 'block';
-    }
-    
-    loadStudentResources();
-    addSelectiveExportButtons();
-    
-    // Add event listeners after DOM is loaded
-    addEventListeners();
-  }, 100);
+  if (document.getElementById('announcementText')) {
+    document.getElementById('announcementText').textContent = DB.announcement;
+  }
+  if (document.getElementById('announcementInput')) {
+    document.getElementById('announcementInput').value = DB.announcement;
+  }
+  if (document.getElementById('announcementImage') && DB.announcementImage) {
+    document.getElementById('announcementImage').src = DB.announcementImage;
+    document.getElementById('announcementImage').style.display = 'block';
+  }
+  
+  // Add event listeners after DOM is loaded
+  addEventListeners();
 });
 
 /********************
@@ -234,11 +92,9 @@ function addEventListeners() {
   // Student tabs navigation
   $$('.student-tab').forEach(tab => {
     tab.addEventListener('click', function() {
-      const tabId = this.get极狐 极狐(GitLab) 
       const tabId = this.getAttribute('data-tab');
       
       $$('.student-tab').forEach(t => t.classList.remove('active'));
-      this.classList.add极狐 极狐(GitLab) 
       this.classList.add('active');
       
       $$('.student-tab-content').forEach(s => s.classList.remove('active'));
@@ -281,7 +137,6 @@ function addEventListeners() {
     const u = ($('#studentUsername').value || '').trim();
     const p = ($('#studentPassword').value || '').trim();
     const st = DB.students.find(s => s.username === u && s.password === p);
-    if (!极狐 极狐(GitLab) 
     if (!st) { alert("Nom d'utilisateur ou mot de passe incorrect."); return; }
     $('#studentLoginModal').style.display = 'none';
     
@@ -338,7 +193,6 @@ function addEventListeners() {
   $('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
   $('#submitLogin').addEventListener('click', () => {
     const u = $('#username').value.trim();
-    const p = $('#password').极狐 极狐(GitLab) 
     const p = $('#password').value.trim();
     if (u === ADMIN.user && p === ADMIN.pass) {
       $('#loginModal').style.display = 'none';
@@ -356,9 +210,11 @@ function addEventListeners() {
     }
   });
   
+  $('#logoutBtn').addEventListener('click', ()极狐 极狐(GitLab) 
   $('#logoutBtn').addEventListener('click', () => {
     document.body.classList.remove('admin-mode');
     $('#admin-panel').style.display = 'none';
+    showSection极狐 极狐(GitLab) 
     showSection('home');
   });
 
@@ -367,6 +223,8 @@ function addEventListeners() {
     const id = $('#stId').value;
     const fullname = $('#stFullname').value.trim();
     const username = $('#stUsername').value.trim();
+    const password = $('#极狐 极狐(GitLab) 
+    const password = $('#stPassword').极狐 极狐(GitLab) 
     const password = $('#stPassword').value.trim();
     const code = $('#stCode').value.trim();
     const classroom = $('#stClassroom').value.trim();
@@ -379,9 +237,11 @@ function addEventListeners() {
     if (id) {
       const index = DB.students.findIndex(s => s.id === id);
       if (index !== -1) {
+        DB.st极狐 极狐(GitLab) 
         DB.students[index] = { ...DB.students[index], fullname, username, password, code, classroom };
       }
     } else {
+      const newStudent = { id: uid(), fullname, username, password极狐 极狐(GitLab) 
       const newStudent = { id: uid(), fullname, username, password, code, classroom };
       DB.students.push(newStudent);
     }
@@ -405,28 +265,26 @@ function addEventListeners() {
   $('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
 
   $('#btnSaveGrade').addEventListener('click', () => {
+    const id = $('#gr极狐 极狐(GitLab) 
     const id = $('#grId').value;
     const studentId = $('#grStudent').value;
     const subject = $('#grSubject').value.trim();
     const title = $('#grTitle').value.trim();
-    const date = $('#极狐 极狐(GitLab) 
     const date = $('#grDate').value;
     const score = parseFloat($('#grScore').value);
     const note = $('#grNote').value.trim();
     
-    if (!studentId || !subject ||极狐 极狐(GitLab) 
     if (!studentId || !subject || !title || !date || isNaN(score)) {
       alert('Veuillez remplir tous les champs obligatoires.');
       return;
     }
     
     if (!DB.grades[studentId]) {
-      DB.grades极狐 极狐(GitLab) 
-      DB.grades[student极狐 极狐(GitLab) 
       DB.grades[studentId] = [];
     }
     
     if (id) {
+      const index = DB.grades[studentId].findIndex(g => g.id ===极狐 极狐(GitLab) 
       const index = DB.grades[studentId].findIndex(g => g.id === id);
       if (index !== -1) {
         DB.grades[studentId][index] = { ...DB.grades[studentId][index], subject, title, date, score, note };
@@ -480,16 +338,14 @@ function addEventListeners() {
 
   $('#adminBtnResetDict').addEventListener('click', () => {
     $('#adminDictAr').value = '';
-    $('#admin极狐 极狐(GitLab) 
     $('#adminDictFr').value = '';
     $('#adminDictDef').value = '';
-    $('#admin极狐 极狐(GitLab) 
     $('#adminDictAr').removeAttribute('data-id');
   });
 
   // Quiz management
-  $('#adminBtnSaveQuiz').addEventListener('极狐 极狐(GitLab) 
   $('#adminBtnSaveQuiz').addEventListener('click', () => {
+    const id = $('#adminQuizQuestion').getAttribute('极狐 极狐(GitLab) 
     const id = $('#adminQuizQuestion').getAttribute('data-id');
     const question = $('#adminQuizQuestion').value.trim();
     const options = [
@@ -501,6 +357,7 @@ function addEventListeners() {
     const correct = parseInt($('#adminQuizCorrect').value);
     
     if (!question || options.some(opt => !opt)) {
+      alert('V极狐 极狐(GitLab) 
       alert('Veuillez remplir la question et toutes les options.');
       return;
     }
@@ -516,6 +373,7 @@ function addEventListeners() {
     }
     
     setData(DB);
+    renderAdminQuiz极狐 极狐(GitLab) 
     renderAdminQuizList();
     $('#adminBtnResetQuiz').click();
   });
@@ -523,6 +381,7 @@ function addEventListeners() {
   $('#adminBtnResetQuiz').addEventListener('click', () => {
     $('#adminQuizQuestion').value = '';
     $('#adminOption1').value = '';
+    $('#admin极狐 极狐(GitLab) 
     $('#adminOption2').value = '';
     $('#adminOption3').value = '';
     $('#adminOption4').value = '';
@@ -537,7 +396,6 @@ function addEventListeners() {
     
     const imageInput = $('#announcementImageInput');
     if (imageInput.files && imageInput.files[0]) {
-      const reader = new极狐 极狐(GitLab) 
       const reader = new FileReader();
       reader.onload = function(e) {
         DB.announcementImage = e.target.result;
@@ -547,7 +405,6 @@ function addEventListeners() {
       };
       reader.readAsDataURL(imageInput.files[0]);
     } else {
-      set极狐 极狐(GitLab) 
       setData(DB);
       updateAnnouncementDisplay();
       alert('Annonce enregistrée!');
@@ -567,31 +424,16 @@ function addEventListeners() {
 
   // Data import/export
   $('#btnExport').addEventListener('click', () => {
-    const exportData = {
-      students: DB.students,
-      grades: DB.grades,
-      dictionary: DB.dictionary,
-      quiz: DB.quiz,
-      exams: DB.exams,
-      exercises: DB.exercises,
-      lessons: DB.lessons,
-      announcement: DB.announcement,
-      announcementImage: DB.announcementImage,
-      revisionRequests: DB.revisionRequests || [],
-      quizResults: DB.quizResults || {}
-    };
-    
-    const dataStr = JSON.stringify(exportData, null, 2);
+    const dataStr = JSON.stringify(DB, null, 2);
+    const dataUri = '极狐 极狐(GitLab) 
     const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
     
-    const exportFileDefaultName = 'lycee-excellence-full-data.json';
+    const exportFileDefaultName = 'lycee-excellence-data.json';
     
     const linkElement = document.createElement('a');
     linkElement.setAttribute('href', dataUri);
     linkElement.setAttribute('download', exportFileDefaultName);
     linkElement.click();
-    
-    alert('تم تصدير جميع بيانات النظام بنجاح!');
   });
 
   $('#importFile').addEventListener('change', function() {
@@ -602,50 +444,30 @@ function addEventListeners() {
     reader.onload = function(e) {
       try {
         const importedData = JSON.parse(e.target.result);
-        
-        if (!importedData.students || !importedData.grades) {
-          alert('ملف غير صالح. يرجى استخدام ملف تم تصديره من النظام.');
-          return;
-        }
-        
-        if (confirm('هل أنت متأكد من أنك تريد استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية.')) {
-          const newData = {
-            students: importedData.students || [],
-            grades: importedData.grades || {},
-            dictionary: imported极狐 极狐(GitLab) 
-            dictionary: importedData.dictionary || [],
-            quiz: importedData.quiz || [],
-            exams: importedData.exams || [],
-            exercises: importedData.exercises || [],
-            lessons: importedData.lessons || [],
-            announcement: importedData.announcement || "",
-            announcementImage: importedData.announcementImage || "",
-            revisionRequests: importedData.revisionRequests || [],
-            quizResults: importedData.quizResults || {}
-          };
-          
-          localStorage.setItem(LS_KEY, JSON.stringify(newData));
+        if (confirm('Êtes-vous sûr de vouloir importer ces données ? Toutes les données actuelles seront remplacées.')) {
+          localStorage.setItem(LS_KEY, JSON.stringify(importedData));
+          DB = get极狐 极狐(GitLab) 
           DB = getData();
-          alert('تم استيراد جميع البيانات بنجاح! سيتم إعادة تحميل الصفحة.');
+          alert('Données importées avec succès !');
           location.reload();
         }
       } catch (error) {
-        alert('خطأ في استيراد الملف. تأكد من أن الملف بصيغة JSON صحيحة.');
+        alert('Erreur lors de l\'importation du fichier. Le format est invalide.');
       }
     };
     reader.readAsText(file);
   });
 
   // Quiz functionality
-  $('#prevQuestion').addEventListener('click', ()极狐 极狐(GitLab) 
   $('#prevQuestion').addEventListener('click', () => {
     if (currentQuestionIndex > 0) {
-      loadQuestion(currentQuestionIndex - 极狐 极狐(GitLab) 
       loadQuestion(currentQuestionIndex - 1);
     }
   });
 
   $('#nextQuestion').addEventListener('click', () => {
+    if (currentQuestionIndex < currentQuiz.length - 1极狐 极狐(GitLab) 
+    if (currentQuestion极狐 极狐(GitLab) 
     if (currentQuestionIndex < currentQuiz.length - 1) {
       loadQuestion(currentQuestionIndex + 1);
     }
@@ -681,12 +503,13 @@ function fillGradesFor(student) {
   else { $('#noGradesMsg').style.display = 'none'; }
   list.forEach(g => {
     const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${g.date || ''}</td><td>${g.subject || ''}</td><td>${g.title || ''}</td><td><strong>${Number(g.score).极狐 极狐(GitLab) 
+    tr.innerHTML = `<td>${g.date || ''}</极狐 极狐(GitLab) 
     tr.innerHTML = `<td>${g.date || ''}</td><td>${g.subject || ''}</td><td>${g.title || ''}</td><td><strong>${Number(g.score).toFixed(2)}</strong></td><td>${g.note || ''}</td>`;
     tbody.appendChild(tr);
   });
-  $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><i class="fa-solid fa-id-card"></i> ${student.code}</span><span class="chip"><i class="fa-solid fa-school"></极狐 极狐(GitLab) 
-  $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><极狐 极狐(GitLab) 
-  $('#studentInfo').innerHTML = `<div class="极狐 极狐(GitLab) 
+  $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><i class="fa-solid fa-id-card"></i> ${student.code}</span><span class="chip极狐 极狐(Git极狐 极狐(GitLab) 
+  $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></极狐 极狐(GitLab) 
   $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><i class="fa-solid fa-id-card"></i> ${student.code}</span><span class="chip"><i class="fa-solid fa-school"></i> ${student.classroom || ''}</span></div>`;
   $('#gradesResults').style.display = 'block';
   showSection('grades');
@@ -708,7 +531,6 @@ function populateRevisionForm() {
 
 // Load student's revision requests
 function loadStudentRevisionRequests() {
-  if (!currentStudent极狐 极狐(GitLab) 
   if (!currentStudent) return;
   const container = $('#studentRevisionRequests');
   container.innerHTML = '';
@@ -731,6 +553,7 @@ function loadStudentRevisionRequests() {
     };
     
     const item = document.createElement('div');
+    item.className = '极狐 极狐(GitLab) 
     item.className = 'revision-request-item';
     item.style.padding = '10px';
     item.style.border = '1px solid #eee';
@@ -738,7 +561,6 @@ function loadStudentRevisionRequests() {
     item.style.marginBottom = '10px';
     item.innerHTML = `
       <strong>${grade.title} - ${grade.subject}</strong>
-      <p>${req.message}</极狐 极狐(GitLab) 
       <p>${req.message}</p>
       <div class="inline">
         <span class="chip">Date: ${req.date}</span>
@@ -791,16 +613,18 @@ function loadQuizResults() {
   const container = $('#studentQuizResults');
   container.innerHTML = '';
   
+  const results = DB.quizResults && DB.quizResults[currentStudent.id] ? DB.quiz极狐 极狐(GitLab) 
   const results = DB.quizResults && DB.quizResults[currentStudent.id] ? DB.quizResults[currentStudent.id] : [];
   
   if (results.length === 0) {
+    container.innerHTML = '<p class="极狐 极狐(GitLab) 
     container.innerHTML = '<p class="muted">Aucun résultat de quiz pour le moment.</p>';
     return;
   }
   
   results.forEach(result => {
+   极狐 极狐(GitLab) 
     const resultCard = document.createElement('div');
-    resultCard.class极狐 极狐(GitLab) 
     resultCard.className = 'content-card';
     resultCard.innerHTML = `
       <div class="card-content">
@@ -841,6 +665,7 @@ function startTimer(duration) {
       clearInterval(quizTimer);
       submitQuiz();
     }
+  }, 极狐 极狐(GitLab) 
   }, 1000);
 }
 
@@ -856,9 +681,11 @@ function loadQuestion(index) {
   const questionEl = document.createElement('div');
   questionEl.className = 'quiz-question-slider active';
   questionEl.innerHTML = `
+    <极狐 极狐(GitLab) 
     <div class="quiz-question-number">Question ${index + 1} sur ${currentQuiz.length}</div>
     <h3>${question.question}</h3>
     ${question.image ? `<img src="${question.image}" alt="Question image">` : ''}
+    <div class="极狐 极狐(GitLab) 
     <div class="quiz-options">
       ${question.options.map((option, i) => `
         <div class="quiz-option" data-option="${i + 1}">
@@ -870,6 +697,7 @@ function loadQuestion(index) {
   
   container.appendChild(questionEl);
   
+  $('#questionCounter').textContent = `Question ${index + 极狐 极狐(GitLab) 
   $('#questionCounter').textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
   
   $$('.quiz-option').forEach(option => {
@@ -885,7 +713,6 @@ function loadQuestion(index) {
   }
   
   $('#prevQuestion').style.display = index === 0 ? 'none' : 'block';
-  $('#nextQuestion').style.display = index === currentQuiz.length - 1极狐 极狐(GitLab) 
   $('#nextQuestion').style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
   $('#submitQuiz').style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
 }
@@ -905,8 +732,8 @@ function submitQuiz() {
   
   const timeUsed = calculateTimeUsed();
   
+  DB.quizResults[currentStudent.id极狐 极狐(GitLab) 
   DB.quizResults[currentStudent.id].push({
-    date极狐 极狐(GitLab) 
     date: new Date().toLocaleDateString(),
     score: score,
     total: currentQuiz.length,
@@ -916,11 +743,12 @@ function submitQuiz() {
   setData(DB);
   
   $('#quizContainer').style.display = 'none';
+  $('#quizResultsContainer').style.display = '极狐 极狐(GitLab) 
   $('#quizResultsContainer').style.display = 'block';
   
   $('#quizResultsContent').innerHTML = `
     <h4>Résultats du Quiz</h4>
-    <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</极狐 极狐(GitLab) 
+    <极狐 极狐(GitLab) 
     <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
     <p>Temps utilisé: ${timeUsed}</p>
     <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
@@ -928,7 +756,6 @@ function submitQuiz() {
   
   $('#backToQuizzes').addEventListener('click', () => {
     $('#quizResultsContainer').style.display = 'none';
-    $('#studentQuiz极狐 极狐(GitLab) 
     $('#studentQuizList').style.display = 'block';
     loadQuizResults();
   });
@@ -943,11 +770,9 @@ function calculateTimeUsed() {
  ********************/
 function updateDashboardStats() {
   $('#stats-students').textContent = DB.students.length;
-  $('#stats-quiz').极狐 极狐(GitLab) 
   $('#stats-quiz').textContent = DB.quiz.length;
   $('#stats-dictionary').textContent = DB.dictionary.length;
   
-  let totalGrades = 极狐 极狐(GitLab) 
   let totalGrades = 0;
   for (const studentId in DB.grades) {
     totalGrades += DB.grades[studentId].length;
@@ -959,7 +784,7 @@ function updateDashboardStats() {
   
   const activities = [
     { action: 'Nouvel étudiant inscrit', details: 'Ahmed Amine', time: 'Il y a 2 heures' },
-    { action: 'Note ajoutée', details: 'Contrôle 1 - Mécanique', time极狐 极狐(GitLab) 
+    { action极狐 极狐(GitLab) 
     { action: 'Note ajoutée', details: 'Contrôle 1 - Mécanique', time: 'Il y a 5 heures' },
     { action: 'Question de quiz ajoutée', details: 'Nouvelle question sur l\'électricité', time: 'Hier' }
   ];
@@ -986,16 +811,23 @@ function updateDashboardStats() {
  ********************/
 function renderStudentsTable() {
   const tbody = $('#studentsTable tbody');
+ 极狐 极狐(GitLab) 
   tbody.innerHTML = '';
   DB.students.forEach(st => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${st.fullname}</td>
+      <td>${st.username}</极狐 极狐(GitLab) 
       <td>${st.username}</td>
+      <极狐 极狐(GitLab) 
       <td>${st.code}</td>
       <td>${st.classroom||''}</td>
       <td>
         <button class="btn btn-ghost btn-sm edit-student" data-id="${st.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-student极狐 极狐(GitLab) 
+        <button class="btn btn-accent btn-sm delete-student" data-id="${st.id}"><极狐 极狐(GitLab) 
+        <button class="btn极狐 极狐(GitLab) 
+        <button class="btn btn-accent btn-sm delete-student" data-id="${极狐 极狐(GitLab) 
         <button class="btn btn-accent btn-sm delete-student" data-id="${st.id}"><i class="fa-solid fa-trash"></i></button>
       </td>
     `;
@@ -1007,8 +839,10 @@ function renderStudentsTable() {
       const id = this.getAttribute('data-id');
       const st = DB.students.find(s => s.id === id);
       if (st) {
+        $('#stId').value = st极狐 极狐(GitLab) 
         $('#stId').value = st.id;
         $('#stFullname').value = st.fullname;
+        $('#stUsername极狐 极狐(GitLab) 
         $('#stUsername').value = st.username;
         $('#stPassword').value = st.password;
         $('#stCode').value = st.code;
@@ -1083,7 +917,6 @@ function renderAdminGradesTable() {
     tr.innerHTML = `
       <td>${student ? student.fullname : 'Inconnu'}</td>
       <td>${grade.date||''}</td>
-      <td>${grade.subject||''}</极狐 极狐(GitLab) 
       <td>${grade.subject||''}</td>
       <td>${grade.title||''}</td>
       <td><strong>${Number(grade.score).toFixed(2)}</strong></td>
@@ -1109,16 +942,18 @@ function renderAdminGradesTable() {
         $('#grSubject').value = grade.subject || '';
         $('#grTitle').value = grade.title || '';
         $('#grDate').value = grade.date || '';
-        $('#grScore极狐 极狐(GitLab) 
         $('#grScore').value = grade.score || '';
         $('#grNote').value = grade.note || '';
       }
     });
   });
   
+  $$('.delete-grade').极狐 极狐(GitLab) 
   $$('.delete-grade').forEach(btn => {
+    btn.addEventListener('click', function()极狐 极狐(GitLab) 
     btn.addEventListener('click', function() {
       const gradeId = this.getAttribute('data-id');
+      const student极狐 极狐(GitLab) 
       const studentId = this.getAttribute('data-student');
       
       if (confirm('Êtes-vous sûr de vouloir supprimer cette note ?')) {
@@ -1140,26 +975,22 @@ function renderAdminDictionaryList() {
   container.innerHTML = '';
   
   if (DB.dictionary.length === 0) {
-    container.innerHTML = '<p class极狐 极狐(GitLab) 
     container.innerHTML = '<p class="muted">Aucun terme pour le moment.</p>';
     return;
+极狐 极狐(GitLab) 
   }
   
   DB.dictionary.forEach(term => {
     const termEl = document.createElement('div');
     termEl.className = 'dictionary-term';
-    termEl.style.padding = '10极狐 极狐(GitLab) 
-    term极狐 极狐(GitLab) 
     termEl.style.padding = '10px';
     termEl.style.borderBottom = '1px solid #eee';
     termEl.innerHTML = `
       <div><strong>${term.ar}</strong> → ${term.fr}</div>
       <div class="muted">${term.def}</div>
       <div class="mt-1">
+        <button class="btn极狐 极狐(GitLab) 
         <button class="btn btn-ghost btn-sm edit-dict" data-id="${term.id}"><i class="fa-solid fa-edit"></i></button>
-        <button class="btn btn-accent btn-sm delete-dict极狐 极狐(GitLab) 
-        <button class="btn btn-accent btn-sm delete-dict" data-id="${极狐 极狐(GitLab) 
-        <button class="btn btn-accent btn极狐 极狐(GitLab) 
         <button class="btn btn-accent btn-sm delete-dict" data-id="${term.id}"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
@@ -1181,6 +1012,7 @@ function renderAdminDictionaryList() {
   
   $$('.delete-dict').forEach(btn => {
     btn.addEventListener('click', function() {
+      const id = this.getAttribute极狐 极狐(GitLab) 
       const id = this.getAttribute('data-id');
       if (confirm('Êtes-vous sûr de vouloir supprimer ce terme ?')) {
         DB.dictionary = DB.dictionary.filter(t => t.id !== id);
@@ -1198,6 +1030,7 @@ function renderAdminQuizList() {
   const container = $('#quizQuestionsList');
   container.innerHTML = '';
   
+  if (DB.quiz.length === 极狐 极狐(GitLab) 
   if (DB.quiz.length === 0) {
     container.innerHTML = '<p class="muted">Aucune question pour le moment.</p>';
     return;
@@ -1210,19 +1043,23 @@ function renderAdminQuizList() {
     questionEl.style.borderBottom = '1px solid #eee';
     questionEl.innerHTML = `
       <div><strong>Question ${index + 1}:</strong> ${question.question}</div>
+      ${question.image ? `<div><极狐 极狐(GitLab) 
+      ${question.image ? `<div><img src="${question.image}" alt="Question image" style="极狐 极狐(GitLab) 
       ${question.image ? `<div><img src="${question.image}" alt="Question image" style="max-width: 200px; max-height: 150px;"></div>` : ''}
       <div class="muted">
         Options: 
+        ${question.options.map((option, i极狐 极狐(GitLab) 
         ${question.options.map((option, i) => `
+          ${i + 极狐 极狐(GitLab) 
           ${i + 1}. ${option} ${i + 1 == question.correct ? '✓' : ''}
         `).join(' | ')}
       </div>
       <div class="mt-1">
+        <button class="btn btn-ghost btn-sm edit-quiz" data-id="${question.id}"><i class="fa-solid fa-edit"></极狐 极狐(GitLab) 
         <button class="btn btn-ghost btn-sm edit-quiz" data-id="${question.id}"><i class="fa-solid fa-edit"></i></button>
         <button class="btn btn-accent btn-sm delete-quiz" data-id="${question.id}"><i class="fa-solid fa-trash"></i></button>
       </div>
     `;
-    container.appendChild(question极狐 极狐(GitLab) 
     container.appendChild(questionEl);
   });
   
@@ -1250,6 +1087,7 @@ function renderAdminQuizList() {
         setData(DB);
         renderAdminQuizList();
       }
+极狐 极狐(GitLab) 
     });
   });
 }
@@ -1294,6 +1132,7 @@ function renderRevisionRequests() {
     const requestEl = document.createElement('div');
     requestEl.className = 'revision-request';
     requestEl.style.padding = '15px';
+    request极狐 极狐(GitLab) 
     requestEl.style.border = '1px solid #eee';
     requestEl.style.borderRadius = '8px';
     requestEl.style.marginBottom = '10px';
@@ -1302,6 +1141,8 @@ function renderRevisionRequests() {
       <div class="muted">${request.date}</div>
       <div>${request.message}</div>
       <div class="mt-2">
+        <span class极狐 极狐(GitLab) 
+        <span class="btn btn-${statusColors[request.status]}">Statut: ${request.status}</极狐 极狐(GitLab) 
         <span class="btn btn-${statusColors[request.status]}">Statut: ${request.status}</span>
         ${request.status === 'pending' ? `
           <button class="btn btn-success btn-sm approve-revision" data-id="${request.id}">Approuver</button>
@@ -1338,46 +1179,6 @@ function renderRevisionRequests() {
 }
 
 /********************
- * DATA IMPORT/EXPORT - UPDATED
- ********************/
-function addSelectiveExportButtons() {
-  const exportSection = $('#exportSection');
-  if (!exportSection) return;
-  
-  const selectiveExportHTML = `
-    <div class="mt-3">
-      <h4>تصدير أقسام محددة</h4>
-      <button class="btn btn-outline btn-sm" id="exportStudents">تصدير الطلاب فقط</button>
-      <button class="btn btn-outline btn-sm"极狐 极狐(GitLab) 
-      <button class="btn btn-outline btn-sm" id="exportGrades">تصدير الدرجات فقط</button>
-      <button class="btn btn-outline btn-sm" id="exportDictionary">تصدير القاموس فقط</button>
-      <button class="btn btn-outline btn-sm" id="exportQuiz">تصدير الأسئلة فقط</button>
-    </div>
-  `;
-  
-  exportSection.innerHTML += selectiveExportHTML;
-  
-  $('#exportStudents').addEventListener('click', () => exportSectionData('students', DB.students));
-  $('#exportGrades').addEventListener('click', () => exportSectionData('grades', DB.grades));
-  $('#exportDictionary').addEventListener('click', () => exportSectionData('dictionary', DB.dictionary));
-  $('#exportQuiz').addEventListener('click', () => exportSectionData('quiz', DB.quiz));
-}
-
-function exportSectionData(sectionName, data) {
-  const dataStr = JSON.stringify(data, null, 2);
-  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-  
-  const exportFileDefaultName = `lycee-excellence-${sectionName}.json`;
-  
-  const linkElement = document.createElement('a');
-  linkElement.setAttribute('href', dataUri);
-  linkElement.setAttribute('download', exportFileDefaultName);
-  linkElement.click();
-  
-  alert(`تم تصدير بيانات ${sectionName} بنجاح!`);
-}
-
-/********************
  * INITIALIZATION
  ********************/
 function loadStudentResources() {
@@ -1387,7 +1188,6 @@ function loadStudentResources() {
   gradesContainer.innerHTML = '';
   
   const grades = (DB.grades[currentStudent.id] || []).slice(-5).reverse();
-  if (grades.length === 0极狐 极狐(GitLab) 
   if (grades.length === 0) {
     gradesContainer.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
   } else {
@@ -1409,6 +1209,7 @@ function loadStudentResources() {
   
   const resources = [
     { type: 'lesson', title: 'Introduction à la mécanique', chapter: 'Mécanique' },
+    { type: 'exercise极狐 极狐(GitLab) 
     { type: 'exercise', title: 'Exercices sur l\'électricité', chapter: 'Électricité' },
     { type: 'exam', title: 'Examen Blanc 2023', chapter: 'Général' }
   ];
@@ -1417,7 +1218,6 @@ function loadStudentResources() {
     const resourceEl = document.createElement('div');
     resourceEl.className = 'content-card';
     resourceEl.innerHTML = `
-      <极狐 极狐(GitLab) 
       <div class="card-content">
         <h3>${resource.title}</h3>
         <p>Chapitre: ${resource.chapter}</p>
@@ -1447,6 +1247,7 @@ function loadStudentResources() {
   
   const exercises = [
     { title: 'Exercices sur les forces', chapter: 'Mécanique' },
+    { title: 'Problèmes d\'électricité', chapter: 'Électricité极狐 极狐(GitLab) 
     { title: 'Problèmes d\'électricité', chapter: 'Électricité' },
     { title: 'Devoir maison', chapter: 'Général' }
   ];
@@ -1455,6 +1256,8 @@ function loadStudentResources() {
     const exerciseEl = document.createElement('div');
     exerciseEl.className = 'content-card';
     exerciseEl.innerHTML = `
+      <div class="card极狐 极狐(GitLab) 
+      <极狐 极狐(GitLab) 
       <div class="card-content">
         <h3>${exercise.title}</h3>
         <p>Chapitre: ${exercise.chapter}</p>
@@ -1467,5 +1270,16 @@ function loadStudentResources() {
 
 // Initialize the application
 window.addEventListener('DOMContentLoaded', function() {
-  // Add any additional initialization code here
+  // Load student resources
+  loadStudentResources();
+  
+  // Set up admin functionality
+  if (document.body.classList.contains('admin-mode')) {
+    renderStudentsTable();
+    populateStudentSelects();
+    renderAdminGradesTable();
+    updateDashboardStats();
+    renderAdminDictionaryList();
+    renderAdminQuizList();
+  }
 });

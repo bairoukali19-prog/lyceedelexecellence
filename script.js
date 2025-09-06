@@ -1,9 +1,9 @@
  /********************
  * CONSTANTS & CONFIG
  ********************/
-const LS_KEY = 'lx-data-v4'; // Updated version for security improvements
+const LS_KEY = 'lx-data-v4';
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
-const PASSWORD_SECRET = 'edu_system_secret_key'; // For basic password obfuscation
+const PASSWORD_SECRET = 'edu_system_secret_key';
 
 /********************
  * UTILITY FUNCTIONS
@@ -15,7 +15,7 @@ const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 // ID generator
 const uid = () => 'id-' + Math.random().toString(36).slice(2, 10);
 
-// Basic password obfuscation (not for production - for demonstration only)
+// Basic password obfuscation
 const encryptPassword = (password) => {
   return btoa(encodeURIComponent(password + PASSWORD_SECRET));
 };
@@ -68,6 +68,7 @@ const loadData = () => {
     initializeDemoData();
     return;
   }
+  
   try {
     DB = JSON.parse(raw);
     // Ensure all required properties exist
@@ -82,142 +83,38 @@ const loadData = () => {
     DB.revisionRequests = DB.revisionRequests || [];
     DB.quizResults = DB.quizResults || {};
   } catch (e) {
-    console.error("Error parsing stored ", e);
+    console.error("Error parsing stored data:", e);
     localStorage.removeItem(LS_KEY);
     initializeDemoData();
   }
 };
 
-// ✅✅✅ تم دمج بياناتك هنا مع تشفير كلمات المرور ✅✅✅
 const initializeDemoData = () => {
   DB = {
     students: [
       {
-        "id": "id-qtu7fy39",
-        "fullname": "Ahmed Amine",
-        "username": "ahmed.amine",
-        "password": encryptPassword("1234"), // ✅ تم التشفير
-        "code": "P-2024-001",
-        "classroom": "2ème Bac SP"
+        id: uid(), 
+        fullname: 'Ahmed Amine', 
+        username: 'ahmed.amine', 
+        password: encryptPassword('1234'), 
+        code: 'P-2024-001', 
+        classroom: '2ème Bac SP'
       },
       {
-        "id": "id-nzftxsgm",
-        "fullname": "Sara El",
-        "username": "sara.el",
-        "password": encryptPassword("abcd"), // ✅ تم التشفير
-        "code": "P-2024-002",
-        "classroom": "2ème Bac SP"
-      },
-      {
-        "id": "id-sz718lmr",
-        "fullname": "ali bairouè",
-        "username": "ali.bairouk",
-        "password": encryptPassword("abcd1"), // ✅ تم التشفير
-        "code": "P-2024-003",
-        "classroom": "2ème Bac SP"
-      },
-      {
-        "id": "id-aoj4g2fm",
-        "fullname": "Saad lmobi",
-        "username": "Saad.lmobi",
-        "password": encryptPassword("1234"), // ✅ تم التشفير
-        "code": "P-2024-004",
-        "classroom": "2ème Bac SP"
-      },
-      {
-        "id": "id-kjsylmlp",
-        "fullname": "Achraf amir",
-        "username": "Achraf.amir",
-        "password": encryptPassword("1234"), // ✅ تم التشفير
-        "code": "P-2024-005",
-        "classroom": "2ème Bac SP"
-      },
-      {
-        "id": "id-tqbv50to",
-        "fullname": "Ahmed omari",
-        "username": "Ahmed.omari",
-        "password": encryptPassword("1234"), // ✅ تم التشفير
-        "code": "P-2024-006",
-        "classroom": "2ème Bac SP"
+        id: uid(), 
+        fullname: 'Sara El', 
+        username: 'sara.el', 
+        password: encryptPassword('abcd'), 
+        code: 'P-2024-002', 
+        classroom: '2ème Bac SP'
       }
     ],
-    grades: {
-      "id-qtu7fy39": [
-        {
-          "id": "id-12kd0imv",
-          "date": "2024-10-15",
-          "subject": "Mécanique",
-          "title": "Contrôle 1",
-          "score": 16.5,
-          "note": "Très bien"
-        }
-      ],
-      "id-sz718lmr": [
-        {
-          "id": "id-nzpmp2p8",
-          "subject": "physique",
-          "title": "Contrôle 1",
-          "date": "2025-09-05",
-          "score": 12,
-          "note": "P"
-        }
-      ],
-      "id-aoj4g2fm": [
-        {
-          "id": "id-gdj95evr",
-          "subject": "Contrôle 1",
-          "title": "Contrôle 1",
-          "date": "2025-09-05",
-          "score": 11,
-          "note": "P"
-        }
-      ],
-      "id-kjsylmlp": [
-        {
-          "id": "id-r4epgu3u",
-          "subject": "physique",
-          "title": "Contrôle 1",
-          "date": "2025-09-05",
-          "score": 5,
-          "note": "F"
-        }
-      ],
-      "id-tqbv50to": [
-        {
-          "id": "id-ix95ujev",
-          "subject": "physique",
-          "title": "Contrôle 1",
-          "date": "2025-09-05",
-          "score": 2,
-          "note": "F"
-        }
-      ]
-    },
+    grades: {},
     dictionary: [
-      {
-        "id": "id-78801jpm",
-        "ar": "الطاقة",
-        "fr": "Énergie",
-        "def": "Capacité d'un système à produire un travail."
-      },
-      {
-        "id": "id-nq556ws2",
-        "ar": "السرعة",
-        "fr": "Vitesse",
-        "def": "Distance parcourue par unité de temps."
-      },
-      {
-        "id": "id-4cnz3uv9",
-        "ar": "التسارع",
-        "fr": "Accélération",
-        "def": "Taux de changement de la vitesse."
-      },
-      {
-        "id": "id-6b58jnbb",
-        "ar": "القوة",
-        "fr": "Force",
-        "def": "Action mécanique modifiant le mouvement."
-      }
+      {id: uid(), ar: 'الطاقة', fr: 'Énergie', def: 'Capacité d\'un système à produire un travail.'},
+      {id: uid(), ar: 'السرعة', fr: 'Vitesse', def: 'Distance parcourue par unité de temps.'},
+      {id: uid(), ar: 'التسارع', fr: 'Accélération', def: 'Taux de changement de la vitesse.'},
+      {id: uid(), ar: 'القوة', fr: 'Force', def: 'Action mécanique modifiant le mouvement.'}
     ],
     quiz: [],
     exams: [],
@@ -228,6 +125,13 @@ const initializeDemoData = () => {
     revisionRequests: [],
     quizResults: {}
   };
+  
+  // Seed demo grades with encrypted data
+  DB.grades[DB.students[0].id] = [
+    {id: uid(), date: '2024-10-15', subject: 'Mécanique', title: 'Contrôle 1', score: 16.5, note: 'Très bien'},
+    {id: uid(), date: '2024-11-22', subject: 'Électricité', title: 'Contrôle 2', score: 14, note: 'Bon travail'}
+  ];
+  
   setData(DB);
 };
 
@@ -249,11 +153,13 @@ const updateUI = () => {
   if (DB && DB.announcement) {
     document.getElementById('announcementText').textContent = DB.announcement;
     document.getElementById('announcementInput').value = DB.announcement;
+    
     if (DB.announcementImage) {
       document.getElementById('announcementImage').src = DB.announcementImage;
       document.getElementById('announcementImage').style.display = 'block';
     }
   }
+  
   // Update based on authentication state
   if (appState.isAdmin) {
     document.body.classList.add('admin-mode');
@@ -268,6 +174,7 @@ const updateUI = () => {
     document.body.classList.remove('admin-mode');
     $('#admin-panel').style.display = 'none';
   }
+  
   if (currentStudent) {
     $('#student-dashboard').style.display = 'block';
     $('#studentWelcome').textContent = `Bienvenue, ${currentStudent.fullname}`;
@@ -297,15 +204,6 @@ const setupEventListeners = () => {
     tab.addEventListener('click', function() {
       const tabId = this.getAttribute('data-tab');
       switchStudentTab(tabId);
-    });
-  });
-
-  // Admin tabs navigation
-  $$('.admin-tab-link').forEach(tab => {
-    tab.addEventListener('click', function(e) {
-      e.preventDefault();
-      const tabId = this.getAttribute('data-tab');
-      switchAdminTab(tabId);
     });
   });
 
@@ -378,6 +276,7 @@ const showSection = (id) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
+  
   const el = document.getElementById(id);
   if (el) {
     el.classList.add('active');
@@ -389,20 +288,10 @@ const showSection = (id) => {
 const switchStudentTab = (tabId) => {
   $$('.student-tab').forEach(t => t.classList.remove('active'));
   $(`.student-tab[data-tab="${tabId}"]`).classList.add('active');
+  
   $$('.student-tab-content').forEach(s => s.classList.remove('active'));
   $(`#student-${tabId}-tab`).classList.add('active');
   appState.activeTab = tabId;
-};
-
-const switchAdminTab = (tabId) => {
-  $$('.admin-tab-link').forEach(t => t.classList.remove('active'));
-  $(`.admin-tab-link[data-tab="${tabId}"]`).classList.add('active');
-  $$('.admin-section').forEach(s => s.classList.remove('active'));
-  $(`#${tabId}`).classList.add('active');
-  appState.activeTab = tabId;
-  if (tabId === 'tab-revisions') {
-    renderRevisionRequests();
-  }
 };
 
 /********************
@@ -411,15 +300,18 @@ const switchAdminTab = (tabId) => {
 const handleStudentLogin = () => {
   const u = ($('#studentUsername').value || '').trim();
   const p = ($('#studentPassword').value || '').trim();
+  
   if (!u || !p) {
     showNotification("Veuillez saisir un nom d'utilisateur et un mot de passe.", 'error');
     return;
   }
+  
   const st = DB.students.find(s => s.username === u && decryptPassword(s.password) === p);
   if (!st) {
     showNotification("Nom d'utilisateur ou mot de passe incorrect.", 'error');
     return;
   }
+  
   $('#studentLoginModal').style.display = 'none';
   currentStudent = st;
   showNotification(`Bienvenue, ${st.fullname}`, 'success');
@@ -430,6 +322,7 @@ const handleStudentLogin = () => {
 const handleAdminLogin = () => {
   const u = $('#username').value.trim();
   const p = $('#password').value.trim();
+  
   if (u === ADMIN.user && p === ADMIN.pass) {
     $('#loginModal').style.display = 'none';
     appState.isAdmin = true;
@@ -464,6 +357,7 @@ const showNotification = (message, type = 'info') => {
   if (existingNotification) {
     existingNotification.remove();
   }
+  
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.innerHTML = `
@@ -472,15 +366,19 @@ const showNotification = (message, type = 'info') => {
       <button class="notification-close">&times;</button>
     </div>
   `;
+  
   document.body.appendChild(notification);
+  
   // Show notification
   setTimeout(() => {
     notification.classList.add('show');
   }, 10);
+  
   // Auto hide after 5 seconds
   setTimeout(() => {
     hideNotification(notification);
   }, 5000);
+  
   // Close button event
   $('.notification-close', notification).addEventListener('click', () => {
     hideNotification(notification);
@@ -502,6 +400,7 @@ const hideNotification = (notification) => {
 const renderStudentsTable = () => {
   const tbody = $('#studentsTable tbody');
   if (!tbody) return;
+  
   tbody.innerHTML = '';
   DB.students.forEach(st => {
     const tr = document.createElement('tr');
@@ -521,6 +420,7 @@ const renderStudentsTable = () => {
     `;
     tbody.appendChild(tr);
   });
+  
   // Add event listeners
   $$('.edit-student').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -536,6 +436,7 @@ const renderStudentsTable = () => {
       }
     });
   });
+  
   $$('.delete-student').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -582,15 +483,18 @@ const saveStudent = () => {
   const password = $('#stPassword').value.trim();
   const code = $('#stCode').value.trim();
   const classroom = $('#stClassroom').value.trim();
+  
   if (!fullname || !username || !password || !code) {
     showNotification('Veuillez remplir tous les champs obligatoires.', 'error');
     return;
   }
+  
   // Check if username already exists (for new students)
   if (!id && DB.students.some(s => s.username === username)) {
     showNotification("Ce nom d'utilisateur est déjà utilisé.", 'error');
     return;
   }
+  
   if (id) {
     // Update existing student
     const index = DB.students.findIndex(s => s.id === id);
@@ -618,6 +522,7 @@ const saveStudent = () => {
     DB.students.push(newStudent);
     showNotification('Étudiant ajouté avec succès', 'success');
   }
+  
   setData(DB);
   renderStudentsTable();
   populateStudentSelects();
@@ -639,13 +544,16 @@ const resetStudentForm = () => {
 const fillGradesFor = (student) => {
   const tbody = $('#gradesTable tbody');
   if (!tbody) return;
+  
   tbody.innerHTML = '';
   const list = (DB.grades[student.id] || []).slice().sort((a, b) => (a.date || '').localeCompare(b.date));
+  
   if (!list.length) { 
     $('#noGradesMsg').style.display = 'block'; 
   } else { 
     $('#noGradesMsg').style.display = 'none'; 
   }
+  
   list.forEach(g => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -657,6 +565,7 @@ const fillGradesFor = (student) => {
     `;
     tbody.appendChild(tr);
   });
+  
   $('#studentInfo').innerHTML = `
     <div class="inline">
       <span class="chip"><i class="fa-solid fa-user"></i> ${escapeHTML(student.fullname)}</span>
@@ -664,6 +573,7 @@ const fillGradesFor = (student) => {
       <span class="chip"><i class="fa-solid fa-school"></i> ${escapeHTML(student.classroom || '')}</span>
     </div>
   `;
+  
   $('#gradesResults').style.display = 'block';
   showSection('grades');
 };
@@ -681,9 +591,11 @@ const handleSearchByCode = () => {
 const renderAdminGradesTable = () => {
   const tbody = $('#gradesAdminTable tbody');
   if (!tbody) return;
+  
   tbody.innerHTML = '';
   const studentId = $('#grFilterStudent').value;
   let grades = [];
+  
   if (studentId) {
     grades = DB.grades[studentId] || [];
   } else {
@@ -692,11 +604,13 @@ const renderAdminGradesTable = () => {
       grades = grades.concat(DB.grades[id]);
     }
   }
+  
   grades.forEach(grade => {
     const student = DB.students.find(s => {
       const studentGrades = DB.grades[s.id] || [];
       return studentGrades.some(g => g.id === grade.id);
     });
+    
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${escapeHTML(student ? student.fullname : 'Inconnu')}</td>
@@ -716,6 +630,7 @@ const renderAdminGradesTable = () => {
     `;
     tbody.appendChild(tr);
   });
+  
   // Add event listeners
   $$('.edit-grade').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -723,6 +638,7 @@ const renderAdminGradesTable = () => {
       const studentId = this.getAttribute('data-student');
       const grades = DB.grades[studentId] || [];
       const grade = grades.find(g => g.id === gradeId);
+      
       if (grade) {
         $('#grId').value = grade.id;
         $('#grStudent').value = studentId;
@@ -734,10 +650,12 @@ const renderAdminGradesTable = () => {
       }
     });
   });
+  
   $$('.delete-grade').forEach(btn => {
     btn.addEventListener('click', function() {
       const gradeId = this.getAttribute('data-id');
       const studentId = this.getAttribute('data-student');
+      
       if (confirm('Êtes-vous sûr de vouloir supprimer cette note ?')) {
         if (DB.grades[studentId]) {
           DB.grades[studentId] = DB.grades[studentId].filter(g => g.id !== gradeId);
@@ -758,17 +676,21 @@ const saveGrade = () => {
   const date = $('#grDate').value;
   const score = parseFloat($('#grScore').value);
   const note = $('#grNote').value.trim();
+  
   if (!studentId || !subject || !title || !date || isNaN(score)) {
     showNotification('Veuillez remplir tous les champs obligatoires.', 'error');
     return;
   }
+  
   if (score < 0 || score > 20) {
     showNotification('La note doit être comprise entre 0 et 20.', 'error');
     return;
   }
+  
   if (!DB.grades[studentId]) {
     DB.grades[studentId] = [];
   }
+  
   if (id) {
     // Update existing grade
     const index = DB.grades[studentId].findIndex(g => g.id === id);
@@ -782,6 +704,7 @@ const saveGrade = () => {
     DB.grades[studentId].push(newGrade);
     showNotification('Note ajoutée avec succès', 'success');
   }
+  
   setData(DB);
   renderAdminGradesTable();
   resetGradeForm();
@@ -803,11 +726,14 @@ const resetGradeForm = () => {
 const renderAdminDictionaryList = () => {
   const container = $('#dictionaryTermsList');
   if (!container) return;
+  
   container.innerHTML = '';
+  
   if (DB.dictionary.length === 0) {
     container.innerHTML = '<p class="muted">Aucun terme pour le moment.</p>';
     return;
   }
+  
   DB.dictionary.forEach(term => {
     const termEl = document.createElement('div');
     termEl.className = 'dictionary-term';
@@ -825,6 +751,7 @@ const renderAdminDictionaryList = () => {
     `;
     container.appendChild(termEl);
   });
+  
   // Add event listeners
   $$('.edit-dict').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -838,6 +765,7 @@ const renderAdminDictionaryList = () => {
       }
     });
   });
+  
   $$('.delete-dict').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -856,10 +784,12 @@ const saveDictionaryTerm = () => {
   const ar = $('#adminDictAr').value.trim();
   const fr = $('#adminDictFr').value.trim();
   const def = $('#adminDictDef').value.trim();
+  
   if (!ar || !fr) {
     showNotification('Veuillez remplir les termes arabe et français.', 'error');
     return;
   }
+  
   if (id) {
     // Update existing term
     const index = DB.dictionary.findIndex(t => t.id === id);
@@ -873,6 +803,7 @@ const saveDictionaryTerm = () => {
     DB.dictionary.push(newTerm);
     showNotification('Terme ajouté avec succès', 'success');
   }
+  
   setData(DB);
   renderAdminDictionaryList();
   resetDictionaryForm();
@@ -891,11 +822,14 @@ const resetDictionaryForm = () => {
 const renderAdminQuizList = () => {
   const container = $('#quizQuestionsList');
   if (!container) return;
+  
   container.innerHTML = '';
+  
   if (DB.quiz.length === 0) {
     container.innerHTML = '<p class="muted">Aucune question pour le moment.</p>';
     return;
   }
+  
   DB.quiz.forEach((question, index) => {
     const questionEl = document.createElement('div');
     questionEl.className = 'quiz-question';
@@ -919,6 +853,7 @@ const renderAdminQuizList = () => {
     `;
     container.appendChild(questionEl);
   });
+  
   // Add event listeners
   $$('.edit-quiz').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -935,6 +870,7 @@ const renderAdminQuizList = () => {
       }
     });
   });
+  
   $$('.delete-quiz').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -958,14 +894,17 @@ const saveQuizQuestion = () => {
     $('#adminOption4').value.trim()
   ];
   const correct = parseInt($('#adminQuizCorrect').value);
+  
   if (!question || options.some(opt => !opt)) {
     showNotification('Veuillez remplir la question et toutes les options.', 'error');
     return;
   }
+  
   if (correct < 1 || correct > 4) {
     showNotification('La réponse correcte doit être entre 1 et 4.', 'error');
     return;
   }
+  
   if (id) {
     // Update existing question
     const index = DB.quiz.findIndex(q => q.id === id);
@@ -979,6 +918,7 @@ const saveQuizQuestion = () => {
     DB.quiz.push(newQuestion);
     showNotification('Question ajoutée avec succès', 'success');
   }
+  
   setData(DB);
   renderAdminQuizList();
   resetQuizForm();
@@ -1000,6 +940,7 @@ const resetQuizForm = () => {
 const saveAnnouncement = () => {
   const announcement = $('#announcementInput').value.trim();
   DB.announcement = announcement;
+  
   // Handle image upload
   const imageInput = $('#announcementImageInput');
   if (imageInput.files && imageInput.files[0]) {
@@ -1058,12 +999,15 @@ const populateRevisionForm = () => {
 const handleRevisionRequest = function(e) {
   e.preventDefault();
   if (!currentStudent) return;
+
   const gradeId = $('#revisionExam').value;
   const message = $('#revisionMessage').value;
+
   if (!gradeId || !message) {
     showNotification('Veuillez sélectionner un examen et écrire un message.', 'error');
     return;
   }
+
   DB.revisionRequests = DB.revisionRequests || [];
   DB.revisionRequests.push({
     id: uid(),
@@ -1073,6 +1017,7 @@ const handleRevisionRequest = function(e) {
     date: new Date().toISOString().slice(0, 10),
     status: 'pending'
   });
+
   setData(DB);
   showNotification('Votre demande a été envoyée.', 'success');
   this.reset();
@@ -1083,25 +1028,31 @@ const loadStudentRevisionRequests = () => {
   if (!currentStudent) return;
   const container = $('#studentRevisionRequests');
   if (!container) return;
+  
   container.innerHTML = '';
   const requests = (DB.revisionRequests || []).filter(req => req.studentId === currentStudent.id);
+  
   if (requests.length === 0) {
     container.innerHTML = '<p class="muted">Vous n\'avez pas encore soumis de demandes de récorrection.</p>';
     return;
   }
+  
   requests.forEach(req => {
     const grade = (DB.grades[currentStudent.id] || []).find(g => g.id === req.gradeId);
     if (!grade) return;
+    
     const statusColors = {
       'pending': 'warning',
       'approved': 'success',
       'rejected': 'accent'
     };
+    
     const statusTexts = {
       'pending': 'En attente',
       'approved': 'Approuvée',
       'rejected': 'Rejetée'
     };
+    
     const item = document.createElement('div');
     item.className = 'revision-request-item';
     item.innerHTML = `
@@ -1116,72 +1067,6 @@ const loadStudentRevisionRequests = () => {
   });
 };
 
-const renderRevisionRequests = () => {
-  const container = $('#revisionRequestsList');
-  if (!container) return;
-  container.innerHTML = '';
-  if (!DB.revisionRequests || DB.revisionRequests.length === 0) {
-    container.innerHTML = '<p class="muted">Aucune demande de récorrection pour le moment.</p>';
-    return;
-  }
-  DB.revisionRequests.forEach(request => {
-    const student = DB.students.find(s => s.id === request.studentId);
-    const grade = student && DB.grades[student.id] ? 
-      DB.grades[student.id].find(g => g.id === request.gradeId) : null;
-    if (!student || !grade) return;
-    const statusColors = {
-      'pending': 'warning',
-      'approved': 'success',
-      'rejected': 'accent'
-    };
-    const statusTexts = {
-      'pending': 'En attente',
-      'approved': 'Approuvée',
-      'rejected': 'Rejetée'
-    };
-    const requestEl = document.createElement('div');
-    requestEl.className = 'revision-request';
-    requestEl.innerHTML = `
-      <div><strong>${escapeHTML(student.fullname)}</strong> - ${escapeHTML(grade.title)} (${escapeHTML(grade.subject)}) - Note: ${grade.score}/20</div>
-      <div class="muted">${request.date}</div>
-      <div>${escapeHTML(request.message)}</div>
-      <div class="mt-2">
-        <span class="btn btn-${statusColors[request.status]}">Statut: ${statusTexts[request.status]}</span>
-        ${request.status === 'pending' ? `
-          <button class="btn btn-success btn-sm approve-revision" data-id="${request.id}">Approuver</button>
-          <button class="btn btn-accent btn-sm reject-revision" data-id="${request.id}">Rejeter</button>
-        ` : ''}
-      </div>
-    `;
-    container.appendChild(requestEl);
-  });
-  // Add event listeners
-  $$('.approve-revision').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.getAttribute('data-id');
-      const request = DB.revisionRequests.find(r => r.id === id);
-      if (request) {
-        request.status = 'approved';
-        setData(DB);
-        renderRevisionRequests();
-        showNotification('Demande approuvée avec succès', 'success');
-      }
-    });
-  });
-  $$('.reject-revision').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const id = this.getAttribute('data-id');
-      const request = DB.revisionRequests.find(r => r.id === id);
-      if (request) {
-        request.status = 'rejected';
-        setData(DB);
-        renderRevisionRequests();
-        showNotification('Demande rejetée', 'info');
-      }
-    });
-  });
-};
-
 /********************
  * QUIZ FUNCTIONALITY
  ********************/
@@ -1189,11 +1074,14 @@ const loadStudentQuizzes = () => {
   if (!currentStudent) return;
   const container = $('#studentQuizList');
   if (!container) return;
+  
   container.innerHTML = '';
+  
   if (DB.quiz.length === 0) {
     container.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>';
     return;
   }
+  
   const quizCard = document.createElement('div');
   quizCard.className = 'content-card';
   quizCard.innerHTML = `
@@ -1204,8 +1092,10 @@ const loadStudentQuizzes = () => {
     </div>
   `;
   container.appendChild(quizCard);
+  
   // Add event listeners to start quiz button
   $('.start-quiz').addEventListener('click', startQuiz);
+  
   // Load quiz results
   loadQuizResults();
 };
@@ -1214,12 +1104,15 @@ const loadQuizResults = () => {
   if (!currentStudent) return;
   const container = $('#studentQuizResults');
   if (!container) return;
+  
   container.innerHTML = '';
   const results = DB.quizResults && DB.quizResults[currentStudent.id] ? DB.quizResults[currentStudent.id] : [];
+  
   if (results.length === 0) {
     container.innerHTML = '<p class="muted">Aucun résultat de quiz pour le moment.</p>';
     return;
   }
+  
   results.forEach(result => {
     const resultCard = document.createElement('div');
     resultCard.className = 'content-card';
@@ -1236,14 +1129,18 @@ const loadQuizResults = () => {
 
 const startQuiz = () => {
   if (!currentStudent) return;
+  
   // Hide quiz list and show quiz container
   $('#studentQuizList').style.display = 'none';
   $('#quizContainer').style.display = 'block';
+  
   currentQuiz = DB.quiz;
   currentQuestionIndex = 0;
   studentAnswers = {};
+  
   // Start timer (30 minutes)
   startTimer(30 * 60);
+  
   // Load first question
   loadQuestion(0);
 };
@@ -1251,10 +1148,13 @@ const startQuiz = () => {
 const startTimer = (duration) => {
   let timer = duration;
   clearInterval(quizTimer);
+  
   quizTimer = setInterval(() => {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
+    
     $('#quizTimer').textContent = `Temps restant: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    
     if (--timer < 0) {
       clearInterval(quizTimer);
       submitQuiz();
@@ -1264,11 +1164,15 @@ const startTimer = (duration) => {
 
 const loadQuestion = (index) => {
   if (index < 0 || index >= currentQuiz.length) return;
+  
   currentQuestionIndex = index;
   const question = currentQuiz[index];
+  
   const container = $('#quizQuestionsContainer');
   if (!container) return;
+  
   container.innerHTML = '';
+  
   const questionEl = document.createElement('div');
   questionEl.className = 'quiz-question-slider active';
   questionEl.innerHTML = `
@@ -1283,9 +1187,269 @@ const loadQuestion = (index) => {
       `).join('')}
     </div>
   `;
+  
   container.appendChild(questionEl);
+  
   // Update question counter
   $('#questionCounter').textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
+  
   // Set up option selection
   $$('.quiz-option').forEach(option => {
-    option.addEventListener('click', function
+    option.addEventListener('click', function() {
+      // Remove selected class from all options
+      $$('.quiz-option').forEach(opt => opt.classList.remove('selected'));
+      
+      // Add selected class to clicked option
+      this.classList.add('selected');
+      
+      // Store answer
+      studentAnswers[index] = this.getAttribute('data-option');
+    });
+  });
+  
+  // Restore previous answer if exists
+  if (studentAnswers[index]) {
+    $(`.quiz-option[data-option="${studentAnswers[index]}"]`).classList.add('selected');
+  }
+  
+  // Set up navigation buttons
+  $('#prevQuestion').style.display = index === 0 ? 'none' : 'block';
+  $('#nextQuestion').style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
+  $('#submitQuiz').style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
+};
+
+const handlePrevQuestion = () => {
+  if (currentQuestionIndex > 0) {
+    loadQuestion(currentQuestionIndex - 1);
+  }
+};
+
+const handleNextQuestion = () => {
+  if (currentQuestionIndex < currentQuiz.length - 1) {
+    loadQuestion(currentQuestionIndex + 1);
+  }
+};
+
+const submitQuiz = () => {
+  clearInterval(quizTimer);
+  
+  // Calculate score
+  let score = 0;
+  for (let i = 0; i < currentQuiz.length; i++) {
+    if (studentAnswers[i] == currentQuiz[i].correct) {
+      score++;
+    }
+  }
+  
+  // Save results
+  DB.quizResults = DB.quizResults || {};
+  DB.quizResults[currentStudent.id] = DB.quizResults[currentStudent.id] || [];
+  
+  const timeUsed = calculateTimeUsed();
+  
+  DB.quizResults[currentStudent.id].push({
+    date: new Date().toLocaleDateString(),
+    score: score,
+    total: currentQuiz.length,
+    timeUsed: timeUsed
+  });
+  
+  setData(DB);
+  
+  // Show results
+  $('#quizContainer').style.display = 'none';
+  $('#quizResultsContainer').style.display = 'block';
+  
+  $('#quizResultsContent').innerHTML = `
+    <h4>Résultats du Quiz</h4>
+    <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
+    <p>Temps utilisé: ${timeUsed}</p>
+    <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
+  `;
+  
+  $('#backToQuizzes').addEventListener('click', () => {
+    $('#quizResultsContainer').style.display = 'none';
+    $('#studentQuizList').style.display = 'block';
+    loadQuizResults();
+  });
+};
+
+const calculateTimeUsed = () => {
+  // This would normally be calculated based on the actual time taken
+  // For simplicity, we'll just return a placeholder
+  return "25:30";
+};
+
+/********************
+ * DASHBOARD & STATS
+ ********************/
+const updateDashboardStats = () => {
+  $('#stats-students').textContent = DB.students.length;
+  $('#stats-quiz').textContent = DB.quiz.length;
+  $('#stats-dictionary').textContent = DB.dictionary.length;
+  
+  // Calculate total grades
+  let totalGrades = 0;
+  for (const studentId in DB.grades) {
+    totalGrades += DB.grades[studentId].length;
+  }
+  $('#stats-grades').textContent = totalGrades;
+};
+
+/********************
+ * DATA IMPORT/EXPORT
+ ********************/
+const exportData = () => {
+  const dataStr = JSON.stringify(DB, null, 2);
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+  
+  const exportFileDefaultName = 'lycee-excellence-data.json';
+  
+  const linkElement = document.createElement('a');
+  linkElement.setAttribute('href', dataUri);
+  linkElement.setAttribute('download', exportFileDefaultName);
+  linkElement.click();
+  
+  showNotification('Données exportées avec succès', 'success');
+};
+
+const importData = function() {
+  const file = this.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedData = JSON.parse(e.target.result);
+      if (confirm('Êtes-vous sûr de vouloir importer ces données ? Toutes les données actuelles seront remplacées.')) {
+        localStorage.setItem(LS_KEY, JSON.stringify(importedData));
+        DB = getData();
+        showNotification('Données importées avec succès !', 'success');
+        location.reload();
+      }
+    } catch (error) {
+      console.error('Import error:', error);
+      showNotification('Erreur lors de l\'importation du fichier. Le format est invalide.', 'error');
+    }
+  };
+  reader.readAsText(file);
+};
+
+/********************
+ * STUDENT RESOURCES
+ ********************/
+const loadStudentResources = () => {
+  if (!currentStudent) return;
+  
+  // Load recent grades
+  const gradesContainer = $('#studentRecentGrades');
+  if (gradesContainer) {
+    gradesContainer.innerHTML = '';
+    const grades = (DB.grades[currentStudent.id] || []).slice(-5).reverse();
+    
+    if (grades.length === 0) {
+      gradesContainer.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
+    } else {
+      grades.forEach(grade => {
+        const gradeEl = document.createElement('div');
+        gradeEl.className = 'grade-item';
+        gradeEl.innerHTML = `
+          <div><strong>${escapeHTML(grade.title)}</strong> - ${escapeHTML(grade.subject)}</div>
+          <div>Note: ${grade.score}/20 - ${escapeHTML(grade.note)}</div>
+          <div class="muted">${grade.date}</div>
+        `;
+        gradesContainer.appendChild(gradeEl);
+      });
+    }
+  }
+  
+  // Load resources
+  const resourcesContainer = $('#studentResources');
+  if (resourcesContainer) {
+    resourcesContainer.innerHTML = '';
+    
+    // Add some sample resources
+    const resources = [
+      { type: 'lesson', title: 'Introduction à la mécanique', chapter: 'Mécanique' },
+      { type: 'exercise', title: 'Exercices sur l\'électricité', chapter: 'Électricité' },
+      { type: 'exam', title: 'Examen Blanc 2023', chapter: 'Général' }
+    ];
+    
+    resources.forEach(resource => {
+      const resourceEl = document.createElement('div');
+      resourceEl.className = 'content-card';
+      resourceEl.innerHTML = `
+        <div class="card-content">
+          <h3>${escapeHTML(resource.title)}</h3>
+          <p>Chapitre: ${escapeHTML(resource.chapter)}</p>
+          <button class="btn btn-outline">Consulter</button>
+        </div>
+      `;
+      resourcesContainer.appendChild(resourceEl);
+    });
+  }
+  
+  // Load dictionary terms
+  const dictionaryContainer = $('#studentDictionaryContent');
+  if (dictionaryContainer) {
+    dictionaryContainer.innerHTML = '';
+    
+    DB.dictionary.forEach(term => {
+      const termEl = document.createElement('div');
+      termEl.className = 'content-card';
+      termEl.innerHTML = `
+        <div class="card-content">
+          <h3>${escapeHTML(term.ar)} → ${escapeHTML(term.fr)}</h3>
+          <p>${escapeHTML(term.def)}</p>
+        </div>
+      `;
+      dictionaryContainer.appendChild(termEl);
+    });
+  }
+  
+  // Load exercises
+  const exercisesContainer = $('#studentExercisesList');
+  if (exercisesContainer) {
+    exercisesContainer.innerHTML = '';
+    
+    // Add some sample exercises
+    const exercises = [
+      { title: 'Exercices sur les forces', chapter: 'Mécanique' },
+      { title: 'Problèmes d\'électricité', chapter: 'Électricité' },
+      { title: 'Devoir maison', chapter: 'Général' }
+    ];
+    
+    exercises.forEach(exercise => {
+      const exerciseEl = document.createElement('div');
+      exerciseEl.className = 'content-card';
+      exerciseEl.innerHTML = `
+        <div class="card-content">
+          <h3>${escapeHTML(exercise.title)}</h3>
+          <p>Chapitre: ${escapeHTML(exercise.chapter)}</p>
+          <button class="btn btn-outline">Télécharger</button>
+        </div>
+      `;
+      exercisesContainer.appendChild(exerciseEl);
+    });
+  }
+};
+
+/********************
+ * SECURITY UTILITIES
+ ********************/
+const escapeHTML = (str) => {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+};
+
+/********************
+ * INITIALIZATION
+ ********************/
+document.addEventListener('DOMContentLoaded', function() {
+  initApp();
+});

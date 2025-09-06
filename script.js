@@ -270,11 +270,21 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#submitStudentLogin').addEventListener('click', () => {
       const u = ($('#studentUsername').value || '').trim();
       const p = ($('#studentPassword').value || '').trim();
-      const st = DB.students.find(s => s.username === u && s.password === p);
+      
+      // إصلاح المشكلة: البحث عن الطالب باستخدام username فقط
+      const st = DB.students.find(s => s.username === u);
+      
       if(!st){ 
         alert("Nom d'utilisateur ou mot de passe incorrect."); 
         return; 
       }
+      
+      // التحقق من كلمة المرور
+      if (st.password !== p) {
+        alert("Nom d'utilisateur ou mot de passe incorrect.");
+        return;
+      }
+      
       $('#studentLoginModal').style.display = 'none';
       
       // Set current student

@@ -1,7 +1,7 @@
- /********************
+/********************
  * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v9';
+const LS_KEY = 'lx-data-v11';
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);
@@ -138,11 +138,67 @@ const initialData = {
       "def": "Action mécanique modifiant le mouvement."
     }
   ],
-  "quiz": [],
+  "quiz": [
+    {
+      "id": "id-vfe4pnza",
+      "question": "ماهي وحدة السرعة ؟",
+      "options": [
+        "متر",
+        "متر على ثانية",
+        "ثانية",
+        "فولط"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "id-pccd0yaa",
+      "question": "ماهي وحدة زمن؟",
+      "options": [
+        "ثانية",
+        "فولط",
+        "تسلا",
+        "امبير"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "id-teh057hr",
+      "question": "ماهي وحدة توتر؟",
+      "options": [
+        "امبير",
+        "فولط",
+        "كلومب",
+        "تسلا"
+      ],
+      "correct": 2
+    },
+    {
+      "id": "id-9isvpp8s",
+      "question": "ماهي وحدة تيار كهربائي",
+      "options": [
+        "امبير",
+        "فولط",
+        "تسلا",
+        "متر"
+      ],
+      "correct": 1
+    },
+    {
+      "id": "id-5vnhxb2x",
+      "question": "ماهي وحدة المسافة ؟",
+      "options": [
+        "ثانية",
+        "متر",
+        "تسla",
+        "امبير"
+      ],
+      "correct": 2
+    }
+  ],
   "exams": [],
   "exercises": [],
   "lessons": [],
-  "announcement": "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+  "announcement": "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة\nفديو شرح الأساسيات لسنة ثانية بكالوريا سيكون جاهزا اليوم السبت 06/09",
   "announcementImage": "",
   "revisionRequests": [],
   "quizResults": {}

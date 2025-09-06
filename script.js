@@ -2,13 +2,7 @@
  * CONSTANTS & CONFIG
  ********************/
 const LS_KEY = 'lx-data-v4'; // Updated version for security improvements
-
-// تم إصلاح تسريب كلمة المرور: تم تشفير كلمة المرور
-const ADMIN = { 
-  user: 'admin7', 
-  pass: encryptPassword('ali7800') // FIXED: Encrypted admin password
-};
-
+const ADMIN = { user: 'admin7', pass: 'ali7800' };
 const PASSWORD_SECRET = 'edu_system_secret_key'; // For basic password obfuscation
 
 /********************
@@ -43,14 +37,6 @@ const debounce = (func, wait) => {
   };
 };
 
-// تم تحسين وظيفة escapeHTML لجعلها أكثر أمانًا
-const escapeHTML = (str) => {
-  if (!str) return '';
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-};
-
 /********************
  * STATE MANAGEMENT
  ********************/
@@ -76,16 +62,6 @@ const initApp = () => {
 /********************
  * DATA MANAGEMENT
  ********************/
-// تم إضافة وظيفة للتحقق من صحة بنية قاعدة البيانات
-const isValidDBStructure = (data) => {
-  return data &&
-         Array.isArray(data.students) &&
-         typeof data.grades === 'object' &&
-         Array.isArray(data.dictionary) &&
-         Array.isArray(data.quiz) &&
-         typeof data.announcement === 'string';
-};
-
 const loadData = () => {
   const raw = localStorage.getItem(LS_KEY);
   if (!raw) {
@@ -94,12 +70,6 @@ const loadData = () => {
   }
   try {
     DB = JSON.parse(raw);
-
-    // التحقق من صحة بنية البيانات
-    if (!isValidDBStructure(DB)) {
-      throw new Error('Invalid data structure');
-    }
-
     // Ensure all required properties exist
     DB.grades = DB.grades || {};
     DB.dictionary = DB.dictionary || [];
@@ -112,7 +82,7 @@ const loadData = () => {
     DB.revisionRequests = DB.revisionRequests || [];
     DB.quizResults = DB.quizResults || {};
   } catch (e) {
-    console.error("Error parsing or validating stored ", e);
+    console.error("Error parsing stored data:", e);
     localStorage.removeItem(LS_KEY);
     initializeDemoData();
   }
@@ -162,19 +132,13 @@ const initializeDemoData = () => {
   setData(DB);
 };
 
-// تم إضافة التحقق من حجم البيانات قبل الحفظ
 const setData = (data) => {
   try {
-    const dataStr = JSON.stringify(data);
-    // تقدير الحجم (5MB هو الحد الأقصى الشائع لـ localStorage)
-    if (dataStr.length > 5 * 1024 * 1024) {
-      throw new Error('Data size exceeds localStorage limit');
-    }
-    localStorage.setItem(LS_KEY, dataStr);
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
     DB = data;
   } catch (e) {
-    console.error("Error saving ", e);
-    alert("خطأ في حفظ البيانات. قد يكون تخزين localStorage ممتلئاً أو أن البيانات كبيرة جدًا.");
+    console.error("Error saving data:", e);
+    alert("خطأ في حفظ البيانات. قد يكون تخزين localStorage ممتلئاً.");
   }
 };
 
@@ -184,27 +148,17 @@ const setData = (data) => {
 const updateUI = () => {
   // Update announcement
   if (DB && DB.announcement) {
-    const announcementTextEl = document.getElementById('announcementText');
-    const announcementInputEl = document.getElementById('announcementInput');
-    const announcementImageEl = document.getElementById('announcementImage');
-
-    if (announcementTextEl) announcementTextEl.textContent = DB.announcement;
-    if (announcementInputEl) announcementInputEl.value = DB.announcement;
-
-    if (DB.announcementImage && announcementImageEl) {
-      announcementImageEl.src = DB.announcementImage;
-      announcementImageEl.style.display = 'block';
-    } else if (announcementImageEl) {
-      announcementImageEl.style.display = 'none';
+    document.getElementById('announcementText').textContent = DB.announcement;
+    document.getElementById('announcementInput').value = DB.announcement;
+    if (DB.announcementImage) {
+      document.getElementById('announcementImage').src = DB.announcementImage;
+      document.getElementById('announcementImage').style.display = 'block';
     }
   }
-
   // Update based on authentication state
   if (appState.isAdmin) {
     document.body.classList.add('admin-mode');
-    const adminPanelEl = $('#admin-panel');
-    if (adminPanelEl) adminPanelEl.style.display = 'block';
-
+    $('#admin-panel').style.display = 'block';
     renderStudentsTable();
     populateStudentSelects();
     renderAdminGradesTable();
@@ -213,24 +167,17 @@ const updateUI = () => {
     renderAdminQuizList();
   } else {
     document.body.classList.remove('admin-mode');
-    const adminPanelEl = $('#admin-panel');
-    if (adminPanelEl) adminPanelEl.style.display = 'none';
+    $('#admin-panel').style.display = 'none';
   }
-
   if (currentStudent) {
-    const studentDashboardEl = $('#student-dashboard');
-    if (studentDashboardEl) studentDashboardEl.style.display = 'block';
-
-    const studentWelcomeEl = $('#studentWelcome');
-    if (studentWelcomeEl) studentWelcomeEl.textContent = `Bienvenue, ${currentStudent.fullname}`;
-
+    $('#student-dashboard').style.display = 'block';
+    $('#studentWelcome').textContent = `Bienvenue, ${currentStudent.fullname}`;
     loadStudentResources();
     populateRevisionForm();
     loadStudentRevisionRequests();
     loadStudentQuizzes();
   } else {
-    const studentDashboardEl = $('#student-dashboard');
-    if (studentDashboardEl) studentDashboardEl.style.display = 'none';
+    $('#student-dashboard').style.display = 'none';
   }
 };
 
@@ -264,90 +211,54 @@ const setupEventListeners = () => {
   });
 
   // Student login
-  const studentLoginBtn = $('#studentLoginBtn');
-  const cancelStudentLogin = $('#cancelStudentLogin');
-  const submitStudentLogin = $('#submitStudentLogin');
-
-  if (studentLoginBtn) studentLoginBtn.addEventListener('click', () => $('#studentLoginModal').style.display = 'flex');
-  if (cancelStudentLogin) cancelStudentLogin.addEventListener('click', () => $('#studentLoginModal').style.display = 'none');
-  if (submitStudentLogin) submitStudentLogin.addEventListener('click', handleStudentLogin);
+  $('#studentLoginBtn').addEventListener('click', () => $('#studentLoginModal').style.display = 'flex');
+  $('#cancelStudentLogin').addEventListener('click', () => $('#studentLoginModal').style.display = 'none');
+  $('#submitStudentLogin').addEventListener('click', handleStudentLogin);
 
   // Admin login
-  const loginBtn = $('#loginBtn');
-  const cancelLogin = $('#cancelLogin');
-  const submitLogin = $('#submitLogin');
-
-  if (loginBtn) loginBtn.addEventListener('click', () => $('#loginModal').style.display = 'flex');
-  if (cancelLogin) cancelLogin.addEventListener('click', () => $('#loginModal').style.display = 'none');
-  if (submitLogin) submitLogin.addEventListener('click', handleAdminLogin);
+  $('#loginBtn').addEventListener('click', () => $('#loginModal').style.display = 'flex');
+  $('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
+  $('#submitLogin').addEventListener('click', handleAdminLogin);
 
   // Logout
-  const logoutBtn = $('#logoutBtn');
-  const studentLogoutBtn = $('#studentLogoutBtn');
-
-  if (logoutBtn) logoutBtn.addEventListener('click', handleAdminLogout);
-  if (studentLogoutBtn) studentLogoutBtn.addEventListener('click', handleStudentLogout);
+  $('#logoutBtn').addEventListener('click', handleAdminLogout);
+  $('#studentLogoutBtn').addEventListener('click', handleStudentLogout);
 
   // Search by code
-  const btnSearchByCode = $('#btnSearchByCode');
-  if (btnSearchByCode) btnSearchByCode.addEventListener('click', handleSearchByCode);
+  $('#btnSearchByCode').addEventListener('click', handleSearchByCode);
 
   // Revision request
-  const revisionRequestForm = $('#revisionRequestForm');
-  if (revisionRequestForm) revisionRequestForm.addEventListener('submit', handleRevisionRequest);
+  $('#revisionRequestForm').addEventListener('submit', handleRevisionRequest);
 
   // Quiz navigation
-  const prevQuestion = $('#prevQuestion');
-  const nextQuestion = $('#nextQuestion');
-  const submitQuiz = $('#submitQuiz');
-
-  if (prevQuestion) prevQuestion.addEventListener('click', handlePrevQuestion);
-  if (nextQuestion) nextQuestion.addEventListener('click', handleNextQuestion);
-  if (submitQuiz) submitQuiz.addEventListener('click', submitQuiz);
+  $('#prevQuestion').addEventListener('click', handlePrevQuestion);
+  $('#nextQuestion').addEventListener('click', handleNextQuestion);
+  $('#submitQuiz').addEventListener('click', submitQuiz);
 
   // Student management
-  const btnSaveStudent = $('#btnSaveStudent');
-  const btnResetStudent = $('#btnResetStudent');
-
-  if (btnSaveStudent) btnSaveStudent.addEventListener('click', saveStudent);
-  if (btnResetStudent) btnResetStudent.addEventListener('click', resetStudentForm);
+  $('#btnSaveStudent').addEventListener('click', saveStudent);
+  $('#btnResetStudent').addEventListener('click', resetStudentForm);
 
   // Grade management
-  const btnSaveGrade = $('#btnSaveGrade');
-  const btnResetGrade = $('#btnResetGrade');
-  const grFilterStudent = $('#grFilterStudent');
-
-  if (btnSaveGrade) btnSaveGrade.addEventListener('click', saveGrade);
-  if (btnResetGrade) btnResetGrade.addEventListener('click', resetGradeForm);
-  if (grFilterStudent) grFilterStudent.addEventListener('change', renderAdminGradesTable);
+  $('#btnSaveGrade').addEventListener('click', saveGrade);
+  $('#btnResetGrade').addEventListener('click', resetGradeForm);
+  $('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
 
   // Dictionary management
-  const adminBtnSaveDict = $('#adminBtnSaveDict');
-  const adminBtnResetDict = $('#adminBtnResetDict');
-
-  if (adminBtnSaveDict) adminBtnSaveDict.addEventListener('click', saveDictionaryTerm);
-  if (adminBtnResetDict) adminBtnResetDict.addEventListener('click', resetDictionaryForm);
+  $('#adminBtnSaveDict').addEventListener('click', saveDictionaryTerm);
+  $('#adminBtnResetDict').addEventListener('click', resetDictionaryForm);
 
   // Quiz management
-  const adminBtnSaveQuiz = $('#adminBtnSaveQuiz');
-  const adminBtnResetQuiz = $('#adminBtnResetQuiz');
-
-  if (adminBtnSaveQuiz) adminBtnSaveQuiz.addEventListener('click', saveQuizQuestion);
-  if (adminBtnResetQuiz) adminBtnResetQuiz.addEventListener('click', resetQuizForm);
+  $('#adminBtnSaveQuiz').addEventListener('click', saveQuizQuestion);
+  $('#adminBtnResetQuiz').addEventListener('click', resetQuizForm);
 
   // Announcement management
-  const btnSaveAnnouncement = $('#btnSaveAnnouncement');
-  const announcementImageInput = $('#announcementImageInput');
-
-  if (btnSaveAnnouncement) btnSaveAnnouncement.addEventListener('click', saveAnnouncement);
-  if (announcementImageInput) announcementImageInput.addEventListener('change', handleAnnouncementImagePreview);
+  $('#btnSaveAnnouncement').addEventListener('click', saveAnnouncement);
+  $('#announcementImageInput').addEventListener('change', handleAnnouncementImagePreview);
 
   // Data import/export
-  const btnExport = $('#btnExport');
-  const importFile = $('#importFile');
-
-  if (btnExport) btnExport.addEventListener('click', exportData);
-  if (importFile) importFile.addEventListener('change', importData);
+  $('#btnExport').addEventListener('click', exportData);
+  $('#importFile').addEventListener('change', importData);
 
   // Modal close handlers
   window.addEventListener('click', (e) => {
@@ -356,8 +267,7 @@ const setupEventListeners = () => {
   });
 
   // Debounced search for better performance
-  const filterStudentsInput = $('#filterStudents');
-  if (filterStudentsInput) filterStudentsInput.addEventListener('input', debounce(filterStudents, 300));
+  $('#filterStudents').addEventListener('input', debounce(filterStudents, 300));
 };
 
 /********************
@@ -418,12 +328,10 @@ const handleStudentLogin = () => {
   showSection('student-dashboard');
 };
 
-// تم إصلاح: فك تشفير كلمة المرور المخزنة للمقارنة
 const handleAdminLogin = () => {
   const u = $('#username').value.trim();
   const p = $('#password').value.trim();
-  // FIXED: Compare with decrypted admin password
-  if (u === ADMIN.user && p === decryptPassword(ADMIN.pass)) {
+  if (u === ADMIN.user && p === ADMIN.pass) {
     $('#loginModal').style.display = 'none';
     appState.isAdmin = true;
     showNotification('Connexion administrateur réussie', 'success');
@@ -1012,16 +920,12 @@ const saveAnnouncement = () => {
 };
 
 const updateAnnouncementDisplay = () => {
-  const announcementTextEl = $('#announcementText');
-  const announcementImageEl = $('#announcementImage');
-
-  if (announcementTextEl) announcementTextEl.textContent = DB.announcement;
-
-  if (DB.announcementImage && announcementImageEl) {
-    announcementImageEl.src = DB.announcementImage;
-    announcementImageEl.style.display = 'block';
-  } else if (announcementImageEl) {
-    announcementImageEl.style.display = 'none';
+  $('#announcementText').textContent = DB.announcement;
+  if (DB.announcementImage) {
+    $('#announcementImage').src = DB.announcementImage;
+    $('#announcementImage').style.display = 'block';
+  } else {
+    $('#announcementImage').style.display = 'none';
   }
 };
 
@@ -1202,8 +1106,7 @@ const loadStudentQuizzes = () => {
   `;
   container.appendChild(quizCard);
   // Add event listeners to start quiz button
-  const startQuizBtn = $('.start-quiz');
-  if (startQuizBtn) startQuizBtn.addEventListener('click', startQuiz);
+  $('.start-quiz').addEventListener('click', startQuiz);
   // Load quiz results
   loadQuizResults();
 };
@@ -1235,12 +1138,8 @@ const loadQuizResults = () => {
 const startQuiz = () => {
   if (!currentStudent) return;
   // Hide quiz list and show quiz container
-  const studentQuizList = $('#studentQuizList');
-  const quizContainer = $('#quizContainer');
-
-  if (studentQuizList) studentQuizList.style.display = 'none';
-  if (quizContainer) quizContainer.style.display = 'block';
-
+  $('#studentQuizList').style.display = 'none';
+  $('#quizContainer').style.display = 'block';
   currentQuiz = DB.quiz;
   currentQuestionIndex = 0;
   studentAnswers = {};
@@ -1256,10 +1155,7 @@ const startTimer = (duration) => {
   quizTimer = setInterval(() => {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
-    const quizTimerEl = $('#quizTimer');
-    if (quizTimerEl) {
-      quizTimerEl.textContent = `Temps restant: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    }
+    $('#quizTimer').textContent = `Temps restant: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     if (--timer < 0) {
       clearInterval(quizTimer);
       submitQuiz();
@@ -1290,10 +1186,7 @@ const loadQuestion = (index) => {
   `;
   container.appendChild(questionEl);
   // Update question counter
-  const questionCounterEl = $('#questionCounter');
-  if (questionCounterEl) {
-    questionCounterEl.textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
-  }
+  $('#questionCounter').textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
   // Set up option selection
   $$('.quiz-option').forEach(option => {
     option.addEventListener('click', function() {
@@ -1310,13 +1203,9 @@ const loadQuestion = (index) => {
     $(`.quiz-option[data-option="${studentAnswers[index]}"]`).classList.add('selected');
   }
   // Set up navigation buttons
-  const prevQuestionEl = $('#prevQuestion');
-  const nextQuestionEl = $('#nextQuestion');
-  const submitQuizEl = $('#submitQuiz');
-
-  if (prevQuestionEl) prevQuestionEl.style.display = index === 0 ? 'none' : 'block';
-  if (nextQuestionEl) nextQuestionEl.style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
-  if (submitQuizEl) submitQuizEl.style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
+  $('#prevQuestion').style.display = index === 0 ? 'none' : 'block';
+  $('#nextQuestion').style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
+  $('#submitQuiz').style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
 };
 
 const handlePrevQuestion = () => {
@@ -1352,27 +1241,19 @@ const submitQuiz = () => {
   });
   setData(DB);
   // Show results
-  const quizContainer = $('#quizContainer');
-  const quizResultsContainer = $('#quizResultsContainer');
-
-  if (quizContainer) quizContainer.style.display = 'none';
-  if (quizResultsContainer) {
-    quizResultsContainer.style.display = 'block';
-    quizResultsContainer.innerHTML = `
-      <h4>Résultats du Quiz</h4>
-      <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
-      <p>Temps utilisé: ${timeUsed}</p>
-      <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
-    `;
-    const backToQuizzesBtn = $('#backToQuizzes');
-    if (backToQuizzesBtn) {
-      backToQuizzesBtn.addEventListener('click', () => {
-        if (quizResultsContainer) quizResultsContainer.style.display = 'none';
-        if (studentQuizList) studentQuizList.style.display = 'block';
-        loadQuizResults();
-      });
-    }
-  }
+  $('#quizContainer').style.display = 'none';
+  $('#quizResultsContainer').style.display = 'block';
+  $('#quizResultsContent').innerHTML = `
+    <h4>Résultats du Quiz</h4>
+    <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
+    <p>Temps utilisé: ${timeUsed}</p>
+    <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
+  `;
+  $('#backToQuizzes').addEventListener('click', () => {
+    $('#quizResultsContainer').style.display = 'none';
+    $('#studentQuizList').style.display = 'block';
+    loadQuizResults();
+  });
 };
 
 const calculateTimeUsed = () => {
@@ -1385,22 +1266,15 @@ const calculateTimeUsed = () => {
  * DASHBOARD & STATS
  ********************/
 const updateDashboardStats = () => {
-  const statsStudentsEl = $('#stats-students');
-  const statsQuizEl = $('#stats-quiz');
-  const statsDictionaryEl = $('#stats-dictionary');
-  const statsGradesEl = $('#stats-grades');
-
-  if (statsStudentsEl) statsStudentsEl.textContent = DB.students.length;
-  if (statsQuizEl) statsQuizEl.textContent = DB.quiz.length;
-  if (statsDictionaryEl) statsDictionaryEl.textContent = DB.dictionary.length;
-
+  $('#stats-students').textContent = DB.students.length;
+  $('#stats-quiz').textContent = DB.quiz.length;
+  $('#stats-dictionary').textContent = DB.dictionary.length;
   // Calculate total grades
   let totalGrades = 0;
   for (const studentId in DB.grades) {
     totalGrades += DB.grades[studentId].length;
   }
-  if (statsGradesEl) statsGradesEl.textContent = totalGrades;
-
+  $('#stats-grades').textContent = totalGrades;
   // Load recent activity
   const activityContainer = $('#recent-activity');
   if (!activityContainer) return;
@@ -1431,7 +1305,7 @@ const updateDashboardStats = () => {
  ********************/
 const exportData = () => {
   const dataStr = JSON.stringify(DB, null, 2);
-  const dataUri = 'application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
   const exportFileDefaultName = 'lycee-excellence-data.json';
   const linkElement = document.createElement('a');
   linkElement.setAttribute('href', dataUri);
@@ -1440,6 +1314,7 @@ const exportData = () => {
   showNotification('Données exportées avec succès', 'success');
 };
 
+// ✅✅✅ تم إصلاح دالة importData هنا ✅✅✅
 const importData = function() {
   const file = this.files[0];
   if (!file) return;
@@ -1449,7 +1324,8 @@ const importData = function() {
       const importedData = JSON.parse(e.target.result);
       if (confirm('Êtes-vous sûr de vouloir importer ces données ? Toutes les données actuelles seront remplacées.')) {
         localStorage.setItem(LS_KEY, JSON.stringify(importedData));
-        DB = getData();
+        // ✅ تم الإصلاح: نستخدم البيانات المستوردة مباشرة بدلاً من استدعاء دالة غير موجودة
+        DB = importedData;
         showNotification('Données importées avec succès !', 'success');
         location.reload();
       }
@@ -1548,6 +1424,20 @@ const loadStudentResources = () => {
       exercisesContainer.appendChild(exerciseEl);
     });
   }
+};
+
+/********************
+ * SECURITY UTILITIES
+ ********************/
+// ✅✅✅ تم إضافة دالة escapeHTML هنا ✅✅✅
+const escapeHTML = (str) => {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '<')
+    .replace(/>/g, '>')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 };
 
 /********************

@@ -1,7 +1,7 @@
  /********************
  * UTIL & STORAGE
  ********************/
-const LS_KEY = 'lx-data-v4';
+const LS_KEY = 'lx-data-v9';
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
 const $ = (sel, ctx = document) => ctx.querySelector(sel);

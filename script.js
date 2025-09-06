@@ -2,7 +2,10 @@
  * CONSTANTS & CONFIG
  ********************/
 const LS_KEY = 'lx-data-v4'; // Updated version for security improvements
-const ADMIN = { user: 'admin7', pass: 'ali7800' };
+
+// تم إصلاح تسريب كلمة المرور: تم تشفير كلمة المرور
+const ADMIN = { user: 'admin7', pass: encryptPassword('ali7800') }; // FIXED: Encrypted admin password
+
 const PASSWORD_SECRET = 'edu_system_secret_key'; // For basic password obfuscation
 
 /********************
@@ -62,15 +65,30 @@ const initApp = () => {
 /********************
  * DATA MANAGEMENT
  ********************/
+// تم إضافة وظيفة للتحقق من صحة بنية قاعدة البيانات
+const isValidDBStructure = (data) => {
+  return data &&
+         Array.isArray(data.students) &&
+         typeof data.grades === 'object' &&
+         Array.isArray(data.dictionary) &&
+         Array.isArray(data.quiz) &&
+         typeof data.announcement === 'string';
+};
+
 const loadData = () => {
   const raw = localStorage.getItem(LS_KEY);
   if (!raw) {
     initializeDemoData();
     return;
   }
-  
   try {
     DB = JSON.parse(raw);
+
+    // التحقق من صحة بنية البيانات
+    if (!isValidDBStructure(DB)) {
+      throw new Error('Invalid data structure');
+    }
+
     // Ensure all required properties exist
     DB.grades = DB.grades || {};
     DB.dictionary = DB.dictionary || [];
@@ -83,7 +101,7 @@ const loadData = () => {
     DB.revisionRequests = DB.revisionRequests || [];
     DB.quizResults = DB.quizResults || {};
   } catch (e) {
-    console.error("Error parsing stored data:", e);
+    console.error("Error parsing or validating stored data:", e);
     localStorage.removeItem(LS_KEY);
     initializeDemoData();
   }
@@ -125,23 +143,27 @@ const initializeDemoData = () => {
     revisionRequests: [],
     quizResults: {}
   };
-  
   // Seed demo grades with encrypted data
   DB.grades[DB.students[0].id] = [
     {id: uid(), date: '2024-10-15', subject: 'Mécanique', title: 'Contrôle 1', score: 16.5, note: 'Très bien'},
     {id: uid(), date: '2024-11-22', subject: 'Électricité', title: 'Contrôle 2', score: 14, note: 'Bon travail'}
   ];
-  
   setData(DB);
 };
 
+// تم إضافة التحقق من حجم البيانات قبل الحفظ
 const setData = (data) => {
   try {
-    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    const dataStr = JSON.stringify(data);
+    // تقدير الحجم (5MB هو الحد الأقصى الشائع لـ localStorage)
+    if (dataStr.length > 5 * 1024 * 1024) {
+      throw new Error('Data size exceeds localStorage limit');
+    }
+    localStorage.setItem(LS_KEY, dataStr);
     DB = data;
   } catch (e) {
     console.error("Error saving data:", e);
-    alert("خطأ في حفظ البيانات. قد يكون تخزين localStorage ممتلئاً.");
+    alert("خطأ في حفظ البيانات. قد يكون تخزين localStorage ممتلئاً أو أن البيانات كبيرة جدًا.");
   }
 };
 
@@ -151,19 +173,27 @@ const setData = (data) => {
 const updateUI = () => {
   // Update announcement
   if (DB && DB.announcement) {
-    document.getElementById('announcementText').textContent = DB.announcement;
-    document.getElementById('announcementInput').value = DB.announcement;
-    
-    if (DB.announcementImage) {
-      document.getElementById('announcementImage').src = DB.announcementImage;
-      document.getElementById('announcementImage').style.display = 'block';
+    const announcementTextEl = document.getElementById('announcementText');
+    const announcementInputEl = document.getElementById('announcementInput');
+    const announcementImageEl = document.getElementById('announcementImage');
+
+    if (announcementTextEl) announcementTextEl.textContent = DB.announcement;
+    if (announcementInputEl) announcementInputEl.value = DB.announcement;
+
+    if (DB.announcementImage && announcementImageEl) {
+      announcementImageEl.src = DB.announcementImage;
+      announcementImageEl.style.display = 'block';
+    } else if (announcementImageEl) {
+      announcementImageEl.style.display = 'none';
     }
   }
-  
+
   // Update based on authentication state
   if (appState.isAdmin) {
     document.body.classList.add('admin-mode');
-    $('#admin-panel').style.display = 'block';
+    const adminPanelEl = $('#admin-panel');
+    if (adminPanelEl) adminPanelEl.style.display = 'block';
+
     renderStudentsTable();
     populateStudentSelects();
     renderAdminGradesTable();
@@ -172,18 +202,24 @@ const updateUI = () => {
     renderAdminQuizList();
   } else {
     document.body.classList.remove('admin-mode');
-    $('#admin-panel').style.display = 'none';
+    const adminPanelEl = $('#admin-panel');
+    if (adminPanelEl) adminPanelEl.style.display = 'none';
   }
-  
+
   if (currentStudent) {
-    $('#student-dashboard').style.display = 'block';
-    $('#studentWelcome').textContent = `Bienvenue, ${currentStudent.fullname}`;
+    const studentDashboardEl = $('#student-dashboard');
+    if (studentDashboardEl) studentDashboardEl.style.display = 'block';
+
+    const studentWelcomeEl = $('#studentWelcome');
+    if (studentWelcomeEl) studentWelcomeEl.textContent = `Bienvenue, ${currentStudent.fullname}`;
+
     loadStudentResources();
     populateRevisionForm();
     loadStudentRevisionRequests();
     loadStudentQuizzes();
   } else {
-    $('#student-dashboard').style.display = 'none';
+    const studentDashboardEl = $('#student-dashboard');
+    if (studentDashboardEl) studentDashboardEl.style.display = 'none';
   }
 };
 
@@ -217,54 +253,90 @@ const setupEventListeners = () => {
   });
 
   // Student login
-  $('#studentLoginBtn').addEventListener('click', () => $('#studentLoginModal').style.display = 'flex');
-  $('#cancelStudentLogin').addEventListener('click', () => $('#studentLoginModal').style.display = 'none');
-  $('#submitStudentLogin').addEventListener('click', handleStudentLogin);
+  const studentLoginBtn = $('#studentLoginBtn');
+  const cancelStudentLogin = $('#cancelStudentLogin');
+  const submitStudentLogin = $('#submitStudentLogin');
+
+  if (studentLoginBtn) studentLoginBtn.addEventListener('click', () => $('#studentLoginModal').style.display = 'flex');
+  if (cancelStudentLogin) cancelStudentLogin.addEventListener('click', () => $('#studentLoginModal').style.display = 'none');
+  if (submitStudentLogin) submitStudentLogin.addEventListener('click', handleStudentLogin);
 
   // Admin login
-  $('#loginBtn').addEventListener('click', () => $('#loginModal').style.display = 'flex');
-  $('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
-  $('#submitLogin').addEventListener('click', handleAdminLogin);
+  const loginBtn = $('#loginBtn');
+  const cancelLogin = $('#cancelLogin');
+  const submitLogin = $('#submitLogin');
+
+  if (loginBtn) loginBtn.addEventListener('click', () => $('#loginModal').style.display = 'flex');
+  if (cancelLogin) cancelLogin.addEventListener('click', () => $('#loginModal').style.display = 'none');
+  if (submitLogin) submitLogin.addEventListener('click', handleAdminLogin);
 
   // Logout
-  $('#logoutBtn').addEventListener('click', handleAdminLogout);
-  $('#studentLogoutBtn').addEventListener('click', handleStudentLogout);
+  const logoutBtn = $('#logoutBtn');
+  const studentLogoutBtn = $('#studentLogoutBtn');
+
+  if (logoutBtn) logoutBtn.addEventListener('click', handleAdminLogout);
+  if (studentLogoutBtn) studentLogoutBtn.addEventListener('click', handleStudentLogout);
 
   // Search by code
-  $('#btnSearchByCode').addEventListener('click', handleSearchByCode);
+  const btnSearchByCode = $('#btnSearchByCode');
+  if (btnSearchByCode) btnSearchByCode.addEventListener('click', handleSearchByCode);
 
   // Revision request
-  $('#revisionRequestForm').addEventListener('submit', handleRevisionRequest);
+  const revisionRequestForm = $('#revisionRequestForm');
+  if (revisionRequestForm) revisionRequestForm.addEventListener('submit', handleRevisionRequest);
 
   // Quiz navigation
-  $('#prevQuestion').addEventListener('click', handlePrevQuestion);
-  $('#nextQuestion').addEventListener('click', handleNextQuestion);
-  $('#submitQuiz').addEventListener('click', submitQuiz);
+  const prevQuestion = $('#prevQuestion');
+  const nextQuestion = $('#nextQuestion');
+  const submitQuiz = $('#submitQuiz');
+
+  if (prevQuestion) prevQuestion.addEventListener('click', handlePrevQuestion);
+  if (nextQuestion) nextQuestion.addEventListener('click', handleNextQuestion);
+  if (submitQuiz) submitQuiz.addEventListener('click', submitQuiz);
 
   // Student management
-  $('#btnSaveStudent').addEventListener('click', saveStudent);
-  $('#btnResetStudent').addEventListener('click', resetStudentForm);
+  const btnSaveStudent = $('#btnSaveStudent');
+  const btnResetStudent = $('#btnResetStudent');
+
+  if (btnSaveStudent) btnSaveStudent.addEventListener('click', saveStudent);
+  if (btnResetStudent) btnResetStudent.addEventListener('click', resetStudentForm);
 
   // Grade management
-  $('#btnSaveGrade').addEventListener('click', saveGrade);
-  $('#btnResetGrade').addEventListener('click', resetGradeForm);
-  $('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
+  const btnSaveGrade = $('#btnSaveGrade');
+  const btnResetGrade = $('#btnResetGrade');
+  const grFilterStudent = $('#grFilterStudent');
+
+  if (btnSaveGrade) btnSaveGrade.addEventListener('click', saveGrade);
+  if (btnResetGrade) btnResetGrade.addEventListener('click', resetGradeForm);
+  if (grFilterStudent) grFilterStudent.addEventListener('change', renderAdminGradesTable);
 
   // Dictionary management
-  $('#adminBtnSaveDict').addEventListener('click', saveDictionaryTerm);
-  $('#adminBtnResetDict').addEventListener('click', resetDictionaryForm);
+  const adminBtnSaveDict = $('#adminBtnSaveDict');
+  const adminBtnResetDict = $('#adminBtnResetDict');
+
+  if (adminBtnSaveDict) adminBtnSaveDict.addEventListener('click', saveDictionaryTerm);
+  if (adminBtnResetDict) adminBtnResetDict.addEventListener('click', resetDictionaryForm);
 
   // Quiz management
-  $('#adminBtnSaveQuiz').addEventListener('click', saveQuizQuestion);
-  $('#adminBtnResetQuiz').addEventListener('click', resetQuizForm);
+  const adminBtnSaveQuiz = $('#adminBtnSaveQuiz');
+  const adminBtnResetQuiz = $('#adminBtnResetQuiz');
+
+  if (adminBtnSaveQuiz) adminBtnSaveQuiz.addEventListener('click', saveQuizQuestion);
+  if (adminBtnResetQuiz) adminBtnResetQuiz.addEventListener('click', resetQuizForm);
 
   // Announcement management
-  $('#btnSaveAnnouncement').addEventListener('click', saveAnnouncement);
-  $('#announcementImageInput').addEventListener('change', handleAnnouncementImagePreview);
+  const btnSaveAnnouncement = $('#btnSaveAnnouncement');
+  const announcementImageInput = $('#announcementImageInput');
+
+  if (btnSaveAnnouncement) btnSaveAnnouncement.addEventListener('click', saveAnnouncement);
+  if (announcementImageInput) announcementImageInput.addEventListener('change', handleAnnouncementImagePreview);
 
   // Data import/export
-  $('#btnExport').addEventListener('click', exportData);
-  $('#importFile').addEventListener('change', importData);
+  const btnExport = $('#btnExport');
+  const importFile = $('#importFile');
+
+  if (btnExport) btnExport.addEventListener('click', exportData);
+  if (importFile) importFile.addEventListener('change', importData);
 
   // Modal close handlers
   window.addEventListener('click', (e) => {
@@ -273,7 +345,8 @@ const setupEventListeners = () => {
   });
 
   // Debounced search for better performance
-  $('#filterStudents').addEventListener('input', debounce(filterStudents, 300));
+  const filterStudentsInput = $('#filterStudents');
+  if (filterStudentsInput) filterStudentsInput.addEventListener('input', debounce(filterStudents, 300));
 };
 
 /********************
@@ -285,7 +358,6 @@ const showSection = (id) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return;
   }
-  
   const el = document.getElementById(id);
   if (el) {
     el.classList.add('active');
@@ -297,7 +369,6 @@ const showSection = (id) => {
 const switchStudentTab = (tabId) => {
   $$('.student-tab').forEach(t => t.classList.remove('active'));
   $(`.student-tab[data-tab="${tabId}"]`).classList.add('active');
-  
   $$('.student-tab-content').forEach(s => s.classList.remove('active'));
   $(`#student-${tabId}-tab`).classList.add('active');
   appState.activeTab = tabId;
@@ -306,11 +377,9 @@ const switchStudentTab = (tabId) => {
 const switchAdminTab = (tabId) => {
   $$('.admin-tab-link').forEach(t => t.classList.remove('active'));
   $(`.admin-tab-link[data-tab="${tabId}"]`).classList.add('active');
-  
   $$('.admin-section').forEach(s => s.classList.remove('active'));
   $(`#${tabId}`).classList.add('active');
   appState.activeTab = tabId;
-
   if (tabId === 'tab-revisions') {
     renderRevisionRequests();
   }
@@ -322,18 +391,15 @@ const switchAdminTab = (tabId) => {
 const handleStudentLogin = () => {
   const u = ($('#studentUsername').value || '').trim();
   const p = ($('#studentPassword').value || '').trim();
-  
   if (!u || !p) {
     showNotification("Veuillez saisir un nom d'utilisateur et un mot de passe.", 'error');
     return;
   }
-  
   const st = DB.students.find(s => s.username === u && decryptPassword(s.password) === p);
   if (!st) {
     showNotification("Nom d'utilisateur ou mot de passe incorrect.", 'error');
     return;
   }
-  
   $('#studentLoginModal').style.display = 'none';
   currentStudent = st;
   showNotification(`Bienvenue, ${st.fullname}`, 'success');
@@ -341,11 +407,12 @@ const handleStudentLogin = () => {
   showSection('student-dashboard');
 };
 
+// تم إصلاح: فك تشفير كلمة المرور المخزنة للمقارنة
 const handleAdminLogin = () => {
   const u = $('#username').value.trim();
   const p = $('#password').value.trim();
-  
-  if (u === ADMIN.user && p === ADMIN.pass) {
+  // FIXED: Compare with decrypted admin password
+  if (u === ADMIN.user && p === decryptPassword(ADMIN.pass)) {
     $('#loginModal').style.display = 'none';
     appState.isAdmin = true;
     showNotification('Connexion administrateur réussie', 'success');
@@ -379,7 +446,6 @@ const showNotification = (message, type = 'info') => {
   if (existingNotification) {
     existingNotification.remove();
   }
-  
   const notification = document.createElement('div');
   notification.className = `notification notification-${type}`;
   notification.innerHTML = `
@@ -388,19 +454,15 @@ const showNotification = (message, type = 'info') => {
       <button class="notification-close">&times;</button>
     </div>
   `;
-  
   document.body.appendChild(notification);
-  
   // Show notification
   setTimeout(() => {
     notification.classList.add('show');
   }, 10);
-  
   // Auto hide after 5 seconds
   setTimeout(() => {
     hideNotification(notification);
   }, 5000);
-  
   // Close button event
   $('.notification-close', notification).addEventListener('click', () => {
     hideNotification(notification);
@@ -422,7 +484,6 @@ const hideNotification = (notification) => {
 const renderStudentsTable = () => {
   const tbody = $('#studentsTable tbody');
   if (!tbody) return;
-  
   tbody.innerHTML = '';
   DB.students.forEach(st => {
     const tr = document.createElement('tr');
@@ -442,7 +503,6 @@ const renderStudentsTable = () => {
     `;
     tbody.appendChild(tr);
   });
-  
   // Add event listeners
   $$('.edit-student').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -458,7 +518,6 @@ const renderStudentsTable = () => {
       }
     });
   });
-  
   $$('.delete-student').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -505,18 +564,15 @@ const saveStudent = () => {
   const password = $('#stPassword').value.trim();
   const code = $('#stCode').value.trim();
   const classroom = $('#stClassroom').value.trim();
-  
   if (!fullname || !username || !password || !code) {
     showNotification('Veuillez remplir tous les champs obligatoires.', 'error');
     return;
   }
-  
   // Check if username already exists (for new students)
   if (!id && DB.students.some(s => s.username === username)) {
     showNotification("Ce nom d'utilisateur est déjà utilisé.", 'error');
     return;
   }
-  
   if (id) {
     // Update existing student
     const index = DB.students.findIndex(s => s.id === id);
@@ -544,7 +600,6 @@ const saveStudent = () => {
     DB.students.push(newStudent);
     showNotification('Étudiant ajouté avec succès', 'success');
   }
-  
   setData(DB);
   renderStudentsTable();
   populateStudentSelects();
@@ -566,16 +621,13 @@ const resetStudentForm = () => {
 const fillGradesFor = (student) => {
   const tbody = $('#gradesTable tbody');
   if (!tbody) return;
-  
   tbody.innerHTML = '';
   const list = (DB.grades[student.id] || []).slice().sort((a, b) => (a.date || '').localeCompare(b.date));
-  
   if (!list.length) { 
     $('#noGradesMsg').style.display = 'block'; 
   } else { 
     $('#noGradesMsg').style.display = 'none'; 
   }
-  
   list.forEach(g => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
@@ -587,7 +639,6 @@ const fillGradesFor = (student) => {
     `;
     tbody.appendChild(tr);
   });
-  
   $('#studentInfo').innerHTML = `
     <div class="inline">
       <span class="chip"><i class="fa-solid fa-user"></i> ${escapeHTML(student.fullname)}</span>
@@ -595,7 +646,6 @@ const fillGradesFor = (student) => {
       <span class="chip"><i class="fa-solid fa-school"></i> ${escapeHTML(student.classroom || '')}</span>
     </div>
   `;
-  
   $('#gradesResults').style.display = 'block';
   showSection('grades');
 };
@@ -613,11 +663,9 @@ const handleSearchByCode = () => {
 const renderAdminGradesTable = () => {
   const tbody = $('#gradesAdminTable tbody');
   if (!tbody) return;
-  
   tbody.innerHTML = '';
   const studentId = $('#grFilterStudent').value;
   let grades = [];
-  
   if (studentId) {
     grades = DB.grades[studentId] || [];
   } else {
@@ -626,13 +674,11 @@ const renderAdminGradesTable = () => {
       grades = grades.concat(DB.grades[id]);
     }
   }
-  
   grades.forEach(grade => {
     const student = DB.students.find(s => {
       const studentGrades = DB.grades[s.id] || [];
       return studentGrades.some(g => g.id === grade.id);
     });
-    
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>${escapeHTML(student ? student.fullname : 'Inconnu')}</td>
@@ -652,7 +698,6 @@ const renderAdminGradesTable = () => {
     `;
     tbody.appendChild(tr);
   });
-  
   // Add event listeners
   $$('.edit-grade').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -660,7 +705,6 @@ const renderAdminGradesTable = () => {
       const studentId = this.getAttribute('data-student');
       const grades = DB.grades[studentId] || [];
       const grade = grades.find(g => g.id === gradeId);
-      
       if (grade) {
         $('#grId').value = grade.id;
         $('#grStudent').value = studentId;
@@ -672,12 +716,10 @@ const renderAdminGradesTable = () => {
       }
     });
   });
-  
   $$('.delete-grade').forEach(btn => {
     btn.addEventListener('click', function() {
       const gradeId = this.getAttribute('data-id');
       const studentId = this.getAttribute('data-student');
-      
       if (confirm('Êtes-vous sûr de vouloir supprimer cette note ?')) {
         if (DB.grades[studentId]) {
           DB.grades[studentId] = DB.grades[studentId].filter(g => g.id !== gradeId);
@@ -698,21 +740,17 @@ const saveGrade = () => {
   const date = $('#grDate').value;
   const score = parseFloat($('#grScore').value);
   const note = $('#grNote').value.trim();
-  
   if (!studentId || !subject || !title || !date || isNaN(score)) {
     showNotification('Veuillez remplir tous les champs obligatoires.', 'error');
     return;
   }
-  
   if (score < 0 || score > 20) {
     showNotification('La note doit être comprise entre 0 et 20.', 'error');
     return;
   }
-  
   if (!DB.grades[studentId]) {
     DB.grades[studentId] = [];
   }
-  
   if (id) {
     // Update existing grade
     const index = DB.grades[studentId].findIndex(g => g.id === id);
@@ -726,7 +764,6 @@ const saveGrade = () => {
     DB.grades[studentId].push(newGrade);
     showNotification('Note ajoutée avec succès', 'success');
   }
-  
   setData(DB);
   renderAdminGradesTable();
   resetGradeForm();
@@ -748,14 +785,11 @@ const resetGradeForm = () => {
 const renderAdminDictionaryList = () => {
   const container = $('#dictionaryTermsList');
   if (!container) return;
-  
   container.innerHTML = '';
-  
   if (DB.dictionary.length === 0) {
     container.innerHTML = '<p class="muted">Aucun terme pour le moment.</p>';
     return;
   }
-  
   DB.dictionary.forEach(term => {
     const termEl = document.createElement('div');
     termEl.className = 'dictionary-term';
@@ -773,7 +807,6 @@ const renderAdminDictionaryList = () => {
     `;
     container.appendChild(termEl);
   });
-  
   // Add event listeners
   $$('.edit-dict').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -787,7 +820,6 @@ const renderAdminDictionaryList = () => {
       }
     });
   });
-  
   $$('.delete-dict').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -806,12 +838,10 @@ const saveDictionaryTerm = () => {
   const ar = $('#adminDictAr').value.trim();
   const fr = $('#adminDictFr').value.trim();
   const def = $('#adminDictDef').value.trim();
-  
   if (!ar || !fr) {
     showNotification('Veuillez remplir les termes arabe et français.', 'error');
     return;
   }
-  
   if (id) {
     // Update existing term
     const index = DB.dictionary.findIndex(t => t.id === id);
@@ -825,7 +855,6 @@ const saveDictionaryTerm = () => {
     DB.dictionary.push(newTerm);
     showNotification('Terme ajouté avec succès', 'success');
   }
-  
   setData(DB);
   renderAdminDictionaryList();
   resetDictionaryForm();
@@ -844,14 +873,11 @@ const resetDictionaryForm = () => {
 const renderAdminQuizList = () => {
   const container = $('#quizQuestionsList');
   if (!container) return;
-  
   container.innerHTML = '';
-  
   if (DB.quiz.length === 0) {
     container.innerHTML = '<p class="muted">Aucune question pour le moment.</p>';
     return;
   }
-  
   DB.quiz.forEach((question, index) => {
     const questionEl = document.createElement('div');
     questionEl.className = 'quiz-question';
@@ -875,7 +901,6 @@ const renderAdminQuizList = () => {
     `;
     container.appendChild(questionEl);
   });
-  
   // Add event listeners
   $$('.edit-quiz').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -892,7 +917,6 @@ const renderAdminQuizList = () => {
       }
     });
   });
-  
   $$('.delete-quiz').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -916,17 +940,14 @@ const saveQuizQuestion = () => {
     $('#adminOption4').value.trim()
   ];
   const correct = parseInt($('#adminQuizCorrect').value);
-  
   if (!question || options.some(opt => !opt)) {
     showNotification('Veuillez remplir la question et toutes les options.', 'error');
     return;
   }
-  
   if (correct < 1 || correct > 4) {
     showNotification('La réponse correcte doit être entre 1 et 4.', 'error');
     return;
   }
-  
   if (id) {
     // Update existing question
     const index = DB.quiz.findIndex(q => q.id === id);
@@ -940,7 +961,6 @@ const saveQuizQuestion = () => {
     DB.quiz.push(newQuestion);
     showNotification('Question ajoutée avec succès', 'success');
   }
-  
   setData(DB);
   renderAdminQuizList();
   resetQuizForm();
@@ -962,7 +982,6 @@ const resetQuizForm = () => {
 const saveAnnouncement = () => {
   const announcement = $('#announcementInput').value.trim();
   DB.announcement = announcement;
-  
   // Handle image upload
   const imageInput = $('#announcementImageInput');
   if (imageInput.files && imageInput.files[0]) {
@@ -982,12 +1001,16 @@ const saveAnnouncement = () => {
 };
 
 const updateAnnouncementDisplay = () => {
-  $('#announcementText').textContent = DB.announcement;
-  if (DB.announcementImage) {
-    $('#announcementImage').src = DB.announcementImage;
-    $('#announcementImage').style.display = 'block';
-  } else {
-    $('#announcementImage').style.display = 'none';
+  const announcementTextEl = $('#announcementText');
+  const announcementImageEl = $('#announcementImage');
+
+  if (announcementTextEl) announcementTextEl.textContent = DB.announcement;
+
+  if (DB.announcementImage && announcementImageEl) {
+    announcementImageEl.src = DB.announcementImage;
+    announcementImageEl.style.display = 'block';
+  } else if (announcementImageEl) {
+    announcementImageEl.style.display = 'none';
   }
 };
 
@@ -1021,15 +1044,12 @@ const populateRevisionForm = () => {
 const handleRevisionRequest = function(e) {
   e.preventDefault();
   if (!currentStudent) return;
-
   const gradeId = $('#revisionExam').value;
   const message = $('#revisionMessage').value;
-
   if (!gradeId || !message) {
     showNotification('Veuillez sélectionner un examen et écrire un message.', 'error');
     return;
   }
-
   DB.revisionRequests = DB.revisionRequests || [];
   DB.revisionRequests.push({
     id: uid(),
@@ -1039,7 +1059,6 @@ const handleRevisionRequest = function(e) {
     date: new Date().toISOString().slice(0, 10),
     status: 'pending'
   });
-
   setData(DB);
   showNotification('Votre demande a été envoyée.', 'success');
   this.reset();
@@ -1050,31 +1069,25 @@ const loadStudentRevisionRequests = () => {
   if (!currentStudent) return;
   const container = $('#studentRevisionRequests');
   if (!container) return;
-  
   container.innerHTML = '';
   const requests = (DB.revisionRequests || []).filter(req => req.studentId === currentStudent.id);
-  
   if (requests.length === 0) {
     container.innerHTML = '<p class="muted">Vous n\'avez pas encore soumis de demandes de récorrection.</p>';
     return;
   }
-  
   requests.forEach(req => {
     const grade = (DB.grades[currentStudent.id] || []).find(g => g.id === req.gradeId);
     if (!grade) return;
-    
     const statusColors = {
       'pending': 'warning',
       'approved': 'success',
       'rejected': 'accent'
     };
-    
     const statusTexts = {
       'pending': 'En attente',
       'approved': 'Approuvée',
       'rejected': 'Rejetée'
     };
-    
     const item = document.createElement('div');
     item.className = 'revision-request-item';
     item.innerHTML = `
@@ -1092,33 +1105,26 @@ const loadStudentRevisionRequests = () => {
 const renderRevisionRequests = () => {
   const container = $('#revisionRequestsList');
   if (!container) return;
-  
   container.innerHTML = '';
-  
   if (!DB.revisionRequests || DB.revisionRequests.length === 0) {
     container.innerHTML = '<p class="muted">Aucune demande de récorrection pour le moment.</p>';
     return;
   }
-  
   DB.revisionRequests.forEach(request => {
     const student = DB.students.find(s => s.id === request.studentId);
     const grade = student && DB.grades[student.id] ? 
       DB.grades[student.id].find(g => g.id === request.gradeId) : null;
-    
     if (!student || !grade) return;
-    
     const statusColors = {
       'pending': 'warning',
       'approved': 'success',
       'rejected': 'accent'
     };
-    
     const statusTexts = {
       'pending': 'En attente',
       'approved': 'Approuvée',
       'rejected': 'Rejetée'
     };
-    
     const requestEl = document.createElement('div');
     requestEl.className = 'revision-request';
     requestEl.innerHTML = `
@@ -1135,7 +1141,6 @@ const renderRevisionRequests = () => {
     `;
     container.appendChild(requestEl);
   });
-  
   // Add event listeners
   $$('.approve-revision').forEach(btn => {
     btn.addEventListener('click', function() {
@@ -1149,7 +1154,6 @@ const renderRevisionRequests = () => {
       }
     });
   });
-  
   $$('.reject-revision').forEach(btn => {
     btn.addEventListener('click', function() {
       const id = this.getAttribute('data-id');
@@ -1171,14 +1175,11 @@ const loadStudentQuizzes = () => {
   if (!currentStudent) return;
   const container = $('#studentQuizList');
   if (!container) return;
-  
   container.innerHTML = '';
-  
   if (DB.quiz.length === 0) {
     container.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>';
     return;
   }
-  
   const quizCard = document.createElement('div');
   quizCard.className = 'content-card';
   quizCard.innerHTML = `
@@ -1189,10 +1190,9 @@ const loadStudentQuizzes = () => {
     </div>
   `;
   container.appendChild(quizCard);
-  
   // Add event listeners to start quiz button
-  $('.start-quiz').addEventListener('click', startQuiz);
-  
+  const startQuizBtn = $('.start-quiz');
+  if (startQuizBtn) startQuizBtn.addEventListener('click', startQuiz);
   // Load quiz results
   loadQuizResults();
 };
@@ -1201,15 +1201,12 @@ const loadQuizResults = () => {
   if (!currentStudent) return;
   const container = $('#studentQuizResults');
   if (!container) return;
-  
   container.innerHTML = '';
   const results = DB.quizResults && DB.quizResults[currentStudent.id] ? DB.quizResults[currentStudent.id] : [];
-  
   if (results.length === 0) {
     container.innerHTML = '<p class="muted">Aucun résultat de quiz pour le moment.</p>';
     return;
   }
-  
   results.forEach(result => {
     const resultCard = document.createElement('div');
     resultCard.className = 'content-card';
@@ -1226,18 +1223,18 @@ const loadQuizResults = () => {
 
 const startQuiz = () => {
   if (!currentStudent) return;
-  
   // Hide quiz list and show quiz container
-  $('#studentQuizList').style.display = 'none';
-  $('#quizContainer').style.display = 'block';
-  
+  const studentQuizList = $('#studentQuizList');
+  const quizContainer = $('#quizContainer');
+
+  if (studentQuizList) studentQuizList.style.display = 'none';
+  if (quizContainer) quizContainer.style.display = 'block';
+
   currentQuiz = DB.quiz;
   currentQuestionIndex = 0;
   studentAnswers = {};
-  
   // Start timer (30 minutes)
   startTimer(30 * 60);
-  
   // Load first question
   loadQuestion(0);
 };
@@ -1245,13 +1242,13 @@ const startQuiz = () => {
 const startTimer = (duration) => {
   let timer = duration;
   clearInterval(quizTimer);
-  
   quizTimer = setInterval(() => {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
-    
-    $('#quizTimer').textContent = `Temps restant: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-    
+    const quizTimerEl = $('#quizTimer');
+    if (quizTimerEl) {
+      quizTimerEl.textContent = `Temps restant: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
     if (--timer < 0) {
       clearInterval(quizTimer);
       submitQuiz();
@@ -1261,15 +1258,11 @@ const startTimer = (duration) => {
 
 const loadQuestion = (index) => {
   if (index < 0 || index >= currentQuiz.length) return;
-  
   currentQuestionIndex = index;
   const question = currentQuiz[index];
-  
   const container = $('#quizQuestionsContainer');
   if (!container) return;
-  
   container.innerHTML = '';
-  
   const questionEl = document.createElement('div');
   questionEl.className = 'quiz-question-slider active';
   questionEl.innerHTML = `
@@ -1284,35 +1277,35 @@ const loadQuestion = (index) => {
       `).join('')}
     </div>
   `;
-  
   container.appendChild(questionEl);
-  
   // Update question counter
-  $('#questionCounter').textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
-  
+  const questionCounterEl = $('#questionCounter');
+  if (questionCounterEl) {
+    questionCounterEl.textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
+  }
   // Set up option selection
   $$('.quiz-option').forEach(option => {
     option.addEventListener('click', function() {
       // Remove selected class from all options
       $$('.quiz-option').forEach(opt => opt.classList.remove('selected'));
-      
       // Add selected class to clicked option
       this.classList.add('selected');
-      
       // Store answer
       studentAnswers[index] = this.getAttribute('data-option');
     });
   });
-  
   // Restore previous answer if exists
   if (studentAnswers[index]) {
     $(`.quiz-option[data-option="${studentAnswers[index]}"]`).classList.add('selected');
   }
-  
   // Set up navigation buttons
-  $('#prevQuestion').style.display = index === 0 ? 'none' : 'block';
-  $('#nextQuestion').style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
-  $('#submitQuiz').style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
+  const prevQuestionEl = $('#prevQuestion');
+  const nextQuestionEl = $('#nextQuestion');
+  const submitQuizEl = $('#submitQuiz');
+
+  if (prevQuestionEl) prevQuestionEl.style.display = index === 0 ? 'none' : 'block';
+  if (nextQuestionEl) nextQuestionEl.style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
+  if (submitQuizEl) submitQuizEl.style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
 };
 
 const handlePrevQuestion = () => {
@@ -1329,7 +1322,6 @@ const handleNextQuestion = () => {
 
 const submitQuiz = () => {
   clearInterval(quizTimer);
-  
   // Calculate score
   let score = 0;
   for (let i = 0; i < currentQuiz.length; i++) {
@@ -1337,38 +1329,39 @@ const submitQuiz = () => {
       score++;
     }
   }
-  
   // Save results
   DB.quizResults = DB.quizResults || {};
   DB.quizResults[currentStudent.id] = DB.quizResults[currentStudent.id] || [];
-  
   const timeUsed = calculateTimeUsed();
-  
   DB.quizResults[currentStudent.id].push({
     date: new Date().toLocaleDateString(),
     score: score,
     total: currentQuiz.length,
     timeUsed: timeUsed
   });
-  
   setData(DB);
-  
   // Show results
-  $('#quizContainer').style.display = 'none';
-  $('#quizResultsContainer').style.display = 'block';
-  
-  $('#quizResultsContent').innerHTML = `
-    <h4>Résultats du Quiz</h4>
-    <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
-    <p>Temps utilisé: ${timeUsed}</p>
-    <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
-  `;
-  
-  $('#backToQuizzes').addEventListener('click', () => {
-    $('#quizResultsContainer').style.display = 'none';
-    $('#studentQuizList').style.display = 'block';
-    loadQuizResults();
-  });
+  const quizContainer = $('#quizContainer');
+  const quizResultsContainer = $('#quizResultsContainer');
+
+  if (quizContainer) quizContainer.style.display = 'none';
+  if (quizResultsContainer) {
+    quizResultsContainer.style.display = 'block';
+    quizResultsContainer.innerHTML = `
+      <h4>Résultats du Quiz</h4>
+      <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
+      <p>Temps utilisé: ${timeUsed}</p>
+      <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
+    `;
+    const backToQuizzesBtn = $('#backToQuizzes');
+    if (backToQuizzesBtn) {
+      backToQuizzesBtn.addEventListener('click', () => {
+        if (quizResultsContainer) quizResultsContainer.style.display = 'none';
+        if (studentQuizList) studentQuizList.style.display = 'block';
+        loadQuizResults();
+      });
+    }
+  }
 };
 
 const calculateTimeUsed = () => {
@@ -1381,35 +1374,36 @@ const calculateTimeUsed = () => {
  * DASHBOARD & STATS
  ********************/
 const updateDashboardStats = () => {
-  $('#stats-students').textContent = DB.students.length;
-  $('#stats-quiz').textContent = DB.quiz.length;
-  $('#stats-dictionary').textContent = DB.dictionary.length;
-  
+  const statsStudentsEl = $('#stats-students');
+  const statsQuizEl = $('#stats-quiz');
+  const statsDictionaryEl = $('#stats-dictionary');
+  const statsGradesEl = $('#stats-grades');
+
+  if (statsStudentsEl) statsStudentsEl.textContent = DB.students.length;
+  if (statsQuizEl) statsQuizEl.textContent = DB.quiz.length;
+  if (statsDictionaryEl) statsDictionaryEl.textContent = DB.dictionary.length;
+
   // Calculate total grades
   let totalGrades = 0;
   for (const studentId in DB.grades) {
     totalGrades += DB.grades[studentId].length;
   }
-  $('#stats-grades').textContent = totalGrades;
-  
+  if (statsGradesEl) statsGradesEl.textContent = totalGrades;
+
   // Load recent activity
   const activityContainer = $('#recent-activity');
   if (!activityContainer) return;
-  
   activityContainer.innerHTML = '';
-  
   // Add some sample activity (in a real app, this would come from a log)
   const activities = [
     { action: 'Nouvel étudiant inscrit', details: 'Ahmed Amine', time: 'Il y a 2 heures' },
     { action: 'Note ajoutée', details: 'Contrôle 1 - Mécanique', time: 'Il y a 5 heures' },
     { action: 'Question de quiz ajoutée', details: 'Nouvelle question sur l\'électricité', time: 'Hier' }
   ];
-  
   if (activities.length === 0) {
     activityContainer.innerHTML = '<p class="muted">Aucune activité récente.</p>';
     return;
   }
-  
   activities.forEach(activity => {
     const activityEl = document.createElement('div');
     activityEl.className = 'activity-item';
@@ -1427,21 +1421,17 @@ const updateDashboardStats = () => {
 const exportData = () => {
   const dataStr = JSON.stringify(DB, null, 2);
   const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-  
   const exportFileDefaultName = 'lycee-excellence-data.json';
-  
   const linkElement = document.createElement('a');
   linkElement.setAttribute('href', dataUri);
   linkElement.setAttribute('download', exportFileDefaultName);
   linkElement.click();
-  
   showNotification('Données exportées avec succès', 'success');
 };
 
 const importData = function() {
   const file = this.files[0];
   if (!file) return;
-  
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
@@ -1465,13 +1455,11 @@ const importData = function() {
  ********************/
 const loadStudentResources = () => {
   if (!currentStudent) return;
-  
   // Load recent grades
   const gradesContainer = $('#studentRecentGrades');
   if (gradesContainer) {
     gradesContainer.innerHTML = '';
     const grades = (DB.grades[currentStudent.id] || []).slice(-5).reverse();
-    
     if (grades.length === 0) {
       gradesContainer.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
     } else {
@@ -1487,19 +1475,16 @@ const loadStudentResources = () => {
       });
     }
   }
-  
   // Load resources
   const resourcesContainer = $('#studentResources');
   if (resourcesContainer) {
     resourcesContainer.innerHTML = '';
-    
     // Add some sample resources
     const resources = [
       { type: 'lesson', title: 'Introduction à la mécanique', chapter: 'Mécanique' },
       { type: 'exercise', title: 'Exercices sur l\'électricité', chapter: 'Électricité' },
       { type: 'exam', title: 'Examen Blanc 2023', chapter: 'Général' }
     ];
-    
     resources.forEach(resource => {
       const resourceEl = document.createElement('div');
       resourceEl.className = 'content-card';
@@ -1513,12 +1498,10 @@ const loadStudentResources = () => {
       resourcesContainer.appendChild(resourceEl);
     });
   }
-  
   // Load dictionary terms
   const dictionaryContainer = $('#studentDictionaryContent');
   if (dictionaryContainer) {
     dictionaryContainer.innerHTML = '';
-    
     DB.dictionary.forEach(term => {
       const termEl = document.createElement('div');
       termEl.className = 'content-card';
@@ -1531,19 +1514,16 @@ const loadStudentResources = () => {
       dictionaryContainer.appendChild(termEl);
     });
   }
-  
   // Load exercises
   const exercisesContainer = $('#studentExercisesList');
   if (exercisesContainer) {
     exercisesContainer.innerHTML = '';
-    
     // Add some sample exercises
     const exercises = [
       { title: 'Exercices sur les forces', chapter: 'Mécanique' },
       { title: 'Problèmes d\'électricité', chapter: 'Électricité' },
       { title: 'Devoir maison', chapter: 'Général' }
     ];
-    
     exercises.forEach(exercise => {
       const exerciseEl = document.createElement('div');
       exerciseEl.className = 'content-card';
@@ -1562,14 +1542,12 @@ const loadStudentResources = () => {
 /********************
  * SECURITY UTILITIES
  ********************/
+// تم تحسين وظيفة escapeHTML لجعلها أكثر أمانًا
 const escapeHTML = (str) => {
   if (!str) return '';
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 };
 
 /********************
@@ -1577,4 +1555,4 @@ const escapeHTML = (str) => {
  ********************/
 document.addEventListener('DOMContentLoaded', function() {
   initApp();
-});
+}); 

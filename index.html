@@ -1,21 +1,84 @@
- <!DOCTYPE html>  
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Untitled</title>
-  <link rel="stylesheet" href="./style.css">
-
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lycée de l’Excellence - Physique</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* CSS الأساسي */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* تنسيقات أخرى مختصرة للوظائف الأساسية */
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .content-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    .page-section {
+      display: none;
+      padding: 40px 0;
+    }
+    
+    .admin-panel {
+      display: none;
+    }
+    
+    .student-dashboard {
+      display: none;
+    }
+    
+    /* إظهار العناصر النشطة */
+    .active {
+      display: block;
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
@@ -51,7 +114,7 @@
     </div>
   </section>
 
-  <!-- Announcement Box - UPDATED WITH IMAGE SUPPORT -->
+  <!-- Announcement Box -->
   <div class="announcement-box" id="announcementBox">
     <i class="fas fa-bullhorn"></i>
     <div class="announcement-content">
@@ -123,7 +186,7 @@
         </div>
       </div>
       
-      <!-- Quiz Tab - UPDATED WITH NEW QUIZ INTERFACE -->
+      <!-- Quiz Tab -->
       <div id="student-quiz-tab" class="student-tab-content">
         <div class="dashboard-card">
           <h3>Quiz Disponibles</h3>
@@ -183,7 +246,7 @@
         </div>
       </div>
       
-      <!-- Revision Request Tab - UPDATED TO "Demande de récorrection" -->
+      <!-- Revision Request Tab -->
       <div id="student-revision-tab" class="student-tab-content">
         <div class="dashboard-card">
           <h3>Demande de Récorrection de Note</h3>
@@ -651,7 +714,7 @@
             </div>
           </div>
 
-          <!-- Announcement - UPDATED WITH IMAGE SUPPORT -->
+          <!-- Announcement -->
           <div id="tab-announcement" class="admin-section">
             <div class="content-card">
               <div class="card-content">
@@ -672,7 +735,7 @@
             </div>
           </div>
 
-          <!-- Revision Requests - UPDATED TO "Demande de récorrection" -->
+          <!-- Revision Requests -->
           <div id="tab-revisions" class="admin-section">
             <div class="content-card">
               <div class="card-content">
@@ -743,30 +806,994 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
-</body>
-</html>
-<!-- partial -->
-  <script  src="./script.js"></script>
-<!-- Netlify Build Hook -->
-<script>
-  async function triggerNetlifyBuild() {
-      await fetch("https://api.netlify.com/build_hooks/68b9fce5fd957fbb06d65de1", { 
-          method: "POST",
-          body: "{}"
-      });
-      console.log("✅ تم إرسال التحديث وسيظهر للزوار قريبًا!");
-  }
+  <script>
+    // البيانات الأساسية للتطبيق
+    let siteData = {
+      admin: { username: "admin", password: "admin123" },
+      students: [],
+      grades: [],
+      quiz: [],
+      dictionary: [],
+      lessons: [],
+      exercises: [],
+      exams: [],
+      announcement: {
+        text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+        image: ""
+      },
+      revisionRequests: []
+    };
 
-  document.addEventListener("DOMContentLoaded", () => {
-      // اختيار كل الأزرار التي لها id يحتوي Save أو Add
-      const saveButtons = document.querySelectorAll("button[id*='Save'], button[id*='Add']");
-      saveButtons.forEach(btn => {
-          btn.addEventListener("click", () => {
-              triggerNetlifyBuild();
-          });
+    // حالة التطبيق الحالية
+    let currentState = {
+      loggedIn: false,
+      currentUser: null,
+      currentSection: "home",
+      currentAdminTab: "tab-dashboard",
+      currentStudentTab: "dashboard",
+      currentQuiz: null,
+      currentQuestion: 0,
+      quizAnswers: [],
+      quizTimer: null
+    };
+
+    // تهيئة التطبيق عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function() {
+      loadData();
+      initEventListeners();
+      showSection('home');
+      updateUI();
+    });
+
+    // تحميل البيانات من localStorage
+    function loadData() {
+      const savedData = localStorage.getItem('siteData');
+      if (savedData) {
+        siteData = JSON.parse(savedData);
+      }
+    }
+
+    // حفظ البيانات إلى localStorage
+    function saveData() {
+      localStorage.setItem('siteData', JSON.stringify(siteData));
+    }
+
+    // تهيئة مستمعي الأحداث
+    function initEventListeners() {
+      // التنقل بين الأقسام
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const section = this.getAttribute('data-section');
+          showSection(section);
+        });
       });
-  });
-</script>
+
+      // أحداث لوحة التحكم للمدير
+      document.querySelectorAll('.admin-tab-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const tab = this.getAttribute('data-tab');
+          showAdminTab(tab);
+        });
+      });
+
+      // أحداث لوحة الطالب
+      document.querySelectorAll('.student-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabName = this.getAttribute('data-tab');
+          showStudentTab(tabName);
+        });
+      });
+
+      // أحداث تسجيل الدخول
+      document.getElementById('loginBtn').addEventListener('click', showAdminLogin);
+      document.getElementById('studentLoginBtn').addEventListener('click', showStudentLogin);
+      document.getElementById('submitLogin').addEventListener('click', submitAdminLogin);
+      document.getElementById('submitStudentLogin').addEventListener('click', submitStudentLogin);
+      document.getElementById('cancelLogin').addEventListener('click', hideLoginModal);
+      document.getElementById('cancelStudentLogin').addEventListener('click', hideStudentLoginModal);
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+      document.getElementById('adminLogoutBtn').addEventListener('click', logout);
+      document.getElementById('studentLogoutBtn').addEventListener('click', logout);
+
+      // أحداث إدارة المحتوى
+      document.getElementById('btnSaveStudent').addEventListener('click', saveStudent);
+      document.getElementById('btnSaveGrade').addEventListener('click', saveGrade);
+      document.getElementById('adminBtnSaveQuiz').addEventListener('click', saveQuizQuestion);
+      document.getElementById('adminBtnSaveDict').addEventListener('click', saveDictionaryTerm);
+      document.getElementById('adminBtnSaveLesson').addEventListener('click', saveLesson);
+      document.getElementById('adminBtnSaveExercise').addEventListener('click', saveExercise);
+      document.getElementById('adminBtnSaveExam').addEventListener('click', saveExam);
+      document.getElementById('btnSaveAnnouncement').addEventListener('click', saveAnnouncement);
+      
+      // أحداث أخرى
+      document.getElementById('btnSearchByCode').addEventListener('click', searchGradesByCode);
+      document.getElementById('btnExport').addEventListener('click', exportData);
+      document.getElementById('importFile').addEventListener('change', importData);
+      document.getElementById('revisionRequestForm').addEventListener('submit', submitRevisionRequest);
+    }
+
+    // عرض قسم معين وإخفاء الآخرين
+    function showSection(section) {
+      document.querySelectorAll('.page-section, .admin-panel, .student-dashboard').forEach(sec => {
+        sec.style.display = 'none';
+      });
+      
+      currentState.currentSection = section;
+      
+      if (section === 'home') {
+        document.getElementById('home-section').style.display = 'block';
+      } else if (section === 'admin' && currentState.loggedIn && currentState.currentUser.role === 'admin') {
+        document.getElementById('admin-panel').style.display = 'block';
+      } else if (section === 'student' && currentState.loggedIn && currentState.currentUser.role === 'student') {
+        document.getElementById('student-dashboard').style.display = 'block';
+      } else {
+        document.getElementById(section).style.display = 'block';
+      }
+    }
+
+    // عرض تبويب المدير
+    function showAdminTab(tab) {
+      document.querySelectorAll('.admin-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      document.querySelectorAll('.admin-tab-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      document.getElementById(tab).classList.add('active');
+      document.querySelector(`.admin-tab-link[data-tab="${tab}"]`).classList.add('active');
+      
+      currentState.currentAdminTab = tab;
+    }
+
+    // عرض تبويب الطالب
+    function showStudentTab(tab) {
+      document.querySelectorAll('.student-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      document.querySelectorAll('.student-tab').forEach(tabEl => {
+        tabEl.classList.remove('active');
+      });
+      
+      document.getElementById(`student-${tab}-tab`).classList.add('active');
+      document.querySelector(`.student-tab[data-tab="${tab}"]`).classList.add('active');
+      
+      currentState.currentStudentTab = tab;
+    }
+
+    // عرض نافذة تسجيل دخول المدير
+    function showAdminLogin() {
+      document.getElementById('loginModal').style.display = 'block';
+    }
+
+    // عرض نافذة تسجيل دخول الطالب
+    function showStudentLogin() {
+      document.getElementById('studentLoginModal').style.display = 'block';
+    }
+
+    // إخفاء نافذة تسجيل دخول المدير
+    function hideLoginModal() {
+      document.getElementById('loginModal').style.display = 'none';
+    }
+
+    // إخفاء نافذة تسجيل دخول الطالب
+    function hideStudentLoginModal() {
+      document.getElementById('studentLoginModal').style.display = 'none';
+    }
+
+    // معالجة تسجيل دخول المدير
+    function submitAdminLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      if (username === siteData.admin.username && password === siteData.admin.password) {
+        currentState.loggedIn = true;
+        currentState.currentUser = { username, role: 'admin' };
+        hideLoginModal();
+        showSection('admin');
+        updateUI();
+      } else {
+        alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+      }
+    }
+
+    // معالجة تسجيل دخول الطالب
+    function submitStudentLogin() {
+      const username = document.getElementById('studentUsername').value;
+      const password = document.getElementById('studentPassword').value;
+      
+      const student = siteData.students.find(s => s.username === username && s.password === password);
+      
+      if (student) {
+        currentState.loggedIn = true;
+        currentState.currentUser = { ...student, role: 'student' };
+        hideStudentLoginModal();
+        showSection('student');
+        updateUI();
+      } else {
+        alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+      }
+    }
+
+    // تسجيل الخروج
+    function logout() {
+      currentState.loggedIn = false;
+      currentState.currentUser = null;
+      showSection('home');
+      updateUI();
+    }
+
+    // حفظ الطالب
+    function saveStudent() {
+      const id = document.getElementById('stId').value;
+      const fullname = document.getElementById('stFullname').value;
+      const username = document.getElementById('stUsername').value;
+      const password = document.getElementById('stPassword').value;
+      const code = document.getElementById('stCode').value;
+      const classroom = document.getElementById('stClassroom').value;
+      
+      if (id) {
+        // تحديث الطالب الموجود
+        const index = siteData.students.findIndex(s => s.id === id);
+        if (index !== -1) {
+          siteData.students[index] = { id, fullname, username, password, code, classroom };
+        }
+      } else {
+        // إضافة طالب جديد
+        const newStudent = {
+          id: Date.now().toString(),
+          fullname,
+          username,
+          password,
+          code,
+          classroom
+        };
+        siteData.students.push(newStudent);
+      }
+      
+      saveData();
+      updateUI();
+      resetStudentForm();
+    }
+
+    // حفظ الدرجة
+    function saveGrade() {
+      const id = document.getElementById('grId').value;
+      const studentId = document.getElementById('grStudent').value;
+      const subject = document.getElementById('grSubject').value;
+      const title = document.getElementById('grTitle').value;
+      const date = document.getElementById('grDate').value;
+      const score = document.getElementById('grScore').value;
+      const note = document.getElementById('grNote').value;
+      
+      const student = siteData.students.find(s => s.id === studentId);
+      
+      if (id) {
+        // تحديث الدرجة الموجودة
+        const index = siteData.grades.findIndex(g => g.id === id);
+        if (index !== -1) {
+          siteData.grades[index] = { id, studentId, studentName: student.fullname, subject, title, date, score, note };
+        }
+      } else {
+        // إضافة درجة جديدة
+        const newGrade = {
+          id: Date.now().toString(),
+          studentId,
+          studentName: student.fullname,
+          subject,
+          title,
+          date,
+          score,
+          note
+        };
+        siteData.grades.push(newGrade);
+      }
+      
+      saveData();
+      updateUI();
+      resetGradeForm();
+    }
+
+    // حفظ سؤال الاختبار
+    function saveQuizQuestion() {
+      const question = document.getElementById('adminQuizQuestion').value;
+      const option1 = document.getElementById('adminOption1').value;
+      const option2 = document.getElementById('adminOption2').value;
+      const option3 = document.getElementById('adminOption3').value;
+      const option4 = document.getElementById('adminOption4').value;
+      const correct = document.getElementById('adminQuizCorrect').value;
+      
+      const newQuestion = {
+        id: Date.now().toString(),
+        question,
+        options: [option1, option2, option3, option4],
+        correct: parseInt(correct)
+      };
+      
+      siteData.quiz.push(newQuestion);
+      saveData();
+      updateUI();
+      resetQuizForm();
+    }
+
+    // حفظ مصطلح القاموس
+    function saveDictionaryTerm() {
+      const termAr = document.getElementById('adminDictAr').value;
+      const termFr = document.getElementById('adminDictFr').value;
+      const definition = document.getElementById('adminDictDef').value;
+      
+      const newTerm = {
+        id: Date.now().toString(),
+        termAr,
+        termFr,
+        definition
+      };
+      
+      siteData.dictionary.push(newTerm);
+      saveData();
+      updateUI();
+      resetDictionaryForm();
+    }
+
+    // حفظ الدرس
+    function saveLesson() {
+      const title = document.getElementById('adminLessonTitle').value;
+      const chapter = document.getElementById('adminLessonChapter').value;
+      const fileInput = document.getElementById('adminLessonFile');
+      
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const newLesson = {
+            id: Date.now().toString(),
+            title,
+            chapter,
+            file: e.target.result,
+            fileName: file.name
+          };
+          
+          siteData.lessons.push(newLesson);
+          saveData();
+          updateUI();
+          resetLessonForm();
+        };
+        
+        reader.readAsDataURL(file);
+      } else {
+        alert('يرجى اختيار ملف PDF');
+      }
+    }
+
+    // حفظ التمرين
+    function saveExercise() {
+      const title = document.getElementById('adminExerciseTitle').value;
+      const chapter = document.getElementById('adminExerciseChapter').value;
+      const fileInput = document.getElementById('adminExerciseFile');
+      
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const newExercise = {
+            id: Date.now().toString(),
+            title,
+            chapter,
+            file: e.target.result,
+            fileName: file.name
+          };
+          
+          siteData.exercises.push(newExercise);
+          saveData();
+          updateUI();
+          resetExerciseForm();
+        };
+        
+        reader.readAsDataURL(file);
+      } else {
+        alert('يرجى اختيار ملف PDF');
+      }
+    }
+
+    // حفظ الامتحان
+    function saveExam() {
+      const title = document.getElementById('adminExamTitle').value;
+      const series = document.getElementById('adminExamSeries').value;
+      const fileInput = document.getElementById('adminExamFile');
+      
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          const newExam = {
+            id: Date.now().toString(),
+            title,
+            series,
+            file: e.target.result,
+            fileName: file.name
+          };
+          
+          siteData.exams.push(newExam);
+          saveData();
+          updateUI();
+          resetExamForm();
+        };
+        
+        reader.readAsDataURL(file);
+      } else {
+        alert('يرجى اختيار ملف PDF');
+      }
+    }
+
+    // حفظ الإعلان
+    function saveAnnouncement() {
+      const text = document.getElementById('announcementInput').value;
+      const imageInput = document.getElementById('announcementImageInput');
+      
+      siteData.announcement.text = text;
+      
+      if (imageInput.files.length > 0) {
+        const file = imageInput.files[0];
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          siteData.announcement.image = e.target.result;
+          saveData();
+          updateUI();
+        };
+        
+        reader.readAsDataURL(file);
+      } else {
+        saveData();
+        updateUI();
+      }
+    }
+
+    // البحث عن الدرجات باستخدام الكود
+    function searchGradesByCode() {
+      const code = document.getElementById('searchCode').value;
+      const student = siteData.students.find(s => s.code === code);
+      
+      if (student) {
+        const studentGrades = siteData.grades.filter(g => g.studentId === student.id);
+        
+        document.getElementById('studentInfo').innerHTML = `
+          <div class="content-card">
+            <div class="card-content">
+              <strong>الطالب:</strong> ${student.fullname} | 
+              <strong>الصف:</strong> ${student.classroom} | 
+              <strong>الكود:</strong> ${student.code}
+            </div>
+          </div>
+        `;
+        
+        const gradesTable = document.getElementById('gradesTable').querySelector('tbody');
+        gradesTable.innerHTML = '';
+        
+        if (studentGrades.length > 0) {
+          studentGrades.forEach(grade => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${grade.date}</td>
+              <td>${grade.subject}</td>
+              <td>${grade.title}</td>
+              <td>${grade.score}</td>
+              <td>${grade.note}</td>
+            `;
+            gradesTable.appendChild(row);
+          });
+          document.getElementById('noGradesMsg').style.display = 'none';
+        } else {
+          document.getElementById('noGradesMsg').style.display = 'block';
+        }
+        
+        document.getElementById('gradesResults').style.display = 'block';
+      } else {
+        alert('لم يتم العثور على طالب بهذا الكود');
+      }
+    }
+
+    // تصدير البيانات
+    function exportData() {
+      const dataStr = JSON.stringify(siteData);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = 'site-data.json';
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    }
+
+    // استيراد البيانات
+    function importData(event) {
+      const file = event.target.files[0];
+      
+      if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+          try {
+            const importedData = JSON.parse(e.target.result);
+            siteData = importedData;
+            saveData();
+            updateUI();
+            alert('تم استيراد البيانات بنجاح');
+          } catch (error) {
+            alert('خطأ في استيراد البيانات: ملف غير صحيح');
+          }
+        };
+        
+        reader.readAsText(file);
+      }
+      
+      // reset file input
+      event.target.value = '';
+    }
+
+    // إرسال طلب إعادة التصحيح
+    function submitRevisionRequest(e) {
+      e.preventDefault();
+      
+      const exam = document.getElementById('revisionExam').value;
+      const message = document.getElementById('revisionMessage').value;
+      
+      if (currentState.loggedIn && currentState.currentUser.role === 'student') {
+        const newRequest = {
+          id: Date.now().toString(),
+          studentId: currentState.currentUser.id,
+          studentName: currentState.currentUser.fullname,
+          exam,
+          message,
+          date: new Date().toISOString().split('T')[0],
+          status: 'pending'
+        };
+        
+        siteData.revisionRequests.push(newRequest);
+        saveData();
+        updateUI();
+        
+        alert('تم إرسال طلبك بنجاح');
+        document.getElementById('revisionRequestForm').reset();
+      }
+    }
+
+    // تحديث واجهة المستخدم بناءً على البيانات والحالة الحالية
+    function updateUI() {
+      // تحديث الإعلان
+      document.getElementById('announcementText').textContent = siteData.announcement.text;
+      
+      if (siteData.announcement.image) {
+        document.getElementById('announcementImage').src = siteData.announcement.image;
+        document.getElementById('announcementImage').style.display = 'block';
+      }
+      
+      // تحديث إحصائيات لوحة التحكم
+      document.getElementById('stats-students').textContent = siteData.students.length;
+      document.getElementById('stats-quiz').textContent = siteData.quiz.length;
+      document.getElementById('stats-dictionary').textContent = siteData.dictionary.length;
+      document.getElementById('stats-grades').textContent = siteData.grades.length;
+      
+      // تحديث قائمة الطلاب
+      updateStudentsList();
+      
+      // تحديث قائمة الدروس والتمارين والامتحانات
+      updateLessonsList();
+      updateExercisesList();
+      updateExamsList();
+      
+      // تحديث واجهة الطالب
+      if (currentState.loggedIn && currentState.currentUser.role === 'student') {
+        document.getElementById('studentWelcome').textContent = `Bienvenue, ${currentState.currentUser.fullname}`;
+        updateStudentGrades();
+        updateStudentResources();
+      }
+    }
+
+    // تحديث قائمة الطلاب
+    function updateStudentsList() {
+      const studentsTable = document.getElementById('studentsTable').querySelector('tbody');
+      studentsTable.innerHTML = '';
+      
+      siteData.students.forEach(student => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${student.fullname}</td>
+          <td>${student.username}</td>
+          <td>${student.code}</td>
+          <td>${student.classroom}</td>
+          <td>
+            <button class="btn btn-sm btn-primary edit-student" data-id="${student.id}">Modifier</button>
+            <button class="btn btn-sm btn-danger delete-student" data-id="${student.id}">Supprimer</button>
+          </td>
+        `;
+        studentsTable.appendChild(row);
+      });
+      
+      // إضافة مستمعي الأحداث للأزرار
+      document.querySelectorAll('.edit-student').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const studentId = this.getAttribute('data-id');
+          editStudent(studentId);
+        });
+      });
+      
+      document.querySelectorAll('.delete-student').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const studentId = this.getAttribute('data-id');
+          deleteStudent(studentId);
+        });
+      });
+    }
+
+    // تحديث قائمة الدروس
+    function updateLessonsList() {
+      const lessonsList = document.getElementById('lessonsAdminList');
+      lessonsList.innerHTML = '';
+      
+      if (siteData.lessons.length === 0) {
+        lessonsList.innerHTML = '<p class="muted">Aucune leçon pour le moment.</p>';
+        return;
+      }
+      
+      siteData.lessons.forEach(lesson => {
+        const lessonElement = document.createElement('div');
+        lessonElement.className = 'content-item';
+        lessonElement.innerHTML = `
+          <h4>${lesson.title}</h4>
+          <p>Chapitre: ${lesson.chapter}</p>
+          <div class="flex right">
+            <button class="btn btn-sm btn-primary download-pdf" data-id="${lesson.id}">Télécharger PDF</button>
+            <button class="btn btn-sm btn-danger delete-lesson" data-id="${lesson.id}">Supprimer</button>
+          </div>
+        `;
+        lessonsList.appendChild(lessonElement);
+      });
+      
+      // إضافة مستمعي الأحداث للأزرار
+      document.querySelectorAll('.download-pdf').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const lessonId = this.getAttribute('data-id');
+          downloadPDF(lessonId, 'lesson');
+        });
+      });
+      
+      document.querySelectorAll('.delete-lesson').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const lessonId = this.getAttribute('data-id');
+          deleteLesson(lessonId);
+        });
+      });
+    }
+
+    // تحديث قائمة التمارين
+    function updateExercisesList() {
+      const exercisesList = document.getElementById('exercisesAdminList');
+      exercisesList.innerHTML = '';
+      
+      if (siteData.exercises.length === 0) {
+        exercisesList.innerHTML = '<p class="muted">Aucun exercice pour le moment.</p>';
+        return;
+      }
+      
+      siteData.exercises.forEach(exercise => {
+        const exerciseElement = document.createElement('div');
+        exerciseElement.className = 'content-item';
+        exerciseElement.innerHTML = `
+          <h4>${exercise.title}</h4>
+          <p>Chapitre: ${exercise.chapter}</p>
+          <div class="flex right">
+            <button class="btn btn-sm btn-primary download-pdf" data-id="${exercise.id}">Télécharger PDF</button>
+            <button class="btn btn-sm btn-danger delete-exercise" data-id="${exercise.id}">Supprimer</button>
+          </div>
+        `;
+        exercisesList.appendChild(exerciseElement);
+      });
+      
+      // إضافة مستمعي الأحداث للأزرار
+      document.querySelectorAll('.download-pdf').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const exerciseId = this.getAttribute('data-id');
+          downloadPDF(exerciseId, 'exercise');
+        });
+      });
+      
+      document.querySelectorAll('.delete-exercise').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const exerciseId = this.getAttribute('data-id');
+          deleteExercise(exerciseId);
+        });
+      });
+    }
+
+    // تحديث قائمة الامتحانات
+    function updateExamsList() {
+      const examsList = document.getElementById('examsAdminList');
+      examsList.innerHTML = '';
+      
+      if (siteData.exams.length === 0) {
+        examsList.innerHTML = '<p class="muted">Aucun examen pour le moment.</p>';
+        return;
+      }
+      
+      siteData.exams.forEach(exam => {
+        const examElement = document.createElement('div');
+        examElement.className = 'content-item';
+        examElement.innerHTML = `
+          <h4>${exam.title}</h4>
+          <p>Série: ${exam.series}</p>
+          <div class="flex right">
+            <button class="btn btn-sm btn-primary download-pdf" data-id="${exam.id}">Télécharger PDF</button>
+            <button class="btn btn-sm btn-danger delete-exam" data-id="${exam.id}">Supprimer</button>
+          </div>
+        `;
+        examsList.appendChild(examElement);
+      });
+      
+      // إضافة مستمعي الأحداث للأزرار
+      document.querySelectorAll('.download-pdf').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const examId = this.getAttribute('data-id');
+          downloadPDF(examId, 'exam');
+        });
+      });
+      
+      document.querySelectorAll('.delete-exam').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const examId = this.getAttribute('data-id');
+          deleteExam(examId);
+        });
+      });
+    }
+
+    // تحديث درجات الطالب
+    function updateStudentGrades() {
+      if (currentState.loggedIn && currentState.currentUser.role === 'student') {
+        const studentGrades = siteData.grades.filter(g => g.studentId === currentState.currentUser.id);
+        const recentGrades = document.getElementById('studentRecentGrades');
+        
+        if (studentGrades.length > 0) {
+          recentGrades.innerHTML = '';
+          
+          studentGrades.slice(-5).forEach(grade => {
+            const gradeElement = document.createElement('div');
+            gradeElement.className = 'grade-item';
+            gradeElement.innerHTML = `
+              <strong>${grade.subject} - ${grade.title}</strong>: ${grade.score}/20
+              <span class="muted">(${grade.date})</span>
+            `;
+            recentGrades.appendChild(gradeElement);
+          });
+        } else {
+          recentGrades.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
+        }
+      }
+    }
+
+    // تحديث موارد الطالب
+    function updateStudentResources() {
+      if (currentState.loggedIn && currentState.currentUser.role === 'student') {
+        const resourcesContainer = document.getElementById('studentResources');
+        resourcesContainer.innerHTML = '';
+        
+        // إضافة الدروس
+        siteData.lessons.forEach(lesson => {
+          const lessonElement = document.createElement('div');
+          lessonElement.className = 'content-card';
+          lessonElement.innerHTML = `
+            <div class="card-content">
+              <h4>${lesson.title}</h4>
+              <p>Chapitre: ${lesson.chapter}</p>
+              <div class="flex right">
+                <button class="btn btn-sm btn-primary view-pdf" data-id="${lesson.id}" data-type="lesson">Voir</button>
+                <button class="btn btn-sm btn-success download-pdf" data-id="${lesson.id}" data-type="lesson">Télécharger PDF</button>
+              </div>
+            </div>
+          `;
+          resourcesContainer.appendChild(lessonElement);
+        });
+        
+        // إضافة التمارين
+        siteData.exercises.forEach(exercise => {
+          const exerciseElement = document.createElement('div');
+          exerciseElement.className = 'content-card';
+          exerciseElement.innerHTML = `
+            <div class="card-content">
+              <h4>${exercise.title}</h4>
+              <p>Chapitre: ${exercise.chapter}</p>
+              <div class="flex right">
+                <button class="btn btn-sm btn-primary view-pdf" data-id="${exercise.id}" data-type="exercise">Voir</button>
+                <button class="btn btn-sm btn-success download-pdf" data-id="${exercise.id}" data-type="exercise">Télécharger PDF</button>
+              </div>
+            </div>
+          `;
+          resourcesContainer.appendChild(exerciseElement);
+        });
+        
+        // إضافة مستمعي الأحداث للأزرار
+        document.querySelectorAll('.view-pdf').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const type = this.getAttribute('data-type');
+            viewPDF(id, type);
+          });
+        });
+        
+        document.querySelectorAll('.download-pdf').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const type = this.getAttribute('data-type');
+            downloadPDF(id, type);
+          });
+        });
+      }
+    }
+
+    // عرض PDF
+    function viewPDF(id, type) {
+      let item;
+      
+      if (type === 'lesson') {
+        item = siteData.lessons.find(l => l.id === id);
+      } else if (type === 'exercise') {
+        item = siteData.exercises.find(e => e.id === id);
+      } else if (type === 'exam') {
+        item = siteData.exams.find(e => e.id === id);
+      }
+      
+      if (item && item.file) {
+        window.open(item.file, '_blank');
+      }
+    }
+
+    // تحميل PDF
+    function downloadPDF(id, type) {
+      let item;
+      
+      if (type === 'lesson') {
+        item = siteData.lessons.find(l => l.id === id);
+      } else if (type === 'exercise') {
+        item = siteData.exercises.find(e => e.id === id);
+      } else if (type === 'exam') {
+        item = siteData.exams.find(e => e.id === id);
+      }
+      
+      if (item && item.file) {
+        const link = document.createElement('a');
+        link.href = item.file;
+        link.download = item.fileName || 'document.pdf';
+        link.click();
+      }
+    }
+
+    // مسح نماذج الإدخال
+    function resetStudentForm() {
+      document.getElementById('stId').value = '';
+      document.getElementById('stFullname').value = '';
+      document.getElementById('stUsername').value = '';
+      document.getElementById('stPassword').value = '';
+      document.getElementById('stCode').value = '';
+      document.getElementById('stClassroom').value = '';
+    }
+    
+    function resetGradeForm() {
+      document.getElementById('grId').value = '';
+      document.getElementById('grStudent').value = '';
+      document.getElementById('grSubject').value = '';
+      document.getElementById('grTitle').value = '';
+      document.getElementById('grDate').value = '';
+      document.getElementById('grScore').value = '';
+      document.getElementById('grNote').value = '';
+    }
+    
+    function resetQuizForm() {
+      document.getElementById('adminQuizQuestion').value = '';
+      document.getElementById('adminOption1').value = '';
+      document.getElementById('adminOption2').value = '';
+      document.getElementById('adminOption3').value = '';
+      document.getElementById('adminOption4').value = '';
+      document.getElementById('adminQuizCorrect').value = '1';
+    }
+    
+    function resetDictionaryForm() {
+      document.getElementById('adminDictAr').value = '';
+      document.getElementById('adminDictFr').value = '';
+      document.getElementById('adminDictDef').value = '';
+    }
+    
+    function resetLessonForm() {
+      document.getElementById('adminLessonTitle').value = '';
+      document.getElementById('adminLessonChapter').value = '';
+      document.getElementById('adminLessonFile').value = '';
+    }
+    
+    function resetExerciseForm() {
+      document.getElementById('adminExerciseTitle').value = '';
+      document.getElementById('adminExerciseChapter').value = '';
+      document.getElementById('adminExerciseFile').value = '';
+    }
+    
+    function resetExamForm() {
+      document.getElementById('adminExamTitle').value = '';
+      document.getElementById('adminExamSeries').value = '';
+      document.getElementById('adminExamFile').value = '';
+    }
+
+    // وظائف الحذف
+    function deleteStudent(id) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?')) {
+        siteData.students = siteData.students.filter(s => s.id !== id);
+        // حذف درجات الطالب أيضًا
+        siteData.grades = siteData.grades.filter(g => g.studentId !== id);
+        saveData();
+        updateUI();
+      }
+    }
+    
+    function deleteLesson(id) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette leçon ?')) {
+        siteData.lessons = siteData.lessons.filter(l => l.id !== id);
+        saveData();
+        updateUI();
+      }
+    }
+    
+    function deleteExercise(id) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cet exercice ?')) {
+        siteData.exercises = siteData.exercises.filter(e => e.id !== id);
+        saveData();
+        updateUI();
+      }
+    }
+    
+    function deleteExam(id) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cet examen ?')) {
+        siteData.exams = siteData.exams.filter(e => e.id !== id);
+        saveData();
+        updateUI();
+      }
+    }
+
+    // تعديل الطالب
+    function editStudent(id) {
+      const student = siteData.students.find(s => s.id === id);
+      
+      if (student) {
+        document.getElementById('stId').value = student.id;
+        document.getElementById('stFullname').value = student.fullname;
+        document.getElementById('stUsername').value = student.username;
+        document.getElementById('stPassword').value = student.password;
+        document.getElementById('stCode').value = student.code;
+        document.getElementById('stClassroom').value = student.classroom;
+      }
+    }
+  </script>
+
+  <!-- Netlify Build Hook -->
+  <script>
+    async function triggerNetlifyBuild() {
+        await fetch("https://api.netlify.com/build_hooks/68b9fce5fd957fbb06d65de1", { 
+            method: "POST",
+            body: "{}"
+        });
+        console.log("✅ تم إرسال التحديث وسيظهر للزوار قريبًا!");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // اختيار كل الأزرار التي لها id يحتوي Save أو Add
+        const saveButtons = document.querySelectorAll("button[id*='Save'], button[id*='Add']");
+        saveButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
+                triggerNetlifyBuild();
+            });
+        });
+    });
+  </script>
 </body>
 </html>

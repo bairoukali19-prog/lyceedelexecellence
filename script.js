@@ -1,4 +1,4 @@
-/********************
+ /********************
  * UTIL & STORAGE
  ********************/
 const LS_KEY = 'lx-data-v11';
@@ -296,6 +296,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // Load specific content if needed
       if (tabId === 'tab-revisions') {
         renderRevisionRequests();
+      } else if (tabId === 'tab-lessons') {
+        renderAdminLessonsList();
+      } else if (tabId === 'tab-exercises') {
+        renderAdminExercisesList();
+      } else if (tabId === 'tab-exams') {
+        renderAdminExamsList();
       }
     });
   });
@@ -392,6 +398,9 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDashboardStats();
         renderAdminDictionaryList();
         renderAdminQuizList();
+        renderAdminLessonsList();
+        renderAdminExercisesList();
+        renderAdminExamsList();
       } else {
         alert("Nom d'utilisateur ou mot de passe incorrect.");
       }
@@ -541,6 +550,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if ($('#importFile')) {
     $('#importFile').addEventListener('change', importData);
+  }
+
+  // Lessons management
+  if ($('#adminBtnSaveLesson')) {
+    $('#adminBtnSaveLesson').addEventListener('click', saveLesson);
+  }
+
+  if ($('#adminBtnResetLesson')) {
+    $('#adminBtnResetLesson').addEventListener('click', resetLessonForm);
+  }
+
+  // Exercises management
+  if ($('#adminBtnSaveExercise')) {
+    $('#adminBtnSaveExercise').addEventListener('click', saveExercise);
+  }
+
+  if ($('#adminBtnResetExercise')) {
+    $('#adminBtnResetExercise').addEventListener('click', resetExerciseForm);
+  }
+
+  // Exams management
+  if ($('#adminBtnSaveExam')) {
+    $('#adminBtnSaveExam').addEventListener('click', saveExam);
+  }
+
+  if ($('#adminBtnResetExam')) {
+    $('#adminBtnResetExam').addEventListener('click', resetExamForm);
   }
 
   // Load initial data
@@ -1359,6 +1395,291 @@ function resetQuizForm() {
 }
 
 /********************
+ * LESSONS MANAGEMENT
+ ********************/
+function renderAdminLessonsList() {
+  if (!$('#lessonsList')) return;
+  
+  const container = $('#lessonsList');
+  container.innerHTML = '';
+  
+  if (DB.lessons.length === 0) {
+    container.innerHTML = '<p class="muted">Aucune leçon pour le moment.</p>';
+    return;
+  }
+  
+  DB.lessons.forEach((lesson, index) => {
+    const lessonEl = document.createElement('div');
+    lessonEl.className = 'lesson-item';
+    lessonEl.style.padding = '10px';
+    lessonEl.style.borderBottom = '1px solid #eee';
+    lessonEl.innerHTML = `
+      <div><strong>${lesson.title}</strong> - ${lesson.chapter}</div>
+      <div class="muted">${lesson.description}</div>
+      <div class="mt-1">
+        <button class="btn btn-ghost btn-sm edit-lesson" data-id="${lesson.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-lesson" data-id="${lesson.id}"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `;
+    container.appendChild(lessonEl);
+  });
+  
+  // Add event listeners
+  $$('.edit-lesson').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      const lesson = DB.lessons.find(l => l.id === id);
+      if (lesson) {
+        $('#adminLessonTitle').value = lesson.title;
+        $('#adminLessonChapter').value = lesson.chapter;
+        $('#adminLessonDescription').value = lesson.description;
+        $('#adminLessonContent').value = lesson.content;
+        // Store the ID for update
+        $('#adminLessonTitle').setAttribute('data-id', id);
+      }
+    });
+  });
+  
+  $$('.delete-lesson').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette leçon ?')) {
+        DB.lessons = DB.lessons.filter(l => l.id !== id);
+        setData(DB);
+        renderAdminLessonsList();
+      }
+    });
+  });
+}
+
+function saveLesson() {
+  const id = $('#adminLessonTitle').getAttribute('data-id');
+  const title = $('#adminLessonTitle').value.trim();
+  const chapter = $('#adminLessonChapter').value.trim();
+  const description = $('#adminLessonDescription').value.trim();
+  const content = $('#adminLessonContent').value.trim();
+  
+  if (!title || !chapter) {
+    alert('Veuillez remplir le titre et le chapitre.');
+    return;
+  }
+  
+  if (id) {
+    // Update existing lesson
+    const index = DB.lessons.findIndex(l => l.id === id);
+    if (index !== -1) {
+      DB.lessons[index] = { ...DB.lessons[index], title, chapter, description, content };
+    }
+  } else {
+    // Add new lesson
+    const newLesson = { id: uid(), title, chapter, description, content };
+    DB.lessons.push(newLesson);
+  }
+  
+  setData(DB);
+  renderAdminLessonsList();
+  resetLessonForm();
+}
+
+function resetLessonForm() {
+  $('#adminLessonTitle').value = '';
+  $('#adminLessonChapter').value = '';
+  $('#adminLessonDescription').value = '';
+  $('#adminLessonContent').value = '';
+  $('#adminLessonTitle').removeAttribute('data-id');
+}
+
+/********************
+ * EXERCISES MANAGEMENT
+ ********************/
+function renderAdminExercisesList() {
+  if (!$('#exercisesList')) return;
+  
+  const container = $('#exercisesList');
+  container.innerHTML = '';
+  
+  if (DB.exercises.length === 0) {
+    container.innerHTML = '<p class="muted">Aucun exercice pour le moment.</p>';
+    return;
+  }
+  
+  DB.exercises.forEach((exercise, index) => {
+    const exerciseEl = document.createElement('div');
+    exerciseEl.className = 'exercise-item';
+    exerciseEl.style.padding = '10px';
+    exerciseEl.style.borderBottom = '1px solid #eee';
+    exerciseEl.innerHTML = `
+      <div><strong>${exercise.title}</strong> - ${exercise.chapter}</div>
+      <div class="muted">${exercise.description}</div>
+      <div class="mt-1">
+        <button class="btn btn-ghost btn-sm edit-exercise" data-id="${exercise.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-exercise" data-id="${exercise.id}"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `;
+    container.appendChild(exerciseEl);
+  });
+  
+  // Add event listeners
+  $$('.edit-exercise').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      const exercise = DB.exercises.find(e => e.id === id);
+      if (exercise) {
+        $('#adminExerciseTitle').value = exercise.title;
+        $('#adminExerciseChapter').value = exercise.chapter;
+        $('#adminExerciseDescription').value = exercise.description;
+        $('#adminExerciseContent').value = exercise.content;
+        // Store the ID for update
+        $('#adminExerciseTitle').setAttribute('data-id', id);
+      }
+    });
+  });
+  
+  $$('.delete-exercise').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      if (confirm('Êtes-vous sûr de vouloir supprimer cet exercice ?')) {
+        DB.exercises = DB.exercises.filter(e => e.id !== id);
+        setData(DB);
+        renderAdminExercisesList();
+      }
+    });
+  });
+}
+
+function saveExercise() {
+  const id = $('#adminExerciseTitle').getAttribute('data-id');
+  const title = $('#adminExerciseTitle').value.trim();
+  const chapter = $('#adminExerciseChapter').value.trim();
+  const description = $('#adminExerciseDescription').value.trim();
+  const content = $('#adminExerciseContent').value.trim();
+  
+  if (!title || !chapter) {
+    alert('Veuillez remplir le titre et le chapitre.');
+    return;
+  }
+  
+  if (id) {
+    // Update existing exercise
+    const index = DB.exercises.findIndex(e => e.id === id);
+    if (index !== -1) {
+      DB.exercises[index] = { ...DB.exercises[index], title, chapter, description, content };
+    }
+  } else {
+    // Add new exercise
+    const newExercise = { id: uid(), title, chapter, description, content };
+    DB.exercises.push(newExercise);
+  }
+  
+  setData(DB);
+  renderAdminExercisesList();
+  resetExerciseForm();
+}
+
+function resetExerciseForm() {
+  $('#adminExerciseTitle').value = '';
+  $('#adminExerciseChapter').value = '';
+  $('#adminExerciseDescription').value = '';
+  $('#adminExerciseContent').value = '';
+  $('#adminExerciseTitle').removeAttribute('data-id');
+}
+
+/********************
+ * EXAMS MANAGEMENT
+ ********************/
+function renderAdminExamsList() {
+  if (!$('#examsList')) return;
+  
+  const container = $('#examsList');
+  container.innerHTML = '';
+  
+  if (DB.exams.length === 0) {
+    container.innerHTML = '<p class="muted">Aucun examen pour le moment.</p>';
+    return;
+  }
+  
+  DB.exams.forEach((exam, index) => {
+    const examEl = document.createElement('div');
+    examEl.className = 'exam-item';
+    examEl.style.padding = '10px';
+    examEl.style.borderBottom = '1px solid #eee';
+    examEl.innerHTML = `
+      <div><strong>${exam.title}</strong> - ${exam.subject}</div>
+      <div class="muted">${exam.description}</div>
+      <div class="mt-1">
+        <button class="btn btn-ghost btn-sm edit-exam" data-id="${exam.id}"><i class="fa-solid fa-edit"></i></button>
+        <button class="btn btn-accent btn-sm delete-exam" data-id="${exam.id}"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    `;
+    container.appendChild(examEl);
+  });
+  
+  // Add event listeners
+  $$('.edit-exam').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      const exam = DB.exams.find(e => e.id === id);
+      if (exam) {
+        $('#adminExamTitle').value = exam.title;
+        $('#adminExamSubject').value = exam.subject;
+        $('#adminExamDescription').value = exam.description;
+        $('#adminExamContent').value = exam.content;
+        // Store the ID for update
+        $('#adminExamTitle').setAttribute('data-id', id);
+      }
+    });
+  });
+  
+  $$('.delete-exam').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      if (confirm('Êtes-vous sûr de vouloir supprimer cet examen ?')) {
+        DB.exams = DB.exams.filter(e => e.id !== id);
+        setData(DB);
+        renderAdminExamsList();
+      }
+    });
+  });
+}
+
+function saveExam() {
+  const id = $('#adminExamTitle').getAttribute('data-id');
+  const title = $('#adminExamTitle').value.trim();
+  const subject = $('#adminExamSubject').value.trim();
+  const description = $('#adminExamDescription').value.trim();
+  const content = $('#adminExamContent').value.trim();
+  
+  if (!title || !subject) {
+    alert('Veuillez remplir le titre et la matière.');
+    return;
+  }
+  
+  if (id) {
+    // Update existing exam
+    const index = DB.exams.findIndex(e => e.id === id);
+    if (index !== -1) {
+      DB.exams[index] = { ...DB.exams[index], title, subject, description, content };
+    }
+  } else {
+    // Add new exam
+    const newExam = { id: uid(), title, subject, description, content };
+    DB.exams.push(newExam);
+  }
+  
+  setData(DB);
+  renderAdminExamsList();
+  resetExamForm();
+}
+
+function resetExamForm() {
+  $('#adminExamTitle').value = '';
+  $('#adminExamSubject').value = '';
+  $('#adminExamDescription').value = '';
+  $('#adminExamContent').value = '';
+  $('#adminExamTitle').removeAttribute('data-id');
+}
+
+/********************
  * ANNOUNCEMENT MANAGEMENT
  ********************/
 function saveAnnouncement() {
@@ -1535,30 +1856,127 @@ function loadStudentResources() {
     }
   }
   
-  // Load resources
-  if ($('#studentResources')) {
-    const resourcesContainer = $('#studentResources');
-    resourcesContainer.innerHTML = '';
+  // Load lessons
+  if ($('#studentLessonsList')) {
+    const lessonsContainer = $('#studentLessonsList');
+    lessonsContainer.innerHTML = '';
     
-    // Add some sample resources
-    const resources = [
-      { type: 'lesson', title: 'Introduction à la mécanique', chapter: 'Mécanique' },
-      { type: 'exercise', title: 'Exercices sur l\'électricité', chapter: 'Électricité' },
-      { type: 'exam', title: 'Examen Blanc 2023', chapter: 'Général' }
-    ];
+    if (DB.lessons.length === 0) {
+      lessonsContainer.innerHTML = '<p class="muted">Aucune leçon disponible pour le moment.</p>';
+    } else {
+      DB.lessons.forEach(lesson => {
+        const lessonEl = document.createElement('div');
+        lessonEl.className = 'content-card';
+        lessonEl.innerHTML = `
+          <div class="card-content">
+            <h3>${lesson.title}</h3>
+            <p>Chapitre: ${lesson.chapter}</p>
+            <p>${lesson.description}</p>
+            <button class="btn btn-outline view-lesson" data-id="${lesson.id}">Consulter</button>
+          </div>
+        `;
+        lessonsContainer.appendChild(lessonEl);
+      });
+      
+      // Add event listeners for viewing lessons
+      $$('.view-lesson').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          const lesson = DB.lessons.find(l => l.id === id);
+          if (lesson) {
+            $('#lessonModalTitle').textContent = lesson.title;
+            $('#lessonModalContent').innerHTML = `
+              <p><strong>Chapitre:</strong> ${lesson.chapter}</p>
+              <p><strong>Description:</strong> ${lesson.description}</p>
+              <div>${lesson.content}</div>
+            `;
+            $('#lessonModal').style.display = 'block';
+          }
+        });
+      });
+    }
+  }
+  
+  // Load exercises
+  if ($('#studentExercisesList')) {
+    const exercisesContainer = $('#studentExercisesList');
+    exercisesContainer.innerHTML = '';
     
-    resources.forEach(resource => {
-      const resourceEl = document.createElement('div');
-      resourceEl.className = 'content-card';
-      resourceEl.innerHTML = `
-        <div class="card-content">
-          <h3>${resource.title}</h3>
-          <p>Chapitre: ${resource.chapter}</p>
-          <button class="btn btn-outline">Consulter</button>
-        </div>
-      `;
-      resourcesContainer.appendChild(resourceEl);
-    });
+    if (DB.exercises.length === 0) {
+      exercisesContainer.innerHTML = '<p class="muted">Aucun exercice disponible pour le moment.</p>';
+    } else {
+      DB.exercises.forEach(exercise => {
+        const exerciseEl = document.createElement('div');
+        exerciseEl.className = 'content-card';
+        exerciseEl.innerHTML = `
+          <div class="card-content">
+            <h3>${exercise.title}</h3>
+            <p>Chapitre: ${exercise.chapter}</p>
+            <p>${exercise.description}</p>
+            <button class="btn btn-outline view-exercise" data-id="${exercise.id}">Consulter</button>
+          </div>
+        `;
+        exercisesContainer.appendChild(exerciseEl);
+      });
+      
+      // Add event listeners for viewing exercises
+      $$('.view-exercise').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          const exercise = DB.exercises.find(e => e.id === id);
+          if (exercise) {
+            $('#exerciseModalTitle').textContent = exercise.title;
+            $('#exerciseModalContent').innerHTML = `
+              <p><strong>Chapitre:</strong> ${exercise.chapter}</p>
+              <p><strong>Description:</strong> ${exercise.description}</p>
+              <div>${exercise.content}</div>
+            `;
+            $('#exerciseModal').style.display = 'block';
+          }
+        });
+      });
+    }
+  }
+  
+  // Load exams
+  if ($('#studentExamsList')) {
+    const examsContainer = $('#studentExamsList');
+    examsContainer.innerHTML = '';
+    
+    if (DB.exams.length === 0) {
+      examsContainer.innerHTML = '<p class="muted">Aucun examen disponible pour le moment.</p>';
+    } else {
+      DB.exams.forEach(exam => {
+        const examEl = document.createElement('div');
+        examEl.className = 'content-card';
+        examEl.innerHTML = `
+          <div class="card-content">
+            <h3>${exam.title}</h3>
+            <p>Matière: ${exam.subject}</p>
+            <p>${exam.description}</p>
+            <button class="btn btn-outline view-exam" data-id="${exam.id}">Consulter</button>
+          </div>
+        `;
+        examsContainer.appendChild(examEl);
+      });
+      
+      // Add event listeners for viewing exams
+      $$('.view-exam').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const id = this.getAttribute('data-id');
+          const exam = DB.exams.find(e => e.id === id);
+          if (exam) {
+            $('#examModalTitle').textContent = exam.title;
+            $('#examModalContent').innerHTML = `
+              <p><strong>Matière:</strong> ${exam.subject}</p>
+              <p><strong>Description:</strong> ${exam.description}</p>
+              <div>${exam.content}</div>
+            `;
+            $('#examModal').style.display = 'block';
+          }
+        });
+      });
+    }
   }
   
   // Load dictionary terms
@@ -1578,30 +1996,22 @@ function loadStudentResources() {
       dictionaryContainer.appendChild(termEl);
     });
   }
-  
-  // Load exercises
-  if ($('#studentExercisesList')) {
-    const exercisesContainer = $('#studentExercisesList');
-    exercisesContainer.innerHTML = '';
-    
-    // Add some sample exercises
-    const exercises = [
-      { title: 'Exercices sur les forces', chapter: 'Mécanique' },
-      { title: 'Problèmes d\'électricité', chapter: 'Électricité' },
-      { title: 'Devoir maison', chapter: 'Général' }
-    ];
-    
-    exercises.forEach(exercise => {
-      const exerciseEl = document.createElement('div');
-      exerciseEl.className = 'content-card';
-      exerciseEl.innerHTML = `
-        <div class="card-content">
-          <h3>${exercise.title}</h3>
-          <p>Chapitre: ${exercise.chapter}</p>
-          <button class="btn btn-outline">Télécharger</button>
-        </div>
-      `;
-      exercisesContainer.appendChild(exerciseEl);
-    });
-  }
+}
+
+// Close modals
+window.addEventListener('click', (e) => {
+  if (e.target === $('#lessonModal')) $('#lessonModal').style.display = 'none';
+  if (e.target === $('#exerciseModal')) $('#exerciseModal').style.display = 'none';
+  if (e.target === $('#examModal')) $('#examModal').style.display = 'none';
+});
+
+// Close buttons for modals
+if ($('#closeLessonModal')) {
+  $('#closeLessonModal').addEventListener('click', () => $('#lessonModal').style.display = 'none');
+}
+if ($('#closeExerciseModal')) {
+  $('#closeExerciseModal').addEventListener('click', () => $('#exerciseModal').style.display = 'none');
+}
+if ($('#closeExamModal')) {
+  $('#closeExamModal').addEventListener('click', () => $('#examModal').style.display = 'none');
 }

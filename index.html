@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lycée de l’Excellence - Physique</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- لا نضع CSS داخل الملف. استخدم style.css الخارجي إن شئت -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <img alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzM0OThkYiIgZD0iTTI1NiA4QzExOSA4IDggMTE5IDggMjU2czExMSAyNDggMjQ4IDI0OCAyNDgtMTExIDI0OC0yNDhTMzkzIDggMjU2IDh6bTAgNDQ4Yy0xMTAuNSAwLTIwMC04OS41LTIwMC0yMDAgMC0xMTAuNSA4OS41LTIwMCAyMDAtMjAwIDEwOSAwIDIwMCA4OS41IDIwMCAyMDAtODkuNSAyMDAtMjAwIDIwMHoiLz48cGF0aCBmaWxsPSIjMzQ5OGRiIiBkPSJNMjcyIDEzNmgtMzJjLTQuNCAwLTggMy42LTggOHYzNTJjMCA0LjQgMy42IDggOCA4aDMyYzQuNCAwIDgtMy42IDgtOFYxNDRjMC00LjQtMy42LTgtOC04em05Ni0xNjBoLTMyYy00LjQgMC04IDMuNi04IDh2NTEyYzAgNC40IDMuNiA4IDggOGgzMmM0LjQgMCA4LTMuNiA4LThWLTE2YzAtNC40LTMuNi04LTgtOHoiLz48L3N2Zz4=" />
+        <h1>Lycée de l'Excellence</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="nav-link" data-section="home">Accueil</a></li>
+          <li><a href="#" class="nav-link" data-section="dictionary">Lexique</a></li>
+          <li><a href="#" class="nav-link" data-section="quiz">Quiz</a></li>
+          <li><a href="#" class="nav-link" data-section="grades">Notes</a></li>
+          <li><a href="#" class="nav-link" data-section="exams">Examens</a></li>
+          <li><a href="#" class="nav-link" data-section="exercises">Exercices</a></li>
+          <li><a href="#" class="nav-link" data-section="lessons">Leçons</a></li>
+        </ul>
+      </nav>
+      <div class="auth-buttons">
+        <button class="btn btn-primary" id="studentLoginBtn"><i class="fa-solid fa-user-graduate"></i> Espace Élève</button>
+        <button class="btn btn-accent" id="loginBtn"><i class="fa-solid fa-user-shield"></i> Espace Professeur</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home-section">
+    <div class="container hero-content">
+      <h2>Bienvenue au Lycée de l'Excellence</h2>
+      <p>Plateforme éducative dédiée à la physique sous la supervision du Professeur Ali Bairouk</p>
+    </div>
+  </section>
+
+  <!-- Announcement -->
+  <div class="announcement-box" id="announcementBox">
+    <i class="fas fa-bullhorn"></i>
+    <div class="announcement-content">
+      <p id="announcementText">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</p>
+      <img id="announcementImage" class="announcement-image" src="" alt="Announcement image" style="display: none;">
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Features -->
+    <h2 class="section-title">Sections du Site</h2>
+    <div class="features">
+      <div class="feature-card" data-section="dictionary">
+        <div class="feature-icon"><i class="fas fa-book"></i></div>
+        <div class="feature-content"><h3>Lexique Scientifique</h3><p>Traduction des termes scientifiques arabes → français.</p></div>
+      </div>
+      <div class="feature-card" data-section="quiz">
+        <div class="feature-icon"><i class="fas fa-question-circle"></i></div>
+        <div class="feature-content"><h3>Quiz</h3><p>Quiz تفاعلية لتثبيت المفاهيم.</p></div>
+      </div>
+      <div class="feature-card" data-section="grades">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="feature-content"><h3>Notes</h3><p>عرض النقاط عبر حساب التلميذ أو Code Parcours.</p></div>
+      </div>
+      <div class="feature-card" data-section="exams">
+        <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="feature-content"><h3>Examens Antérieurs</h3><p>امتحانات مع التصحيحات.</p></div>
+      </div>
+      <div class="feature-card" data-section="exercises">
+        <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+        <div class="feature-content"><h3>Exercices et Solutions</h3><p>تمارين محلولة بتفصيل.</p></div>
+      </div>
+      <div class="feature-card" data-section="lessons">
+        <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="feature-content"><h3>Leçons</h3><p>دروس شاملة للبرنامج.</p></div>
+      </div>
+    </div>
+
+    <!-- Student Dashboard -->
+    <section id="student-dashboard" class="student-dashboard" style="display:none;">
+      <div class="welcome-banner">
+        <h2 id="studentWelcome">Bienvenue, Élève</h2>
+        <p>Vous trouverez ici toutes vos ressources pédagogiques</p>
+      </div>
+      
+      <!-- Student Tabs Navigation -->
+      <div class="student-tabs">
+        <div class="student-tab active" data-tab="dashboard">Tableau de bord</div>
+        <div class="student-tab" data-tab="quiz">Quiz</div>
+        <div class="student-tab" data-tab="exercises">Exercices</div>
+        <div class="student-tab" data-tab="dictionary">Lexique</div>
+        <div class="student-tab" data-tab="revision">Demande de récorrection</div>
+      </div>
+      
+      <!-- Dashboard Tab -->
+      <div id="student-dashboard-tab" class="student-tab-content" style="display:block;">
+        <div class="dashboard-card">
+          <h3>Vos Notes Récentes</h3>
+          <div id="studentRecentGrades">
+            <p class="muted">Aucune note disponible pour le moment.</p>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>Ressources Disponibles</h3>
+          <div class="content-grid" id="studentResources"></div>
+        </div>
+      </div>
+      
+      <!-- Quiz Tab -->
+      <div id="student-quiz-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Quiz Disponibles</h3>
+          <div id="studentQuizList">
+            <p class="muted">Aucun quiz disponible pour le moment.</p>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>Résultats des Quiz</h3>
+          <div id="studentQuizResults">
+            <p class="muted">Aucun résultat de quiz pour le moment.</p>
+          </div>
+        </div>
+        
+        <!-- Quiz Interface -->
+        <div id="quizContainer" class="quiz-container" style="display: none;">
+          <div class="quiz-timer" id="quizTimer">Temps restant: 30:00</div>
+          <div id="quizQuestionsContainer"></div>
+          <div class="quiz-navigation">
+            <button class="btn btn-outline" id="prevQuestion">Précédent</button>
+            <span id="questionCounter">Question 1</span>
+            <button class="btn btn-outline" id="nextQuestion">Suivant</button>
+          </div>
+          <div class="quiz-submission">
+            <button class="btn btn-success" id="submitQuiz">Soumettre le quiz</button>
+          </div>
+        </div>
+        
+        <div id="quizResultsContainer" class="quiz-results" style="display: none;">
+          <h3>Résultats du Quiz</h3>
+          <div id="quizResultsContent"></div>
+        </div>
+      </div>
+      
+      <!-- Exercises Tab -->
+      <div id="student-exercises-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Exercices Disponibles</h3>
+          <div class="content-grid" id="studentExercisesList"></div>
+        </div>
+      </div>
+      
+      <!-- Dictionary Tab -->
+      <div id="student-dictionary-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Lexique Scientifique</h3>
+          <div class="content-grid" id="studentDictionaryContent"></div>
+        </div>
+      </div>
+      
+      <!-- Revision Request Tab -->
+      <div id="student-revision-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Demande de Récorrection de Note</h3>
+          <div class="revision-request-form">
+            <p>Si vous souhaitez demander une récorrection pour une de vos notes, veuillez remplir le formulaire ci-dessous.</p>
+            <form id="revisionRequestForm">
+              <div class="form-group">
+                <label for="revisionExam">Examen/Devoir</label>
+                <select id="revisionExam" required>
+                  <option value="">Sélectionnez une évaluation</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="revisionMessage">Message</label>
+                <textarea id="revisionMessage" rows="3" placeholder="Expliquez pourquoi vous demandez une récorrection." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+            </form>
+          </div>
+        </div>
+        
+        <div class="dashboard-card">
+          <h3>Vos Demandes de Récorrection</h3>
+          <div id="studentRevisionRequests">
+            <p class="muted">Vous n'avez pas encore soumis de demandes de récorrection.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex right">
+        <button class="btn btn-ghost" id="studentLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+      </div>
+    </section>
+
+    <!-- Dictionary -->
+    <section id="dictionary" class="page-section">
+      <div class="section-header">
+        <h2>Lexique Scientifique</h2>
+        <p>Ar → Fr</p>
+      </div>
+      <div class="content-grid" id="dictionaryContent"></div>
+    </section>
+
+    <!-- Quiz -->
+    <section id="quiz" class="page-section">
+      <div class="section-header">
+        <h2>Quiz de Physique</h2>
+        <p>Testez vos connaissances</p>
+      </div>
+      <div id="quizContent"></div>
+    </section>
+
+    <!-- Grades (Students area) -->
+    <section id="grades" class="page-section">
+      <div class="section-header">
+        <h2>Consultation des Notes</h2>
+        <p class="muted">Via connexion ou par Code Parcours</p>
+      </div>
+
+      <div class="content-card mb-3">
+        <div class="card-content">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="searchCode">Code Parcours</label>
+              <input type="text" id="searchCode" placeholder="Ex: P-2024-001">
+            </div>
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button class="btn btn-primary w-100" id="btnSearchByCode"><i class="fa-solid fa-magnifying-glass"></i> Voir les notes</button>
+            </div>
+          </div>
+          <p class="muted mt-1">Le code est défini par l’enseignant.</p>
+        </div>
+      </div>
+
+      <div id="gradesResults" style="display:none">
+        <h3 class="section-title">Vos Résultats</h3>
+        <div id="studentInfo" class="mb-2"></div>
+        <div class="content-card">
+          <div class="card-content">
+            <table id="gradesTable">
+              <thead>
+              <tr><th>Date</th><th>Matière</th><th>Intitulé</th><th>Note /20</th><th>Remarque</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <p class="muted mt-2" id="noGradesMsg" style="display:none">Aucune note pour le moment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Exams -->
+    <section id="exams" class="page-section">
+      <div class="section-header">
+        <h2>Examens Antérieurs</h2>
+        <p>Consultez & téléchargez</p>
+      </div>
+      <div class="content-grid" id="examsContent"></div>
+    </section>
+
+    <!-- Exercises -->
+    <section id="exercises" class="page-section">
+      <div class="section-header">
+        <h2>Exercices et Solutions</h2>
+        <p>تمارين محلولة بتفصيل</p>
+      </div>
+      <div class="content-grid" id="exercisesContent"></div>
+    </section>
+
+    <!-- Lessons -->
+    <section id="lessons" class="page-section">
+      <div class="section-header">
+        <h2>Leçons</h2>
+        <p>دروس شاملة للبرنامج</p>
+      </div>
+      <div class="content-grid" id="lessonsContent"></div>
+    </section>
+
+    <!-- Admin Panel -->
+    <section id="admin-panel" class="admin-panel" style="display:none;">
+      <div class="admin-header">
+        <h2>Panneau d'Administration</h2>
+        <div class="flex right">
+          <button class="btn btn-outline" id="btnExport"><i class="fa-solid fa-file-export"></i> Exporter JSON</button>
+          <label class="btn btn-outline" for="importFile"><i class="fa-solid fa-file-import"></i> Importer JSON</label>
+          <input type="file" id="importFile" accept="application/json" style="display:none">
+          <button class="btn btn-ghost" id="logoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+        </div>
+      </div>
+
+      <div class="admin-dashboard">
+        <!-- Admin Sidebar -->
+        <div class="admin-sidebar">
+          <h3>Tableau de Bord</h3>
+          <ul class="admin-menu">
+            <li><a href="#" class="admin-tab-link active" data-tab="tab-dashboard"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-students"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-grades"><i class="fa-solid fa-chart-line"></i> Notes</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-quiz"><i class="fa-solid fa-question-circle"></i> Quiz</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-dictionary"><i class="fa-solid fa-book"></i> Lexique</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-lessons"><i class="fa-solid fa-graduation-cap"></i> Leçons</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exercises"><i class="fa-solid fa-tasks"></i> Exercices</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exams"><i class="fa-solid fa-file-alt"></i> Examens</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-announcement"><i class="fa-solid fa-bullhorn"></i> Annonces</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-revisions"><i class="fa-solid fa-edit"></i> Demandes de récorrection</a></li>
+          </ul>
+        </div>
+
+        <!-- Admin Content -->
+        <div class="admin-content">
+          <!-- Dashboard -->
+          <div id="tab-dashboard" class="admin-section" style="display:block;">
+            <h2>Tableau de Bord</h2>
+            <div class="stats-grid">
+              <div class="stat-card"><h3 id="stats-students">0</h3><p>Étudiants</p></div>
+              <div class="stat-card"><h3 id="stats-quiz">0</h3><p>Questions de Quiz</p></div>
+              <div class="stat-card"><h3 id="stats-dictionary">0</h3><p>Termes de Lexique</p></div>
+              <div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes Enregistrées</p></div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <h3>Activité Récente</h3>
+                <div id="recent-activity"><p class="muted">Aucune activité récente.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Students -->
+          <div id="tab-students" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Créer / Modifier un Étudiant</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Nom complet</label><input id="stFullname" type="text" placeholder="Ex: Ahmed Amine"></div>
+                  <div class="form-group"><label>Nom d'utilisateur</label><input id="stUsername" type="text" placeholder="Ex: ahmed.amine"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Mot de passe</label><input id="stPassword" type="text" placeholder="••••••"></div>
+                  <div class="form-group"><label>Code Parcours</label><input id="stCode" type="text" placeholder="Ex: P-2024-001"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Classe</label><input id="stClassroom" type="text" placeholder="2ème Bac Sciences Physiques"></div>
+                  <div class="form-group"><label>&nbsp;</label>
+                    <div class="inline">
+                      <button class="btn btn-success" id="btnSaveStudent"><i class="fa-solid fa-save"></i> Enregistrer</button>
+                      <button class="btn btn-ghost" id="btnResetStudent">Vider</button>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="stId">
+              </div>
+            </div>
+
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2">
+                  <strong>Liste des Étudiants</strong>
+                  <input class="right" id="filterStudents" placeholder="Filtrer..." />
+                </div>
+                <table id="studentsTable">
+                  <thead><tr><th>Nom</th><th>Utilisateur</th><th>Code</th><th>Classe</th><th>Actions</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grades -->
+          <div id="tab-grades" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une Note</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Étudiant</label><select id="grStudent"></select></div>
+                  <div class="form-group"><label>Matière</label><input id="grSubject" type="text" placeholder="Électricité, Mécanique..."></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Intitulé</label><input id="grTitle" type="text" placeholder="Contrôle 1"></div>
+                  <div class="form-group"><label>Date</label><input id="grDate" type="date"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Note /20</label><input id="grScore" type="number" min="0" max="20" step="0.25" placeholder="16.5"></div>
+                  <div class="form-group"><label>Remarque</label><input id="grNote" type="text" placeholder="Très bien"></div>
+                </div>
+                <input type="hidden" id="grId">
+                <div class="mt-2">
+                  <button class="btn btn-success" id="btnSaveGrade"><i class="fa-solid fa-plus"></i> Enregistrer la note</button>
+                  <button class="btn btn-ghost" id="btnResetGrade">Vider</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2">
+                  <strong>Notes par Étudiant</strong>
+                  <select id="grFilterStudent" class="right"></select>
+                </div>
+                <table id="gradesAdminTable">
+                  <thead><tr><th>Étudiant</th><th>Date</th><th>Matière</th><th>Intitulé</th><th>Note</th><th>Remarque</th><th>Actions</th></tr></thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz -->
+          <div id="tab-quiz" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une question au quiz</h3>
+                <div class="form-group"><label>Question</label><input id="adminQuizQuestion" type="text" placeholder="Entrez la question"></div>
+                <div class="form-group"><label>Image (optionnelle)</label><input id="adminQuizImage" type="file" accept="image/*"></div>
+                <div class="form-group">
+                  <label>Options de réponse</label>
+                  <div class="form-row">
+                    <input type="text" id="adminOption1" placeholder="Option 1" class="quiz-option-input">
+                    <input type="text" id="adminOption2" placeholder="Option 2" class="quiz-option-input">
+                    <input type="text" id="adminOption3" placeholder="Option 3" class="quiz-option-input">
+                    <input type="text" id="adminOption4" placeholder="Option 4" class="quiz-option-input">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Réponse correcte</label>
+                  <select id="adminQuizCorrect">
+                    <option value="1">Option 1</option>
+                    <option value="2">Option 2</option>
+                    <option value="3">Option 3</option>
+                    <option value="4">Option 4</option>
+                  </select>
+                </div>
+                <div class="mt-2">
+                  <button class="btn btn-success" id="adminBtnSaveQuiz"><i class="fa-solid fa-plus"></i> Ajouter la question</button>
+                  <button class="btn btn-ghost" id="adminBtnResetQuiz">Nouvelle question</button>
+                </div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Questions existantes</strong></div>
+                <div id="quizQuestionsList"><p class="muted">Aucune question pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dictionary -->
+          <div id="tab-dictionary" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un terme au lexique</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Terme arabe</label><input id="adminDictAr" type="text" placeholder="مصطلح علمي"></div>
+                  <div class="form-group"><label>Terme français</label><input id="adminDictFr" type="text" placeholder="Terme scientifique"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Définition</label><textarea id="adminDictDef" placeholder="Explication du terme" rows="3"></textarea></div>
+                </div>
+                <div class="mt-2">
+                  <button class="btn btn-success" id="adminBtnSaveDict"><i class="fa-solid fa-plus"></i> Ajouter le terme</button>
+                  <button class="btn btn-ghost" id="adminBtnResetDict">Nouveau terme</button>
+                </div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Termes existants</strong></div>
+                <div id="dictionaryTermsList"><p class="muted">Aucun terme pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lessons -->
+          <div id="tab-lessons" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une leçon</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Titre de la leçon</label><input id="adminLessonTitle" type="text" placeholder="Ex: Introduction à la mécanique"></div>
+                  <div class="form-group"><label>Chapitre</label><input id="adminLessonChapter" type="text" placeholder="Ex: Mécanique"></div>
+                </div>
+                <div class="form-group"><label>Fichier PDF</label><input type="file" id="adminLessonFile" accept=".pdf"></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveLesson"><i class="fa-solid fa-plus"></i> Ajouter la leçon</button></div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Leçons existantes</strong></div>
+                <div id="lessonsAdminList"><p class="muted">Aucune leçon pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercises -->
+          <div id="tab-exercises" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un exercice</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Titre de l'exercice</label><input id="adminExerciseTitle" type="text" placeholder="Ex: Exercices sur l'électricité"></div>
+                  <div class="form-group"><label>Chapitre</label><input id="adminExerciseChapter" type="text" placeholder="Ex: Électricité"></div>
+                </div>
+                <div class="form-group"><label>Fichier PDF</label><input type="file" id="adminExerciseFile" accept=".pdf"></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExercise"><i class="fa-solid fa-plus"></i> Ajouter l'exercice</button></div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Exercices existants</strong></div>
+                <div id="exercisesAdminList"><p class="muted">Aucun exercice pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exams -->
+          <div id="tab-exams" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un examen</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Titre de l'examen</label><input id="adminExamTitle" type="text" placeholder="Ex: Examen Régional 2023"></div>
+                  <div class="form-group"><label>Série</label><input id="adminExamSeries" type="text" placeholder="Ex: Sciences Physiques"></div>
+                </div>
+                <div class="form-group"><label>Fichier PDF</label><input type="file" id="adminExamFile" accept=".pdf"></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExam"><i class="fa-solid fa-plus"></i> Ajouter l'examen</button></div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Examens existants</strong></div>
+                <div id="examsAdminList"><p class="muted">Aucun examen pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Announcement -->
+          <div id="tab-announcement" class="admin-section" style="display:none;">
+            <div class="content-card">
+              <div class="card-content">
+                <h3 class="mb-2">Gestion des Annonces</h3>
+                <div class="form-group"><label>Annonce actuelle</label>
+                  <textarea id="announcementInput" rows="4" placeholder="Saisissez votre annonce ici...">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</textarea>
+                </div>
+                <div class="form-group">
+                  <label>Image d'annonce (optionnelle)</label>
+                  <input type="file" id="announcementImageInput" accept="image/*">
+                  <img id="announcementImagePreview" class="image-preview" src="" alt="Aperçu de l'image" style="max-width:200px;display:block;margin-top:8px;">
+                </div>
+                <div class="mt-2"><button class="btn btn-success" id="btnSaveAnnouncement"><i class="fa-solid fa-save"></i> Enregistrer l'annonce</button></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revision Requests -->
+          <div id="tab-revisions" class="admin-section" style="display:none;">
+            <div class="content-card">
+              <div class="card-content">
+                <h3 class="mb-2">Demandes de Récorrection de Notes</h3>
+                <div id="revisionRequestsList"><p class="muted">Aucune demande de récorrection pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Student Login Modal -->
+  <div class="login-modal" id="studentLoginModal" style="display:none;">
+    <div class="login-form">
+      <h2>Espace Élève</h2>
+      <div class="form-group"><label>Nom d'utilisateur</label><input id="studentUsername" type="text" placeholder="Votre nom d'utilisateur"></div>
+      <div class="form-group"><label>Mot de passe</label><input id="studentPassword" type="password" placeholder="Votre mot de passe"></div>
+      <div class="form-buttons flex">
+        <button class="btn btn-ghost" id="cancelStudentLogin">Annuler</button>
+        <button class="btn btn-primary" id="submitStudentLogin">Se connecter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Login Modal -->
+  <div class="login-modal" id="loginModal" style="display:none;">
+    <div class="login-form">
+      <h2>Espace Professeur</h2>
+      <div class="form-group"><label>Nom d'utilisateur</label><input id="username" type="text" placeholder="Nom d'utilisateur"></div>
+      <div class="form-group"><label>Mot de passe</label><input id="password" type="password" placeholder="Mot de passe"></div>
+      <div class="form-buttons flex">
+        <button class="btn btn-ghost" id="cancelLogin">Annuler</button>
+        <button class="btn btn-accent" id="submitLogin">Se connecter</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Informations de Contact</h3>
+          <ul class="contact-info">
+            <li><i class="fas fa-user"></i> Professeur: Pr. Ali Bairouk</li>
+            <li><i class="fas fa-envelope"></i> Email: bairoukali.contacter@gmail.com</li>
+            <li><i class="fas fa-phone"></i> Téléphone: 0620565105</li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Liens Rapides</h3>
+          <ul class="contact-info">
+            <li><i class="fas fa-book"></i> Lexique</li>
+            <li><i class="fas fa-question-circle"></i> Quiz</li>
+            <li><i class="fas fa-chart-line"></i> Notes</li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>À Propos du Site</h3>
+          <p>Lycée de l'Excellence est une plateforme éducative spécialisée en physique.</p>
+        </div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2025 Lycée de l'Excellence. Tous droits réservés</p></div>
+    </div>
+  </footer>
+
+  <!-- كل منطق العمل JavaScript مضمّن هنا داخل HTML (دون CSS داخلي) -->
+  <script>
+  (function(){
+    'use strict';
+
+    /* ====================== Helpers & Storage ====================== */
+    const $ = (sel, ctx=document) => ctx.querySelector(sel);
+    const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+    const on = (el, ev, fn) => el && el.addEventListener(ev, fn);
+    const DB_KEY = 'lexcellenceDB_v1';
+
+    const defaultDB = {
+      students: [],            // {id, fullname, username, password, code, classroom}
+      grades: [],              // {id, studentId, subject, title, date, score, note}
+      dictionary: [],          // {id, ar, fr, def}
+      quiz: [],                // {id, q, options[4], correctIndex, imageDataUrl?}
+      lessons: [],             // {id, title, chapter, name, dataUrl}
+      exercises: [],           // {id, title, chapter, name, dataUrl}
+      exams: [],               // {id, title, series, name, dataUrl}
+      announcement: { text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة", imageDataUrl: "" },
+      revisionRequests: [],    // {id, studentId, gradeId, message, date}
+      recent: []               // strings activity
+    };
+
+    let db = loadDB();
+
+    function loadDB(){
+      try{
+        const raw = localStorage.getItem(DB_KEY);
+        if(!raw) return JSON.parse(JSON.stringify(defaultDB));
+        const parsed = JSON.parse(raw);
+        // merge with defaults to avoid missing keys
+        return Object.assign(JSON.parse(JSON.stringify(defaultDB)), parsed);
+      }catch(e){
+        console.error('DB load error', e);
+        return JSON.parse(JSON.stringify(defaultDB));
+      }
+    }
+    function saveDB(){
+      localStorage.setItem(DB_KEY, JSON.stringify(db));
+      updateStats();
+    }
+    function uid(prefix='id'){
+      return prefix + '_' + Math.random().toString(36).slice(2,9);
+    }
+    function addActivity(msg){
+      db.recent.unshift(new Date().toLocaleString() + ' — ' + msg);
+      db.recent = db.recent.slice(0,20);
+      $('#recent-activity').innerHTML = db.recent.map(r=>`<div>${escapeHTML(r)}</div>`).join('') || '<p class="muted">Aucune activité récente.</p>';
+    }
+    function escapeHTML(s){
+      return (s||'').toString().replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    }
+    function readFileAsDataURL(file){
+      return new Promise((res, rej)=>{
+        const fr = new FileReader();
+        fr.onload = () => res(fr.result);
+        fr.onerror = rej;
+        fr.readAsDataURL(file);
+      });
+    }
+
+    /* ====================== Navigation & UI ====================== */
+    // Top nav -> scroll to section
+    $$('.nav-link').forEach(a=>{
+      on(a,'click',e=>{
+        e.preventDefault();
+        const sec = a.dataset.section;
+        const el = document.getElementById(sec) || document.getElementById(sec+'-section');
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    // Feature cards -> scroll
+    $$('.feature-card').forEach(c=>{
+      on(c,'click',()=>{
+        const sec = c.dataset.section;
+        const el = document.getElementById(sec);
+        if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+    });
+
+    // Admin tab switching
+    $$('.admin-tab-link').forEach(link=>{
+      on(link,'click',e=>{
+        e.preventDefault();
+        const tab = link.dataset.tab;
+        $$('.admin-tab-link').forEach(l=>l.classList.remove('active'));
+        link.classList.add('active');
+        $$('.admin-section').forEach(s=>s.style.display='none');
+        $('#'+tab).style.display='block';
+      });
+    });
+
+    // Student tabs
+    $$('.student-tab').forEach(tab=>{
+      on(tab,'click',()=>{
+        $$('.student-tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        const target = tab.dataset.tab;
+        $$('.student-tab-content').forEach(c=>c.style.display='none');
+        $('#student-'+target+'-tab').style.display='block';
+      });
+    });
+
+    /* ====================== Login (Admin & Student) ====================== */
+    const ADMIN_USER='prof', ADMIN_PASS='1234';
+    on($('#loginBtn'),'click',()=> $('#loginModal').style.display='block');
+    on($('#cancelLogin'),'click',()=> $('#loginModal').style.display='none');
+    on($('#submitLogin'),'click',()=>{
+      const u = $('#username').value.trim();
+      const p = $('#password').value.trim();
+      if(u===ADMIN_USER && p===ADMIN_PASS){
+        $('#loginModal').style.display='none';
+        $('#admin-panel').style.display='block';
+        addActivity('Connexion admin');
+        renderAll();
+      }else{
+        alert('Identifiants incorrects');
+      }
+    });
+    on($('#logoutBtn'),'click',()=>{
+      $('#admin-panel').style.display='none';
+      addActivity('Déconnexion admin');
+    });
+
+    // Student login
+    let currentStudentId = null;
+    on($('#studentLoginBtn'),'click',()=> $('#studentLoginModal').style.display='block');
+    on($('#cancelStudentLogin'),'click',()=> $('#studentLoginModal').style.display='none');
+    on($('#submitStudentLogin'),'click',()=>{
+      const u = $('#studentUsername').value.trim();
+      const p = $('#studentPassword').value.trim();
+      const st = db.students.find(s=>s.username===u && s.password===p);
+      if(st){
+        currentStudentId = st.id;
+        $('#studentLoginModal').style.display='none';
+        $('#student-dashboard').style.display='block';
+        $('#studentWelcome').textContent = 'Bienvenue, ' + st.fullname;
+        loadStudentArea(st.id);
+        addActivity('Connexion élève: ' + st.username);
+      }else{
+        alert('Utilisateur/mot de passe invalide');
+      }
+    });
+    on($('#studentLogoutBtn'),'click',()=>{
+      currentStudentId = null;
+      $('#student-dashboard').style.display='none';
+      addActivity('Déconnexion élève');
+    });
+
+    /* ====================== Admin: Students CRUD ====================== */
+    function renderStudents(){
+      const tbody = $('#studentsTable tbody');
+      const filter = ($('#filterStudents').value||'').toLowerCase();
+      const rows = db.students
+        .filter(s => [s.fullname,s.username,s.code,s.classroom].join(' ').toLowerCase().includes(filter))
+        .map(s=>`
+          <tr>
+            <td>${escapeHTML(s.fullname)}</td>
+            <td>${escapeHTML(s.username)}</td>
+            <td>${escapeHTML(s.code)}</td>
+            <td>${escapeHTML(s.classroom)}</td>
+            <td>
+              <button class="btn btn-outline" data-edit="${s.id}"><i class="fa fa-pen"></i></button>
+              <button class="btn btn-ghost" data-del="${s.id}"><i class="fa fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      tbody.innerHTML = rows || '<tr><td colspan="5" class="muted">Aucun étudiant</td></tr>';
+
+      // fill grade selects
+      const opts = db.students.map(s=>`<option value="${s.id}">${escapeHTML(s.fullname)} (${escapeHTML(s.username)})</option>`).join('');
+      $('#grStudent').innerHTML = '<option value="">—</option>'+opts;
+      $('#grFilterStudent').innerHTML = '<option value="">Tous</option>'+opts;
+
+      // actions
+      $$('button[data-edit]').forEach(b=>{
+        on(b,'click',()=>{
+          const st = db.students.find(s=>s.id===b.dataset.edit);
+          if(!st) return;
+          $('#stId').value = st.id;
+          $('#stFullname').value = st.fullname;
+          $('#stUsername').value = st.username;
+          $('#stPassword').value = st.password;
+          $('#stCode').value = st.code;
+          $('#stClassroom').value = st.classroom;
+        });
+      });
+      $$( 'button[data-del]').forEach(b=>{
+        on(b,'click',()=>{
+          if(!confirm('Supprimer cet étudiant ?')) return;
+          db.students = db.students.filter(s=>s.id!==b.dataset.del);
+          db.grades = db.grades.filter(g=>g.studentId!==b.dataset.del);
+          saveDB(); renderStudents(); renderGradesAdmin(); updateStats();
+          addActivity('Suppression étudiant');
+        });
+      });
+    }
+    on($('#btnSaveStudent'),'click',()=>{
+      const id = $('#stId').value || uid('stu');
+      const obj = {
+        id,
+        fullname: $('#stFullname').value.trim(),
+        username: $('#stUsername').value.trim(),
+        password: $('#stPassword').value.trim(),
+        code: $('#stCode').value.trim(),
+        classroom: $('#stClassroom').value.trim()
+      };
+      if(!obj.fullname || !obj.username || !obj.password) return alert('Champs obligatoires manquants');
+      const exist = db.students.find(s=>s.id===id);
+      if(exist) Object.assign(exist, obj);
+      else db.students.push(obj);
+      saveDB(); renderStudents(); $('#btnResetStudent').click(); updateStats();
+      addActivity('Enregistrement étudiant: '+obj.username);
+    });
+    on($('#btnResetStudent'),'click',()=>{
+      $('#stId').value=''; $('#stFullname').value=''; $('#stUsername').value='';
+      $('#stPassword').value=''; $('#stCode').value=''; $('#stClassroom').value='';
+    });
+    on($('#filterStudents'),'input',renderStudents);
+
+    /* ====================== Admin: Grades ====================== */
+    function renderGradesAdmin(){
+      const tbody = $('#gradesAdminTable tbody');
+      const filterId = $('#grFilterStudent').value || '';
+      const list = db.grades
+        .filter(g=>!filterId || g.studentId===filterId)
+        .map(g=>{
+          const st = db.students.find(s=>s.id===g.studentId);
+          return `
+            <tr>
+              <td>${escapeHTML(st?st.fullname:'?')}</td>
+              <td>${escapeHTML(g.date||'')}</td>
+              <td>${escapeHTML(g.subject||'')}</td>
+              <td>${escapeHTML(g.title||'')}</td>
+              <td>${escapeHTML(g.score||'')}</td>
+              <td>${escapeHTML(g.note||'')}</td>
+              <td>
+                <button class="btn btn-outline" data-gedit="${g.id}"><i class="fa fa-pen"></i></button>
+                <button class="btn btn-ghost" data-gdel="${g.id}"><i class="fa fa-trash"></i></button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      tbody.innerHTML = list || '<tr><td colspan="7" class="muted">Aucune note</td></tr>';
+
+      $$('button[data-gedit]').forEach(b=>{
+        on(b,'click',()=>{
+          const g = db.grades.find(x=>x.id===b.dataset.gedit);
+          if(!g) return;
+          $('#grId').value = g.id;
+          $('#grStudent').value = g.studentId;
+          $('#grSubject').value = g.subject;
+          $('#grTitle').value = g.title;
+          $('#grDate').value = g.date;
+          $('#grScore').value = g.score;
+          $('#grNote').value = g.note;
+        });
+      });
+      $$('button[data-gdel]').forEach(b=>{
+        on(b,'click',()=>{
+          if(!confirm('Supprimer la note ?')) return;
+          db.grades = db.grades.filter(x=>x.id!==b.dataset.gdel);
+          saveDB(); renderGradesAdmin(); updateStats();
+          addActivity('Suppression note');
+        });
+      });
+    }
+    on($('#grFilterStudent'),'change',renderGradesAdmin);
+    on($('#btnSaveGrade'),'click',()=>{
+      const id = $('#grId').value || uid('gr');
+      const obj = {
+        id,
+        studentId: $('#grStudent').value,
+        subject: $('#grSubject').value.trim(),
+        title: $('#grTitle').value.trim(),
+        date: $('#grDate').value,
+        score: $('#grScore').value,
+        note: $('#grNote').value.trim()
+      };
+      if(!obj.studentId) return alert('Sélectionnez un étudiant');
+      const exist = db.grades.find(g=>g.id===id);
+      if(exist) Object.assign(exist,obj); else db.grades.push(obj);
+      saveDB(); renderGradesAdmin(); $('#btnResetGrade').click(); updateStats();
+      addActivity('Enregistrement note');
+      // refresh student area if logged
+      if(currentStudentId) loadStudentArea(currentStudentId);
+    });
+    on($('#btnResetGrade'),'click',()=>{
+      $('#grId').value=''; $('#grStudent').value=''; $('#grSubject').value='';
+      $('#grTitle').value=''; $('#grDate').value=''; $('#grScore').value=''; $('#grNote').value='';
+    });
+
+    // Public grades search by code
+    on($('#btnSearchByCode'),'click',()=>{
+      const code = ($('#searchCode').value||'').trim();
+      const st = db.students.find(s=>s.code===code);
+      const res = $('#gradesResults');
+      if(!st){ alert('Code introuvable'); res.style.display='none'; return;}
+      $('#studentInfo').textContent = st.fullname + ' — ' + (st.classroom||'');
+      const rows = db.grades.filter(g=>g.studentId===st.id).map(g=>`
+        <tr>
+          <td>${escapeHTML(g.date||'')}</td>
+          <td>${escapeHTML(g.subject||'')}</td>
+          <td>${escapeHTML(g.title||'')}</td>
+          <td>${escapeHTML(g.score||'')}</td>
+          <td>${escapeHTML(g.note||'')}</td>
+        </tr>
+      `).join('');
+      $('#gradesTable tbody').innerHTML = rows || '';
+      $('#noGradesMsg').style.display = rows ? 'none' : 'block';
+      res.style.display='block';
+    });
+
+    /* ====================== Admin: Dictionary ====================== */
+    function renderDictionaryAdmin(){
+      const wrap = $('#dictionaryTermsList');
+      if(!db.dictionary.length){ wrap.innerHTML = '<p class="muted">Aucun terme pour le moment.</p>'; return; }
+      wrap.innerHTML = db.dictionary.map(t=>`
+        <div class="dict-item">
+          <strong>${escapeHTML(t.ar)}</strong> — ${escapeHTML(t.fr)}<br>
+          <span class="muted">${escapeHTML(t.def||'')}</span><br>
+          <button class="btn btn-ghost" data-ddel="${t.id}"><i class="fa fa-trash"></i> Supprimer</button>
+        </div>
+      `).join('');
+      $$('button[data-ddel]').forEach(b=>{
+        on(b,'click',()=>{
+          db.dictionary = db.dictionary.filter(x=>x.id!==b.dataset.ddel);
+          saveDB(); renderDictionaryAdmin(); renderDictionaryPublic(); updateStats();
+          addActivity('Suppression terme');
+        });
+      });
+    }
+    function renderDictionaryPublic(){
+      $('#dictionaryContent').innerHTML = db.dictionary.map(t=>`
+        <div class="content-card">
+          <div class="card-content">
+            <h4>${escapeHTML(t.ar)} — ${escapeHTML(t.fr)}</h4>
+            <p>${escapeHTML(t.def||'')}</p>
+          </div>
+        </div>
+      `).join('') || '<p class="muted">Aucun terme pour le moment.</p>';
+      // Student dictionary view
+      $('#studentDictionaryContent').innerHTML = $('#dictionaryContent').innerHTML;
+    }
+    on($('#adminBtnSaveDict'),'click',()=>{
+      const obj = {
+        id: uid('dict'),
+        ar: $('#adminDictAr').value.trim(),
+        fr: $('#adminDictFr').value.trim(),
+        def: $('#adminDictDef').value.trim()
+      };
+      if(!obj.ar || !obj.fr) return alert('Champs requis');
+      db.dictionary.push(obj);
+      saveDB(); renderDictionaryAdmin(); renderDictionaryPublic(); updateStats();
+      $('#adminBtnResetDict').click();
+      addActivity('Ajout terme: '+obj.ar);
+    });
+    on($('#adminBtnResetDict'),'click',()=>{
+      $('#adminDictAr').value=''; $('#adminDictFr').value=''; $('#adminDictDef').value='';
+    });
+
+    /* ====================== Admin: Quiz ====================== */
+    function renderQuizAdmin(){
+      const box = $('#quizQuestionsList');
+      if(!db.quiz.length){ box.innerHTML = '<p class="muted">Aucune question pour le moment.</p>'; return; }
+      box.innerHTML = db.quiz.map(q=>`
+        <div class="content-card">
+          <div class="card-content">
+            <strong>${escapeHTML(q.q)}</strong>
+            <ol>
+              ${q.options.map((op,i)=>`<li>${escapeHTML(op)} ${i===q.correctIndex?'<span class="muted">(correct)</span>':''}</li>`).join('')}
+            </ol>
+            ${q.imageDataUrl?`<img src="${q.imageDataUrl}" alt="" style="max-width:160px;">`:''}
+            <div class="mt-1"><button class="btn btn-ghost" data-qdel="${q.id}"><i class="fa fa-trash"></i> Supprimer</button></div>
+          </div>
+        </div>
+      `).join('');
+      $$('button[data-qdel]').forEach(b=>{
+        on(b,'click',()=>{
+          db.quiz = db.quiz.filter(x=>x.id!==b.dataset.qdel);
+          saveDB(); renderQuizAdmin(); renderQuizStudent(); updateStats();
+          addActivity('Suppression question quiz');
+        });
+      });
+    }
+    async function handleAddQuiz(){
+      const q = $('#adminQuizQuestion').value.trim();
+      const options = [$('#adminOption1').value, $('#adminOption2').value, $('#adminOption3').value, $('#adminOption4').value].map(s=>s.trim());
+      const correctIndex = parseInt($('#adminQuizCorrect').value,10)-1;
+      if(!q || options.some(o=>!o)) return alert('Remplissez la question et les 4 options');
+      let imageDataUrl = '';
+      const f = $('#adminQuizImage').files[0];
+      if(f) imageDataUrl = await readFileAsDataURL(f);
+      db.quiz.push({id:uid('qz'), q, options, correctIndex, imageDataUrl});
+      saveDB(); renderQuizAdmin(); renderQuizStudent(); updateStats();
+      $('#adminQuizQuestion').value=''; $('#adminOption1').value=''; $('#adminOption2').value='';
+      $('#adminOption3').value=''; $('#adminOption4').value=''; $('#adminQuizImage').value='';
+      addActivity('Ajout question quiz');
+    }
+    on($('#adminBtnSaveQuiz'),'click',()=>{ handleAddQuiz(); });
+
+    function renderQuizStudent(){
+      const list = $('#studentQuizList');
+      if(!db.quiz.length){ list.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>'; return; }
+      list.innerHTML = `
+        <div class="content-card">
+          <div class="card-content">
+            <p>${db.quiz.length} question(s) disponibles.</p>
+            <button class="btn btn-primary" id="startQuizBtn"><i class="fa fa-play"></i> Démarrer</button>
+          </div>
+        </div>
+      `;
+      const startBtn = $('#startQuizBtn');
+      if(startBtn) on(startBtn,'click',startQuiz);
+    }
+    function startQuiz(){
+      if(!db.quiz.length) return;
+      $('#quizContainer').style.display='block';
+      $('#quizResultsContainer').style.display='none';
+      quizState.index = 0; quizState.answers = Array(db.quiz.length).fill(null);
+      quizState.timeLeft = 30*60; // 30 minutes
+      renderQuizQuestion();
+      if(quizState.timer) clearInterval(quizState.timer);
+      quizState.timer = setInterval(()=>{
+        quizState.timeLeft--;
+        if(quizState.timeLeft<=0){ clearInterval(quizState.timer); submitQuiz(); }
+        updateTimer();
+      },1000);
+    }
+    const quizState = { index:0, answers:[], timeLeft:0, timer:null };
+    function updateTimer(){
+      const m = Math.max(0, Math.floor(quizState.timeLeft/60));
+      const s = Math.max(0, quizState.timeLeft%60);
+      $('#quizTimer').textContent = 'Temps restant: ' + String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+    }
+    function renderQuizQuestion(){
+      const q = db.quiz[quizState.index];
+      $('#questionCounter').textContent = 'Question ' + (quizState.index+1) + ' / ' + db.quiz.length;
+      const html = `
+        <div class="content-card">
+          <div class="card-content">
+            <h4>${escapeHTML(q.q)}</h4>
+            ${q.imageDataUrl?`<img src="${q.imageDataUrl}" alt="" style="max-width:220px;margin:8px 0;">`:''}
+            <div>
+              ${q.options.map((op,i)=>`
+                <label style="display:block;margin:6px 0;">
+                  <input type="radio" name="qopt" value="${i}" ${quizState.answers[quizState.index]===i?'checked':''}>
+                  ${escapeHTML(op)}
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      $('#quizQuestionsContainer').innerHTML = html;
+    }
+    on($('#prevQuestion'),'click',()=>{
+      saveCurrentAnswer(); if(quizState.index>0){ quizState.index--; renderQuizQuestion(); }
+    });
+    on($('#nextQuestion'),'click',()=>{
+      saveCurrentAnswer(); if(quizState.index<db.quiz.length-1){ quizState.index++; renderQuizQuestion(); }
+    });
+    function saveCurrentAnswer(){
+      const sel = $('input[name="qopt"]:checked');
+      if(sel) quizState.answers[quizState.index] = parseInt(sel.value,10);
+    }
+    on($('#submitQuiz'),'click',()=>{ saveCurrentAnswer(); submitQuiz(); });
+    function submitQuiz(){
+      clearInterval(quizState.timer);
+      let score = 0;
+      db.quiz.forEach((q,i)=>{ if(quizState.answers[i]===q.correctIndex) score++; });
+      const percent = Math.round(score/db.quiz.length*20*100)/100; // /20
+      $('#quizContainer').style.display='none';
+      $('#quizResultsContainer').style.display='block';
+      $('#quizResultsContent').innerHTML = `
+        <p><strong>Score:</strong> ${score} / ${db.quiz.length} — ${percent} / 20</p>
+      `;
+      if(currentStudentId){
+        db.grades.push({
+          id: uid('gr'),
+          studentId: currentStudentId,
+          subject: 'Quiz',
+          title: 'Quiz auto',
+          date: new Date().toISOString().slice(0,10),
+          score: percent,
+          note: 'Résultat quiz'
+        });
+        saveDB(); renderGradesAdmin(); loadStudentArea(currentStudentId); updateStats();
+      }
+      addActivity('Soumission quiz (score '+score+'/'+db.quiz.length+')');
+    }
+
+    /* ====================== Admin: Lessons / Exercises / Exams (PDF) ====================== */
+    async function addPDF(type){ // type in ['lessons','exercises','exams']
+      if(type==='lessons'){
+        const title=$('#adminLessonTitle').value.trim();
+        const chapter=$('#adminLessonChapter').value.trim();
+        const file=$('#adminLessonFile').files[0];
+        if(!title || !file) return alert('Titre et fichier requis');
+        const dataUrl = await readFileAsDataURL(file);
+        db.lessons.push({id:uid('lsn'), title, chapter, name:file.name, dataUrl});
+        $('#adminLessonTitle').value=''; $('#adminLessonChapter').value=''; $('#adminLessonFile').value='';
+        addActivity('Ajout leçon: '+title);
+      }
+      if(type==='exercises'){
+        const title=$('#adminExerciseTitle').value.trim();
+        const chapter=$('#adminExerciseChapter').value.trim();
+        const file=$('#adminExerciseFile').files[0];
+        if(!title || !file) return alert('Titre et fichier requis');
+        const dataUrl = await readFileAsDataURL(file);
+        db.exercises.push({id:uid('exr'), title, chapter, name:file.name, dataUrl});
+        $('#adminExerciseTitle').value=''; $('#adminExerciseChapter').value=''; $('#adminExerciseFile').value='';
+        addActivity('Ajout exercice: '+title);
+      }
+      if(type==='exams'){
+        const title=$('#adminExamTitle').value.trim();
+        const series=$('#adminExamSeries').value.trim();
+        const file=$('#adminExamFile').files[0];
+        if(!title || !file) return alert('Titre et fichier requis');
+        const dataUrl = await readFileAsDataURL(file);
+        db.exams.push({id:uid('exm'), title, series, name:file.name, dataUrl});
+        $('#adminExamTitle').value=''; $('#adminExamSeries').value=''; $('#adminExamFile').value='';
+        addActivity('Ajout examen: '+title);
+      }
+      saveDB(); renderPDFLists(); renderStudentResources();
+    }
+    on($('#adminBtnSaveLesson'),'click',()=>addPDF('lessons'));
+    on($('#adminBtnSaveExercise'),'click',()=>addPDF('exercises'));
+    on($('#adminBtnSaveExam'),'click',()=>addPDF('exams'));
+
+    function renderPDFLists(){
+      // Public lists
+      const lessonsHTML = db.lessons.map(x=>cardPDF(x.title, x.chapter, x)).join('') || '<p class="muted">Aucune leçon pour le moment.</p>';
+      const exercisesHTML = db.exercises.map(x=>cardPDF(x.title, x.chapter, x)).join('') || '<p class="muted">Aucun exercice pour le moment.</p>';
+      const examsHTML = db.exams.map(x=>cardPDF(x.title, x.series, x)).join('') || '<p class="muted">Aucun examen pour le moment.</p>';
+      $('#lessonsContent').innerHTML = lessonsHTML;
+      $('#exercisesContent').innerHTML = exercisesHTML;
+      $('#examsContent').innerHTML = examsHTML;
+
+      // Admin lists
+      $('#lessonsAdminList').innerHTML = adminList(db.lessons, 'lsn');
+      $('#exercisesAdminList').innerHTML = adminList(db.exercises, 'exr');
+      $('#examsAdminList').innerHTML = adminList(db.exams, 'exm');
+
+      // bind deletions
+      $$('button[data-delpdf]').forEach(b=>{
+        on(b,'click',()=>{
+          const id = b.dataset.delpdf;
+          db.lessons = db.lessons.filter(o=>o.id!==id);
+          db.exercises = db.exercises.filter(o=>o.id!==id);
+          db.exams = db.exams.filter(o=>o.id!==id);
+          saveDB(); renderPDFLists(); renderStudentResources(); addActivity('Suppression PDF');
+        });
+      });
+    }
+    function cardPDF(title, sub, obj){
+      return `
+        <div class="content-card">
+          <div class="card-content">
+            <h4>${escapeHTML(title)}</h4>
+            <p class="muted">${escapeHTML(sub || '')}</p>
+            <div class="inline">
+              <a class="btn btn-primary" href="${obj.dataUrl}" download="${escapeHTML(obj.name)}"><i class="fa fa-download"></i> Télécharger</a>
+              <a class="btn btn-outline" href="${obj.dataUrl}" target="_blank"><i class="fa fa-eye"></i> Ouvrir</a>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+    function adminList(list){
+      if(!list.length) return '<p class="muted">Aucun élément.</p>';
+      return list.map(x=>`
+        <div class="content-card">
+          <div class="card-content">
+            <strong>${escapeHTML(x.title)}</strong> — <span class="muted">${escapeHTML(x.chapter||x.series||'')}</span>
+            <div class="inline" style="margin-top:6px;">
+              <a class="btn btn-outline" href="${x.dataUrl}" target="_blank"><i class="fa fa-eye"></i> Ouvrir</a>
+              <a class="btn btn-primary" href="${x.dataUrl}" download="${escapeHTML(x.name)}"><i class="fa fa-download"></i> Télécharger</a>
+              <button class="btn btn-ghost" data-delpdf="${x.id}"><i class="fa fa-trash"></i> Supprimer</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /* ====================== Announcement ====================== */
+    on($('#announcementImageInput'),'change',async (e)=>{
+      const f = e.target.files[0];
+      if(!f) return;
+      const url = await readFileAsDataURL(f);
+      $('#announcementImagePreview').src = url;
+    });
+    on($('#btnSaveAnnouncement'),'click',()=>{
+      db.announcement.text = $('#announcementInput').value.trim();
+      const prev = $('#announcementImagePreview').getAttribute('src') || '';
+      db.announcement.imageDataUrl = prev;
+      saveDB();
+      // apply to public banner
+      $('#announcementText').textContent = db.announcement.text || '';
+      if(db.announcement.imageDataUrl){
+        $('#announcementImage').src = db.announcement.imageDataUrl;
+        $('#announcementImage').style.display = 'block';
+      }else{
+        $('#announcementImage').style.display = 'none';
+      }
+      addActivity('Mise à jour annonce');
+    });
+
+    /* ====================== Export / Import JSON ====================== */
+    on($('#btnExport'),'click',()=>{
+      const blob = new Blob([JSON.stringify(db,null,2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'lexcellence-data.json';
+      document.body.appendChild(a); a.click(); a.remove();
+      addActivity('Export JSON');
+    });
+    on($('#importFile'),'change',async (e)=>{
+      const f = e.target.files[0];
+      if(!f) return;
+      const text = await f.text();
+      try{
+        const imported = JSON.parse(text);
+        db = Object.assign(JSON.parse(JSON.stringify(defaultDB)), imported);
+        saveDB(); renderAll(); addActivity('Import JSON');
+        alert('Importation terminée');
+      }catch(err){
+        alert('Fichier invalide');
+      }
+      e.target.value='';
+    });
+
+    /* ====================== Student Area ====================== */
+    function loadStudentArea(stId){
+      // recent grades
+      const gs = db.grades.filter(g=>g.studentId===stId).slice(-5).reverse();
+      $('#studentRecentGrades').innerHTML = gs.map(g=>`
+        <div>• ${escapeHTML(g.date||'')} — <strong>${escapeHTML(g.title||'')}</strong> (${escapeHTML(g.subject||'')}): <b>${escapeHTML(g.score||'')}</b></div>
+      `).join('') || '<p class="muted">Aucune note disponible pour le moment.</p>';
+
+      // resources
+      renderStudentResources();
+
+      // revision select
+      const fullGrades = db.grades.filter(g=>g.studentId===stId);
+      $('#revisionExam').innerHTML = '<option value="">Sélectionnez une évaluation</option>' + fullGrades.map(g=>`<option value="${g.id}">${escapeHTML((g.date||'')+' — '+(g.title||''))}</option>`).join('');
+
+      // student revision list
+      renderStudentRevisionRequests(stId);
+
+      // quiz
+      renderQuizStudent();
+      // dictionary in student tab
+      $('#studentDictionaryContent').innerHTML = $('#dictionaryContent').innerHTML;
+      // exercises list
+      $('#studentExercisesList').innerHTML = $('#exercisesContent').innerHTML;
+    }
+    function renderStudentResources(){
+      $('#studentResources').innerHTML =
+        [...db.lessons.map(x=>({type:'Leçon', x})), ...db.exercises.map(x=>({type:'Exercice', x})), ...db.exams.map(x=>({type:'Examen', x}))]
+        .map(o=>`
+          <div class="content-card">
+            <div class="card-content">
+              <strong>${escapeHTML(o.type)}:</strong> ${escapeHTML(o.x.title)}
+              <div class="inline" style="margin-top:6px;">
+                <a class="btn btn-outline" href="${o.x.dataUrl}" target="_blank"><i class="fa fa-eye"></i> Ouvrir</a>
+                <a class="btn btn-primary" href="${o.x.dataUrl}" download="${escapeHTML(o.x.name)}"><i class="fa fa-download"></i> Télécharger</a>
+              </div>
+            </div>
+          </div>
+        `).join('') || '<p class="muted">Aucune ressource pour le moment.</p>';
+    }
+    on($('#revisionRequestForm'),'submit',(e)=>{
+      e.preventDefault();
+      if(!currentStudentId) return alert('Connectez-vous en tant qu’élève.');
+      const gradeId = $('#revisionExam').value;
+      const message = $('#revisionMessage').value.trim();
+      if(!gradeId || !message) return;
+      db.revisionRequests.push({id:uid('rev'), studentId: currentStudentId, gradeId, message, date:new Date().toLocaleString()});
+      saveDB(); renderAdminRevisionRequests(); renderStudentRevisionRequests(currentStudentId);
+      $('#revisionMessage').value=''; $('#revisionExam').value='';
+      addActivity('Nouvelle demande de récorrection');
+      alert('Demande envoyée');
+    });
+    function renderStudentRevisionRequests(stId){
+      const list = db.revisionRequests.filter(r=>r.studentId===stId);
+      $('#studentRevisionRequests').innerHTML = list.map(r=>{
+        const g = db.grades.find(x=>x.id===r.gradeId);
+        return `<div class="content-card"><div class="card-content"><strong>${escapeHTML(g?g.title:'')}</strong> — <span class="muted">${escapeHTML(r.date)}</span><div>${escapeHTML(r.message)}</div></div></div>`;
+      }).join('') || '<p class="muted">Vous n\'avez pas encore soumis de demandes de récorrection.</p>';
+    }
+    function renderAdminRevisionRequests(){
+      const box = $('#revisionRequestsList');
+      if(!db.revisionRequests.length){ box.innerHTML = '<p class="muted">Aucune demande de récorrection pour le moment.</p>'; return; }
+      box.innerHTML = db.revisionRequests.map(r=>{
+        const st = db.students.find(s=>s.id===r.studentId);
+        const g = db.grades.find(x=>x.id===r.gradeId);
+        return `
+          <div class="content-card">
+            <div class="card-content">
+              <strong>${escapeHTML(st?st.fullname:'')}</strong> — <span class="muted">${escapeHTML(r.date)}</span><br>
+              <b>Évaluation:</b> ${escapeHTML(g?g.title:'')}<br>
+              <b>Message:</b> ${escapeHTML(r.message)}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /* ====================== Stats & Initial Render ====================== */
+    function updateStats(){
+      $('#stats-students').textContent = db.students.length;
+      $('#stats-quiz').textContent = db.quiz.length;
+      $('#stats-dictionary').textContent = db.dictionary.length;
+      $('#stats-grades').textContent = db.grades.length;
+    }
+
+    function applyAnnouncement(){
+      $('#announcementText').textContent = db.announcement.text || '';
+      if(db.announcement.imageDataUrl){
+        $('#announcementImage').src = db.announcement.imageDataUrl;
+        $('#announcementImage').style.display='block';
+      }else{
+        $('#announcementImage').style.display='none';
+      }
+      $('#announcementInput').value = db.announcement.text || '';
+      if(db.announcement.imageDataUrl){
+        $('#announcementImagePreview').src = db.announcement.imageDataUrl;
+      }
+    }
+
+    function renderAll(){
+      renderStudents();
+      renderGradesAdmin();
+      renderDictionaryAdmin();
+      renderDictionaryPublic();
+      renderQuizAdmin();
+      renderQuizStudent();
+      renderPDFLists();
+      renderAdminRevisionRequests();
+      applyAnnouncement();
+      updateStats();
+    }
+
+    // Initial render on load
+    renderAll();
+  })();
+  </script>
+</body>
+</html>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>

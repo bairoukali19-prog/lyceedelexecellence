@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أكاديمية التميز التعليمية</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>أكاديمية التميز</h1>
+            <p>نحو مستقبل تعليمي أفضل</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" class="active">الرئيسية</a></li>
+                <li><a href="#courses">المقررات</a></li>
+                <li><a href="#exams">الاختبارات</a></li>
+                <li><a href="#contact">اتصل بنا</a></li>
+                <li id="authBtn"><a href="#">تسجيل الدخول</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>تسجيل الدخول</h2>
+            <div id="g_id_onload"
+                data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-callback="handleGoogleSignIn"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin"
+                data-type="standard"
+                data-shape="pill"
+                data-theme="filled_blue"
+                data-text="signin_with"
+                data-size="large"
+                data-logo_alignment="left">
+            </div>
+            <div class="role-selection">
+                <h3>اختر نوع الحساب:</h3>
+                <button id="studentBtn">طالب</button>
+                <button id="professorBtn">أستاذ</button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h2>مرحبًا بكم في أكاديمية التميز</h2>
+                <p>منصة تعليمية متكاملة تقدم أفضل المحتويات التعليمية والاختبارات التفاعلية</p>
+                <button id="startLearningBtn">ابدأ التعلم الآن</button>
+            </div>
+        </section>
+
+        <section id="courses" class="courses">
+            <h2>مقرراتنا التعليمية</h2>
+            <div class="course-grid">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </section>
+
+        <section id="exams" class="exams">
+            <h2>الاختبارات المتاحة</h2>
+            <div class="exam-grid">
+                <!-- سيتم ملؤها بالجافاسكريبت -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2023 أكاديمية التميز التعليمية. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

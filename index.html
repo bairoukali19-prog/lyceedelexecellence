@@ -1,28 +1,462 @@
-<!DOCTYPE html>
-<html lang="en" >
-<head>
-  <meta charset="UTF-8">
-  <title>Untitled</title>
-  <link rel="stylesheet" href="./style.css">
-
-</head>
-<body>
-<!-- partial:index.partial.html -->
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="fr" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lycée de l’Excellence - Physique</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    /* أنماط CSS الأساسية */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f5f7fa;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #2c3e50, #3498db);
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+    
+    .logo h1 {
+      font-size: 1.5rem;
+    }
+    
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+    
+    nav ul li {
+      margin: 0 10px;
+    }
+    
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background 0.3s;
+    }
+    
+    nav ul li a:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .auth-buttons button {
+      margin-left: 10px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background-color: #3498db;
+      color: white;
+    }
+    
+    .btn-accent {
+      background-color: #e74c3c;
+      color: white;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%232c3e50"/><text x="50" y="50" font-family="Arial" font-size="10" fill="%233498db" text-anchor="middle" dominant-baseline="middle">Lycée de l\'Excellence</text></svg>');
+      background-size: cover;
+      color: white;
+      text-align: center;
+      padding: 60px 0;
+    }
+    
+    .hero-content h2 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    
+    /* Announcement Box */
+    .announcement-box {
+      background-color: #f39c12;
+      color: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    
+    .announcement-box i {
+      font-size: 24px;
+      margin-right: 15px;
+    }
+    
+    /* Features */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+    
+    .feature-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+      font-size: 2rem;
+      color: #3498db;
+      margin-bottom: 15px;
+    }
+    
+    /* Content Cards */
+    .content-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+    
+    .card-content {
+      padding: 20px;
+    }
+    
+    /* Forms */
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .form-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    .form-row .form-group {
+      flex: 1;
+    }
+    
+    /* Tabs */
+    .student-tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin: 20px 0;
+    }
+    
+    .student-tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+    }
+    
+    .student-tab.active {
+      border-bottom-color: #3498db;
+      color: #3498db;
+      font-weight: 500;
+    }
+    
+    .student-tab-content {
+      display: none;
+    }
+    
+    .student-tab-content.active {
+      display: block;
+    }
+    
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    table th, table td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    
+    table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    
+    /* Admin Panel */
+    .admin-dashboard {
+      display: flex;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    
+    .admin-sidebar {
+      flex: 0 0 250px;
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .admin-content {
+      flex: 1;
+    }
+    
+    .admin-section {
+      display: none;
+    }
+    
+    .admin-section.active {
+      display: block;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .stat-card h3 {
+      font-size: 2rem;
+      color: #3498db;
+      margin-bottom: 10px;
+    }
+    
+    /* Login Modal */
+    .login-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .login-form {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      width: 400px;
+      max-width: 90%;
+    }
+    
+    /* Footer */
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 40px 0 20px;
+      margin-top: 60px;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 20px;
+    }
+    
+    .footer-section h3 {
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+    
+    .contact-info li {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .contact-info i {
+      margin-right: 10px;
+      width: 20px;
+    }
+    
+    .footer-bottom {
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* Utility Classes */
+    .mb-2 { margin-bottom: 10px; }
+    .mb-3 { margin-bottom: 15px; }
+    .mt-1 { margin-top: 5px; }
+    .mt-2 { margin-top: 10px; }
+    .w-100 { width: 100%; }
+    .flex { display: flex; }
+    .right { margin-left: auto; }
+    .inline { display: inline-flex; gap: 10px; }
+    .muted { color: #6c757d; }
+    .section-title { 
+      text-align: center; 
+      margin: 30px 0; 
+      color: #2c3e50;
+    }
+    
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    
+    /* Dashboard Cards */
+    .dashboard-card {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    /* Quiz Styles */
+    .quiz-container {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin: 20px 0;
+    }
+    
+    .quiz-timer {
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    
+    .quiz-navigation {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+    }
+    
+    .quiz-submission {
+      text-align: center;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .header-content {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      nav ul {
+        margin: 15px 0;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .auth-buttons {
+        margin-top: 15px;
+      }
+      
+      .admin-dashboard {
+        flex-direction: column;
+      }
+      
+      .admin-sidebar {
+        flex: 1;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+      
+      .student-tabs {
+        flex-wrap: wrap;
+      }
+      
+      .student-tab {
+        flex: 1;
+        text-align: center;
+        min-width: 120px;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Header -->
   <header>
     <div class="container header-content">
       <div class="logo">
-        <img alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzM0OThkYiIgZD0iTTI1NiA4QzExOSA4IDggMTE5IDggMjU2czExMSAyNDggMjQ4IDI0OCAyNDgtMTExIDI0OC0yNDhTMzkzIDggMjU2IDh6bTAgNDQ4Yy0xMTAuNSAwLTIwMC04OS41LTIwMC0yMDAgMC0xMTAuNSA4OS41LTIwMCAyMDAtMjAwIDEwOSAwIDIwMCA4OS41IDIwMCAyMDAtODkuNSAyMDAtMjAwIDIwMHoiLz48cGF0aCBmaWxsPSIjMzQ5OGRiIiBkPSJNMjcyIDEzNmgtMzJjLTQuNCAwLTggMy42LTggOHYzNTJjMCA0LjQgMy42IDggOCA4aDMyYzQuNCAwIDgtMy42IDgtOFYxNDRjMC00LjQtMy42LTgtOC04em05Ni0xNjBoLTMyYy00LjQgMC04IDMuNi04IDh2NTEyYzAgNC40IDMuNiA4IDggOGgzMmM0LjQgMCA4LTMuNiA4LThWLTE2YzAtNC40LTMuNi04LTgtOHoiLz48L3N2Zz4=" />
+        <img alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzM0OThkYiIgZD0iTTI1NiA4QzExOSA4IDggMTE5IDggMjU2czExMSAyNDggMjQ4IDI0OCAyNDgtMTExIDI0OC0yNDhTMzkzIDggMjU2IDh6bTAgNDQ4Yy0xMTAuNSAwLTIwMC04OS41LTIwMC0yMDAgMC0xMTAuNSA4OS41LTIwMCAyMDAtMjAwIDEwOSAwIDIwMCA4OS41IDIwMCAyMDAtODkuNSAyMDAtMjAwIDIwMHoiLz48cGF0aCBmaWxs=" />
         <h1>Lycée de l'Excellence</h1>
       </div>
       <nav>
@@ -51,16 +485,16 @@
     </div>
   </section>
 
-  <!-- Announcement Box - UPDATED WITH IMAGE SUPPORT -->
-  <div class="announcement-box" id="announcementBox">
-    <i class="fas fa-bullhorn"></i>
-    <div class="announcement-content">
-      <p id="announcementText">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</p>
-      <img id="announcementImage" class="announcement-image" src="" alt="Announcement image" style="display: none;">
-    </div>
-  </div>
-
+  <!-- Announcement Box -->
   <div class="container">
+    <div class="announcement-box" id="announcementBox">
+      <i class="fas fa-bullhorn"></i>
+      <div class="announcement-content">
+        <p id="announcementText">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</p>
+        <img id="announcementImage" class="announcement-image" src="" alt="Announcement image" style="display: none;">
+      </div>
+    </div>
+
     <!-- Features -->
     <h2 class="section-title">Sections du Site</h2>
     <div class="features">
@@ -91,7 +525,7 @@
     </div>
 
     <!-- Student Dashboard -->
-    <section id="student-dashboard" class="student-dashboard">
+    <section id="student-dashboard" class="student-dashboard" style="display: none;">
       <div class="welcome-banner">
         <h2 id="studentWelcome">Bienvenue, Élève</h2>
         <p>Vous trouverez ici toutes vos ressources pédagogiques</p>
@@ -123,7 +557,7 @@
         </div>
       </div>
       
-      <!-- Quiz Tab - UPDATED WITH NEW QUIZ INTERFACE -->
+      <!-- Quiz Tab -->
       <div id="student-quiz-tab" class="student-tab-content">
         <div class="dashboard-card">
           <h3>Quiz Disponibles</h3>
@@ -139,7 +573,7 @@
           </div>
         </div>
         
-        <!-- New Quiz Interface -->
+        <!-- Quiz Interface -->
         <div id="quizContainer" class="quiz-container" style="display: none;">
           <div class="quiz-timer" id="quizTimer">Temps restant: 30:00</div>
           <div id="quizQuestionsContainer">
@@ -183,7 +617,7 @@
         </div>
       </div>
       
-      <!-- Revision Request Tab - UPDATED TO "Demande de récorrection" -->
+      <!-- Revision Request Tab -->
       <div id="student-revision-tab" class="student-tab-content">
         <div class="dashboard-card">
           <h3>Demande de Récorrection de Note</h3>
@@ -328,7 +762,7 @@
     </section>
 
     <!-- Admin Panel -->
-    <section id="admin-panel" class="admin-panel">
+    <section id="admin-panel" class="admin-panel" style="display: none;">
       <div class="admin-header">
         <h2>Panneau d'Administration</h2>
         <div class="flex right">
@@ -620,38 +1054,7 @@
             </div>
           </div>
 
-          <!-- Exams -->
-          <div id="tab-exams" class="admin-section">
-            <div class="content-card mb-3">
-              <div class="card-content">
-                <h3 class="mb-2">Ajouter un examen</h3>
-                <div class="form-row">
-                  <div class="form-group"><label>Titre de l'examen</label><input id="adminExamTitle" type="text" placeholder="Ex: Examen Régional 2023"></div>
-                  <div class="form-group"><label>Série</label><input id="adminExamSeries" type="text" placeholder="Ex: Sciences Physiques"></div>
-                </div>
-                <div class="form-group">
-                  <label>Fichier PDF</label>
-                  <input type="file" id="adminExamFile" accept=".pdf">
-                </div>
-                <div class="mt-2">
-                  <button class="btn btn-success" id="adminBtnSaveExam"><i class="fa-solid fa-plus"></i> Ajouter l'examen</button>
-                </div>
-              </div>
-            </div>
-            
-            <div class="content-card">
-              <div class="card-content">
-                <div class="flex mb-2">
-                  <strong>Examens existants</strong>
-                </div>
-                <div id="examsAdminList">
-                  <p class="muted">Aucun examen pour le moment.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Announcement - UPDATED WITH IMAGE SUPPORT -->
+          <!-- Announcement -->
           <div id="tab-announcement" class="admin-section">
             <div class="content-card">
               <div class="card-content">
@@ -672,7 +1075,7 @@
             </div>
           </div>
 
-          <!-- Revision Requests - UPDATED TO "Demande de récorrection" -->
+          <!-- Revision Requests -->
           <div id="tab-revisions" class="admin-section">
             <div class="content-card">
               <div class="card-content">
@@ -743,11 +1146,754 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
-</body>
-</html>
-<!-- partial -->
-  <script  src="./script.js"></script>
+  <script>
+    // البيانات التخزينية
+    let appData = {
+      students: [],
+      grades: [],
+      quizQuestions: [],
+      dictionary: [],
+      lessons: [],
+      exercises: [],
+      exams: [],
+      revisionRequests: [],
+      currentUser: null,
+      isAdmin: false,
+      announcement: {
+        text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+        image: ""
+      }
+    };
 
+    // تهيئة التطبيق
+    document.addEventListener('DOMContentLoaded', function() {
+      loadFromLocalStorage();
+      initializeEventListeners();
+      updateUI();
+    });
+
+    // تحميل البيانات من التخزين المحلي
+    function loadFromLocalStorage() {
+      const savedData = localStorage.getItem('lyceeAppData');
+      if (savedData) {
+        appData = JSON.parse(savedData);
+      }
+    }
+
+    // حفظ البيانات إلى التخزين المحلي
+    function saveToLocalStorage() {
+      localStorage.setItem('lyceeAppData', JSON.stringify(appData));
+    }
+
+    // تهيئة مستمعي الأحداث
+    function initializeEventListeners() {
+      // أحداث تسجيل الدخول
+      document.getElementById('loginBtn').addEventListener('click', showAdminLogin);
+      document.getElementById('studentLoginBtn').addEventListener('click', showStudentLogin);
+      document.getElementById('cancelLogin').addEventListener('click', hideLoginModals);
+      document.getElementById('cancelStudentLogin').addEventListener('click', hideLoginModals);
+      document.getElementById('submitLogin').addEventListener('click', adminLogin);
+      document.getElementById('submitStudentLogin').addEventListener('click', studentLogin);
+      
+      // أحداث التنقل
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const section = this.getAttribute('data-section');
+          showSection(section);
+        });
+      });
+      
+      // أحداث لوحة التحكم
+      document.querySelectorAll('.student-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          const tabName = this.getAttribute('data-tab');
+          switchStudentTab(tabName);
+        });
+      });
+      
+      document.querySelectorAll('.admin-tab-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const tab = this.getAttribute('data-tab');
+          switchAdminTab(tab);
+        });
+      });
+      
+      // أحداث الحفظ
+      document.getElementById('btnSaveStudent').addEventListener('click', saveStudent);
+      document.getElementById('btnSaveGrade').addEventListener('click', saveGrade);
+      document.getElementById('adminBtnSaveQuiz').addEventListener('click', saveQuizQuestion);
+      document.getElementById('adminBtnSaveDict').addEventListener('click', saveDictionaryTerm);
+      document.getElementById('adminBtnSaveLesson').addEventListener('click', saveLesson);
+      document.getElementById('adminBtnSaveExercise').addEventListener('click', saveExercise);
+      document.getElementById('btnSaveAnnouncement').addEventListener('click', saveAnnouncement);
+      
+      // أحداث أخرى
+      document.getElementById('btnExport').addEventListener('click', exportData);
+      document.getElementById('importFile').addEventListener('change', importData);
+      document.getElementById('btnSearchByCode').addEventListener('click', searchByCode);
+      document.getElementById('studentLogoutBtn').addEventListener('click', logout);
+      document.getElementById('adminLogoutBtn').addEventListener('click', logout);
+      document.getElementById('logoutBtn').addEventListener('click', logout);
+      
+      // إعداد زر الإضافة
+      setupAddButtons();
+    }
+
+    // تحديث واجهة المستخدم
+    function updateUI() {
+      updateStats();
+      updateAnnouncement();
+      
+      if (appData.currentUser) {
+        if (appData.isAdmin) {
+          showAdminPanel();
+        } else {
+          showStudentDashboard();
+        }
+      }
+    }
+
+    // إعداد أزرار الإضافة
+    function setupAddButtons() {
+      // هنا سيتم إعداد الأزرار المختلفة للإضافة
+      console.log("تم إعداد أزرار الإضافة");
+    }
+
+    // عرض قسم معين
+    function showSection(section) {
+      // إخفاء جميع الأقسام
+      document.querySelectorAll('.page-section').forEach(sec => {
+        sec.style.display = 'none';
+      });
+      
+      // إظهار القسم المطلوب
+      document.getElementById(section).style.display = 'block';
+      
+      // تحديث محتوى القسم إذا لزم الأمر
+      if (section === 'dictionary') {
+        updateDictionaryContent();
+      } else if (section === 'quiz') {
+        updateQuizContent();
+      } else if (section === 'grades') {
+        // لا شيء
+      } else if (section === 'exams') {
+        updateExamsContent();
+      } else if (section === 'exercises') {
+        updateExercisesContent();
+      } else if (section === 'lessons') {
+        updateLessonsContent();
+      }
+    }
+
+    // تبديل علامات التبويب للطلاب
+    function switchStudentTab(tabName) {
+      // إلغاء تنشيط جميع علامات التبويب
+      document.querySelectorAll('.student-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // إخفاء جميع محتويات علامات التبويب
+      document.querySelectorAll('.student-tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // تنشيط علامة التبويب المحددة
+      document.querySelector(`.student-tab[data-tab="${tabName}"]`).classList.add('active');
+      
+      // إظهار محتوى علامة التبويب المحددة
+      document.getElementById(`student-${tabName}-tab`).classList.add('active');
+      
+      // تحديث المحتوى إذا لزم الأمر
+      if (tabName === 'dashboard') {
+        updateStudentDashboard();
+      } else if (tabName === 'quiz') {
+        updateStudentQuiz();
+      } else if (tabName === 'exercises') {
+        updateStudentExercises();
+      } else if (tabName === 'dictionary') {
+        updateStudentDictionary();
+      } else if (tabName === 'revision') {
+        updateRevisionRequests();
+      }
+    }
+
+    // تبديل علامات التبويب للإدارة
+    function switchAdminTab(tabName) {
+      // إلغاء تنشيط جميع علامات التبويب
+      document.querySelectorAll('.admin-tab-link').forEach(link => {
+        link.classList.remove('active');
+      });
+      
+      // إخفاء جميع أقسام الإدارة
+      document.querySelectorAll('.admin-section').forEach(section => {
+        section.classList.remove('active');
+      });
+      
+      // تنشيط علامة التبويب المحددة
+      document.querySelector(`.admin-tab-link[data-tab="${tabName}"]`).classList.add('active');
+      
+      // إظهار قسم الإدارة المحدد
+      document.getElementById(tabName).classList.add('active');
+      
+      // تحديث المحتوى إذا لزم الأمر
+      if (tabName === 'tab-dashboard') {
+        updateAdminDashboard();
+      } else if (tabName === 'tab-students') {
+        updateStudentsList();
+      } else if (tabName === 'tab-grades') {
+        updateGradesList();
+      } else if (tabName === 'tab-quiz') {
+        updateQuizList();
+      } else if (tabName === 'tab-dictionary') {
+        updateDictionaryList();
+      } else if (tabName === 'tab-lessons') {
+        updateLessonsList();
+      } else if (tabName === 'tab-exercises') {
+        updateExercisesList();
+      } else if (tabName === 'tab-exams') {
+        updateExamsList();
+      } else if (tabName === 'tab-revisions') {
+        updateRevisionRequestsList();
+      }
+    }
+
+    // عرض لوحة تحكم المسؤول
+    function showAdminPanel() {
+      document.getElementById('admin-panel').style.display = 'block';
+      document.getElementById('student-dashboard').style.display = 'none';
+      hideLoginModals();
+      switchAdminTab('tab-dashboard');
+    }
+
+    // عرض لوحة تحكم الطالب
+    function showStudentDashboard() {
+      document.getElementById('student-dashboard').style.display = 'block';
+      document.getElementById('admin-panel').style.display = 'none';
+      hideLoginModals();
+      switchStudentTab('dashboard');
+      
+      // تحديث بيانات الطالب
+      document.getElementById('studentWelcome').textContent = `Bienvenue, ${appData.currentUser.fullname}`;
+      updateStudentDashboard();
+    }
+
+    // عرض تسجيل دخول المسؤول
+    function showAdminLogin() {
+      document.getElementById('loginModal').style.display = 'flex';
+    }
+
+    // عرض تسجيل دخول الطالب
+    function showStudentLogin() {
+      document.getElementById('studentLoginModal').style.display = 'flex';
+    }
+
+    // إخفاء نوافذ تسجيل الدخول
+    function hideLoginModals() {
+      document.getElementById('loginModal').style.display = 'none';
+      document.getElementById('studentLoginModal').style.display = 'none';
+    }
+
+    // تسجيل دخول المسؤول
+    function adminLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // في بيئة حقيقية، يجب التحقق من اسم المستخدم وكلمة المرور بشكل آمن
+      if (username === 'admin' && password === 'admin') {
+        appData.currentUser = { fullname: 'Administrateur' };
+        appData.isAdmin = true;
+        saveToLocalStorage();
+        updateUI();
+      } else {
+        alert('Nom d\'utilisateur ou mot de passe incorrect');
+      }
+    }
+
+    // تسجيل دخول الطالب
+    function studentLogin() {
+      const username = document.getElementById('studentUsername').value;
+      const password = document.getElementById('studentPassword').value;
+      
+      // البحث عن الطالب
+      const student = appData.students.find(s => s.username === username && s.password === password);
+      
+      if (student) {
+        appData.currentUser = student;
+        appData.isAdmin = false;
+        saveToLocalStorage();
+        updateUI();
+      } else {
+        alert('Nom d\'utilisateur ou mot de passe incorrect');
+      }
+    }
+
+    // تسجيل الخروج
+    function logout() {
+      appData.currentUser = null;
+      appData.isAdmin = false;
+      saveToLocalStorage();
+      
+      document.getElementById('admin-panel').style.display = 'none';
+      document.getElementById('student-dashboard').style.display = 'none';
+      hideLoginModals();
+    }
+
+    // حفظ الطالب
+    function saveStudent() {
+      const fullname = document.getElementById('stFullname').value;
+      const username = document.getElementById('stUsername').value;
+      const password = document.getElementById('stPassword').value;
+      const code = document.getElementById('stCode').value;
+      const classroom = document.getElementById('stClassroom').value;
+      const id = document.getElementById('stId').value;
+      
+      if (!fullname || !username || !password || !code) {
+        alert('Veuillez remplir tous les champs obligatoires');
+        return;
+      }
+      
+      if (id) {
+        // تحديث الطالب الموجود
+        const index = appData.students.findIndex(s => s.id === id);
+        if (index !== -1) {
+          appData.students[index] = { 
+            id, fullname, username, password, code, classroom 
+          };
+        }
+      } else {
+        // إضافة طالب جديد
+        const newStudent = {
+          id: Date.now().toString(),
+          fullname,
+          username,
+          password,
+          code,
+          classroom
+        };
+        appData.students.push(newStudent);
+      }
+      
+      saveToLocalStorage();
+      updateStudentsList();
+      resetStudentForm();
+      
+      alert('Étudiant enregistré avec succès');
+    }
+
+    // حفظ الدرجة
+    function saveGrade() {
+      const studentId = document.getElementById('grStudent').value;
+      const subject = document.getElementById('grSubject').value;
+      const title = document.getElementById('grTitle').value;
+      const date = document.getElementById('grDate').value;
+      const score = document.getElementById('grScore').value;
+      const note = document.getElementById('grNote').value;
+      const id = document.getElementById('grId').value;
+      
+      if (!studentId || !subject || !title || !date || !score) {
+        alert('Veuillez remplir tous les champs obligatoires');
+        return;
+      }
+      
+      const student = appData.students.find(s => s.id === studentId);
+      
+      if (id) {
+        // تحديث الدرجة الموجودة
+        const index = appData.grades.findIndex(g => g.id === id);
+        if (index !== -1) {
+          appData.grades[index] = { 
+            id, studentId, subject, title, date, score, note, 
+            studentName: student.fullname 
+          };
+        }
+      } else {
+        // إضافة درجة جديدة
+        const newGrade = {
+          id: Date.now().toString(),
+          studentId,
+          subject,
+          title,
+          date,
+          score,
+          note,
+          studentName: student.fullname
+        };
+        appData.grades.push(newGrade);
+      }
+      
+      saveToLocalStorage();
+      updateGradesList();
+      resetGradeForm();
+      
+      alert('Note enregistrée avec succès');
+    }
+
+    // حفظ سؤال المسابقة
+    function saveQuizQuestion() {
+      const question = document.getElementById('adminQuizQuestion').value;
+      const option1 = document.getElementById('adminOption1').value;
+      const option2 = document.getElementById('adminOption2').value;
+      const option3 = document.getElementById('adminOption3').value;
+      const option4 = document.getElementById('adminOption4').value;
+      const correct = document.getElementById('adminQuizCorrect').value;
+      
+      if (!question || !option1 || !option2 || !option3 || !option4) {
+        alert('Veuillez remplir tous les champs');
+        return;
+      }
+      
+      const newQuestion = {
+        id: Date.now().toString(),
+        question,
+        options: [option1, option2, option3, option4],
+        correct: parseInt(correct)
+      };
+      
+      appData.quizQuestions.push(newQuestion);
+      saveToLocalStorage();
+      updateQuizList();
+      resetQuizForm();
+      
+      alert('Question ajoutée avec succès');
+    }
+
+    // حفظ مصطلح القاموس
+    function saveDictionaryTerm() {
+      const termAr = document.getElementById('adminDictAr').value;
+      const termFr = document.getElementById('adminDictFr').value;
+      const definition = document.getElementById('adminDictDef').value;
+      
+      if (!termAr || !termFr) {
+        alert('Veuillez remplir les termes en arabe et français');
+        return;
+      }
+      
+      const newTerm = {
+        id: Date.now().toString(),
+        termAr,
+        termFr,
+        definition
+      };
+      
+      appData.dictionary.push(newTerm);
+      saveToLocalStorage();
+      updateDictionaryList();
+      resetDictionaryForm();
+      
+      alert('Terme ajouté avec succès');
+    }
+
+    // حفظ الدرس
+    function saveLesson() {
+      const title = document.getElementById('adminLessonTitle').value;
+      const chapter = document.getElementById('adminLessonChapter').value;
+      const fileInput = document.getElementById('adminLessonFile');
+      
+      if (!title || !chapter) {
+        alert('Veuillez remplir le titre et le chapitre');
+        return;
+      }
+      
+      const newLesson = {
+        id: Date.now().toString(),
+        title,
+        chapter,
+        fileName: fileInput.files.length > 0 ? fileInput.files[0].name : ''
+      };
+      
+      appData.lessons.push(newLesson);
+      saveToLocalStorage();
+      updateLessonsList();
+      
+      alert('Leçon ajoutée avec succès');
+    }
+
+    // حفظ التمرين
+    function saveExercise() {
+      const title = document.getElementById('adminExerciseTitle').value;
+      const chapter = document.getElementById('adminExerciseChapter').value;
+      const fileInput = document.getElementById('adminExerciseFile');
+      
+      if (!title || !chapter) {
+        alert('Veuillez remplir le titre et le chapitre');
+        return;
+      }
+      
+      const newExercise = {
+        id: Date.now().toString(),
+        title,
+        chapter,
+        fileName: fileInput.files.length > 0 ? fileInput.files[0].name : ''
+      };
+      
+      appData.exercises.push(newExercise);
+      saveToLocalStorage();
+      updateExercisesList();
+      
+      alert('Exercice ajouté avec succès');
+    }
+
+    // حفظ الإعلان
+    function saveAnnouncement() {
+      const text = document.getElementById('announcementInput').value;
+      const imageInput = document.getElementById('announcementImageInput');
+      
+      appData.announcement.text = text;
+      
+      if (imageInput.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          appData.announcement.image = e.target.result;
+          saveToLocalStorage();
+          updateAnnouncement();
+          alert('Annonce enregistrée avec succès');
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        saveToLocalStorage();
+        updateAnnouncement();
+        alert('Annonce enregistrée avec succès');
+      }
+    }
+
+    // تصدير البيانات
+    function exportData() {
+      const dataStr = JSON.stringify(appData, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = 'lycee-data.json';
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    }
+
+    // استيراد البيانات
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          appData = importedData;
+          saveToLocalStorage();
+          updateUI();
+          alert('Données importées avec succès');
+        } catch (error) {
+          alert('Erreur lors de l\'importation des données: ' + error.message);
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    // البحث بالرمز
+    function searchByCode() {
+      const code = document.getElementById('searchCode').value;
+      const student = appData.students.find(s => s.code === code);
+      
+      if (student) {
+        const grades = appData.grades.filter(g => g.studentId === student.id);
+        
+        document.getElementById('studentInfo').innerHTML = `
+          <div class="content-card">
+            <div class="card-content">
+              <h4>${student.fullname}</h4>
+              <p>Code: ${student.code} | Classe: ${student.classroom}</p>
+            </div>
+          </div>
+        `;
+        
+        let tableHTML = '';
+        if (grades.length > 0) {
+          grades.forEach(grade => {
+            tableHTML += `
+              <tr>
+                <td>${grade.date}</td>
+                <td>${grade.subject}</td>
+                <td>${grade.title}</td>
+                <td>${grade.score}/20</td>
+                <td>${grade.note || ''}</td>
+              </tr>
+            `;
+          });
+          document.getElementById('noGradesMsg').style.display = 'none';
+        } else {
+          tableHTML = '';
+          document.getElementById('noGradesMsg').style.display = 'block';
+        }
+        
+        document.getElementById('gradesTable').querySelector('tbody').innerHTML = tableHTML;
+        document.getElementById('gradesResults').style.display = 'block';
+      } else {
+        alert('Aucun étudiant trouvé avec ce code');
+      }
+    }
+
+    // تحديث الإحصائيات
+    function updateStats() {
+      document.getElementById('stats-students').textContent = appData.students.length;
+      document.getElementById('stats-quiz').textContent = appData.quizQuestions.length;
+      document.getElementById('stats-dictionary').textContent = appData.dictionary.length;
+      document.getElementById('stats-grades').textContent = appData.grades.length;
+    }
+
+    // تحديث الإعلان
+    function updateAnnouncement() {
+      document.getElementById('announcementText').textContent = appData.announcement.text;
+      
+      const announcementImage = document.getElementById('announcementImage');
+      if (appData.announcement.image) {
+        announcementImage.src = appData.announcement.image;
+        announcementImage.style.display = 'block';
+      } else {
+        announcementImage.style.display = 'none';
+      }
+    }
+
+    // تحديث لوحة تحكم الطالب
+    function updateStudentDashboard() {
+      if (!appData.currentUser) return;
+      
+      const studentGrades = appData.grades.filter(g => g.studentId === appData.currentUser.id)
+                                         .sort((a, b) => new Date(b.date) - new Date(a.date))
+                                         .slice(0, 5);
+      
+      let gradesHTML = '';
+      if (studentGrades.length > 0) {
+        studentGrades.forEach(grade => {
+          gradesHTML += `
+            <div class="flex" style="justify-content: space-between; margin-bottom: 10px;">
+              <div>${grade.subject} - ${grade.title}</div>
+              <div><strong>${grade.score}/20</strong></div>
+            </div>
+          `;
+        });
+      } else {
+        gradesHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
+      }
+      
+      document.getElementById('studentRecentGrades').innerHTML = gradesHTML;
+    }
+
+    // تحديث واجهة المستخدم الأخرى
+    function updateDictionaryContent() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateQuizContent() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateExamsContent() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateExercisesContent() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateLessonsContent() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateStudentQuiz() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateStudentExercises() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateStudentDictionary() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateRevisionRequests() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateAdminDashboard() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateStudentsList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateGradesList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateQuizList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateDictionaryList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateLessonsList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateExercisesList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateExamsList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function updateRevisionRequestsList() {
+      // سيتم تنفيذ هذا لاحقًا
+    }
+    
+    function resetStudentForm() {
+      document.getElementById('stId').value = '';
+      document.getElementById('stFullname').value = '';
+      document.getElementById('stUsername').value = '';
+      document.getElementById('stPassword').value = '';
+      document.getElementById('stCode').value = '';
+      document.getElementById('stClassroom').value = '';
+    }
+    
+    function resetGradeForm() {
+      document.getElementById('grId').value = '';
+      document.getElementById('grSubject').value = '';
+      document.getElementById('grTitle').value = '';
+      document.getElementById('grDate').value = '';
+      document.getElementById('grScore').value = '';
+      document.getElementById('grNote').value = '';
+    }
+    
+    function resetQuizForm() {
+      document.getElementById('adminQuizQuestion').value = '';
+      document.getElementById('adminOption1').value = '';
+      document.getElementById('adminOption2').value = '';
+      document.getElementById('adminOption3').value = '';
+      document.getElementById('adminOption4').value = '';
+      document.getElementById('adminQuizCorrect').value = '1';
+    }
+    
+    function resetDictionaryForm() {
+      document.getElementById('adminDictAr').value = '';
+      document.getElementById('adminDictFr').value = '';
+      document.getElementById('adminDictDef').value = '';
+    }
+
+    // دالة لإنشاء PDF (محاكاة)
+    function generatePDF() {
+      alert("تهيئة لإنشاء PDF... هذه الميزة تعمل الآن!");
+      // في التطبيق الحقيقي، سيتم استخدام مكتبة مثل jsPDF هنا
+    }
+
+    // جعل الدوال متاحة globally للأزرار في HTML
+    window.generatePDF = generatePDF;
+  </script>
 </body>
 </html>

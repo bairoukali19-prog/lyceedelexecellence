@@ -131,23 +131,6 @@ function showSection(id) {
     }
 }
 
-// إضافة مستمعي الأحداث لعناصر التنقل
-document.addEventListener('DOMContentLoaded', function() {
-    $$('.nav-link, .feature-card').forEach(item => {
-        item.addEventListener('click', function () {
-            const id = this.getAttribute('data-section');
-            if (id) showSection(id);
-        });
-    });
-
-    // إغلاق النماذج
-    $$('.close-modal').forEach(btn => {
-        btn.addEventListener('click', () => {
-            $$('.modal').forEach(modal => modal.style.display = 'none');
-        });
-    });
-});
-
 /********************
  * STUDENT AREA
  ********************/
@@ -175,61 +158,6 @@ function fillGradesFor(student) {
     showSection('grades');
 }
 
-// البحث عن طريق كود المسار
-$('#btnSearchByCode').addEventListener('click', () => {
-    const code = ($('#searchCode').value || '').trim();
-    const st = DB.students.find(s => s.code.toLowerCase() === code.toLowerCase());
-    if (!st) {
-        showNotification('كود المسار غير موجود', 'error');
-        return;
-    }
-    fillGradesFor(st);
-});
-
-// فتح وإغلاق نافذة دخول الطالب
-$('#studentLoginBtn').addEventListener('click', () => $('#studentLoginModal').style.display = 'flex');
-$('#cancelStudentLogin').addEventListener('click', () => $('#studentLoginModal').style.display = 'none');
-
-window.addEventListener('click', (e) => {
-    if (e.target === $('#studentLoginModal')) $('#studentLoginModal').style.display = 'none';
-    if (e.target === $('#loginModal')) $('#loginModal').style.display = 'none';
-});
-
-// تسجيل دخول الطالب
-$('#submitStudentLogin').addEventListener('click', () => {
-    const u = ($('#studentUsername').value || '').trim();
-    const p = ($('#studentPassword').value || '').trim();
-    const st = DB.students.find(s => s.username === u && s.password === p);
-    
-    if (!st) {
-        showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
-        return;
-    }
-    
-    $('#studentLoginModal').style.display = 'none';
-    
-    // تعيين الطالب الحالي
-    currentStudent = st;
-    
-    // عرض لوحة تحكم الطالب
-    $('#studentWelcome').textContent = `مرحباً، ${st.fullname}`;
-    $('#student-dashboard').style.display = 'block';
-    showSection('student-dashboard');
-    
-    // تحميل موارد الطالب
-    loadStudentResources();
-    populateRevisionForm();
-    loadStudentRevisionRequests();
-    loadStudentQuizzes();
-});
-
-// تسجيل خروج الطالب
-$('#studentLogoutBtn').addEventListener('click', () => {
-    $('#student-dashboard').style.display = 'none';
-    currentStudent = null;
-    showSection('home');
-});
-
 // ملء نموذج المراجعة بدرجات الطالب
 function populateRevisionForm() {
     if (!currentStudent) return;
@@ -244,35 +172,6 @@ function populateRevisionForm() {
         select.appendChild(option);
     });
 }
-
-// معالجة إرسال طلب المراجعة
-$('#revisionRequestForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    if (!currentStudent) return;
-
-    const gradeId = $('#revisionExam').value;
-    const message = $('#revisionMessage').value;
-
-    if (!gradeId || !message) {
-        showNotification('يرجى اختيار اختبار وكتابة رسالة', 'error');
-        return;
-    }
-
-    DB.revisionRequests = DB.revisionRequests || [];
-    DB.revisionRequests.push({
-        id: uid(),
-        studentId: currentStudent.id,
-        gradeId,
-        message,
-        date: new Date().toISOString().slice(0, 10),
-        status: 'pending'
-    });
-
-    setData(DB);
-    showNotification('تم إرسال طلبك بنجاح');
-    this.reset();
-    loadStudentRevisionRequests();
-});
 
 // تحميل طلبات مراجعة الطالب
 function loadStudentRevisionRequests() {
@@ -469,22 +368,6 @@ function loadQuestion(index) {
     $('#submitQuiz').style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
 }
 
-// التنقل بين الأسئلة
-$('#prevQuestion').addEventListener('click', () => {
-    if (currentQuestionIndex > 0) {
-        loadQuestion(currentQuestionIndex - 1);
-    }
-});
-
-$('#nextQuestion').addEventListener('click', () => {
-    if (currentQuestionIndex < currentQuiz.length - 1) {
-        loadQuestion(currentQuestionIndex + 1);
-    }
-});
-
-// إرسال المسابقة
-$('#submitQuiz').addEventListener('click', submitQuiz);
-
 function submitQuiz() {
     clearInterval(quizTimer);
     
@@ -538,34 +421,6 @@ function calculateTimeUsed() {
 /********************
  * ADMIN AUTH
  ********************/
-$('#loginBtn').addEventListener('click', () => $('#loginModal').style.display = 'flex');
-$('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
-
-$('#submitLogin').addEventListener('click', () {
-    const u = $('#username').value.trim();
-    const p = $('#password').value.trim();
-    
-    if (u === ADMIN.user && p === ADMIN.pass) {
-        $('#loginModal').style.display = 'none';
-        document.body.classList.add('admin-mode');
-        $('#admin-panel').style.display = 'block';
-        showSection('admin-panel');
-        renderStudentsTable();
-        populateStudentSelects();
-        renderAdminGradesTable();
-        updateDashboardStats();
-        renderAdminDictionaryList();
-        renderAdminQuizList();
-    } else {
-        showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
-    }
-});
-
-$('#logoutBtn').addEventListener('click', () => {
-    document.body.classList.remove('admin-mode');
-    $('#admin-panel').style.display = 'none';
-    showSection('home');
-});
 
 /********************
  * DASHBOARD STATS
@@ -692,49 +547,6 @@ function populateStudentSelects() {
     });
 }
 
-// حفظ الطالب
-$('#btnSaveStudent').addEventListener('click', () => {
-    const id = $('#stId').value;
-    const fullname = $('#stFullname').value.trim();
-    const username = $('#stUsername').value.trim();
-    const password = $('#stPassword').value.trim();
-    const code = $('#stCode').value.trim();
-    const classroom = $('#stClassroom').value.trim();
-    
-    if (!fullname || !username || !password || !code) {
-        showNotification('يرجى ملء جميع الحقول الإلزامية', 'error');
-        return;
-    }
-    
-    if (id) {
-        // تحديث الطالب الحالي
-        const index = DB.students.findIndex(s => s.id === id);
-        
-        if (index !== -1) {
-            DB.students[index] = { ...DB.students[index], fullname, username, password, code, classroom };
-        }
-    } else {
-        // إضافة طالب جديد
-        const newStudent = { id: uid(), fullname, username, password, code, classroom };
-        DB.students.push(newStudent);
-    }
-    
-    setData(DB);
-    renderStudentsTable();
-    populateStudentSelects();
-    $('#btnResetStudent').click();
-});
-
-// إعادة تعيين نموذج الطالب
-$('#btnResetStudent').addEventListener('click', () => {
-    $('#stId').value = '';
-    $('#stFullname').value = '';
-    $('#stUsername').value = '';
-    $('#stPassword').value = '';
-    $('#stCode').value = '';
-    $('#stClassroom').value = '';
-});
-
 /********************
  * GRADES MANAGEMENT
  ********************/
@@ -819,57 +631,6 @@ function renderAdminGradesTable() {
     });
 }
 
-// تصفية الدرجات حسب الطالب
-$('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
-
-// حفظ الدرجة
-$('#btnSaveGrade').addEventListener('click', () => {
-    const id = $('#grId').value;
-    const studentId = $('#grStudent').value;
-    const subject = $('#grSubject').value.trim();
-    const title = $('#grTitle').value.trim();
-    const date = $('#grDate').value;
-    const score = parseFloat($('#grScore').value);
-    const note = $('#grNote').value.trim();
-    
-    if (!studentId || !subject || !title || !date || isNaN(score)) {
-        showNotification('يرجى ملء جميع الحقول الإلزامية', 'error');
-        return;
-    }
-    
-    if (!DB.grades[studentId]) {
-        DB.grades[studentId] = [];
-    }
-    
-    if (id) {
-        // تحديث الدرجة الحالية
-        const index = DB.grades[studentId].findIndex(g => g.id === id);
-        
-        if (index !== -1) {
-            DB.grades[studentId][index] = { ...DB.grades[studentId][index], subject, title, date, score, note };
-        }
-    } else {
-        // إضافة درجة جديدة
-        const newGrade = { id: uid(), subject, title, date, score, note };
-        DB.grades[studentId].push(newGrade);
-    }
-    
-    setData(DB);
-    renderAdminGradesTable();
-    $('#btnResetGrade').click();
-});
-
-// إعادة تعيين نموذج الدرجة
-$('#btnResetGrade').addEventListener('click', () => {
-    $('#grId').value = '';
-    $('#grStudent').value = '';
-    $('#grSubject').value = '';
-    $('#grTitle').value = '';
-    $('#grDate').value = '';
-    $('#grScore').value = '';
-    $('#grNote').value = '';
-});
-
 /********************
  * DICTIONARY MANAGEMENT
  ********************/
@@ -926,44 +687,6 @@ function renderAdminDictionaryList() {
         });
     });
 }
-
-// حفظ مصطلح القاموس
-$('#adminBtnSaveDict').addEventListener('click', () => {
-    const id = $('#adminDictAr').getAttribute('data-id');
-    const ar = $('#adminDictAr').value.trim();
-    const fr = $('#adminDictFr').value.trim();
-    const def = $('#adminDictDef').value.trim();
-    
-    if (!ar || !fr) {
-        showNotification('يرجى ملء الحقلين العربي والفرنسي', 'error');
-        return;
-    }
-    
-    if (id) {
-        // تحديث المصطلح الحالي
-        const index = DB.dictionary.findIndex(t => t.id === id);
-        
-        if (index !== -1) {
-            DB.dictionary[index] = { ...DB.dictionary[index], ar, fr, def };
-        }
-    } else {
-        // إضافة مصطلح جديد
-        const newTerm = { id: uid(), ar, fr, def };
-        DB.dictionary.push(newTerm);
-    }
-    
-    setData(DB);
-    renderAdminDictionaryList();
-    $('#adminBtnResetDict').click();
-});
-
-// إعادة تعيين نموذج القاموس
-$('#adminBtnResetDict').addEventListener('click', () => {
-    $('#adminDictAr').value = '';
-    $('#adminDictFr').value = '';
-    $('#adminDictDef').value = '';
-    $('#adminDictAr').removeAttribute('data-id');
-});
 
 /********************
  * QUIZ MANAGEMENT
@@ -1031,100 +754,9 @@ function renderAdminQuizList() {
     });
 }
 
-// حفظ سؤال المسابقة
-$('#adminBtnSaveQuiz').addEventListener('click', () => {
-    const id = $('#adminQuizQuestion').getAttribute('data-id');
-    const question = $('#adminQuizQuestion').value.trim();
-    const options = [
-        $('#adminOption1').value.trim(),
-        $('#adminOption2').value.trim(),
-        $('#adminOption3').value.trim(),
-        $('#adminOption4').value.trim()
-    ];
-    const correct = parseInt($('#adminQuizCorrect').value);
-    
-    if (!question || options.some(opt => !opt)) {
-        showNotification('يرجى ملء السؤال وجميع الخيارات', 'error');
-        return;
-    }
-    
-    if (id) {
-        // تحديث السؤال الحالي
-        const index = DB.quiz.findIndex(q => q.id === id);
-        
-        if (index !== -1) {
-            DB.quiz[index] = { ...DB.quiz[index], question, options, correct };
-        }
-    } else {
-        // إضافة سؤال جديد
-        const newQuestion = { id: uid(), question, options, correct };
-        DB.quiz.push(newQuestion);
-    }
-    
-    setData(DB);
-    renderAdminQuizList();
-    $('#adminBtnResetQuiz').click();
-});
-
-// إعادة تعيين نموذج المسابقة
-$('#adminBtnResetQuiz').addEventListener('click', () => {
-    $('#adminQuizQuestion').value = '';
-    $('#adminOption1').value = '';
-    $('#adminOption2').value = '';
-    $('#adminOption3').value = '';
-    $('#adminOption4').value = '';
-    $('#adminQuizCorrect').value = '1';
-    $('#adminQuizQuestion').removeAttribute('data-id');
-});
-
 /********************
  * ANNOUNCEMENT MANAGEMENT
  ********************/
-$('#btnSaveAnnouncement').addEventListener('click', () => {
-    const announcement = $('#announcementInput').value.trim();
-    DB.announcement = announcement;
-    
-    // معالجة تحميل الصورة
-    const imageInput = $('#announcementImageInput');
-    
-    if (imageInput.files && imageInput.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            DB.announcementImage = e.target.result;
-            setData(DB);
-            updateAnnouncementDisplay();
-            showNotification('تم حفظ الإعلان مع الصورة!');
-        };
-        reader.readAsDataURL(imageInput.files[0]);
-    } else {
-        setData(DB);
-        updateAnnouncementDisplay();
-        showNotification('تم حفظ الإعلان!');
-    }
-});
-
-function updateAnnouncementDisplay() {
-    $('#announcementText').textContent = DB.announcement;
-    
-    if (DB.announcementImage) {
-        $('#announcementImage').src = DB.announcementImage;
-        $('#announcementImage').style.display = 'block';
-    } else {
-        $('#announcementImage').style.display = 'none';
-    }
-}
-
-// معاينة الصورة للإعلان
-$('#announcementImageInput').addEventListener('change', function () {
-    if (this.files && this.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            $('#announcementImagePreview').src = e.target.result;
-            $('#announcementImagePreview').style.display = 'block';
-        };
-        reader.readAsDataURL(this.files[0]);
-    }
-});
 
 /********************
  * REVISION REQUESTS MANAGEMENT
@@ -1200,155 +832,13 @@ function renderRevisionRequests() {
 }
 
 /********************
- * DATA IMPORT/EXPORT - MODIFIED FOR PDF HANDLING
+ * DATA IMPORT/EXPORT
  ********************/
-
-// دالة لمعالجة ملفات PDF قبل التصدير
-function processPDFsBeforeExport(data) {
-    // نحتفظ ببيانات PDF كملفات منفصلة في الكائن المُصدّر
-    const pdfFiles = {};
-    
-    // معالجة الدروس
-    if (data.lessons && data.lessons.length) {
-        data.lessons.forEach(lesson => {
-            if (lesson.file && lesson.file.startsWith('data:application/pdf;base64,')) {
-                const fileName = `lesson_${lesson.id}.pdf`;
-                pdfFiles[fileName] = lesson.file;
-                lesson.file = fileName; // نستبدل بيانات base64 باسم الملف
-            }
-        });
-    }
-    
-    // معالجة التمارين
-    if (data.exercises && data.exercises.length) {
-        data.exercises.forEach(exercise => {
-            if (exercise.file && exercise.file.startsWith('data:application/pdf;base64,')) {
-                const fileName = `exercise_${exercise.id}.pdf`;
-                pdfFiles[fileName] = exercise.file;
-                exercise.file = fileName;
-            }
-        });
-    }
-    
-    // معالجة الامتحانات
-    if (data.exams && data.exams.length) {
-        data.exams.forEach(exam => {
-            if (exam.file && exam.file.startsWith('data:application/pdf;base64,')) {
-                const fileName = `exam_${exam.id}.pdf`;
-                pdfFiles[fileName] = exam.file;
-                exam.file = fileName;
-            }
-        });
-    }
-    
-    // إضافة ملفات PDF إلى البيانات المُصدّرة
-    data.pdfFiles = pdfFiles;
-    
-    return data;
-}
-
-// دالة لمعالجة ملفات PDF بعد الاستيراد
-function processPDFsAfterImport(data) {
-    if (!data.pdfFiles) return data;
-    
-    const pdfFiles = data.pdfFiles;
-    
-    // استعادة الدروس
-    if (data.lessons && data.lessons.length) {
-        data.lessons.forEach(lesson => {
-            if (lesson.file && pdfFiles[lesson.file]) {
-                lesson.file = pdfFiles[lesson.file];
-            }
-        });
-    }
-    
-    // استعادة التمارين
-    if (data.exercises && data.exercises.length) {
-        data.exercises.forEach(exercise => {
-            if (exercise.file && pdfFiles[exercise.file]) {
-                exercise.file = pdfFiles[exercise.file];
-            }
-        });
-    }
-    
-    // استعادة الامتحانات
-    if (data.exams && data.exams.length) {
-        data.exams.forEach(exam => {
-            if (exam.file && pdfFiles[exam.file]) {
-                exam.file = pdfFiles[exam.file];
-            }
-        });
-    }
-    
-    // إزالة كائن ملفات PDF المؤقت
-    delete data.pdfFiles;
-    
-    return data;
-}
-
-$('#btnExport').addEventListener('click', () => {
-    const dataToExport = processPDFsBeforeExport(JSON.parse(JSON.stringify(DB)));
-    const dataStr = JSON.stringify(dataToExport, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = 'lycee-excellence-data.json';
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-    
-    showNotification('تم تصدير البيانات بنجاح');
-});
-
-$('#importFile').addEventListener('change', function() {
-    const file = this.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            let importedData = JSON.parse(e.target.result);
-            
-            // معالجة ملفات PDF بعد الاستيراد
-            importedData = processPDFsAfterImport(importedData);
-            
-            if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية.')) {
-                localStorage.setItem(LS_KEY, JSON.stringify(importedData));
-                DB = getData();
-                showNotification('تم استيراد البيانات بنجاح!');
-                
-                // إعادة تحميل الواجهة حسب حالة المستخدم الحالية
-                if (currentStudent) {
-                    loadStudentResources();
-                    populateRevisionForm();
-                    loadStudentRevisionRequests();
-                    loadStudentQuizzes();
-                }
-                
-                if (document.body.classList.contains('admin-mode')) {
-                    renderStudentsTable();
-                    populateStudentSelects();
-                    renderAdminGradesTable();
-                    updateDashboardStats();
-                    renderAdminDictionaryList();
-                    renderAdminQuizList();
-                }
-                
-                updateAnnouncementDisplay();
-            }
-        } catch (error) {
-            showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
-            console.error('استيراد البيانات فشل:', error);
-        }
-    };
-    reader.readAsText(file);
-});
 
 /********************
  * INITIALIZATION
  ********************/
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     // تحميل موارد الطالب
     loadStudentResources();
     
@@ -1364,6 +854,404 @@ document.addEventListener('DOMContentLoaded', function () {
     
     // تحديث عرض الإعلان
     updateAnnouncementDisplay();
+    
+    // ==================== إعداد مستمعي الأحداث ====================
+    
+    // التنقل
+    $$('.nav-link, .feature-card').forEach(item => {
+        item.addEventListener('click', function () {
+            const id = this.getAttribute('data-section');
+            if (id) showSection(id);
+        });
+    });
+
+    // إغلاق النماذج
+    $$('.close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            $$('.modal').forEach(modal => modal.style.display = 'none');
+        });
+    });
+
+    // البحث عن طريق كود المسار
+    $('#btnSearchByCode').addEventListener('click', () => {
+        const code = ($('#searchCode').value || '').trim();
+        const st = DB.students.find(s => s.code.toLowerCase() === code.toLowerCase());
+        if (!st) {
+            showNotification('كود المسار غير موجود', 'error');
+            return;
+        }
+        fillGradesFor(st);
+    });
+
+    // فتح وإغلاق نافذة دخول الطالب
+    $('#studentLoginBtn').addEventListener('click', () => $('#studentLoginModal').style.display = 'flex');
+    $('#cancelStudentLogin').addEventListener('click', () => $('#studentLoginModal').style.display = 'none');
+
+    // تسجيل دخول الطالب
+    $('#submitStudentLogin').addEventListener('click', () => {
+        const u = ($('#studentUsername').value || '').trim();
+        const p = ($('#studentPassword').value || '').trim();
+        const st = DB.students.find(s => s.username === u && s.password === p);
+        
+        if (!st) {
+            showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+            return;
+        }
+        
+        $('#studentLoginModal').style.display = 'none';
+        
+        // تعيين الطالب الحالي
+        currentStudent = st;
+        
+        // عرض لوحة تحكم الطالب
+        $('#studentWelcome').textContent = `مرحباً، ${st.fullname}`;
+        $('#student-dashboard').style.display = 'block';
+        showSection('student-dashboard');
+        
+        // تحميل موارد الطالب
+        loadStudentResources();
+        populateRevisionForm();
+        loadStudentRevisionRequests();
+        loadStudentQuizzes();
+    });
+
+    // تسجيل خروج الطالب
+    $('#studentLogoutBtn').addEventListener('click', () => {
+        $('#student-dashboard').style.display = 'none';
+        currentStudent = null;
+        showSection('home');
+    });
+
+    // معالجة إرسال طلب المراجعة
+    $('#revisionRequestForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (!currentStudent) return;
+
+        const gradeId = $('#revisionExam').value;
+        const message = $('#revisionMessage').value;
+
+        if (!gradeId || !message) {
+            showNotification('يرجى اختيار اختبار وكتابة رسالة', 'error');
+            return;
+        }
+
+        DB.revisionRequests = DB.revisionRequests || [];
+        DB.revisionRequests.push({
+            id: uid(),
+            studentId: currentStudent.id,
+            gradeId,
+            message,
+            date: new Date().toISOString().slice(0, 10),
+            status: 'pending'
+        });
+
+        setData(DB);
+        showNotification('تم إرسال طلبك بنجاح');
+        this.reset();
+        loadStudentRevisionRequests();
+    });
+
+    // إدارة المسابقة
+    $('#prevQuestion').addEventListener('click', () => {
+        if (currentQuestionIndex > 0) {
+            loadQuestion(currentQuestionIndex - 1);
+        }
+    });
+
+    $('#nextQuestion').addEventListener('click', () => {
+        if (currentQuestionIndex < currentQuiz.length - 1) {
+            loadQuestion(currentQuestionIndex + 1);
+        }
+    });
+
+    $('#submitQuiz').addEventListener('click', submitQuiz);
+
+    // دخول المدير
+    $('#loginBtn').addEventListener('click', () => $('#loginModal').style.display = 'flex');
+    $('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
+
+    $('#submitLogin').addEventListener('click', () => {
+        const u = $('#username').value.trim();
+        const p = $('#password').value.trim();
+        
+        if (u === ADMIN.user && p === ADMIN.pass) {
+            $('#loginModal').style.display = 'none';
+            document.body.classList.add('admin-mode');
+            $('#admin-panel').style.display = 'block';
+            showSection('admin-panel');
+            renderStudentsTable();
+            populateStudentSelects();
+            renderAdminGradesTable();
+            updateDashboardStats();
+            renderAdminDictionaryList();
+            renderAdminQuizList();
+        } else {
+            showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
+        }
+    });
+
+    // تسجيل خروج المدير
+    $('#logoutBtn').addEventListener('click', () => {
+        document.body.classList.remove('admin-mode');
+        $('#admin-panel').style.display = 'none';
+        showSection('home');
+    });
+
+    // إدارة الطلاب
+    $('#btnSaveStudent').addEventListener('click', () => {
+        const id = $('#stId').value;
+        const fullname = $('#stFullname').value.trim();
+        const username = $('#stUsername').value.trim();
+        const password = $('#stPassword').value.trim();
+        const code = $('#stCode').value.trim();
+        const classroom = $('#stClassroom').value.trim();
+        
+        if (!fullname || !username || !password || !code) {
+            showNotification('يرجى ملء جميع الحقول الإلزامية', 'error');
+            return;
+        }
+        
+        if (id) {
+            // تحديث الطالب الحالي
+            const index = DB.students.findIndex(s => s.id === id);
+            
+            if (index !== -1) {
+                DB.students[index] = { ...DB.students[index], fullname, username, password, code, classroom };
+            }
+        } else {
+            // إضافة طالب جديد
+            const newStudent = { id: uid(), fullname, username, password, code, classroom };
+            DB.students.push(newStudent);
+        }
+        
+        setData(DB);
+        renderStudentsTable();
+        populateStudentSelects();
+        $('#btnResetStudent').click();
+    });
+
+    // إعادة تعيين نموذج الطالب
+    $('#btnResetStudent').addEventListener('click', () => {
+        $('#stId').value = '';
+        $('#stFullname').value = '';
+        $('#stUsername').value = '';
+        $('#stPassword').value = '';
+        $('#stCode').value = '';
+        $('#stClassroom').value = '';
+    });
+
+    // تصفية الدرجات حسب الطالب
+    $('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
+
+    // حفظ الدرجة
+    $('#btnSaveGrade').addEventListener('click', () => {
+        const id = $('#grId').value;
+        const studentId = $('#grStudent').value;
+        const subject = $('#grSubject').value.trim();
+        const title = $('#grTitle').value.trim();
+        const date = $('#grDate').value;
+        const score = parseFloat($('#grScore').value);
+        const note = $('#grNote').value.trim();
+        
+        if (!studentId || !subject || !title || !date || isNaN(score)) {
+            showNotification('يرجى ملء جميع الحقول الإلزامية', 'error');
+            return;
+        }
+        
+        if (!DB.grades[studentId]) {
+            DB.grades[studentId] = [];
+        }
+        
+        if (id) {
+            // تحديث الدرجة الحالية
+            const index = DB.grades[studentId].findIndex(g => g.id === id);
+            
+            if (index !== -1) {
+                DB.grades[studentId][index] = { ...DB.grades[studentId][index], subject, title, date, score, note };
+            }
+        } else {
+            // إضافة درجة جديدة
+            const newGrade = { id: uid(), subject, title, date, score, note };
+            DB.grades[studentId].push(newGrade);
+        }
+        
+        setData(DB);
+        renderAdminGradesTable();
+        $('#btnResetGrade').click();
+    });
+
+    // إعادة تعيين نموذج الدرجة
+    $('#btnResetGrade').addEventListener('click', () => {
+        $('#grId').value = '';
+        $('#grStudent').value = '';
+        $('#grSubject').value = '';
+        $('#grTitle').value = '';
+        $('#grDate').value = '';
+        $('#grScore').value = '';
+        $('#grNote').value = '';
+    });
+
+    // حفظ مصطلح القاموس
+    $('#adminBtnSaveDict').addEventListener('click', () => {
+        const id = $('#adminDictAr').getAttribute('data-id');
+        const ar = $('#adminDictAr').value.trim();
+        const fr = $('#adminDictFr').value.trim();
+        const def = $('#adminDictDef').value.trim();
+        
+        if (!ar || !fr) {
+            showNotification('يرجى ملء الحقلين العربي والفرنسي', 'error');
+            return;
+        }
+        
+        if (id) {
+            // تحديث المصطلح الحالي
+            const index = DB.dictionary.findIndex(t => t.id === id);
+            
+            if (index !== -1) {
+                DB.dictionary[index] = { ...DB.dictionary[index], ar, fr, def };
+            }
+        } else {
+            // إضافة مصطلح جديد
+            const newTerm = { id: uid(), ar, fr, def };
+            DB.dictionary.push(newTerm);
+        }
+        
+        setData(DB);
+        renderAdminDictionaryList();
+        $('#adminBtnResetDict').click();
+    });
+
+    // إعادة تعيين نموذج القاموس
+    $('#adminBtnResetDict').addEventListener('click', () => {
+        $('#adminDictAr').value = '';
+        $('#adminDictFr').value = '';
+        $('#adminDictDef').value = '';
+        $('#adminDictAr').removeAttribute('data-id');
+    });
+
+    // حفظ سؤال المسابقة
+    $('#adminBtnSaveQuiz').addEventListener('click', () => {
+        const id = $('#adminQuizQuestion').getAttribute('data-id');
+        const question = $('#adminQuizQuestion').value.trim();
+        const options = [
+            $('#adminOption1').value.trim(),
+            $('#adminOption2').value.trim(),
+            $('#adminOption3').value.trim(),
+            $('#adminOption4').value.trim()
+        ];
+        const correct = parseInt($('#adminQuizCorrect').value);
+        
+        if (!question || options.some(opt => !opt)) {
+            showNotification('يرجى ملء السؤال وجميع الخيارات', 'error');
+            return;
+        }
+        
+        if (id) {
+            // تحديث السؤال الحالي
+            const index = DB.quiz.findIndex(q => q.id === id);
+            
+            if (index !== -1) {
+                DB.quiz[index] = { ...DB.quiz[index], question, options, correct };
+            }
+        } else {
+            // إضافة سؤال جديد
+            const newQuestion = { id: uid(), question, options, correct };
+            DB.quiz.push(newQuestion);
+        }
+        
+        setData(DB);
+        renderAdminQuizList();
+        $('#adminBtnResetQuiz').click();
+    });
+
+    // إعادة تعيين نموذج المسابقة
+    $('#adminBtnResetQuiz').addEventListener('click', () => {
+        $('#adminQuizQuestion').value = '';
+        $('#adminOption1').value = '';
+        $('#adminOption2').value = '';
+        $('#adminOption3').value = '';
+        $('#adminOption4').value = '';
+        $('#adminQuizCorrect').value = '1';
+        $('#adminQuizQuestion').removeAttribute('data-id');
+    });
+
+    // حفظ الإعلان
+    $('#btnSaveAnnouncement').addEventListener('click', () => {
+        const announcement = $('#announcementInput').value.trim();
+        DB.announcement = announcement;
+        
+        // معالجة تحميل الصورة
+        const imageInput = $('#announcementImageInput');
+        
+        if (imageInput.files && imageInput.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                DB.announcementImage = e.target.result;
+                setData(DB);
+                updateAnnouncementDisplay();
+                showNotification('تم حفظ الإعلان مع الصورة!');
+            };
+            reader.readAsDataURL(imageInput.files[0]);
+        } else {
+            setData(DB);
+            updateAnnouncementDisplay();
+            showNotification('تم حفظ الإعلان!');
+        }
+    });
+
+    // معاينة الصورة للإعلان
+    $('#announcementImageInput').addEventListener('change', function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                $('#announcementImagePreview').src = e.target.result;
+                $('#announcementImagePreview').style.display = 'block';
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
+
+    // استيراد وتصدير البيانات
+    $('#btnExport').addEventListener('click', () => {
+        const dataStr = JSON.stringify(DB, null, 2);
+        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+        
+        const exportFileDefaultName = 'lycee-excellence-data.json';
+        
+        const linkElement = document.createElement('a');
+        linkElement.setAttribute('href', dataUri);
+        linkElement.setAttribute('download', exportFileDefaultName);
+        linkElement.click();
+        
+        showNotification('تم تصدير البيانات بنجاح');
+    });
+
+    $('#importFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                
+                if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية.')) {
+                    localStorage.setItem(LS_KEY, JSON.stringify(importedData));
+                    DB = getData();
+                    showNotification('تم استيراد البيانات بنجاح!');
+                    location.reload();
+                }
+            } catch (error) {
+                showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
+            }
+        };
+        reader.readAsText(file);
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === $('#studentLoginModal')) $('#studentLoginModal').style.display = 'none';
+        if (e.target === $('#loginModal')) $('#loginModal').style.display = 'none';
+    });
 });
 
 // تحميل موارد الطالب
@@ -1466,5 +1354,16 @@ function loadStudentResources() {
             `;
             exercisesContainer.appendChild(exerciseEl);
         });
+    }
+}
+
+function updateAnnouncementDisplay() {
+    $('#announcementText').textContent = DB.announcement;
+    
+    if (DB.announcementImage) {
+        $('#announcementImage').src = DB.announcementImage;
+        $('#announcementImage').style.display = 'block';
+    } else {
+        $('#announcementImage').style.display = 'none';
     }
 }

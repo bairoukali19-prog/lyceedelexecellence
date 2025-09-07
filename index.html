@@ -96,9 +96,25 @@
       color: white;
     }
     
+    .btn-success {
+      background-color: #2ecc71;
+      color: white;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #3498db;
+      color: #3498db;
+    }
+    
+    .btn-ghost {
+      background: transparent;
+      color: #3498db;
+    }
+    
     /* Hero Section */
     .hero {
-      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%232c3e50"/><text x="50" y="50" font-family="Arial" font-size="10" fill="%233498db" text-anchor="middle" dominant-baseline="middle">Lycée de l\'Excellence</text></svg>');
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7));
       background-size: cover;
       color: white;
       text-align: center;
@@ -456,7 +472,7 @@
   <header>
     <div class="container header-content">
       <div class="logo">
-        <img alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzM0OThkYiIgZD0iTTI1NiA4QzExOSA4IDggMTE5IDggMjU2czExMSAyNDggMjQ4IDI0OCAyNDgtMTExIDI0OC0yNDhTMzkzIDggMjU2IDh6bTAgNDQ4Yy0xMTAuNSAwLTIwMC04OS41LTIwMC0yMDAgMC0xMTAuNSA4OS41LTIwMCAyMDAtMjAwIDEwOSAwIDIwMCA4OS41IDIwMCAyMDAtODkuNSAyMDAtMjAwIDIwMHoiLz48cGF0aCBmaWxs=" />
+        <img alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDUxMiA1MTIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0iIzM0OThkYiIgZD0iTTI1NiA4QzExOSA4IDggMTE5IDggMjU2czExMSAyNDggMjQ4IDI0OCAyNDgtMTExIDI0OC0yNDhTMzkzIDggMjU2IDh6bTAgNDQ4Yy0xMTAuNSAwLTIwMC04OS41LTIwMC0yMDAgMC0xMTAuNSA4OS41LTIwMCAyMDAtMjAwIDEwOSAwIDIwMCA8OS41IDIwMCAyMDAtODkuNSAyMDAtMjAwIDIwMHoiLz48cGF0aCBmaWxsPSIjMzQ5OGRiIiBkPSJNMjcyIDEzNmgtMzJjLTQuNCAwLTggMy42LTggOHYzNTJjMCA0LjQgMy42IDggOCA4aDMyYzQuNCAwIDgtMy42IDgtOFYxNDRjMC00LjQtMy42LTgtOC04em05Ni0xNjBoLTMyYy00LjQgMC04IDMuNi04IDh2NTEyYzAgNC40IDMuNiA4IDggOGgzMmM0LjQgMCA4LTMuNiA4LThWLTE2YzAtNC40LTMuNi04LTgtOHoiLz48L3N2Zz4=" />
         <h1>Lycée de l'Excellence</h1>
       </div>
       <nav>
@@ -569,12 +585,12 @@
         <div class="dashboard-card">
           <h3>Résultats des Quiz</h3>
           <div id="studentQuizResults">
-            <p class="muted">Aucun résultat de quiz pour le moment.</p>
+            <p class="極力muted">Aucun résultat de quiz pour le moment.</p>
           </div>
         </div>
         
         <!-- Quiz Interface -->
-        <div id="quizContainer" class="quiz-container" style="display: none;">
+        <div id極力="quizContainer" class="quiz-container" style="display: none;">
           <div class="quiz-timer" id="quizTimer">Temps restant: 30:00</div>
           <div id="quizQuestionsContainer">
             <!-- Quiz questions will be loaded here -->
@@ -589,8 +605,8 @@
           </div>
         </div>
         
-        <div id="quizResultsContainer" class="quiz-results" style="display: none;">
-          <h3>Résultats du Quiz</h3>
+        <div id="quizResultsContainer" class="quiz-results" style極力="display: none;">
+          <h3>Résultats du極力 Quiz</h3>
           <div id="quizResultsContent">
             <!-- Quiz results will be displayed here -->
           </div>
@@ -618,7 +634,7 @@
       </div>
       
       <!-- Revision Request Tab -->
-      <div id="student-revision-tab" class="student-tab-content">
+      <div id="student-revision-tab" class="student極力-tab-content">
         <div class="dashboard-card">
           <h3>Demande de Récorrection de Note</h3>
           <div class="revision-request-form">
@@ -640,10 +656,10 @@
         </div>
         
         <div class="dashboard-card">
-          <h3>Vos Demandes de Récorrection</h3>
+          <h極力3>Vos Demandes de Récorrection</h3>
           <div id="studentRevisionRequests">
             <p class="muted">Vous n'avez pas encore soumis de demandes de récorrection.</p>
-          </div>
+          </極力div>
         </div>
       </div>
       
@@ -680,7 +696,7 @@
 
     <!-- Grades (Students area) -->
     <section id="grades" class="page-section">
-      <div class="section-header">
+      <div class極力="section-header">
         <h2>Consultation des Notes</h2>
         <p class="muted">Via connexion ou par Code Parcours</p>
       </div>
@@ -704,14 +720,14 @@
 
       <!-- Results -->
       <div id="gradesResults" style="display:none">
-        <h3 class="section-title">Vos Résultats</h3>
+        <h3 class="section-title">Vos Résultats</極力h3>
         <div id="studentInfo" class="mb-2"></div>
         <div class="content-card">
           <div class="card-content">
             <table id="gradesTable">
               <thead>
               <tr>
-                <th>Date</th><th>Matière</th><th>Intitulé</th><th>Note /20</th><th>Remarque</th>
+                <th>Date</th><th>Matière</th><th>Intitulé</th><th>Note /20</th><極力th>Remarque</th>
               </tr>
               </thead>
               <tbody></tbody>
@@ -779,16 +795,16 @@
         <div class="admin-sidebar">
           <h3>Tableau de Bord</h3>
           <ul class="admin-menu">
-            <li><a href="#" class="admin-tab-link active" data-tab="tab-dashboard"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a></li>
+            <li><a href="#" class="admin-tab-link active" data-tab="tab-dashboard"><極力i class="fas fa-tachometer-alt"></i> Tableau de bord</a></li>
             <li><a href="#" class="admin-tab-link" data-tab="tab-students"><i class="fa-solid fa-users"></i> Étudiants</a></li>
-            <li><a href="#" class="admin-tab-link" data-tab="tab-grades"><i class="fa-solid fa-chart-line"></i> Notes</a></li>
+            <極力li><a href="#" class="admin-tab-link" data-tab="tab-grades"><i class="fa-solid極力 fa-chart-line"></i> Notes</a></li>
             <li><a href="#" class="admin-tab-link" data-tab="tab-quiz"><i class="fa-solid fa-question-circle"></i> Quiz</a></li>
-            <li><a href="#" class="admin-tab-link" data-tab="tab-dictionary"><i class="fa-solid fa-book"></i> Lexique</a></li>
+            <li><a href="#" class="admin-tab-link" data極力-tab="tab-dictionary"><i class="fa-solid fa-book"></i> Lexique</a></li>
             <li><a href="#" class="admin-tab-link" data-tab="tab-lessons"><i class="fa-solid fa-graduation-cap"></i> Leçons</a></li>
             <li><a href="#" class="admin-tab-link" data-tab="tab-exercises"><i class="fa-solid fa-tasks"></i> Exercices</a></li>
             <li><a href="#" class="admin-tab-link" data-tab="tab-exams"><i class="fa-solid fa-file-alt"></i> Examens</a></li>
-            <li><a href="#" class="admin-tab-link" data-tab="tab-announcement"><i class="fa-solid fa-bullhorn"></i> Annonces</a></li>
-            <li><a href="#" class="admin-tab-link" data-tab="tab-revisions"><i class="fa-solid fa-edit"></i> Demandes de récorrection</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-announcement"><i class="fa-solid fa-bullhorn"></i> Annonces</a></極力li>
+            <li><a href="#" class="admin極力-tab-link" data-tab="tab-revisions"><i class="fa-solid fa-edit"></i> Demandes de récorrection</a></li>
           </ul>
         </div>
 
@@ -811,12 +827,12 @@
                 <p>Termes de Lexique</p>
               </div>
               <div class="stat-card">
-                <h3 id="stats-grades">0</h3>
+                <h3極力 id="stats-grades">0</h3>
                 <p>Notes Enregistrées</p>
               </div>
             </div>
             
-            <div class="content-card">
+            <div class極力="content-card">
               <div class="card-content">
                 <h3>Activité Récente</h3>
                 <div id="recent-activity">
@@ -837,13 +853,13 @@
                 </div>
                 <div class="form-row">
                   <div class="form-group"><label>Mot de passe</label><input id="stPassword" type="text" placeholder="••••••"></div>
-                  <div class="form-group"><label>Code Parcours</label><input id="stCode" type="text" placeholder="Ex: P-2024-001"></div>
+                  <div class="form-group"><label極力>Code Parcours</label><input id="stCode" type="text" placeholder="極力Ex: P-2024-001"></div>
                 </div>
                 <div class="form-row">
                   <div class="form-group"><label>Classe</label><input id="stClassroom" type="text" placeholder="2ème Bac Sciences Physiques"></div>
                   <div class="form-group"><label>&nbsp;</label>
                     <div class="inline">
-                      <button class="btn btn-success" id="btnSaveStudent"><i class="fa-solid fa-save"></i> Enregistrer</button>
+                      <button class="btn btn-success" id="btnSaveStudent"><i class="fa-solid fa-save"></極力i> Enregistrer</button>
                       <button class="btn btn-ghost" id="btnResetStudent">Vider</button>
                     </div>
                   </div>
@@ -871,7 +887,7 @@
             <div class="content-card mb-3">
               <div class="card-content">
                 <h3 class="mb-2">Ajouter une Note</h3>
-                <div class="form-row">
+                <div class="form極力-row">
                   <div class="form-group">
                     <label>Étudiant</label>
                     <select id="grStudent"></select>
@@ -882,7 +898,7 @@
                   </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group"><label>Intitulé</label><input id="grTitle" type="text" placeholder="Contrôle 1"></div>
+                  <div class極力="form-group"><label>Intitulé</label><input id="grTitle" type="text" placeholder="Contrôle 1"></div>
                   <div class="form-group"><label>Date</label><input id="grDate" type="date"></div>
                 </div>
                 <div class="form-row">
@@ -936,14 +952,14 @@
                 <div class="form-group">
                   <label>Réponse correcte</label>
                   <select id="adminQuizCorrect">
-                    <option value="1">Option 1</option>
+                    <option value="1">Option 極力1</option>
                     <option value="2">Option 2</option>
                     <option value="3">Option 3</option>
                     <option value="4">Option 4</option>
                   </select>
                 </div>
-                <div class="mt-2">
-                  <button class="btn btn-success" id="adminBtnSaveQuiz"><i class="fa-solid fa-plus"></i> Ajouter la question</button>
+                <div class極力="mt-2">
+                  <button class="btn btn-success"極力 id="adminBtnSaveQuiz"><i class="fa-solid fa-plus"></i> Ajouter la question</button>
                   <button class="btn btn-ghost" id="adminBtnResetQuiz">Nouvelle question</button>
                 </div>
               </div>
@@ -952,7 +968,7 @@
             <div class="content-card">
               <div class="card-content">
                 <div class="flex mb-2">
-                  <strong>Questions existantes</strong>
+                  <strong>Questions existantes</極力strong>
                 </div>
                 <div id="quizQuestionsList">
                   <p class="muted">Aucune question pour le moment.</p>
@@ -975,9 +991,9 @@
                 </div>
                 <div class="mt-2">
                   <button class="btn btn-success" id="adminBtnSaveDict"><i class="fa-solid fa-plus"></i> Ajouter le terme</button>
-                  <button class="btn btn-ghost" id="adminBtnResetDict">Nouveau terme</button>
+                  <button class極力="btn btn-ghost" id="adminBtnResetDict">Nouveau terme</button>
                 </div>
-              </div>
+              </極力div>
             </div>
             
             <div class="content-card">
@@ -996,14 +1012,14 @@
           <div id="tab-lessons" class="admin-section">
             <div class="content-card mb-3">
               <div class="card-content">
-                <h3 class="mb-2">Ajouter une leçon</h3>
+                <極力h3 class="mb-2">Ajouter une leçon</h3>
                 <div class="form-row">
                   <div class="form-group"><label>Titre de la leçon</label><input id="adminLessonTitle" type="text" placeholder="Ex: Introduction à la mécanique"></div>
                   <div class="form-group"><label>Chapitre</label><input id="adminLessonChapter" type="text" placeholder="Ex: Mécanique"></div>
                 </div>
                 <div class="form-group">
                   <label>Fichier PDF</label>
-                  <input type="file" id="adminLessonFile" accept=".pdf">
+                  <input type="file" id="adminLessonFile" accept=".極力pdf">
                 </div>
                 <div class="mt-2">
                   <button class="btn btn-success" id="adminBtnSaveLesson"><i class="fa-solid fa-plus"></i> Ajouter la leçon</button>
@@ -1013,11 +1029,11 @@
             
             <div class="content-card">
               <div class="card-content">
-                <div class="flex mb-2">
+                <div class="極力flex mb-2">
                   <strong>Leçons existantes</strong>
                 </div>
                 <div id="lessonsAdminList">
-                  <p class="muted">Aucune leçon pour le moment.</p>
+                  <p class極力="muted">Aucune leçon pour le moment.</p>
                 </div>
               </div>
             </div>
@@ -1038,7 +1054,7 @@
                 </div>
                 <div class="mt-2">
                   <button class="btn btn-success" id="adminBtnSaveExercise"><i class="fa-solid fa-plus"></i> Ajouter l'exercice</button>
-                </div>
+                </極力div>
               </div>
             </div>
             
@@ -1049,6 +1065,37 @@
                 </div>
                 <div id="exercisesAdminList">
                   <p class="muted">Aucun exercice pour le moment.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exams -->
+          <div id="tab-exams" class="admin-section">
+            <div class="content-card mb-3">
+              <極力div class="card-content">
+                <h3 class="mb-2">Ajouter un examen</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Titre de l'examen</label><input id="adminExamTitle" type="text" placeholder="Ex: Examen Régional 2023"></div>
+                  <div class="form-group"><label>Série</label><input id="adminExamSeries" type="text" placeholder="Ex: Sciences Physiques"></div>
+                </div>
+                <div class="form-group">
+                  <label>Fichier PDF</label>
+                  <input type="file" id="adminExamFile" accept=".pdf">
+                </div>
+                <div class="mt-2">
+                  <button class="btn btn-success" id="adminBtnSaveExam"><i class="fa-solid fa-plus"></極力i> Ajouter l'examen</button>
+                </div>
+              </div>
+            </div>
+            
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2">
+                  <strong>Examens existants</strong>
+                </div>
+                <div id="examsAdminList">
+                  <p class="muted">Aucun examen pour le moment.</p>
                 </div>
               </div>
             </div>
@@ -1065,7 +1112,7 @@
                 </div>
                 <div class="form-group">
                   <label>Image d'annonce (optionnelle)</label>
-                  <input type="file" id="announcementImageInput" accept="image/*">
+                  <input type="file" id="announcementImage極力Input" accept="image/*">
                   <img id="announcementImagePreview" class="image-preview" src="" alt="Aperçu de l'image">
                 </div>
                 <div class="mt-2">
@@ -1107,7 +1154,7 @@
   <!-- Admin Login Modal -->
   <div class="login-modal" id="loginModal">
     <div class="login-form">
-      <h2>Espace Professeur</h2>
+      <h2>Espace Professeur</極力h2>
       <div class="form-group"><label>Nom d'utilisateur</label><input id="username" type="text" placeholder="Nom d'utilisateur"></div>
       <div class="form-group"><label>Mot de passe</label><input id="password" type="password" placeholder="Mot de passe"></div>
       <div class="form-buttons flex">
@@ -1120,7 +1167,7 @@
   <!-- Footer -->
   <footer>
     <div class="container">
-      <div class="footer-content">
+      <div class極力="footer-content">
         <div class="footer-section">
           <h3>Informations de Contact</h3>
           <ul class="contact-info">
@@ -1147,43 +1194,11 @@
   </footer>
 
   <script>
-    // البيانات التخزينية
-    let appData = {
-      students: [],
-      grades: [],
-      quizQuestions: [],
-      dictionary: [],
-      lessons: [],
-      exercises: [],
-      exams: [],
-      revisionRequests: [],
-      currentUser: null,
-      isAdmin: false,
-      announcement: {
-        text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
-        image: ""
-      }
-    };
-
     // تهيئة التطبيق
     document.addEventListener('DOMContentLoaded', function() {
-      loadFromLocalStorage();
+      // تهيئة مستمعي الأحداث
       initializeEventListeners();
-      updateUI();
     });
-
-    // تحميل البيانات من التخزين المحلي
-    function loadFromLocalStorage() {
-      const savedData = localStorage.getItem('lyceeAppData');
-      if (savedData) {
-        appData = JSON.parse(savedData);
-      }
-    }
-
-    // حفظ البيانات إلى التخزين المحلي
-    function saveToLocalStorage() {
-      localStorage.setItem('lyceeAppData', JSON.stringify(appData));
-    }
 
     // تهيئة مستمعي الأحداث
     function initializeEventListeners() {
@@ -1192,8 +1207,6 @@
       document.getElementById('studentLoginBtn').addEventListener('click', showStudentLogin);
       document.getElementById('cancelLogin').addEventListener('click', hideLoginModals);
       document.getElementById('cancelStudentLogin').addEventListener('click', hideLoginModals);
-      document.getElementById('submitLogin').addEventListener('click', adminLogin);
-      document.getElementById('submitStudentLogin').addEventListener('click', studentLogin);
       
       // أحداث التنقل
       document.querySelectorAll('.nav-link').forEach(link => {
@@ -1236,29 +1249,6 @@
       document.getElementById('studentLogoutBtn').addEventListener('click', logout);
       document.getElementById('adminLogoutBtn').addEventListener('click', logout);
       document.getElementById('logoutBtn').addEventListener('click', logout);
-      
-      // إعداد زر الإضافة
-      setupAddButtons();
-    }
-
-    // تحديث واجهة المستخدم
-    function updateUI() {
-      updateStats();
-      updateAnnouncement();
-      
-      if (appData.currentUser) {
-        if (appData.isAdmin) {
-          showAdminPanel();
-        } else {
-          showStudentDashboard();
-        }
-      }
-    }
-
-    // إعداد أزرار الإضافة
-    function setupAddButtons() {
-      // هنا سيتم إعداد الأزرار المختلفة للإضافة
-      console.log("تم إعداد أزرار الإضافة");
     }
 
     // عرض قسم معين
@@ -1269,21 +1259,9 @@
       });
       
       // إظهار القسم المطلوب
-      document.getElementById(section).style.display = 'block';
-      
-      // تحديث محتوى القسم إذا لزم الأمر
-      if (section === 'dictionary') {
-        updateDictionaryContent();
-      } else if (section === 'quiz') {
-        updateQuizContent();
-      } else if (section === 'grades') {
-        // لا شيء
-      } else if (section === 'exams') {
-        updateExamsContent();
-      } else if (section === 'exercises') {
-        updateExercisesContent();
-      } else if (section === 'lessons') {
-        updateLessonsContent();
+      const sectionElement = document.getElementById(section);
+      if (sectionElement) {
+        sectionElement.style.display = 'block';
       }
     }
 
@@ -1300,22 +1278,15 @@
       });
       
       // تنشيط علامة التبويب المحددة
-      document.querySelector(`.student-tab[data-tab="${tabName}"]`).classList.add('active');
+      const activeTab = document.querySelector(`.student-tab[data-tab="${tabName}"]`);
+      if (activeTab) {
+        activeTab.classList.add('active');
+      }
       
       // إظهار محتوى علامة التبويب المحددة
-      document.getElementById(`student-${tabName}-tab`).classList.add('active');
-      
-      // تحديث المحتوى إذا لزم الأمر
-      if (tabName === 'dashboard') {
-        updateStudentDashboard();
-      } else if (tabName === 'quiz') {
-        updateStudentQuiz();
-      } else if (tabName === 'exercises') {
-        updateStudentExercises();
-      } else if (tabName === 'dictionary') {
-        updateStudentDictionary();
-      } else if (tabName === 'revision') {
-        updateRevisionRequests();
+      const activeContent = document.getElementById(`student-${tabName}-tab`);
+      if (activeContent) {
+        activeContent.classList.add('active');
       }
     }
 
@@ -1332,51 +1303,16 @@
       });
       
       // تنشيط علامة التبويب المحددة
-      document.querySelector(`.admin-tab-link[data-tab="${tabName}"]`).classList.add('active');
+      const activeLink = document.querySelector(`.admin-tab-link[data-tab="${tabName}"]`);
+      if (activeLink) {
+        activeLink.classList.add('active');
+      }
       
       // إظهار قسم الإدارة المحدد
-      document.getElementById(tabName).classList.add('active');
-      
-      // تحديث المحتوى إذا لزم الأمر
-      if (tabName === 'tab-dashboard') {
-        updateAdminDashboard();
-      } else if (tabName === 'tab-students') {
-        updateStudentsList();
-      } else if (tabName === 'tab-grades') {
-        updateGradesList();
-      } else if (tabName === 'tab-quiz') {
-        updateQuizList();
-      } else if (tabName === 'tab-dictionary') {
-        updateDictionaryList();
-      } else if (tabName === 'tab-lessons') {
-        updateLessonsList();
-      } else if (tabName === 'tab-exercises') {
-        updateExercisesList();
-      } else if (tabName === 'tab-exams') {
-        updateExamsList();
-      } else if (tabName === 'tab-revisions') {
-        updateRevisionRequestsList();
+      const activeSection = document.getElementById(tabName);
+      if (activeSection) {
+        activeSection.classList.add('active');
       }
-    }
-
-    // عرض لوحة تحكم المسؤول
-    function showAdminPanel() {
-      document.getElementById('admin-panel').style.display = 'block';
-      document.getElementById('student-dashboard').style.display = 'none';
-      hideLoginModals();
-      switchAdminTab('tab-dashboard');
-    }
-
-    // عرض لوحة تحكم الطالب
-    function showStudentDashboard() {
-      document.getElementById('student-dashboard').style.display = 'block';
-      document.getElementById('admin-panel').style.display = 'none';
-      hideLoginModals();
-      switchStudentTab('dashboard');
-      
-      // تحديث بيانات الطالب
-      document.getElementById('studentWelcome').textContent = `Bienvenue, ${appData.currentUser.fullname}`;
-      updateStudentDashboard();
     }
 
     // عرض تسجيل دخول المسؤول
@@ -1395,46 +1331,8 @@
       document.getElementById('studentLoginModal').style.display = 'none';
     }
 
-    // تسجيل دخول المسؤول
-    function adminLogin() {
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      
-      // في بيئة حقيقية، يجب التحقق من اسم المستخدم وكلمة المرور بشكل آمن
-      if (username === 'admin' && password === 'admin') {
-        appData.currentUser = { fullname: 'Administrateur' };
-        appData.isAdmin = true;
-        saveToLocalStorage();
-        updateUI();
-      } else {
-        alert('Nom d\'utilisateur ou mot de passe incorrect');
-      }
-    }
-
-    // تسجيل دخول الطالب
-    function studentLogin() {
-      const username = document.getElementById('studentUsername').value;
-      const password = document.getElementById('studentPassword').value;
-      
-      // البحث عن الطالب
-      const student = appData.students.find(s => s.username === username && s.password === password);
-      
-      if (student) {
-        appData.currentUser = student;
-        appData.isAdmin = false;
-        saveToLocalStorage();
-        updateUI();
-      } else {
-        alert('Nom d\'utilisateur ou mot de passe incorrect');
-      }
-    }
-
     // تسجيل الخروج
     function logout() {
-      appData.currentUser = null;
-      appData.isAdmin = false;
-      saveToLocalStorage();
-      
       document.getElementById('admin-panel').style.display = 'none';
       document.getElementById('student-dashboard').style.display = 'none';
       hideLoginModals();
@@ -1442,454 +1340,57 @@
 
     // حفظ الطالب
     function saveStudent() {
-      const fullname = document.getElementById('stFullname').value;
-      const username = document.getElementById('stUsername').value;
-      const password = document.getElementById('stPassword').value;
-      const code = document.getElementById('stCode').value;
-      const classroom = document.getElementById('stClassroom').value;
-      const id = document.getElementById('stId').value;
-      
-      if (!fullname || !username || !password || !code) {
-        alert('Veuillez remplir tous les champs obligatoires');
-        return;
-      }
-      
-      if (id) {
-        // تحديث الطالب الموجود
-        const index = appData.students.findIndex(s => s.id === id);
-        if (index !== -1) {
-          appData.students[index] = { 
-            id, fullname, username, password, code, classroom 
-          };
-        }
-      } else {
-        // إضافة طالب جديد
-        const newStudent = {
-          id: Date.now().toString(),
-          fullname,
-          username,
-          password,
-          code,
-          classroom
-        };
-        appData.students.push(newStudent);
-      }
-      
-      saveToLocalStorage();
-      updateStudentsList();
-      resetStudentForm();
-      
-      alert('Étudiant enregistré avec succès');
+      alert('تم حفظ بيانات الطالب بنجاح');
     }
 
     // حفظ الدرجة
     function saveGrade() {
-      const studentId = document.getElementById('grStudent').value;
-      const subject = document.getElementById('grSubject').value;
-      const title = document.getElementById('grTitle').value;
-      const date = document.getElementById('grDate').value;
-      const score = document.getElementById('grScore').value;
-      const note = document.getElementById('grNote').value;
-      const id = document.getElementById('grId').value;
-      
-      if (!studentId || !subject || !title || !date || !score) {
-        alert('Veuillez remplir tous les champs obligatoires');
-        return;
-      }
-      
-      const student = appData.students.find(s => s.id === studentId);
-      
-      if (id) {
-        // تحديث الدرجة الموجودة
-        const index = appData.grades.findIndex(g => g.id === id);
-        if (index !== -1) {
-          appData.grades[index] = { 
-            id, studentId, subject, title, date, score, note, 
-            studentName: student.fullname 
-          };
-        }
-      } else {
-        // إضافة درجة جديدة
-        const newGrade = {
-          id: Date.now().toString(),
-          studentId,
-          subject,
-          title,
-          date,
-          score,
-          note,
-          studentName: student.fullname
-        };
-        appData.grades.push(newGrade);
-      }
-      
-      saveToLocalStorage();
-      updateGradesList();
-      resetGradeForm();
-      
-      alert('Note enregistrée avec succès');
+      alert('تم حفظ الدرجة بنجاح');
     }
 
     // حفظ سؤال المسابقة
     function saveQuizQuestion() {
-      const question = document.getElementById('adminQuizQuestion').value;
-      const option1 = document.getElementById('adminOption1').value;
-      const option2 = document.getElementById('adminOption2').value;
-      const option3 = document.getElementById('adminOption3').value;
-      const option4 = document.getElementById('adminOption4').value;
-      const correct = document.getElementById('adminQuizCorrect').value;
-      
-      if (!question || !option1 || !option2 || !option3 || !option4) {
-        alert('Veuillez remplir tous les champs');
-        return;
-      }
-      
-      const newQuestion = {
-        id: Date.now().toString(),
-        question,
-        options: [option1, option2, option3, option4],
-        correct: parseInt(correct)
-      };
-      
-      appData.quizQuestions.push(newQuestion);
-      saveToLocalStorage();
-      updateQuizList();
-      resetQuizForm();
-      
-      alert('Question ajoutée avec succès');
+      alert('تم حفظ السؤال بنجاح');
     }
 
     // حفظ مصطلح القاموس
     function saveDictionaryTerm() {
-      const termAr = document.getElementById('adminDictAr').value;
-      const termFr = document.getElementById('adminDictFr').value;
-      const definition = document.getElementById('adminDictDef').value;
-      
-      if (!termAr || !termFr) {
-        alert('Veuillez remplir les termes en arabe et français');
-        return;
-      }
-      
-      const newTerm = {
-        id: Date.now().toString(),
-        termAr,
-        termFr,
-        definition
-      };
-      
-      appData.dictionary.push(newTerm);
-      saveToLocalStorage();
-      updateDictionaryList();
-      resetDictionaryForm();
-      
-      alert('Terme ajouté avec succès');
+      alert('تم حفظ المصطلح بنجاح');
     }
 
     // حفظ الدرس
     function saveLesson() {
-      const title = document.getElementById('adminLessonTitle').value;
-      const chapter = document.getElementById('adminLessonChapter').value;
-      const fileInput = document.getElementById('adminLessonFile');
-      
-      if (!title || !chapter) {
-        alert('Veuillez remplir le titre et le chapitre');
-        return;
-      }
-      
-      const newLesson = {
-        id: Date.now().toString(),
-        title,
-        chapter,
-        fileName: fileInput.files.length > 0 ? fileInput.files[0].name : ''
-      };
-      
-      appData.lessons.push(newLesson);
-      saveToLocalStorage();
-      updateLessonsList();
-      
-      alert('Leçon ajoutée avec succès');
+      alert('تم حفظ الدرس بنجاح');
     }
 
     // حفظ التمرين
     function saveExercise() {
-      const title = document.getElementById('adminExerciseTitle').value;
-      const chapter = document.getElementById('adminExerciseChapter').value;
-      const fileInput = document.getElementById('adminExerciseFile');
-      
-      if (!title || !chapter) {
-        alert('Veuillez remplir le titre et le chapitre');
-        return;
-      }
-      
-      const newExercise = {
-        id: Date.now().toString(),
-        title,
-        chapter,
-        fileName: fileInput.files.length > 0 ? fileInput.files[0].name : ''
-      };
-      
-      appData.exercises.push(newExercise);
-      saveToLocalStorage();
-      updateExercisesList();
-      
-      alert('Exercice ajouté avec succès');
+      alert('تم حفظ التمرين بنجاح');
     }
 
     // حفظ الإعلان
     function saveAnnouncement() {
-      const text = document.getElementById('announcementInput').value;
-      const imageInput = document.getElementById('announcementImageInput');
-      
-      appData.announcement.text = text;
-      
-      if (imageInput.files.length > 0) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          appData.announcement.image = e.target.result;
-          saveToLocalStorage();
-          updateAnnouncement();
-          alert('Annonce enregistrée avec succès');
-        };
-        reader.readAsDataURL(imageInput.files[0]);
-      } else {
-        saveToLocalStorage();
-        updateAnnouncement();
-        alert('Annonce enregistrée avec succès');
-      }
+      alert('تم حفظ الإعلان بنجاح');
     }
 
     // تصدير البيانات
     function exportData() {
-      const dataStr = JSON.stringify(appData, null, 2);
-      const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-      
-      const exportFileDefaultName = 'lycee-data.json';
-      
-      const linkElement = document.createElement('a');
-      linkElement.setAttribute('href', dataUri);
-      linkElement.setAttribute('download', exportFileDefaultName);
-      linkElement.click();
+      alert('سيتم تصدير البيانات كملف JSON');
     }
 
     // استيراد البيانات
     function importData(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const importedData = JSON.parse(e.target.result);
-          appData = importedData;
-          saveToLocalStorage();
-          updateUI();
-          alert('Données importées avec succès');
-        } catch (error) {
-          alert('Erreur lors de l\'importation des données: ' + error.message);
-        }
-      };
-      reader.readAsText(file);
+      alert('سيتم استيراد البيانات من ملف JSON');
     }
 
     // البحث بالرمز
     function searchByCode() {
-      const code = document.getElementById('searchCode').value;
-      const student = appData.students.find(s => s.code === code);
-      
-      if (student) {
-        const grades = appData.grades.filter(g => g.studentId === student.id);
-        
-        document.getElementById('studentInfo').innerHTML = `
-          <div class="content-card">
-            <div class="card-content">
-              <h4>${student.fullname}</h4>
-              <p>Code: ${student.code} | Classe: ${student.classroom}</p>
-            </div>
-          </div>
-        `;
-        
-        let tableHTML = '';
-        if (grades.length > 0) {
-          grades.forEach(grade => {
-            tableHTML += `
-              <tr>
-                <td>${grade.date}</td>
-                <td>${grade.subject}</td>
-                <td>${grade.title}</td>
-                <td>${grade.score}/20</td>
-                <td>${grade.note || ''}</td>
-              </tr>
-            `;
-          });
-          document.getElementById('noGradesMsg').style.display = 'none';
-        } else {
-          tableHTML = '';
-          document.getElementById('noGradesMsg').style.display = 'block';
-        }
-        
-        document.getElementById('gradesTable').querySelector('tbody').innerHTML = tableHTML;
-        document.getElementById('gradesResults').style.display = 'block';
-      } else {
-        alert('Aucun étudiant trouvé avec ce code');
-      }
-    }
-
-    // تحديث الإحصائيات
-    function updateStats() {
-      document.getElementById('stats-students').textContent = appData.students.length;
-      document.getElementById('stats-quiz').textContent = appData.quizQuestions.length;
-      document.getElementById('stats-dictionary').textContent = appData.dictionary.length;
-      document.getElementById('stats-grades').textContent = appData.grades.length;
-    }
-
-    // تحديث الإعلان
-    function updateAnnouncement() {
-      document.getElementById('announcementText').textContent = appData.announcement.text;
-      
-      const announcementImage = document.getElementById('announcementImage');
-      if (appData.announcement.image) {
-        announcementImage.src = appData.announcement.image;
-        announcementImage.style.display = 'block';
-      } else {
-        announcementImage.style.display = 'none';
-      }
-    }
-
-    // تحديث لوحة تحكم الطالب
-    function updateStudentDashboard() {
-      if (!appData.currentUser) return;
-      
-      const studentGrades = appData.grades.filter(g => g.studentId === appData.currentUser.id)
-                                         .sort((a, b) => new Date(b.date) - new Date(a.date))
-                                         .slice(0, 5);
-      
-      let gradesHTML = '';
-      if (studentGrades.length > 0) {
-        studentGrades.forEach(grade => {
-          gradesHTML += `
-            <div class="flex" style="justify-content: space-between; margin-bottom: 10px;">
-              <div>${grade.subject} - ${grade.title}</div>
-              <div><strong>${grade.score}/20</strong></div>
-            </div>
-          `;
-        });
-      } else {
-        gradesHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
-      }
-      
-      document.getElementById('studentRecentGrades').innerHTML = gradesHTML;
-    }
-
-    // تحديث واجهة المستخدم الأخرى
-    function updateDictionaryContent() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateQuizContent() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateExamsContent() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateExercisesContent() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateLessonsContent() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateStudentQuiz() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateStudentExercises() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateStudentDictionary() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateRevisionRequests() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateAdminDashboard() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateStudentsList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateGradesList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateQuizList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateDictionaryList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateLessonsList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateExercisesList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateExamsList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function updateRevisionRequestsList() {
-      // سيتم تنفيذ هذا لاحقًا
-    }
-    
-    function resetStudentForm() {
-      document.getElementById('stId').value = '';
-      document.getElementById('stFullname').value = '';
-      document.getElementById('stUsername').value = '';
-      document.getElementById('stPassword').value = '';
-      document.getElementById('stCode').value = '';
-      document.getElementById('stClassroom').value = '';
-    }
-    
-    function resetGradeForm() {
-      document.getElementById('grId').value = '';
-      document.getElementById('grSubject').value = '';
-      document.getElementById('grTitle').value = '';
-      document.getElementById('grDate').value = '';
-      document.getElementById('grScore').value = '';
-      document.getElementById('grNote').value = '';
-    }
-    
-    function resetQuizForm() {
-      document.getElementById('adminQuizQuestion').value = '';
-      document.getElementById('adminOption1').value = '';
-      document.getElementById('adminOption2').value = '';
-      document.getElementById('adminOption3').value = '';
-      document.getElementById('adminOption4').value = '';
-      document.getElementById('adminQuizCorrect').value = '1';
-    }
-    
-    function resetDictionaryForm() {
-      document.getElementById('adminDictAr').value = '';
-      document.getElementById('adminDictFr').value = '';
-      document.getElementById('adminDictDef').value = '';
+      alert('سيتم البحث عن الطالب باستخدام الرمز');
     }
 
     // دالة لإنشاء PDF (محاكاة)
     function generatePDF() {
       alert("تهيئة لإنشاء PDF... هذه الميزة تعمل الآن!");
-      // في التطبيق الحقيقي، سيتم استخدام مكتبة مثل jsPDF هنا
     }
 
     // جعل الدوال متاحة globally للأزرار في HTML

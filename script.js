@@ -1,4 +1,4 @@
-/********************
+ /********************
  * UTIL & STORAGE - MODIFIED FOR LOCAL STORAGE ONLY
  ********************/
 const LS_KEY = 'lx-data-v4';
@@ -73,14 +73,7 @@ const getData = () => {
             announcementImage: "",
             revisionRequests: [],
             quizResults: {},
-            // إضافة حقل pdfs
-            pdfs: [
-                {
-                    id: uid(),
-                    title: "ملاحظات الفيزياء",
-                    url: "data:application/pdf;base64,..." // يمكن استبدال هذا برابط أو بيانات base64
-                }
-            ],
+            pdfs: [], // إضافة حقل PDFs
             lastUpdated: new Date().toISOString()
         };
         
@@ -100,7 +93,12 @@ const getData = () => {
     }
     
     try {
-        return JSON.parse(raw);
+        const data = JSON.parse(raw);
+        // التأكد من وجود حقل pdfs في البيانات القديمة
+        if (!data.hasOwnProperty('pdfs')) {
+            data.pdfs = [];
+        }
+        return data;
     } catch {
         localStorage.removeItem(LS_KEY);
         return getData();
@@ -766,9 +764,7 @@ function renderAdminQuizList() {
  * PDF MANAGEMENT
  ********************/
 function renderAdminPdfsList() {
-    const container = $('#adminPdfsList');
-    if (!container) return;
-    
+    const container = $('#pdfsList');
     container.innerHTML = '';
     
     if (!DB.pdfs || DB.pdfs.length === 0) {
@@ -814,6 +810,7 @@ function renderAdminPdfsList() {
                 DB.pdfs = DB.pdfs.filter(p => p.id !== id);
                 setData(DB);
                 renderAdminPdfsList();
+                loadStudentPdfs();
             }
         });
     });
@@ -899,34 +896,6 @@ function renderRevisionRequests() {
 /********************
  * DATA IMPORT/EXPORT
  ********************/
-// تعديل وظيفة الاستيراد لحفظ ملفات PDF الحالية
-$('#importFile').addEventListener('change', function () {
-    const file = this.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-            
-            // الاحتفاظ ببيانات pdfs الحالية
-            const currentPdfs = DB.pdfs || [];
-            
-            if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية except PDFs.')) {
-                // دمج بيانات pdfs الحالية مع البيانات المستوردة
-                importedData.pdfs = currentPdfs;
-                
-                localStorage.setItem(LS_KEY, JSON.stringify(importedData));
-                DB = getData();
-                showNotification('تم استيراد البيانات بنجاح! مع الاحتفاظ بملفات PDF الحالية.');
-                location.reload();
-            }
-        } catch (error) {
-            showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
-        }
-    };
-    reader.readAsText(file);
-});
 
 /********************
  * INITIALIZATION
@@ -1007,6 +976,7 @@ document.addEventListener('DOMContentLoaded', function() {
         populateRevisionForm();
         loadStudentRevisionRequests();
         loadStudentQuizzes();
+        loadStudentPdfs(); // تحميل ملفات PDF للطالب
     });
 
     // تسجيل خروج الطالب
@@ -1079,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateDashboardStats();
             renderAdminDictionaryList();
             renderAdminQuizList();
-            renderAdminPdfsList(); // إضافة عرض ملفات PDF
+            renderAdminPdfsList(); // عرض ملفات PDF
         } else {
             showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
         }
@@ -1271,7 +1241,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // حفظ ملف PDF
-    $('#adminBtnSavePdf').addEventListener('click', () => {
+    $('#btnSavePdf').addEventListener('click', () => {
         const id = $('#pdfId').value;
         const title = $('#pdfTitle').value.trim();
         const url = $('#pdfUrl').value.trim();
@@ -1296,11 +1266,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         setData(DB);
         renderAdminPdfsList();
-        $('#adminBtnResetPdf').click();
+        loadStudentPdfs();
+        $('#btnResetPdf').click();
     });
 
     // إعادة تعيين نموذج PDF
-    $('#adminBtnResetPdf').addEventListener('click', () => {
+    $('#btnResetPdf').addEventListener('click', () => {
         $('#pdfId').value = '';
         $('#pdfTitle').value = '';
         $('#pdfUrl').value = '';
@@ -1357,6 +1328,34 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('تم تصدير البيانات بنجاح');
     });
 
+    $('#importFile').addEventListener('change', function () {
+        const file = this.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                
+                // الاحتفاظ ببيانات pdfs الحالية
+                const currentPdfs = DB.pdfs || [];
+                
+                if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية مع الاحتفاظ بملفات PDF الحالية.')) {
+                    // دمج بيانات pdfs الحالية مع البيانات المستوردة
+                    importedData.pdfs = currentPdfs;
+                    
+                    localStorage.setItem(LS_KEY, JSON.stringify(importedData));
+                    DB = getData();
+                    showNotification('تم استيراد البيانات بنجاح! مع الاحتفاظ بملفات PDF الحالية.');
+                    location.reload();
+                }
+            } catch (error) {
+                showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
+            }
+        };
+        reader.readAsText(file);
+    });
+
     window.addEventListener('click', (e) => {
         if (e.target === $('#studentLoginModal')) $('#studentLoginModal').style.display = 'none';
         if (e.target === $('#loginModal')) $('#loginModal').style.display = 'none';
@@ -1388,28 +1387,6 @@ function loadStudentResources() {
                     <div class="muted">${grade.date}</div>
                 `;
                 gradesContainer.appendChild(gradeEl);
-            });
-        }
-    }
-    
-    // تحميل ملفات PDF
-    const pdfsContainer = $('#studentPdfsList');
-    if (pdfsContainer) {
-        pdfsContainer.innerHTML = '';
-        
-        if (!DB.pdfs || DB.pdfs.length === 0) {
-            pdfsContainer.innerHTML = '<p class="muted">لا توجد ملفات PDF متاحة حالياً.</p>';
-        } else {
-            DB.pdfs.forEach(pdf => {
-                const pdfEl = document.createElement('div');
-                pdfEl.className = 'content-card';
-                pdfEl.innerHTML = `
-                    <div class="card-content">
-                        <h3>${pdf.title}</h3>
-                        <a href="${pdf.url}" target="_blank" class="btn btn-outline">عرض الملف</a>
-                    </div>
-                `;
-                pdfsContainer.appendChild(pdfEl);
             });
         }
     }
@@ -1460,32 +1437,35 @@ function loadStudentResources() {
         });
     }
     
-    // تحميل التمارين
-    const exercisesContainer = $('#studentExercisesList');
+    // تحميل ملفات PDF
+    loadStudentPdfs();
+}
+
+// تحميل ملفات PDF للطالب
+function loadStudentPdfs() {
+    if (!currentStudent) return;
     
-    if (exercisesContainer) {
-        exercisesContainer.innerHTML = '';
-        
-        // إضافة بعض التمارين النموذجية
-        const exercises = [
-            { title: 'تمارين على القوى', chapter: 'الميكانيك' },
-            { title: 'مسائل في الكهرباء', chapter: 'الكهرباء' },
-            { title: 'واجب منزلي', chapter: 'عام' }
-        ];
-        
-        exercises.forEach(exercise => {
-            const exerciseEl = document.createElement('div');
-            exerciseEl.className = 'content-card';
-            exerciseEl.innerHTML = `
-                <div class="card-content">
-                    <h3>${exercise.title}</h3>
-                    <p>الفصل: ${exercise.chapter}</p>
-                    <button class="btn btn-outline">تحميل</button>
-                </div>
-            `;
-            exercisesContainer.appendChild(exerciseEl);
-        });
+    const pdfsContainer = $('#studentPdfsList');
+    if (!pdfsContainer) return;
+    
+    pdfsContainer.innerHTML = '';
+    
+    if (!DB.pdfs || DB.pdfs.length === 0) {
+        pdfsContainer.innerHTML = '<p class="muted">لا توجد ملفات PDF متاحة حالياً.</p>';
+        return;
     }
+    
+    DB.pdfs.forEach(pdf => {
+        const pdfEl = document.createElement('div');
+        pdfEl.className = 'content-card';
+        pdfEl.innerHTML = `
+            <div class="card-content">
+                <h3>${pdf.title}</h3>
+                <a href="${pdf.url}" target="_blank" class="btn btn-outline">عرض الملف</a>
+            </div>
+        `;
+        pdfsContainer.appendChild(pdfEl);
+    });
 }
 
 function updateAnnouncementDisplay() {
@@ -1497,4 +1477,4 @@ function updateAnnouncementDisplay() {
     } else {
         $('#announcementImage').style.display = 'none';
     }
-} 
+}

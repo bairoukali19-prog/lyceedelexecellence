@@ -541,7 +541,7 @@ function calculateTimeUsed() {
 $('#loginBtn').addEventListener('click', () => $('#loginModal').style.display = 'flex');
 $('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
 
-$('#submitLogin').addEventListener('click', () => {
+$('#submitLogin').addEventListener('click', () {
     const u = $('#username').value.trim();
     const p = $('#password').value.trim();
     
@@ -1200,10 +1200,95 @@ function renderRevisionRequests() {
 }
 
 /********************
- * DATA IMPORT/EXPORT
+ * DATA IMPORT/EXPORT - MODIFIED FOR PDF HANDLING
  ********************/
+
+// دالة لمعالجة ملفات PDF قبل التصدير
+function processPDFsBeforeExport(data) {
+    // نحتفظ ببيانات PDF كملفات منفصلة في الكائن المُصدّر
+    const pdfFiles = {};
+    
+    // معالجة الدروس
+    if (data.lessons && data.lessons.length) {
+        data.lessons.forEach(lesson => {
+            if (lesson.file && lesson.file.startsWith('data:application/pdf;base64,')) {
+                const fileName = `lesson_${lesson.id}.pdf`;
+                pdfFiles[fileName] = lesson.file;
+                lesson.file = fileName; // نستبدل بيانات base64 باسم الملف
+            }
+        });
+    }
+    
+    // معالجة التمارين
+    if (data.exercises && data.exercises.length) {
+        data.exercises.forEach(exercise => {
+            if (exercise.file && exercise.file.startsWith('data:application/pdf;base64,')) {
+                const fileName = `exercise_${exercise.id}.pdf`;
+                pdfFiles[fileName] = exercise.file;
+                exercise.file = fileName;
+            }
+        });
+    }
+    
+    // معالجة الامتحانات
+    if (data.exams && data.exams.length) {
+        data.exams.forEach(exam => {
+            if (exam.file && exam.file.startsWith('data:application/pdf;base64,')) {
+                const fileName = `exam_${exam.id}.pdf`;
+                pdfFiles[fileName] = exam.file;
+                exam.file = fileName;
+            }
+        });
+    }
+    
+    // إضافة ملفات PDF إلى البيانات المُصدّرة
+    data.pdfFiles = pdfFiles;
+    
+    return data;
+}
+
+// دالة لمعالجة ملفات PDF بعد الاستيراد
+function processPDFsAfterImport(data) {
+    if (!data.pdfFiles) return data;
+    
+    const pdfFiles = data.pdfFiles;
+    
+    // استعادة الدروس
+    if (data.lessons && data.lessons.length) {
+        data.lessons.forEach(lesson => {
+            if (lesson.file && pdfFiles[lesson.file]) {
+                lesson.file = pdfFiles[lesson.file];
+            }
+        });
+    }
+    
+    // استعادة التمارين
+    if (data.exercises && data.exercises.length) {
+        data.exercises.forEach(exercise => {
+            if (exercise.file && pdfFiles[exercise.file]) {
+                exercise.file = pdfFiles[exercise.file];
+            }
+        });
+    }
+    
+    // استعادة الامتحانات
+    if (data.exams && data.exams.length) {
+        data.exams.forEach(exam => {
+            if (exam.file && pdfFiles[exam.file]) {
+                exam.file = pdfFiles[exam.file];
+            }
+        });
+    }
+    
+    // إزالة كائن ملفات PDF المؤقت
+    delete data.pdfFiles;
+    
+    return data;
+}
+
 $('#btnExport').addEventListener('click', () => {
-    const dataStr = JSON.stringify(DB, null, 2);
+    const dataToExport = processPDFsBeforeExport(JSON.parse(JSON.stringify(DB)));
+    const dataStr = JSON.stringify(dataToExport, null, 2);
     const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
     
     const exportFileDefaultName = 'lycee-excellence-data.json';
@@ -1216,23 +1301,45 @@ $('#btnExport').addEventListener('click', () => {
     showNotification('تم تصدير البيانات بنجاح');
 });
 
-$('#importFile').addEventListener('change', function () {
+$('#importFile').addEventListener('change', function() {
     const file = this.files[0];
     if (!file) return;
     
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         try {
-            const importedData = JSON.parse(e.target.result);
+            let importedData = JSON.parse(e.target.result);
+            
+            // معالجة ملفات PDF بعد الاستيراد
+            importedData = processPDFsAfterImport(importedData);
             
             if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية.')) {
                 localStorage.setItem(LS_KEY, JSON.stringify(importedData));
                 DB = getData();
                 showNotification('تم استيراد البيانات بنجاح!');
-                location.reload();
+                
+                // إعادة تحميل الواجهة حسب حالة المستخدم الحالية
+                if (currentStudent) {
+                    loadStudentResources();
+                    populateRevisionForm();
+                    loadStudentRevisionRequests();
+                    loadStudentQuizzes();
+                }
+                
+                if (document.body.classList.contains('admin-mode')) {
+                    renderStudentsTable();
+                    populateStudentSelects();
+                    renderAdminGradesTable();
+                    updateDashboardStats();
+                    renderAdminDictionaryList();
+                    renderAdminQuizList();
+                }
+                
+                updateAnnouncementDisplay();
             }
         } catch (error) {
             showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
+            console.error('استيراد البيانات فشل:', error);
         }
     };
     reader.readAsText(file);

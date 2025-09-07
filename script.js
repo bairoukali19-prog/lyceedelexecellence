@@ -1,4 +1,4 @@
- /********************
+/********************
  * UTIL & STORAGE - MODIFIED FOR LOCAL STORAGE ONLY
  ********************/
 const LS_KEY = 'lx-data-v4';
@@ -73,6 +73,14 @@ const getData = () => {
             announcementImage: "",
             revisionRequests: [],
             quizResults: {},
+            // إضافة حقل pdfs
+            pdfs: [
+                {
+                    id: uid(),
+                    title: "ملاحظات الفيزياء",
+                    url: "data:application/pdf;base64,..." // يمكن استبدال هذا برابط أو بيانات base64
+                }
+            ],
             lastUpdated: new Date().toISOString()
         };
         
@@ -755,6 +763,63 @@ function renderAdminQuizList() {
 }
 
 /********************
+ * PDF MANAGEMENT
+ ********************/
+function renderAdminPdfsList() {
+    const container = $('#adminPdfsList');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    if (!DB.pdfs || DB.pdfs.length === 0) {
+        container.innerHTML = '<p class="muted">لا توجد ملفات PDF حتى الآن.</p>';
+        return;
+    }
+    
+    DB.pdfs.forEach(pdf => {
+        const pdfEl = document.createElement('div');
+        pdfEl.className = 'pdf-item';
+        pdfEl.style.padding = '10px';
+        pdfEl.style.borderBottom = '1px solid #eee';
+        pdfEl.innerHTML = `
+            <div><strong>${pdf.title}</strong></div>
+            <div class="muted">${pdf.url.substring(0, 50)}...</div>
+            <div class="mt-1">
+                <button class="btn btn-ghost btn-sm edit-pdf" data-id="${pdf.id}"><i class="fa-solid fa-edit"></i></button>
+                <button class="btn btn-accent btn-sm delete-pdf" data-id="${pdf.id}"><i class="fa-solid fa-trash"></i></button>
+            </div>
+        `;
+        container.appendChild(pdfEl);
+    });
+    
+    // إضافة مستمعي الأحداث
+    $$('.edit-pdf').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            const pdf = DB.pdfs.find(p => p.id === id);
+            
+            if (pdf) {
+                $('#pdfTitle').value = pdf.title;
+                $('#pdfUrl').value = pdf.url;
+                $('#pdfId').value = pdf.id;
+            }
+        });
+    });
+    
+    $$('.delete-pdf').forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            
+            if (confirm('هل أنت متأكد من رغبتك في حذف هذا الملف؟')) {
+                DB.pdfs = DB.pdfs.filter(p => p.id !== id);
+                setData(DB);
+                renderAdminPdfsList();
+            }
+        });
+    });
+}
+
+/********************
  * ANNOUNCEMENT MANAGEMENT
  ********************/
 
@@ -834,6 +899,34 @@ function renderRevisionRequests() {
 /********************
  * DATA IMPORT/EXPORT
  ********************/
+// تعديل وظيفة الاستيراد لحفظ ملفات PDF الحالية
+$('#importFile').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            // الاحتفاظ ببيانات pdfs الحالية
+            const currentPdfs = DB.pdfs || [];
+            
+            if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية except PDFs.')) {
+                // دمج بيانات pdfs الحالية مع البيانات المستوردة
+                importedData.pdfs = currentPdfs;
+                
+                localStorage.setItem(LS_KEY, JSON.stringify(importedData));
+                DB = getData();
+                showNotification('تم استيراد البيانات بنجاح! مع الاحتفاظ بملفات PDF الحالية.');
+                location.reload();
+            }
+        } catch (error) {
+            showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
+        }
+    };
+    reader.readAsText(file);
+});
 
 /********************
  * INITIALIZATION
@@ -850,6 +943,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDashboardStats();
         renderAdminDictionaryList();
         renderAdminQuizList();
+        renderAdminPdfsList(); // إضافة عرض ملفات PDF
     }
     
     // تحديث عرض الإعلان
@@ -985,6 +1079,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateDashboardStats();
             renderAdminDictionaryList();
             renderAdminQuizList();
+            renderAdminPdfsList(); // إضافة عرض ملفات PDF
         } else {
             showNotification('اسم المستخدم أو كلمة المرور غير صحيحة', 'error');
         }
@@ -1175,6 +1270,42 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#adminQuizQuestion').removeAttribute('data-id');
     });
 
+    // حفظ ملف PDF
+    $('#adminBtnSavePdf').addEventListener('click', () => {
+        const id = $('#pdfId').value;
+        const title = $('#pdfTitle').value.trim();
+        const url = $('#pdfUrl').value.trim();
+        
+        if (!title || !url) {
+            showNotification('يرجى ملء جميع الحقول', 'error');
+            return;
+        }
+        
+        if (id) {
+            // تحديث الملف الحالي
+            const index = DB.pdfs.findIndex(p => p.id === id);
+            
+            if (index !== -1) {
+                DB.pdfs[index] = { ...DB.pdfs[index], title, url };
+            }
+        } else {
+            // إضافة ملف جديد
+            const newPdf = { id: uid(), title, url };
+            DB.pdfs.push(newPdf);
+        }
+        
+        setData(DB);
+        renderAdminPdfsList();
+        $('#adminBtnResetPdf').click();
+    });
+
+    // إعادة تعيين نموذج PDF
+    $('#adminBtnResetPdf').addEventListener('click', () => {
+        $('#pdfId').value = '';
+        $('#pdfTitle').value = '';
+        $('#pdfUrl').value = '';
+    });
+
     // حفظ الإعلان
     $('#btnSaveAnnouncement').addEventListener('click', () => {
         const announcement = $('#announcementInput').value.trim();
@@ -1226,28 +1357,6 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('تم تصدير البيانات بنجاح');
     });
 
-    $('#importFile').addEventListener('change', function () {
-        const file = this.files[0];
-        if (!file) return;
-        
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            try {
-                const importedData = JSON.parse(e.target.result);
-                
-                if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية.')) {
-                    localStorage.setItem(LS_KEY, JSON.stringify(importedData));
-                    DB = getData();
-                    showNotification('تم استيراد البيانات بنجاح!');
-                    location.reload();
-                }
-            } catch (error) {
-                showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
-            }
-        };
-        reader.readAsText(file);
-    });
-
     window.addEventListener('click', (e) => {
         if (e.target === $('#studentLoginModal')) $('#studentLoginModal').style.display = 'none';
         if (e.target === $('#loginModal')) $('#loginModal').style.display = 'none';
@@ -1279,6 +1388,28 @@ function loadStudentResources() {
                     <div class="muted">${grade.date}</div>
                 `;
                 gradesContainer.appendChild(gradeEl);
+            });
+        }
+    }
+    
+    // تحميل ملفات PDF
+    const pdfsContainer = $('#studentPdfsList');
+    if (pdfsContainer) {
+        pdfsContainer.innerHTML = '';
+        
+        if (!DB.pdfs || DB.pdfs.length === 0) {
+            pdfsContainer.innerHTML = '<p class="muted">لا توجد ملفات PDF متاحة حالياً.</p>';
+        } else {
+            DB.pdfs.forEach(pdf => {
+                const pdfEl = document.createElement('div');
+                pdfEl.className = 'content-card';
+                pdfEl.innerHTML = `
+                    <div class="card-content">
+                        <h3>${pdf.title}</h3>
+                        <a href="${pdf.url}" target="_blank" class="btn btn-outline">عرض الملف</a>
+                    </div>
+                `;
+                pdfsContainer.appendChild(pdfEl);
             });
         }
     }
@@ -1366,4 +1497,4 @@ function updateAnnouncementDisplay() {
     } else {
         $('#announcementImage').style.display = 'none';
     }
-}
+} 

@@ -94,9 +94,15 @@ const getData = () => {
     
     try {
         const data = JSON.parse(raw);
-        // التأكد من وجود حقل pdfs في البيانات القديمة
+        // التأكد من وجود جميع الحقول في البيانات القديمة
         if (!data.hasOwnProperty('pdfs')) {
             data.pdfs = [];
+        }
+        if (!data.hasOwnProperty('revisionRequests')) {
+            data.revisionRequests = [];
+        }
+        if (!data.hasOwnProperty('quizResults')) {
+            data.quizResults = {};
         }
         return data;
     } catch {

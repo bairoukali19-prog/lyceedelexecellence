@@ -1,16 +1,16 @@
-  /********************
+ /********************
  * UTIL & STORAGE - MODIFIED FOR CLOUD SYNC
  ********************/
 // استبدل هذه القيم بمعلومات حسابك على JSONBin.io
 const JSONBIN_BIN_ID = 'YOUR_BIN_ID_HERE'; // استبدل هذا بمعرف الـ Bin الخاص بك
-const JSONBIN_API_KEY = 'YOUR_API_KEY_HERE'; // استبدل هذا بمفتاح API الخاص بك
+const JSONBIN_API_KEY = '$2b$10$YOUR_API_KEY_HERE'; // استبدل هذا بمفتاح API الخاص بك
 const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
-const LS_KEY = 'lx-data-backup'; // نسخة احتياطية محلية
+const LS_KEY = 'lx-data-backup';
 const ADMIN = { user: 'admin7', pass: 'ali7800' };
 
-const $ = (sel, ctx=document) => ctx.querySelector(sel);
-const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
-const uid = () => 'id-' + Math.random().toString(36).slice(2,10);
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
+const uid = () => 'id-' + Math.random().toString(36).slice(2, 10);
 
 // دالة لجلب البيانات من السحابة مع وجود نسخة احتياطية محلية
 const getData = async () => {
@@ -18,7 +18,8 @@ const getData = async () => {
     console.log('جاري تحميل البيانات من السحابة...');
     const response = await fetch(JSONBIN_URL, {
       headers: {
-        'X-Master-Key': JSONBIN_API_KEY
+        'X-Master-Key': JSONBIN_API_KEY,
+        'X-Bin-Meta': 'false'
       }
     });
     
@@ -30,8 +31,8 @@ const getData = async () => {
     console.log('تم تحميل البيانات من السحابة بنجاح');
     
     // حفظ نسخة احتياطية محلية
-    localStorage.setItem(LS_KEY, JSON.stringify(data.record));
-    return data.record;
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+    return data;
   } catch (error) {
     console.error('Error fetching cloud data:', error);
     console.log('جاري استخدام النسخة الاحتياطية المحلية...');
@@ -136,10 +137,14 @@ let isOnline = true;
 // التحقق من حالة الاتصال
 const checkOnlineStatus = async () => {
   try {
-    const response = await fetch('https://jsonbin.io/', { method: 'HEAD' });
+    // استخدام خدمة بسيطة للتحقق من الاتصال لتجنب مشاكل CORS
+    const response = await fetch('https://httpbin.org/status/200', { 
+      method: 'HEAD',
+      cache: 'no-store'
+    });
     isOnline = response.ok;
   } catch (error) {
-    isOnline = false;
+    isOnline = navigator.onLine;
   }
   
   // تحديث واجهة المستخدم بناءً على حالة الاتصال
@@ -156,18 +161,21 @@ const checkOnlineStatus = async () => {
     display: ${isOnline ? 'none' : 'block'};
     background: #e74c3c;
     color: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
   `;
   statusElement.textContent = '⚠️ أنت غير متصل بالإنترنت';
   
   if (!document.getElementById('onlineStatus')) {
     document.body.appendChild(statusElement);
   }
+  
+  return isOnline;
 };
 
 // تهيئة التطبيق عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', async function() {
   // التحقق من حالة الاتصال
-  await checkOnlineStatus();
+  isOnline = await checkOnlineStatus();
   
   try {
     DB = await getData();
@@ -175,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     
     // تحديث تلقائي للبيانات كل 30 ثانية
     setInterval(async () => {
-      await checkOnlineStatus();
+      isOnline = await checkOnlineStatus();
       if (isOnline) {
         try {
           const freshData = await getData();
@@ -197,39 +205,43 @@ document.addEventListener('DOMContentLoaded', async function() {
 
 function initApp() {
   // تحديث الإعلان عند تحميل الصفحة
-  document.getElementById('announcementText').textContent = DB.announcement;
-  document.getElementById('announcementInput').value = DB.announcement;
-  if (DB.announcementImage) {
-    document.getElementById('announcementImage').src = DB.announcementImage;
-    document.getElementById('announcementImage').style.display = 'block';
+  if ($('#announcementText')) {
+    $('#announcementText').textContent = DB.announcement || '';
+  }
+  if ($('#announcementInput')) {
+    $('#announcementInput').value = DB.announcement || '';
+  }
+  if (DB.announcementImage && $('#announcementImage')) {
+    $('#announcementImage').src = DB.announcementImage;
+    $('#announcementImage').style.display = 'block';
   }
 
   /********************
    * NAVIGATION
    ********************/
-  function showSection(id){
-    $$('.page-section').forEach(s=>s.classList.remove('active'));
-    if(id==='home'){ 
-      window.scrollTo({top:0,behavior:'smooth'}); 
-      return; 
+  function showSection(id) {
+    $$('.page-section').forEach(s => s.classList.remove('active'));
+    if (id === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
     }
     const el = document.getElementById(id);
-    if(el){ 
-      el.classList.add('active'); 
-      window.scrollTo({top:el.offsetTop-90,behavior:'smooth'}); 
+    if (el) {
+      el.classList.add('active');
+      window.scrollTo({ top: el.offsetTop - 90, behavior: 'smooth' });
     }
   }
 
-  $$('.nav-link, .feature-card').forEach(item=>{
-    item.addEventListener('click', function(){
+  $$('.nav-link, .feature-card').forEach(item => {
+    item.addEventListener('click', function () {
       const id = this.getAttribute('data-section');
-      if(id) showSection(id);
+      if (id) showSection(id);
     });
   });
 
   // Student tabs navigation
   $$('.student-tab').forEach(tab => {
-    tab.addEventListener('click', function() {
+    tab.addEventListener('click', function () {
       const tabId = this.getAttribute('data-tab');
       
       // Update active tab
@@ -238,13 +250,14 @@ function initApp() {
       
       // Show corresponding section
       $$('.student-tab-content').forEach(s => s.classList.remove('active'));
-      $(`#student-${tabId}-tab`).classList.add('active');
+      const tabContent = $(`#student-${tabId}-tab`);
+      if (tabContent) tabContent.classList.add('active');
     });
   });
 
   // Admin tabs navigation
   $$('.admin-tab-link').forEach(tab => {
-    tab.addEventListener('click', function(e) {
+    tab.addEventListener('click', function (e) {
       e.preventDefault();
       const tabId = this.getAttribute('data-tab');
       
@@ -254,7 +267,8 @@ function initApp() {
       
       // Show corresponding section
       $$('.admin-section').forEach(s => s.classList.remove('active'));
-      $(`#${tabId}`).classList.add('active');
+      const section = $(`#${tabId}`);
+      if (section) section.classList.add('active');
 
       // Load specific content if needed
       if (tabId === 'tab-revisions') {
@@ -266,73 +280,110 @@ function initApp() {
   /********************
    * STUDENT AREA
    ********************/
-  function fillGradesFor(student){
+  function fillGradesFor(student) {
     const tbody = $('#gradesTable tbody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
-    const list = (DB.grades[student.id] || []).slice().sort((a,b)=>(a.date||'').localeCompare(b.date));
-    if(!list.length){ $('#noGradesMsg').style.display='block'; }
-    else { $('#noGradesMsg').style.display='none'; }
-    list.forEach(g=>{
+    const list = (DB.grades[student.id] || []).slice().sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+    if (!list.length) {
+      if ($('#noGradesMsg')) $('#noGradesMsg').style.display = 'block';
+    } else {
+      if ($('#noGradesMsg')) $('#noGradesMsg').style.display = 'none';
+    }
+    list.forEach(g => {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${g.date||''}</td><td>${g.subject||''}</td><td>${g.title||''}</td><td><strong>${Number(g.score).toFixed(2)}</strong></td><td>${g.note||''}</td>`;
+      tr.innerHTML = `<td>${g.date || ''}</td><td>${g.subject || ''}</td><td>${g.title || ''}</td><td><strong>${Number(g.score).toFixed(2)}</strong></td><td>${g.note || ''}</td>`;
       tbody.appendChild(tr);
     });
-    $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><i class="fa-solid fa-id-card"></i> ${student.code}</span><span class="chip"><i class="fa-solid fa-school"></i> ${student.classroom||''}</span></div>`;
-    $('#gradesResults').style.display='block';
+    if ($('#studentInfo')) {
+      $('#studentInfo').innerHTML = `<div class="inline"><span class="chip"><i class="fa-solid fa-user"></i> ${student.fullname}</span><span class="chip"><i class="fa-solid fa-id-card"></i> ${student.code}</span><span class="chip"><i class="fa-solid fa-school"></i> ${student.classroom || ''}</span></div>`;
+    }
+    if ($('#gradesResults')) {
+      $('#gradesResults').style.display = 'block';
+    }
     showSection('grades');
   }
 
   // Search by Code Parcours
-  $('#btnSearchByCode').addEventListener('click', ()=>{
-    const code = ($('#searchCode').value || '').trim();
-    const st = DB.students.find(s=>s.code.toLowerCase()===code.toLowerCase());
-    if(!st){ alert('Code parcours introuvable.'); return; }
-    fillGradesFor(st);
-  });
+  if ($('#btnSearchByCode')) {
+    $('#btnSearchByCode').addEventListener('click', () => {
+      const code = ($('#searchCode').value || '').trim();
+      const st = DB.students.find(s => s.code.toLowerCase() === code.toLowerCase());
+      if (!st) {
+        alert('Code parcours introuvable.');
+        return;
+      }
+      fillGradesFor(st);
+    });
+  }
 
   // Student login modal open/close
-  $('#studentLoginBtn').addEventListener('click', ()=> $('#studentLoginModal').style.display='flex');
-  $('#cancelStudentLogin').addEventListener('click', ()=> $('#studentLoginModal').style.display='none');
-  window.addEventListener('click', (e)=>{
-    if(e.target===$('#studentLoginModal')) $('#studentLoginModal').style.display='none';
-    if(e.target===$('#loginModal')) $('#loginModal').style.display='none';
+  if ($('#studentLoginBtn')) {
+    $('#studentLoginBtn').addEventListener('click', () => {
+      if ($('#studentLoginModal')) $('#studentLoginModal').style.display = 'flex';
+    });
+  }
+  
+  if ($('#cancelStudentLogin')) {
+    $('#cancelStudentLogin').addEventListener('click', () => {
+      if ($('#studentLoginModal')) $('#studentLoginModal').style.display = 'none';
+    });
+  }
+  
+  window.addEventListener('click', (e) => {
+    if ($('#studentLoginModal') && e.target === $('#studentLoginModal')) {
+      $('#studentLoginModal').style.display = 'none';
+    }
+    if ($('#loginModal') && e.target === $('#loginModal')) {
+      $('#loginModal').style.display = 'none';
+    }
   });
 
   // Student login submit
-  $('#submitStudentLogin').addEventListener('click', ()=>{
-    const u = ($('#studentUsername').value||'').trim();
-    const p = ($('#studentPassword').value||'').trim();
-    const st = DB.students.find(s=>s.username===u && s.password===p);
-    if(!st){ alert("Nom d'utilisateur ou mot de passe incorrect."); return; }
-    $('#studentLoginModal').style.display='none';
-    
-    // Set current student
-    currentStudent = st;
-    
-    // Show student dashboard
-    $('#studentWelcome').textContent = `Bienvenue, ${st.fullname}`;
-    $('#student-dashboard').style.display = 'block';
-    showSection('student-dashboard');
-    
-    // Load student resources
-    loadStudentResources();
-    populateRevisionForm();
-    loadStudentRevisionRequests();
-    loadStudentQuizzes();
-  });
+  if ($('#submitStudentLogin')) {
+    $('#submitStudentLogin').addEventListener('click', () => {
+      const u = ($('#studentUsername').value || '').trim();
+      const p = ($('#studentPassword').value || '').trim();
+      const st = DB.students.find(s => s.username === u && s.password === p);
+      if (!st) {
+        alert("Nom d'utilisateur ou mot de passe incorrect.");
+        return;
+      }
+      if ($('#studentLoginModal')) $('#studentLoginModal').style.display = 'none';
+      
+      // Set current student
+      currentStudent = st;
+      
+      // Show student dashboard
+      if ($('#studentWelcome')) $('#studentWelcome').textContent = `Bienvenue, ${st.fullname}`;
+      if ($('#student-dashboard')) $('#student-dashboard').style.display = 'block';
+      showSection('student-dashboard');
+      
+      // Load student resources
+      loadStudentResources();
+      populateRevisionForm();
+      loadStudentRevisionRequests();
+      loadStudentQuizzes();
+    });
+  }
 
   // Student logout
-  $('#studentLogoutBtn').addEventListener('click', ()=>{
-    $('#student-dashboard').style.display = 'none';
-    currentStudent = null;
-    showSection('home');
-  });
+  if ($('#studentLogoutBtn')) {
+    $('#studentLogoutBtn').addEventListener('click', () => {
+      if ($('#student-dashboard')) $('#student-dashboard').style.display = 'none';
+      currentStudent = null;
+      showSection('home');
+    });
+  }
 
   // Populate revision form with student's grades
   function populateRevisionForm() {
     if (!currentStudent) return;
     const grades = DB.grades[currentStudent.id] || [];
     const select = $('#revisionExam');
+    if (!select) return;
+    
     select.innerHTML = '<option value="">Sélectionnez une évaluation</option>';
     grades.forEach(grade => {
       const option = document.createElement('option');
@@ -343,42 +394,46 @@ function initApp() {
   }
 
   // Handle revision request submission
-  $('#revisionRequestForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    if (!currentStudent) return;
+  if ($('#revisionRequestForm')) {
+    $('#revisionRequestForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (!currentStudent) return;
 
-    const gradeId = $('#revisionExam').value;
-    const message = $('#revisionMessage').value;
+      const gradeId = $('#revisionExam').value;
+      const message = $('#revisionMessage').value;
 
-    if (!gradeId || !message) {
-      alert('Veuillez sélectionner un examen et écrire un message.');
-      return;
-    }
+      if (!gradeId || !message) {
+        alert('Veuillez sélectionner un examen et écrire un message.');
+        return;
+      }
 
-    DB.revisionRequests = DB.revisionRequests || [];
-    DB.revisionRequests.push({
-      id: uid(),
-      studentId: currentStudent.id,
-      gradeId,
-      message,
-      date: new Date().toISOString().slice(0,10),
-      status: 'pending'
+      DB.revisionRequests = DB.revisionRequests || [];
+      DB.revisionRequests.push({
+        id: uid(),
+        studentId: currentStudent.id,
+        gradeId,
+        message,
+        date: new Date().toISOString().slice(0, 10),
+        status: 'pending'
+      });
+
+      try {
+        await setData(DB);
+        alert('Votre demande a été envoyée.');
+        this.reset();
+        loadStudentRevisionRequests();
+      } catch (error) {
+        alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+      }
     });
-
-    try {
-      await setData(DB);
-      alert('Votre demande a été envoyée.');
-      this.reset();
-      loadStudentRevisionRequests();
-    } catch (error) {
-      alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
-    }
-  });
+  }
 
   // Load student's revision requests
   function loadStudentRevisionRequests() {
     if (!currentStudent) return;
     const container = $('#studentRevisionRequests');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     const requests = (DB.revisionRequests || []).filter(req => req.studentId === currentStudent.id);
@@ -423,6 +478,8 @@ function initApp() {
     if (!currentStudent) return;
     
     const container = $('#studentQuizList');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     if (DB.quiz.length === 0) {
@@ -445,7 +502,7 @@ function initApp() {
     
     // Add event listeners to start quiz buttons
     $$('.start-quiz').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         startQuiz();
       });
     });
@@ -458,6 +515,8 @@ function initApp() {
     if (!currentStudent) return;
     
     const container = $('#studentQuizResults');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     const results = DB.quizResults && DB.quizResults[currentStudent.id] ? DB.quizResults[currentStudent.id] : [];
@@ -473,7 +532,7 @@ function initApp() {
       resultCard.innerHTML = `
         <div class="card-content">
           <h3>Quiz du ${result.date}</h3>
-          <p>Score: ${result.score}/${result.total} (${Math.round((result.score/result.total)*100)}%)</p>
+          <p>Score: ${result.score}/${result.total} (${Math.round((result.score / result.total) * 100)}%)</p>
           <p>Temps utilisé: ${result.timeUsed}</p>
         </div>
       `;
@@ -485,8 +544,8 @@ function initApp() {
     if (!currentStudent) return;
     
     // Hide quiz list and show quiz container
-    $('#studentQuizList').style.display = 'none';
-    $('#quizContainer').style.display = 'block';
+    if ($('#studentQuizList')) $('#studentQuizList').style.display = 'none';
+    if ($('#quizContainer')) $('#quizContainer').style.display = 'block';
     
     currentQuiz = DB.quiz;
     currentQuestionIndex = 0;
@@ -507,7 +566,9 @@ function initApp() {
       const minutes = Math.floor(timer / 60);
       const seconds = timer % 60;
       
-      $('#quizTimer').textContent = `Temps restant: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      if ($('#quizTimer')) {
+        $('#quizTimer').textContent = `Temps restant: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+      }
       
       if (--timer < 0) {
         clearInterval(quizTimer);
@@ -523,6 +584,8 @@ function initApp() {
     const question = currentQuiz[index];
     
     const container = $('#quizQuestionsContainer');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     const questionEl = document.createElement('div');
@@ -543,11 +606,13 @@ function initApp() {
     container.appendChild(questionEl);
     
     // Update question counter
-    $('#questionCounter').textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
+    if ($('#questionCounter')) {
+      $('#questionCounter').textContent = `Question ${index + 1} sur ${currentQuiz.length}`;
+    }
     
     // Set up option selection
     $$('.quiz-option').forEach(option => {
-      option.addEventListener('click', function() {
+      option.addEventListener('click', function () {
         // Remove selected class from all options
         $$('.quiz-option').forEach(opt => opt.classList.remove('selected'));
         
@@ -561,30 +626,42 @@ function initApp() {
     
     // Restore previous answer if exists
     if (studentAnswers[index]) {
-      $(`.quiz-option[data-option="${studentAnswers[index]}"]`).classList.add('selected');
+      $(`.quiz-option[data-option="${studentAnswers[index]}"]`)?.classList.add('selected');
     }
     
     // Set up navigation buttons
-    $('#prevQuestion').style.display = index === 0 ? 'none' : 'block';
-    $('#nextQuestion').style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
-    $('#submitQuiz').style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
+    if ($('#prevQuestion')) {
+      $('#prevQuestion').style.display = index === 0 ? 'none' : 'block';
+    }
+    if ($('#nextQuestion')) {
+      $('#nextQuestion').style.display = index === currentQuiz.length - 1 ? 'none' : 'block';
+    }
+    if ($('#submitQuiz')) {
+      $('#submitQuiz').style.display = index === currentQuiz.length - 1 ? 'block' : 'none';
+    }
   }
 
   // Navigation between questions
-  $('#prevQuestion').addEventListener('click', () => {
-    if (currentQuestionIndex > 0) {
-      loadQuestion(currentQuestionIndex - 1);
-    }
-  });
+  if ($('#prevQuestion')) {
+    $('#prevQuestion').addEventListener('click', () => {
+      if (currentQuestionIndex > 0) {
+        loadQuestion(currentQuestionIndex - 1);
+      }
+    });
+  }
 
-  $('#nextQuestion').addEventListener('click', () => {
-    if (currentQuestionIndex < currentQuiz.length - 1) {
-      loadQuestion(currentQuestionIndex + 1);
-    }
-  });
+  if ($('#nextQuestion')) {
+    $('#nextQuestion').addEventListener('click', () => {
+      if (currentQuestionIndex < currentQuiz.length - 1) {
+        loadQuestion(currentQuestionIndex + 1);
+      }
+    });
+  }
 
   // Submit quiz
-  $('#submitQuiz').addEventListener('click', submitQuiz);
+  if ($('#submitQuiz')) {
+    $('#submitQuiz').addEventListener('click', submitQuiz);
+  }
 
   async function submitQuiz() {
     clearInterval(quizTimer);
@@ -614,21 +691,25 @@ function initApp() {
       await setData(DB);
       
       // Show results
-      $('#quizContainer').style.display = 'none';
-      $('#quizResultsContainer').style.display = 'block';
+      if ($('#quizContainer')) $('#quizContainer').style.display = 'none';
+      if ($('#quizResultsContainer')) $('#quizResultsContainer').style.display = 'block';
       
-      $('#quizResultsContent').innerHTML = `
-        <h4>Résultats du Quiz</h4>
-        <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score/currentQuiz.length)*100)}%)</p>
-        <p>Temps utilisé: ${timeUsed}</p>
-        <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
-      `;
+      if ($('#quizResultsContent')) {
+        $('#quizResultsContent').innerHTML = `
+          <h4>Résultats du Quiz</h4>
+          <p>Vous avez obtenu ${score} sur ${currentQuiz.length} (${Math.round((score / currentQuiz.length) * 100)}%)</p>
+          <p>Temps utilisé: ${timeUsed}</p>
+          <button class="btn btn-primary" id="backToQuizzes">Retour aux quiz</button>
+        `;
+      }
       
-      $('#backToQuizzes').addEventListener('click', () => {
-        $('#quizResultsContainer').style.display = 'none';
-        $('#studentQuizList').style.display = 'block';
-        loadQuizResults();
-      });
+      if ($('#backToQuizzes')) {
+        $('#backToQuizzes').addEventListener('click', () => {
+          if ($('#quizResultsContainer')) $('#quizResultsContainer').style.display = 'none';
+          if ($('#studentQuizList')) $('#studentQuizList').style.display = 'block';
+          loadQuizResults();
+        });
+      }
     } catch (error) {
       alert('فشل في حفظ النتائج. يرجى المحاولة مرة أخرى.');
     }
@@ -643,49 +724,66 @@ function initApp() {
   /********************
    * ADMIN AUTH
    ********************/
-  $('#loginBtn').addEventListener('click', ()=> $('#loginModal').style.display='flex');
-  $('#cancelLogin').addEventListener('click', ()=> $('#loginModal').style.display='none');
-  $('#submitLogin').addEventListener('click', ()=>{
-    const u = $('#username').value.trim();
-    const p = $('#password').value.trim();
-    if(u===ADMIN.user && p===ADMIN.pass){
-      $('#loginModal').style.display='none';
-      document.body.classList.add('admin-mode');
-      $('#admin-panel').style.display='block';
-      showSection('admin-panel');
-      renderStudentsTable();
-      populateStudentSelects();
-      renderAdminGradesTable();
-      updateDashboardStats();
-      renderAdminDictionaryList();
-      renderAdminQuizList();
-    }else{
-      alert("Nom d'utilisateur ou mot de passe incorrect.");
-    }
-  });
-  $('#logoutBtn').addEventListener('click', ()=>{
-    document.body.classList.remove('admin-mode');
-    $('#admin-panel').style.display='none';
-    showSection('home');
-  });
+  if ($('#loginBtn')) {
+    $('#loginBtn').addEventListener('click', () => {
+      if ($('#loginModal')) $('#loginModal').style.display = 'flex';
+    });
+  }
+  
+  if ($('#cancelLogin')) {
+    $('#cancelLogin').addEventListener('click', () => {
+      if ($('#loginModal')) $('#loginModal').style.display = 'none';
+    });
+  }
+  
+  if ($('#submitLogin')) {
+    $('#submitLogin').addEventListener('click', () => {
+      const u = $('#username').value.trim();
+      const p = $('#password').value.trim();
+      if (u === ADMIN.user && p === ADMIN.pass) {
+        if ($('#loginModal')) $('#loginModal').style.display = 'none';
+        document.body.classList.add('admin-mode');
+        if ($('#admin-panel')) $('#admin-panel').style.display = 'block';
+        showSection('admin-panel');
+        renderStudentsTable();
+        populateStudentSelects();
+        renderAdminGradesTable();
+        updateDashboardStats();
+        renderAdminDictionaryList();
+        renderAdminQuizList();
+      } else {
+        alert("Nom d'utilisateur ou mot de passe incorrect.");
+      }
+    });
+  }
+  
+  if ($('#logoutBtn')) {
+    $('#logoutBtn').addEventListener('click', () => {
+      document.body.classList.remove('admin-mode');
+      if ($('#admin-panel')) $('#admin-panel').style.display = 'none';
+      showSection('home');
+    });
+  }
 
   /********************
    * DASHBOARD STATS
    ********************/
   function updateDashboardStats() {
-    $('#stats-students').textContent = DB.students.length;
-    $('#stats-quiz').textContent = DB.quiz.length;
-    $('#stats-dictionary').textContent = DB.dictionary.length;
+    if ($('#stats-students')) $('#stats-students').textContent = DB.students.length;
+    if ($('#stats-quiz')) $('#stats-quiz').textContent = DB.quiz.length;
+    if ($('#stats-dictionary')) $('#stats-dictionary').textContent = DB.dictionary.length;
     
     // Calculate total grades
     let totalGrades = 0;
     for (const studentId in DB.grades) {
       totalGrades += DB.grades[studentId].length;
     }
-    $('#stats-grades').textContent = totalGrades;
+    if ($('#stats-grades')) $('#stats-grades').textContent = totalGrades;
     
     // Load recent activity
     const activityContainer = $('#recent-activity');
+    if (!activityContainer) return;
+    
     activityContainer.innerHTML = '';
     
     // Add some sample activity (in a real app, this would come from a log)
@@ -717,6 +815,8 @@ function initApp() {
    ********************/
   function renderStudentsTable() {
     const tbody = $('#studentsTable tbody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
     DB.students.forEach(st => {
       const tr = document.createElement('tr');
@@ -724,7 +824,7 @@ function initApp() {
         <td>${st.fullname}</td>
         <td>${st.username}</td>
         <td>${st.code}</td>
-        <td>${st.classroom||''}</td>
+        <td>${st.classroom || ''}</td>
         <td>
           <button class="btn btn-ghost btn-sm edit-student" data-id="${st.id}"><i class="fa-solid fa-edit"></i></button>
           <button class="btn btn-accent btn-sm delete-student" data-id="${st.id}"><i class="fa-solid fa-trash"></i></button>
@@ -735,22 +835,22 @@ function initApp() {
     
     // Add event listeners
     $$('.edit-student').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = this.getAttribute('data-id');
         const st = DB.students.find(s => s.id === id);
         if (st) {
-          $('#stId').value = st.id;
-          $('#stFullname').value = st.fullname;
-          $('#stUsername').value = st.username;
-          $('#stPassword').value = st.password;
-          $('#stCode').value = st.code;
-          $('#stClassroom').value = st.classroom || '';
+          if ($('#stId')) $('#stId').value = st.id;
+          if ($('#stFullname')) $('#stFullname').value = st.fullname;
+          if ($('#stUsername')) $('#stUsername').value = st.username;
+          if ($('#stPassword')) $('#stPassword').value = st.password;
+          if ($('#stCode')) $('#stCode').value = st.code;
+          if ($('#stClassroom')) $('#stClassroom').value = st.classroom || '';
         }
       });
     });
     
     $$('.delete-student').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = this.getAttribute('data-id');
         if (confirm('Êtes-vous sûr de vouloir supprimer cet étudiant ?')) {
           DB.students = DB.students.filter(s => s.id !== id);
@@ -766,13 +866,15 @@ function initApp() {
     });
     
     // Filter students
-    $('#filterStudents').addEventListener('input', function() {
-      const filter = this.value.toLowerCase();
-      $$('#studentsTable tbody tr').forEach(tr => {
-        const text = tr.textContent.toLowerCase();
-        tr.style.display = text.includes(filter) ? '' : 'none';
+    if ($('#filterStudents')) {
+      $('#filterStudents').addEventListener('input', function () {
+        const filter = this.value.toLowerCase();
+        $$('#studentsTable tbody tr').forEach(tr => {
+          const text = tr.textContent.toLowerCase();
+          tr.style.display = text.includes(filter) ? '' : 'none';
+        });
       });
-    });
+    }
   }
 
   // Populate student selects in grades and other forms
@@ -793,56 +895,62 @@ function initApp() {
   }
 
   // Save student
-  $('#btnSaveStudent').addEventListener('click', async () => {
-    const id = $('#stId').value;
-    const fullname = $('#stFullname').value.trim();
-    const username = $('#stUsername').value.trim();
-    const password = $('#stPassword').value.trim();
-    const code = $('#stCode').value.trim();
-    const classroom = $('#stClassroom').value.trim();
-    
-    if (!fullname || !username || !password || !code) {
-      alert('Veuillez remplir tous les champs obligatoires.');
-      return;
-    }
-    
-    if (id) {
-      // Update existing student
-      const index = DB.students.findIndex(s => s.id === id);
-      if (index !== -1) {
-        DB.students[index] = { ...DB.students[index], fullname, username, password, code, classroom };
+  if ($('#btnSaveStudent')) {
+    $('#btnSaveStudent').addEventListener('click', async () => {
+      const id = $('#stId').value;
+      const fullname = $('#stFullname').value.trim();
+      const username = $('#stUsername').value.trim();
+      const password = $('#stPassword').value.trim();
+      const code = $('#stCode').value.trim();
+      const classroom = $('#stClassroom').value.trim();
+      
+      if (!fullname || !username || !password || !code) {
+        alert('Veuillez remplir tous les champs obligatoires.');
+        return;
       }
-    } else {
-      // Add new student
-      const newStudent = { id: uid(), fullname, username, password, code, classroom };
-      DB.students.push(newStudent);
-    }
-    
-    try {
-      await setData(DB);
-      renderStudentsTable();
-      populateStudentSelects();
-      $('#btnResetStudent').click();
-    } catch (error) {
-      alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
-    }
-  });
+      
+      if (id) {
+        // Update existing student
+        const index = DB.students.findIndex(s => s.id === id);
+        if (index !== -1) {
+          DB.students[index] = { ...DB.students[index], fullname, username, password, code, classroom };
+        }
+      } else {
+        // Add new student
+        const newStudent = { id: uid(), fullname, username, password, code, classroom };
+        DB.students.push(newStudent);
+      }
+      
+      try {
+        await setData(DB);
+        renderStudentsTable();
+        populateStudentSelects();
+        if ($('#btnResetStudent')) $('#btnResetStudent').click();
+      } catch (error) {
+        alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+      }
+    });
+  }
 
   // Reset student form
-  $('#btnResetStudent').addEventListener('click', () => {
-    $('#stId').value = '';
-    $('#stFullname').value = '';
-    $('#stUsername').value = '';
-    $('#stPassword').value = '';
-    $('#stCode').value = '';
-    $('#stClassroom').value = '';
-  });
+  if ($('#btnResetStudent')) {
+    $('#btnResetStudent').addEventListener('click', () => {
+      if ($('#stId')) $('#stId').value = '';
+      if ($('#stFullname')) $('#stFullname').value = '';
+      if ($('#stUsername')) $('#stUsername').value = '';
+      if ($('#stPassword')) $('#stPassword').value = '';
+      if ($('#stCode')) $('#stCode').value = '';
+      if ($('#stClassroom')) $('#stClassroom').value = '';
+    });
+  }
 
   /********************
    * GRADES MANAGEMENT
    ********************/
   function renderAdminGradesTable() {
     const tbody = $('#gradesAdminTable tbody');
+    if (!tbody) return;
+    
     tbody.innerHTML = '';
     
     const studentId = $('#grFilterStudent').value;
@@ -853,8 +961,15 @@ function initApp() {
     } else {
       // Show all grades
       for (const id in DB.grades) {
-        grades = grades.concat(DB.grades[id]);
+        if (Array.isArray(DB.grades[id])) {
+          grades = grades.concat(DB.grades[id]);
+        }
       }
+    }
+    
+    if (grades.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Aucune note disponible</td></tr>';
+      return;
     }
     
     grades.forEach(grade => {
@@ -866,11 +981,11 @@ function initApp() {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${student ? student.fullname : 'Inconnu'}</td>
-        <td>${grade.date||''}</td>
-        <td>${grade.subject||''}</td>
-        <td>${grade.title||''}</td>
+        <td>${grade.date || ''}</td>
+        <td>${grade.subject || ''}</td>
+        <td>${grade.title || ''}</td>
         <td><strong>${Number(grade.score).toFixed(2)}</strong></td>
-        <td>${grade.note||''}</td>
+        <td>${grade.note || ''}</td>
         <td>
           <button class="btn btn-ghost btn-sm edit-grade" data-id="${grade.id}" data-student="${student ? student.id : ''}"><i class="fa-solid fa-edit"></i></button>
           <button class="btn btn-accent btn-sm delete-grade" data-id="${grade.id}" data-student="${student ? student.id : ''}"><i class="fa-solid fa-trash"></i></button>
@@ -881,26 +996,26 @@ function initApp() {
     
     // Add event listeners
     $$('.edit-grade').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const gradeId = this.getAttribute('data-id');
         const studentId = this.getAttribute('data-student');
         const grades = DB.grades[studentId] || [];
         const grade = grades.find(g => g.id === gradeId);
         
         if (grade) {
-          $('#grId').value = grade.id;
-          $('#grStudent').value = studentId;
-          $('#grSubject').value = grade.subject || '';
-          $('#grTitle').value = grade.title || '';
-          $('#grDate').value = grade.date || '';
-          $('#grScore').value = grade.score || '';
-          $('#grNote').value = grade.note || '';
+          if ($('#grId')) $('#grId').value = grade.id;
+          if ($('#grStudent')) $('#grStudent').value = studentId;
+          if ($('#grSubject')) $('#grSubject').value = grade.subject || '';
+          if ($('#grTitle')) $('#grTitle').value = grade.title || '';
+          if ($('#grDate')) $('#grDate').value = grade.date || '';
+          if ($('#grScore')) $('#grScore').value = grade.score || '';
+          if ($('#grNote')) $('#grNote').value = grade.note || '';
         }
       });
     });
     
     $$('.delete-grade').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const gradeId = this.getAttribute('data-id');
         const studentId = this.getAttribute('data-student');
         
@@ -919,64 +1034,72 @@ function initApp() {
   }
 
   // Filter grades by student
-  $('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
+  if ($('#grFilterStudent')) {
+    $('#grFilterStudent').addEventListener('change', renderAdminGradesTable);
+  }
 
   // Save grade
-  $('#btnSaveGrade').addEventListener('click', async () => {
-    const id = $('#grId').value;
-    const studentId = $('#grStudent').value;
-    const subject = $('#grSubject').value.trim();
-    const title = $('#grTitle').value.trim();
-    const date = $('#grDate').value;
-    const score = parseFloat($('#grScore').value);
-    const note = $('#grNote').value.trim();
-    
-    if (!studentId || !subject || !title || !date || isNaN(score)) {
-      alert('Veuillez remplir tous les champs obligatoires.');
-      return;
-    }
-    
-    if (!DB.grades[studentId]) {
-      DB.grades[studentId] = [];
-    }
-    
-    if (id) {
-      // Update existing grade
-      const index = DB.grades[studentId].findIndex(g => g.id === id);
-      if (index !== -1) {
-        DB.grades[studentId][index] = { ...DB.grades[studentId][index], subject, title, date, score, note };
+  if ($('#btnSaveGrade')) {
+    $('#btnSaveGrade').addEventListener('click', async () => {
+      const id = $('#grId').value;
+      const studentId = $('#grStudent').value;
+      const subject = $('#grSubject').value.trim();
+      const title = $('#grTitle').value.trim();
+      const date = $('#grDate').value;
+      const score = parseFloat($('#grScore').value);
+      const note = $('#grNote').value.trim();
+      
+      if (!studentId || !subject || !title || !date || isNaN(score)) {
+        alert('Veuillez remplir tous les champs obligatoires.');
+        return;
       }
-    } else {
-      // Add new grade
-      const newGrade = { id: uid(), subject, title, date, score, note };
-      DB.grades[studentId].push(newGrade);
-    }
-    
-    try {
-      await setData(DB);
-      renderAdminGradesTable();
-      $('#btnResetGrade').click();
-    } catch (error) {
-      alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
-    }
-  });
+      
+      if (!DB.grades[studentId]) {
+        DB.grades[studentId] = [];
+      }
+      
+      if (id) {
+        // Update existing grade
+        const index = DB.grades[studentId].findIndex(g => g.id === id);
+        if (index !== -1) {
+          DB.grades[studentId][index] = { ...DB.grades[studentId][index], subject, title, date, score, note };
+        }
+      } else {
+        // Add new grade
+        const newGrade = { id: uid(), subject, title, date, score, note };
+        DB.grades[studentId].push(newGrade);
+      }
+      
+      try {
+        await setData(DB);
+        renderAdminGradesTable();
+        if ($('#btnResetGrade')) $('#btnResetGrade').click();
+      } catch (error) {
+        alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+      }
+    });
+  }
 
   // Reset grade form
-  $('#btnResetGrade').addEventListener('click', () => {
-    $('#grId').value = '';
-    $('#grStudent').value = '';
-    $('#grSubject').value = '';
-    $('#grTitle').value = '';
-    $('#grDate').value = '';
-    $('#grScore').value = '';
-    $('#grNote').value = '';
-  });
+  if ($('#btnResetGrade')) {
+    $('#btnResetGrade').addEventListener('click', () => {
+      if ($('#grId')) $('#grId').value = '';
+      if ($('#grStudent')) $('#grStudent').value = '';
+      if ($('#grSubject')) $('#grSubject').value = '';
+      if ($('#grTitle')) $('#grTitle').value = '';
+      if ($('#grDate')) $('#grDate').value = '';
+      if ($('#grScore')) $('#grScore').value = '';
+      if ($('#grNote')) $('#grNote').value = '';
+    });
+  }
 
   /********************
    * DICTIONARY MANAGEMENT
    ********************/
   function renderAdminDictionaryList() {
     const container = $('#dictionaryTermsList');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     if (DB.dictionary.length === 0) {
@@ -1002,21 +1125,21 @@ function initApp() {
     
     // Add event listeners
     $$('.edit-dict').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = this.getAttribute('data-id');
         const term = DB.dictionary.find(t => t.id === id);
         if (term) {
-          $('#adminDictAr').value = term.ar;
-          $('#adminDictFr').value = term.fr;
-          $('#adminDictDef').value = term.def;
+          if ($('#adminDictAr')) $('#adminDictAr').value = term.ar;
+          if ($('#adminDictFr')) $('#adminDictFr').value = term.fr;
+          if ($('#adminDictDef')) $('#adminDictDef').value = term.def;
           // Store the ID for update
-          $('#adminDictAr').setAttribute('data-id', id);
+          if ($('#adminDictAr')) $('#adminDictAr').setAttribute('data-id', id);
         }
       });
     });
     
     $$('.delete-dict').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = this.getAttribute('data-id');
         if (confirm('Êtes-vous sûr de vouloir supprimer ce terme ?')) {
           DB.dictionary = DB.dictionary.filter(t => t.id !== id);
@@ -1031,51 +1154,57 @@ function initApp() {
   }
 
   // Save dictionary term
-  $('#adminBtnSaveDict').addEventListener('click', async () => {
-    const id = $('#adminDictAr').getAttribute('data-id');
-    const ar = $('#adminDictAr').value.trim();
-    const fr = $('#adminDictFr').value.trim();
-    const def = $('#adminDictDef').value.trim();
-    
-    if (!ar || !fr) {
-      alert('Veuillez remplir les termes arabe et français.');
-      return;
-    }
-    
-    if (id) {
-      // Update existing term
-      const index = DB.dictionary.findIndex(t => t.id === id);
-      if (index !== -1) {
-        DB.dictionary[index] = { ...DB.dictionary[index], ar, fr, def };
+  if ($('#adminBtnSaveDict')) {
+    $('#adminBtnSaveDict').addEventListener('click', async () => {
+      const id = $('#adminDictAr').getAttribute('data-id');
+      const ar = $('#adminDictAr').value.trim();
+      const fr = $('#adminDictFr').value.trim();
+      const def = $('#adminDictDef').value.trim();
+      
+      if (!ar || !fr) {
+        alert('Veuillez remplir les termes arabe et français.');
+        return;
       }
-    } else {
-      // Add new term
-      const newTerm = { id: uid(), ar, fr, def };
-      DB.dictionary.push(newTerm);
-    }
-    
-    try {
-      await setData(DB);
-      renderAdminDictionaryList();
-      $('#adminBtnResetDict').click();
-    } catch (error) {
-      alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
-    }
-  });
+      
+      if (id) {
+        // Update existing term
+        const index = DB.dictionary.findIndex(t => t.id === id);
+        if (index !== -1) {
+          DB.dictionary[index] = { ...DB.dictionary[index], ar, fr, def };
+        }
+      } else {
+        // Add new term
+        const newTerm = { id: uid(), ar, fr, def };
+        DB.dictionary.push(newTerm);
+      }
+      
+      try {
+        await setData(DB);
+        renderAdminDictionaryList();
+        if ($('#adminBtnResetDict')) $('#adminBtnResetDict').click();
+      } catch (error) {
+        alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+      }
+    });
+  }
 
   // Reset dictionary form
-  $('#adminBtnResetDict').addEventListener('click', () => {
-    $('#adminDictAr').value = '';
-    $('#adminDictFr').value = '';
-    $('#adminDictDef').value = '';
-    $('#adminDictAr').removeAttribute('data-id');
-  });
+  if ($('#adminBtnResetDict')) {
+    $('#adminBtnResetDict').addEventListener('click', () => {
+      if ($('#adminDictAr')) $('#adminDictAr').value = '';
+      if ($('#adminDictFr')) $('#adminDictFr').value = '';
+      if ($('#adminDictDef')) $('#adminDictDef').value = '';
+      if ($('#adminDictAr')) $('#adminDictAr').removeAttribute('data-id');
+    });
+  }
 
   /********************
    * QUIZ MANAGEMENT
    ********************/
   function renderAdminQuizList() {
     const container = $('#quizQuestionsList');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     if (DB.quiz.length === 0) {
@@ -1107,29 +1236,30 @@ function initApp() {
     
     // Add event listeners
     $$('.edit-quiz').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = this.getAttribute('data-id');
         const question = DB.quiz.find(q => q.id === id);
         if (question) {
-          $('#adminQuizQuestion').value = question.question;
-          $('#adminOption1').value = question.options[0] || '';
-          $('#adminOption2').value = question.options[1] || '';
-          $('#adminOption3').value = question.options[2] || '';
-          $('#adminOption4').value = question.options[3] || '';
-          $('#adminQuizCorrect').value = question.correct;
+          if ($('#adminQuizQuestion')) $('#adminQuizQuestion').value = question.question;
+          if ($('#adminOption1')) $('#adminOption1').value = question.options[0] || '';
+          if ($('#adminOption2')) $('#adminOption2').value = question.options[1] || '';
+          if ($('#adminOption3')) $('#adminOption3').value = question.options[2] || '';
+          if ($('#adminOption4')) $('#adminOption4').value = question.options[3] || '';
+          if ($('#adminQuizCorrect')) $('#adminQuizCorrect').value = question.correct;
           // Store the ID for update
-          $('#adminQuizQuestion').setAttribute('data-id', id);
+          if ($('#adminQuizQuestion')) $('#adminQuizQuestion').setAttribute('data-id', id);
         }
       });
     });
     
     $$('.delete-quiz').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         const id = this.getAttribute('data-id');
         if (confirm('Êtes-vous sûr de vouloir supprimer cette question ?')) {
           DB.quiz = DB.quiz.filter(q => q.id !== id);
           setData(DB).then(() => {
             renderAdminQuizList();
+            loadStudentQuizzes();
           }).catch(error => {
             alert('فشل في حذف السؤال. يرجى المحاولة مرة أخرى.');
           });
@@ -1138,114 +1268,73 @@ function initApp() {
     });
   }
 
-  // Save quiz question
-  $('#adminBtnSaveQuiz').addEventListener('click', async () => {
-    const id = $('#adminQuizQuestion').getAttribute('data-id');
-    const question = $('#adminQuizQuestion').value.trim();
-    const options = [
-      $('#adminOption1').value.trim(),
-      $('#adminOption2').value.trim(),
-      $('#adminOption3').value.trim(),
-      $('#adminOption4').value.trim()
-    ];
-    const correct = parseInt($('#adminQuizCorrect').value);
-    
-    if (!question || options.some(opt => !opt)) {
-      alert('Veuillez remplir la question et toutes les options.');
-      return;
-    }
-    
-    if (id) {
-      // Update existing question
-      const index = DB.quiz.findIndex(q => q.id === id);
-      if (index !== -1) {
-        DB.quiz[index] = { ...DB.quiz[index], question, options, correct };
-      }
-    } else {
-      // Add new question
-      const newQuestion = { id: uid(), question, options, correct };
-      DB.quiz.push(newQuestion);
-    }
-    
-    try {
-      await setData(DB);
-      renderAdminQuizList();
-      $('#adminBtnResetQuiz').click();
-    } catch (error) {
-      alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
-    }
-  });
-
-  // Reset quiz form
-  $('#adminBtnResetQuiz').addEventListener('click', () => {
-    $('#adminQuizQuestion').value = '';
-    $('#adminOption1').value = '';
-    $('#adminOption2').value = '';
-    $('#adminOption3').value = '';
-    $('#adminOption4').value = '';
-    $('#adminQuizCorrect').value = '1';
-    $('#adminQuizQuestion').removeAttribute('data-id');
-  });
-
   /********************
    * ANNOUNCEMENT MANAGEMENT
    ********************/
-  $('#btnSaveAnnouncement').addEventListener('click', async () => {
-    const announcement = $('#announcementInput').value.trim();
-    DB.announcement = announcement;
-    
-    // Handle image upload
-    const imageInput = $('#announcementImageInput');
-    if (imageInput.files && imageInput.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        DB.announcementImage = e.target.result;
-        setData(DB).then(() => {
+  if ($('#btnSaveAnnouncement')) {
+    $('#btnSaveAnnouncement').addEventListener('click', async () => {
+      const announcement = $('#announcementInput').value.trim();
+      DB.announcement = announcement;
+      
+      // Handle image upload
+      const imageInput = $('#announcementImageInput');
+      if (imageInput.files && imageInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          DB.announcementImage = e.target.result;
+          setData(DB).then(() => {
+            updateAnnouncementDisplay();
+            alert('Annonce enregistrée avec image!');
+          }).catch(error => {
+            alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+          });
+        };
+        reader.readAsDataURL(imageInput.files[0]);
+      } else {
+        try {
+          await setData(DB);
           updateAnnouncementDisplay();
-          alert('Annonce enregistrée avec image!');
-        }).catch(error => {
+          alert('Annonce enregistrée!');
+        } catch (error) {
           alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
-        });
-      };
-      reader.readAsDataURL(imageInput.files[0]);
-    } else {
-      try {
-        await setData(DB);
-        updateAnnouncementDisplay();
-        alert('Annonce enregistrée!');
-      } catch (error) {
-        alert('فشل في حفظ البيانات. يرجى المحاولة مرة أخرى.');
+        }
       }
-    }
-  });
+    });
+  }
 
   function updateAnnouncementDisplay() {
-    $('#announcementText').textContent = DB.announcement;
-    if (DB.announcementImage) {
+    if ($('#announcementText')) $('#announcementText').textContent = DB.announcement || '';
+    if ($('#announcementImage') && DB.announcementImage) {
       $('#announcementImage').src = DB.announcementImage;
       $('#announcementImage').style.display = 'block';
-    } else {
+    } else if ($('#announcementImage')) {
       $('#announcementImage').style.display = 'none';
     }
   }
 
   // Image preview for announcement
-  $('#announcementImageInput').addEventListener('change', function() {
-    if (this.files && this.files[0]) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        $('#announcementImagePreview').src = e.target.result;
-        $('#announcementImagePreview').style.display = 'block';
-      };
-      reader.readAsDataURL(this.files[0]);
-    }
-  });
+  if ($('#announcementImageInput')) {
+    $('#announcementImageInput').addEventListener('change', function () {
+      if (this.files && this.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          if ($('#announcementImagePreview')) {
+            $('#announcementImagePreview').src = e.target.result;
+            $('#announcementImagePreview').style.display = 'block';
+          }
+        };
+        reader.readAsDataURL(this.files[0]);
+      }
+    });
+  }
 
   /********************
    * REVISION REQUESTS MANAGEMENT
    ********************/
   function renderRevisionRequests() {
     const container = $('#revisionRequestsList');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     if (!DB.revisionRequests || DB.revisionRequests.length === 0) {
@@ -1288,7 +1377,7 @@ function initApp() {
     
     // Add event listeners
     $$('.approve-revision').forEach(btn => {
-      btn.addEventListener('click', async function() {
+      btn.addEventListener('click', async function () {
         const id = this.getAttribute('data-id');
         const request = DB.revisionRequests.find(r => r.id === id);
         if (request) {
@@ -1304,7 +1393,7 @@ function initApp() {
     });
     
     $$('.reject-revision').forEach(btn => {
-      btn.addEventListener('click', async function() {
+      btn.addEventListener('click', async function () {
         const id = this.getAttribute('data-id');
         const request = DB.revisionRequests.find(r => r.id === id);
         if (request) {
@@ -1323,42 +1412,46 @@ function initApp() {
   /********************
    * DATA IMPORT/EXPORT
    ********************/
-  $('#btnExport').addEventListener('click', () => {
-    const dataStr = JSON.stringify(DB, null, 2);
-    const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-    
-    const exportFileDefaultName = 'lycee-excellence-data.json';
-    
-    const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
-    linkElement.setAttribute('download', exportFileDefaultName);
-    linkElement.click();
-  });
+  if ($('#btnExport')) {
+    $('#btnExport').addEventListener('click', () => {
+      const dataStr = JSON.stringify(DB, null, 2);
+      const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+      
+      const exportFileDefaultName = 'lycee-excellence-data.json';
+      
+      const linkElement = document.createElement('a');
+      linkElement.setAttribute('href', dataUri);
+      linkElement.setAttribute('download', exportFileDefaultName);
+      linkElement.click();
+    });
+  }
 
-  $('#importFile').addEventListener('change', async function() {
-    const file = this.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-      try {
-        const importedData = JSON.parse(e.target.result);
-        if (confirm('Êtes-vous sûr de vouloir importer ces données ? Toutes les données actuelles seront remplacées.')) {
-          try {
-            await setData(importedData);
-            DB = importedData;
-            alert('Données importées avec succès !');
-            location.reload();
-          } catch (error) {
-            alert('فشل في استيراد البيانات. يرجى المحاولة مرة أخرى.');
+  if ($('#importFile')) {
+    $('#importFile').addEventListener('change', async function () {
+      const file = this.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = async function (e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (confirm('Êtes-vous sûr de vouloir importer ces données ? Toutes les données actuelles seront remplacées.')) {
+            try {
+              await setData(importedData);
+              DB = importedData;
+              alert('Données importées avec succès !');
+              location.reload();
+            } catch (error) {
+              alert('فشل في استيراد البيانات. يرجى المحاولة مرة أخرى.');
+            }
           }
+        } catch (error) {
+          alert('Erreur lors de l\'importation du fichier. Le format est invalide.');
         }
-      } catch (error) {
-        alert('Erreur lors de l\'importation du fichier. Le format est invalide.');
-      }
-    };
-    reader.readAsText(file);
-  });
+      };
+      reader.readAsText(file);
+    });
+  }
 
   /********************
    * INITIALIZATION
@@ -1383,88 +1476,96 @@ function loadStudentResources() {
   
   // Load recent grades
   const gradesContainer = $('#studentRecentGrades');
-  gradesContainer.innerHTML = '';
-  
-  const grades = (DB.grades[currentStudent.id] || []).slice(-5).reverse();
-  if (grades.length === 0) {
-    gradesContainer.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
-  } else {
-    grades.forEach(grade => {
-      const gradeEl = document.createElement('div');
-      gradeEl.style.padding = '10px';
-      gradeEl.style.borderBottom = '1px solid #eee';
-      gradeEl.innerHTML = `
-        <div><strong>${grade.title}</strong> - ${grade.subject}</div>
-        <div>Note: ${grade.score}/20 - ${grade.note}</div>
-        <div class="muted">${grade.date}</div>
-      `;
-      gradesContainer.appendChild(gradeEl);
-    });
+  if (gradesContainer) {
+    gradesContainer.innerHTML = '';
+    
+    const grades = (DB.grades[currentStudent.id] || []).slice(-5).reverse();
+    if (grades.length === 0) {
+      gradesContainer.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
+    } else {
+      grades.forEach(grade => {
+        const gradeEl = document.createElement('div');
+        gradeEl.style.padding = '10px';
+        gradeEl.style.borderBottom = '1px solid #eee';
+        gradeEl.innerHTML = `
+          <div><strong>${grade.title}</strong> - ${grade.subject}</div>
+          <div>Note: ${grade.score}/20 - ${grade.note}</div>
+          <div class="muted">${grade.date}</div>
+        `;
+        gradesContainer.appendChild(gradeEl);
+      });
+    }
   }
   
   // Load resources
   const resourcesContainer = $('#studentResources');
-  resourcesContainer.innerHTML = '';
-  
-  // Add some sample resources
-  const resources = [
-    { type: 'lesson', title: 'Introduction à la mécanique', chapter: 'Mécanique' },
-    { type: 'exercise', title: 'Exercices sur l\'électricité', chapter: 'Électricité' },
-    { type: 'exam', title: 'Examen Blanc 2023', chapter: 'Général' }
-  ];
-  
-  resources.forEach(resource => {
-    const resourceEl = document.createElement('div');
-    resourceEl.className = 'content-card';
-    resourceEl.innerHTML = `
-      <div class="card-content">
-        <h3>${resource.title}</h3>
-        <p>Chapitre: ${resource.chapter}</p>
-        <button class="btn btn-outline">Consulter</button>
-      </div>
-    `;
-    resourcesContainer.appendChild(resourceEl);
-  });
+  if (resourcesContainer) {
+    resourcesContainer.innerHTML = '';
+    
+    // Add some sample resources
+    const resources = [
+      { type: 'lesson', title: 'Introduction à la mécanique', chapter: 'Mécanique' },
+      { type: 'exercise', title: 'Exercices sur l\'électricité', chapter: 'Électricité' },
+      { type: 'exam', title: 'Examen Blanc 2023', chapter: 'Général' }
+    ];
+    
+    resources.forEach(resource => {
+      const resourceEl = document.createElement('div');
+      resourceEl.className = 'content-card';
+      resourceEl.innerHTML = `
+        <div class="card-content">
+          <h3>${resource.title}</h3>
+          <p>Chapitre: ${resource.chapter}</p>
+          <button class="btn btn-outline">Consulter</button>
+        </div>
+      `;
+      resourcesContainer.appendChild(resourceEl);
+    });
+  }
   
   // Load dictionary terms
   const dictionaryContainer = $('#studentDictionaryContent');
-  dictionaryContainer.innerHTML = '';
-  
-  DB.dictionary.forEach(term => {
-    const termEl = document.createElement('div');
-    termEl.className = 'content-card';
-    termEl.innerHTML = `
-      <div class="card-content">
-        <h3>${term.ar} → ${term.fr}</h3>
-        <p>${term.def}</p>
-      </div>
-    `;
-    dictionaryContainer.appendChild(termEl);
-  });
+  if (dictionaryContainer) {
+    dictionaryContainer.innerHTML = '';
+    
+    DB.dictionary.forEach(term => {
+      const termEl = document.createElement('div');
+      termEl.className = 'content-card';
+      termEl.innerHTML = `
+        <div class="card-content">
+          <h3>${term.ar} → ${term.fr}</h3>
+          <p>${term.def}</p>
+        </div>
+      `;
+      dictionaryContainer.appendChild(termEl);
+    });
+  }
   
   // Load exercises
   const exercisesContainer = $('#studentExercisesList');
-  exercisesContainer.innerHTML = '';
-  
-  // Add some sample exercises
-  const exercises = [
-    { title: 'Exercices sur les forces', chapter: 'Mécanique' },
-    { title: 'Problèmes d\'électricité', chapter: 'Électricité' },
-    { title: 'Devoir maison', chapter: 'Général' }
-  ];
-  
-  exercises.forEach(exercise => {
-    const exerciseEl = document.createElement('div');
-    exerciseEl.className = 'content-card';
-    exerciseEl.innerHTML = `
-      <div class="card-content">
-        <h3>${exercise.title}</h3>
-        <p>Chapitre: ${exercise.chapter}</p>
-        <button class="btn btn-outline">Télécharger</button>
-      </div>
-    `;
-    exercisesContainer.appendChild(exerciseEl);
-  });
+  if (exercisesContainer) {
+    exercisesContainer.innerHTML = '';
+    
+    // Add some sample exercises
+    const exercises = [
+      { title: 'Exercices sur les forces', chapter: 'Mécanique' },
+      { title: 'Problèmes d\'électricité', chapter: 'Électricité' },
+      { title: 'Devoir maison', chapter: 'Général' }
+    ];
+    
+    exercises.forEach(exercise => {
+      const exerciseEl = document.createElement('div');
+      exerciseEl.className = 'content-card';
+      exerciseEl.innerHTML = `
+        <div class="card-content">
+          <h3>${exercise.title}</h3>
+          <p>Chapitre: ${exercise.chapter}</p>
+          <button class="btn btn-outline">Télécharger</button>
+        </div>
+      `;
+      exercisesContainer.appendChild(exerciseEl);
+    });
+  }
 }
 
 // تحديث واجهة المستخدم عند تلقي بيانات جديدة

@@ -1123,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#loginBtn').addEventListener('click', () => $('#loginModal').style.display = 'flex');
     $('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
 
-    $('#submitLogin').addEventListener('click', () {
+    $('#submitLogin').addEventListener('click', () => {
         const u = $('#username').value.trim();
         const p = $('#password').value.trim();
         

@@ -900,8 +900,91 @@ function renderRevisionRequests() {
 }
 
 /********************
- * DATA IMPORT/EXPORT
+ * DATA IMPORT/EXPORT - MODIFIED FOR PDF HANDLING
  ********************/
+
+// Export data
+$('#btnExport').addEventListener('click', () => {
+    const dataStr = JSON.stringify(DB, null, 2);
+    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    
+    const exportFileDefaultName = 'lycee-excellence-data.json';
+    
+    const linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+    
+    showNotification('تم تصدير البيانات بنجاح');
+});
+
+// Import data with improved PDF handling
+$('#importFile').addEventListener('change', function () {
+    const file = this.files[0];
+    if (!file) return;
+    
+    // Check if file is JSON
+    if (!file.name.endsWith('.json')) {
+        showNotification('الملف يجب أن يكون بصيغة JSON', 'error');
+        this.value = '';
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            
+            // Validate imported data structure
+            if (!importedData.students || !importedData.grades) {
+                throw new Error('هيكل الملف غير صحيح');
+            }
+            
+            // Ensure pdfs array exists in imported data
+            if (!importedData.hasOwnProperty('pdfs')) {
+                importedData.pdfs = [];
+            }
+            
+            // Merge PDFs: keep existing PDFs and add new ones from imported data
+            const currentPdfs = DB.pdfs || [];
+            const importedPdfs = importedData.pdfs || [];
+            
+            // Create a map to avoid duplicates by URL
+            const pdfMap = new Map();
+            
+            // Add current PDFs to the map
+            currentPdfs.forEach(pdf => {
+                pdfMap.set(pdf.url, pdf);
+            });
+            
+            // Add imported PDFs if they don't already exist
+            importedPdfs.forEach(pdf => {
+                if (!pdfMap.has(pdf.url)) {
+                    pdfMap.set(pdf.url, pdf);
+                }
+            });
+            
+            // Convert map back to array
+            importedData.pdfs = Array.from(pdfMap.values());
+            
+            if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم دمج البيانات المستوردة مع البيانات الحالية.')) {
+                localStorage.setItem(LS_KEY, JSON.stringify(importedData));
+                DB = getData();
+                showNotification('تم استيراد البيانات بنجاح! وتم دمج ملفات PDF.');
+                location.reload();
+            }
+        } catch (error) {
+            showNotification('حدث خطأ أثناء استيراد الملف: ' + error.message, 'error');
+            console.error('Import error:', error);
+        }
+    };
+    
+    reader.onerror = function () {
+        showNotification('حدث خطأ أثناء قراءة الملف', 'error');
+    };
+    
+    reader.readAsText(file);
+});
 
 /********************
  * INITIALIZATION
@@ -1040,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $('#loginBtn').addEventListener('click', () => $('#loginModal').style.display = 'flex');
     $('#cancelLogin').addEventListener('click', () => $('#loginModal').style.display = 'none');
 
-    $('#submitLogin').addEventListener('click', () => {
+    $('#submitLogin').addEventListener('click', () {
         const u = $('#username').value.trim();
         const p = $('#password').value.trim();
         
@@ -1343,22 +1426,54 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const importedData = JSON.parse(e.target.result);
                 
-                // الاحتفاظ ببيانات pdfs الحالية
-                const currentPdfs = DB.pdfs || [];
+                // Validate imported data structure
+                if (!importedData.students || !importedData.grades) {
+                    throw new Error('هيكل الملف غير صحيح');
+                }
                 
-                if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم استبدال جميع البيانات الحالية مع الاحتفاظ بملفات PDF الحالية.')) {
-                    // دمج بيانات pdfs الحالية مع البيانات المستوردة
-                    importedData.pdfs = currentPdfs;
-                    
+                // Ensure pdfs array exists in imported data
+                if (!importedData.hasOwnProperty('pdfs')) {
+                    importedData.pdfs = [];
+                }
+                
+                // Merge PDFs: keep existing PDFs and add new ones from imported data
+                const currentPdfs = DB.pdfs || [];
+                const importedPdfs = importedData.pdfs || [];
+                
+                // Create a map to avoid duplicates by URL
+                const pdfMap = new Map();
+                
+                // Add current PDFs to the map
+                currentPdfs.forEach(pdf => {
+                    pdfMap.set(pdf.url, pdf);
+                });
+                
+                // Add imported PDFs if they don't already exist
+                importedPdfs.forEach(pdf => {
+                    if (!pdfMap.has(pdf.url)) {
+                        pdfMap.set(pdf.url, pdf);
+                    }
+                });
+                
+                // Convert map back to array
+                importedData.pdfs = Array.from(pdfMap.values());
+                
+                if (confirm('هل أنت متأكد من رغبتك في استيراد هذه البيانات؟ سيتم دمج البيانات المستوردة مع البيانات الحالية.')) {
                     localStorage.setItem(LS_KEY, JSON.stringify(importedData));
                     DB = getData();
-                    showNotification('تم استيراد البيانات بنجاح! مع الاحتفاظ بملفات PDF الحالية.');
+                    showNotification('تم استيراد البيانات بنجاح! وتم دمج ملفات PDF.');
                     location.reload();
                 }
             } catch (error) {
-                showNotification('حدث خطأ أثناء استيراد الملف. التنسيق غير صحيح.', 'error');
+                showNotification('حدث خطأ أثناء استيراد الملف: ' + error.message, 'error');
+                console.error('Import error:', error);
             }
         };
+        
+        reader.onerror = function () {
+            showNotification('حدث خطأ أثناء قراءة الملف', 'error');
+        };
+        
         reader.readAsText(file);
     });
 

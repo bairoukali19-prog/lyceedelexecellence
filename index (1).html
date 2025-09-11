@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lycée de l’Excellence - Physique</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- MathJax for LaTeX rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- No CSS included as requested -->
+</head>
+<body>
+  <!-- Header (kept as original) -->
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <img id="mainLogo" alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ0IiB2aWV3Qm94PSIwIDAgNTEyIDUxMiIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsPSIjMzQ5OGRiIiBkPSJNMjU2IDhjMTE5IDAgMjE2IDk3IDIxNiAyMTZzLTk3IDIxNi0yMTYgMjE2cy0yMTYtOTctMjE2LTIxNlM0MzcgOCAyNTYgOHptMCA0NDhjMTEwLjUgMCAyMDAtODkuNSAyMDAtMjAwIDAtMTEwLjUtODkuNS0yMDAtMjAwLTIwMCAxMDkgMCAyMDAgODkuNSAyMDAgMjAwIDAgMTEwLjUtODkuNSAyMDAtMjAwIDIwMHoiLz48L3N2Zz4=" onerror="this.style.display='none';" />
+        <h1 id="siteTitle">Lycée de l'Excellence</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="nav-link" data-section="home">Accueil</a></li>
+          <li><a href="#" class="nav-link" data-section="dictionary">Lexique</a></li>
+          <li><a href="#" class="nav-link" data-section="quiz">Quiz</a></li>
+          <li><a href="#" class="nav-link" data-section="grades">Notes</a></li>
+          <li><a href="#" class="nav-link" data-section="exams">Examens</a></li>
+          <li><a href="#" class="nav-link" data-section="exercises">Exercices</a></li>
+          <li><a href="#" class="nav-link" data-section="lessons">Leçons</a></li>
+        </ul>
+      </nav>
+      <div class="auth-buttons">
+        <button class="btn btn-primary" id="studentLoginBtn"><i class="fa-solid fa-user-graduate"></i> Espace Élève</button>
+        <button class="btn btn-accent" id="loginBtn"><i class="fa-solid fa-user-shield"></i> Espace Professeur</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero" id="home-section">
+    <div class="container hero-content">
+      <h2>Bienvenue au Lycée de l'Excellence</h2>
+      <p>Plateforme éducative dédiée à la physique sous la supervision du Professeur Ali Bairouk</p>
+    </div>
+  </section>
+
+  <!-- Announcement -->
+  <div class="announcement-box" id="announcementBox">
+    <i class="fas fa-bullhorn"></i>
+    <div class="announcement-content">
+      <p id="announcementText">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</p>
+      <img id="announcementImage" class="announcement-image" src="" alt="Announcement image" style="display:none;max-width:320px;">
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Features -->
+    <h2 class="section-title">Sections du Site</h2>
+    <div class="features">
+      <div class="feature-card" data-section="dictionary">
+        <div class="feature-icon"><i class="fas fa-book"></i></div>
+        <div class="feature-content"><h3>Lexique Scientifique</h3><p>Traduction des termes scientifiques عربى → français.</p></div>
+      </div>
+      <div class="feature-card" data-section="quiz">
+        <div class="feature-icon"><i class="fas fa-question-circle"></i></div>
+        <div class="feature-content"><h3>Quiz</h3><p>اختبارات تفاعلية احترافية.</p></div>
+      </div>
+      <div class="feature-card" data-section="grades">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="feature-content"><h3>Notes</h3><p>عرض النقاط عبر حساب التلميذ أو Code Parcours.</p></div>
+      </div>
+      <div class="feature-card" data-section="exams">
+        <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="feature-content"><h3>Examens Antérieurs</h3><p>امتحانات مع التصحيحات.</p></div>
+      </div>
+      <div class="feature-card" data-section="exercises">
+        <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+        <div class="feature-content"><h3>Exercices et Solutions</h3><p>تمارين محلولة بتفصيل.</p></div>
+      </div>
+      <div class="feature-card" data-section="lessons">
+        <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="feature-content"><h3>Leçons</h3><p>دروس شاملة للبرنامج.</p></div>
+      </div>
+    </div>
+
+    <!-- Student Dashboard (kept as original) -->
+    <section id="student-dashboard" class="student-dashboard" style="display:none;">
+      <div class="welcome-banner">
+        <h2 id="studentWelcome">Bienvenue, Élève</h2>
+        <p>Vous trouverez ici toutes vos ressources pédagogiques</p>
+      </div>
+
+      <!-- Student Tabs Navigation -->
+      <div class="student-tabs">
+        <div class="student-tab active" data-tab="dashboard">Tableau de bord</div>
+        <div class="student-tab" data-tab="quiz">Quiz</div>
+        <div class="student-tab" data-tab="exercises">Exercices</div>
+        <div class="student-tab" data-tab="dictionary">Lexique</div>
+        <div class="student-tab" data-tab="revision">Demande de récorrection</div>
+        <div class="student-tab" data-tab="messages">الرسائل</div>
+        <div class="student-tab" data-tab="cours">Cours online</div>
+      </div>
+
+      <!-- Dashboard tab content kept -->
+      <div id="student-dashboard-tab" class="student-tab-content" style="display:block;">
+        <div class="dashboard-card">
+          <h3>Vos Notes Récentes</h3>
+          <div id="studentRecentGrades"><p class="muted">Aucune note disponible pour le moment.</p></div>
+        </div>
+        <div class="dashboard-card">
+          <h3>Ressources Disponibles</h3>
+          <div class="content-grid" id="studentResources"></div>
+        </div>
+      </div>
+
+      <!-- Student Quiz tab -->
+      <div id="student-quiz-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Quiz Disponibles</h3>
+          <div id="studentQuizList"><p class="muted">Aucun quiz disponible pour le moment.</p></div>
+        </div>
+
+        <div class="dashboard-card">
+          <h3>Résultats des Quiz</h3>
+          <div id="studentQuizResults"><p class="muted">Aucun résultat de quiz pour le moment.</p></div>
+        </div>
+
+        <!-- Quiz runtime container -->
+        <div id="quizContainer" class="quiz-container" style="display:none;"></div>
+      </div>
+
+      <!-- Exercises, Dictionary, Revision, Messages, Cours tabs (kept) -->
+      <div id="student-exercises-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Exercices Disponibles</h3>
+          <div class="content-grid" id="studentExercisesList"></div>
+        </div>
+      </div>
+
+      <div id="student-dictionary-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Lexique Scientifique</h3>
+          <div class="content-grid" id="studentDictionaryContent"></div>
+        </div>
+      </div>
+
+      <div id="student-revision-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>Demande de Récorrection de Note</h3>
+          <div class="revision-request-form">
+            <form id="revisionRequestForm">
+              <div class="form-group">
+                <label for="revisionExam">Examen/Devoir</label>
+                <select id="revisionExam" required><option value="">Sélectionnez une évaluation</option></select>
+              </div>
+              <div class="form-group">
+                <label for="revisionMessage">Message</label>
+                <textarea id="revisionMessage" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+            </form>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h3>Vos Demandes de Récorrection</h3>
+          <div id="studentRevisionRequests"><p class="muted">Vous n'avez pas encore soumis de demandes de récorrection.</p></div>
+        </div>
+      </div>
+
+      <div id="student-messages-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>الرسائل الموجهة إليك</h3>
+          <div id="studentMessagesList"><p class="muted">لا توجد رسائل حتى الآن.</p></div>
+        </div>
+      </div>
+
+      <div id="student-cours-tab" class="student-tab-content" style="display:none;">
+        <div class="dashboard-card">
+          <h3>الدروس العلمية - Cours online</h3>
+          <div id="studentCoursList" class="latex-content"><p class="muted">لا توجد دروس متاحة حتى الآن.</p></div>
+        </div>
+      </div>
+
+      <div class="flex right">
+        <button class="btn btn-ghost" id="studentLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+      </div>
+    </section>
+
+    <!-- Other sections (dictionary, quiz page, grades, exams, exercises, lessons) kept -->
+    <section id="dictionary" class="page-section" style="display:none;">
+      <div class="section-header"><h2>Lexique Scientifique</h2><p>Ar → Fr</p></div>
+      <div class="content-grid" id="dictionaryContent"></div>
+    </section>
+
+    <section id="quiz" class="page-section" style="display:none;">
+      <div class="section-header"><h2>Quiz de Physique</h2><p>Testez vos connaissances</p></div>
+      <div id="quizContent"></div>
+    </section>
+
+    <section id="grades" class="page-section" style="display:none;">
+      <div class="section-header"><h2>Consultation des Notes</h2></div>
+      <div class="content-card mb-3">
+        <div class="card-content">
+          <div class="form-row">
+            <div class="form-group"><label for="searchCode">Code Parcours</label><input type="text" id="searchCode" placeholder="Ex: P-2024-001"></div>
+            <div class="form-group"><label>&nbsp;</label><button class="btn btn-primary w-100" id="btnSearchByCode"><i class="fa-solid fa-magnifying-glass"></i> Voir les notes</button></div>
+          </div>
+        </div>
+      </div>
+      <div id="gradesResults" style="display:none"><h3 class="section-title">Vos Résultats</h3><div id="studentInfo" class="mb-2"></div>
+        <div class="content-card"><div class="card-content"><table id="gradesTable"><thead><tr><th>Date</th><th>Matière</th><th>Intitulé</th><th>Note /20</th><th>Remarque</th></tr></thead><tbody></tbody></table><p id="noGradesMsg" style="display:none">Aucune note pour le moment.</p></div></div>
+      </div>
+    </section>
+
+    <section id="exams" class="page-section" style="display:none;">
+      <div class="section-header"><h2>Examens Antérieurs</h2><p>Consultez & téléchargez</p></div>
+      <div class="content-grid" id="examsContent"></div>
+    </section>
+
+    <section id="exercises" class="page-section" style="display:none;">
+      <div class="section-header"><h2>Exercices et Solutions</h2><p>تمارين محلولة بتفصيل</p></div>
+      <div class="content-grid" id="exercisesContent"></div>
+    </section>
+
+    <section id="lessons" class="page-section" style="display:none;">
+      <div class="section-header"><h2>Leçons</h2><p>دروس شاملة للبرنامج</p></div>
+      <div class="content-grid" id="lessonsContent"></div>
+    </section>
+
+    <!-- Admin Panel (kept and extended) -->
+    <section id="admin-panel" class="admin-panel" style="display:none;">
+      <div class="admin-header">
+        <h2>Panneau d'Administration</h2>
+        <div class="flex right">
+          <button id="btnExport" class="btn btn-outline"><i class="fa-solid fa-file-export"></i> Exporter JSON</button>
+          <label class="btn btn-outline" for="importFile"><i class="fa-solid fa-file-import"></i> Importer JSON</label>
+          <input type="file" id="importFile" accept="application/json" style="display:none">
+          <button id="logoutBtn" class="btn btn-ghost"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+        </div>
+      </div>
+
+      <div class="admin-dashboard">
+        <div class="admin-sidebar">
+          <h3>Tableau de Bord</h3>
+          <ul class="admin-menu">
+            <li><a href="#" class="admin-tab-link active" data-tab="tab-dashboard"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-students"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-grades"><i class="fa-solid fa-chart-line"></i> Notes</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-quiz"><i class="fa-solid fa-question-circle"></i> Quiz</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-dictionary"><i class="fa-solid fa-book"></i> Lexique</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-lessons"><i class="fa-solid fa-graduation-cap"></i> Leçons</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exercises"><i class="fa-solid fa-tasks"></i> Exercices</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exams"><i class="fa-solid fa-file-alt"></i> Examens</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-announcement"><i class="fa-solid fa-bullhorn"></i> Annonces</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-revisions"><i class="fa-solid fa-edit"></i> Demandes de récorrection</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-messages"><i class="fa-solid fa-envelope"></i> الرسائل</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-latex"><i class="fa-solid fa-square-root-variable"></i> LaTeX Courses</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-sitecover"><i class="fa-solid fa-image"></i> Site Cover</a></li>
+          </ul>
+        </div>
+
+        <div class="admin-content">
+          <!-- Dashboard -->
+          <div id="tab-dashboard" class="admin-section" style="display:block;">
+            <h2>Tableau de Bord</h2>
+            <div class="stats-grid">
+              <div class="stat-card"><h3 id="stats-students">0</h3><p>Étudiants</p></div>
+              <div class="stat-card"><h3 id="stats-quiz">0</h3><p>Questions de Quiz</p></div>
+              <div class="stat-card"><h3 id="stats-dictionary">0</h3><p>Termes de Lexique</p></div>
+              <div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes Enregistrées</p></div>
+              <div class="stat-card"><h3 id="stats-messages">0</h3><p>رسائل</p></div>
+              <div class="stat-card"><h3 id="stats-latex">0</h3><p>دروس LaTeX</p></div>
+            </div>
+            <div class="content-card">
+              <div class="card-content"><h3>Activité Récente</h3><div id="recent-activity"><p class="muted">Aucune activité récente.</p></div></div>
+            </div>
+          </div>
+
+          <!-- Students (kept) -->
+          <div id="tab-students" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Créer / Modifier un Étudiant</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Nom complet</label><input id="stFullname" type="text" placeholder="Ex: Ahmed Amine"></div>
+                  <div class="form-group"><label>Nom d'utilisateur</label><input id="stUsername" type="text" placeholder="Ex: ahmed.amine"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Mot de passe</label><input id="stPassword" type="text" placeholder="••••••"></div>
+                  <div class="form-group"><label>Code Parcours</label><input id="stCode" type="text" placeholder="Ex: P-2024-001"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Classe</label><input id="stClassroom" type="text" placeholder="2ème Bac Sciences Physiques"></div>
+                  <div class="form-group"><label>&nbsp;</label>
+                    <div class="inline">
+                      <button class="btn btn-success" id="btnSaveStudent"><i class="fa-solid fa-save"></i> Enregistrer</button>
+                      <button class="btn btn-ghost" id="btnResetStudent">Vider</button>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="stId">
+              </div>
+            </div>
+
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Liste des Étudiants</strong><input class="right" id="filterStudents" placeholder="Filtrer..." /></div>
+                <table id="studentsTable"><thead><tr><th>Nom</th><th>Utilisateur</th><th>Code</th><th>Classe</th><th>Actions</th></tr></thead><tbody></tbody></table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grades (kept) -->
+          <div id="tab-grades" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une Note</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Étudiant</label><select id="grStudent"></select></div>
+                  <div class="form-group"><label>Matière</label><input id="grSubject" type="text" placeholder="Électricité, Mécanique..."></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Intitulé</label><input id="grTitle" type="text" placeholder="Contrôle 1"></div>
+                  <div class="form-group"><label>Date</label><input id="grDate" type="date"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Note /20</label><input id="grScore" type="number" min="0" max="20" step="0.25" placeholder="16.5"></div>
+                  <div class="form-group"><label>Remarque</label><input id="grNote" type="text" placeholder="Très bien"></div>
+                </div>
+                <input type="hidden" id="grId">
+                <div class="mt-2"><button class="btn btn-success" id="btnSaveGrade"><i class="fa-solid fa-plus"></i> Enregistrer la note</button><button class="btn btn-ghost" id="btnResetGrade">Vider</button></div>
+              </div>
+            </div>
+
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Notes par Étudiant</strong><select id="grFilterStudent" class="right"></select></div>
+                <table id="gradesAdminTable"><thead><tr><th>Étudiant</th><th>Date</th><th>Matière</th><th>Intitulé</th><th>Note</th><th>Remarque</th><th>Actions</th></tr></thead><tbody></tbody></table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quiz (enhanced admin UI) -->
+          <div id="tab-quiz" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Créer / Gérer Quiz Professionnel</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Titre du quiz</label><input id="newQuizTitle" type="text" placeholder="Titre du quiz"></div>
+                  <div class="form-group"><label>Durée (minutes, 0 = sans limite)</label><input id="newQuizDuration" type="number" min="0" value="0"></div>
+                </div>
+                <div class="form-row">
+                  <label><input type="checkbox" id="newQuizShuffle"> Mélanger questions</label>
+                  <label style="margin-left:12px;"><input type="checkbox" id="newQuizAllowMultipleAttempts"> Autoriser plusieurs tentatives</label>
+                </div>
+                <div class="mt-2"><button class="btn btn-success" id="btnCreateQuiz"><i class="fa-solid fa-plus"></i> Créer Quiz</button></div>
+              </div>
+            </div>
+
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une question</h3>
+                <div class="form-group"><label>Sélectionnez quiz</label><select id="adminSelectQuiz"></select></div>
+                <div class="form-group"><label>Question</label><input id="adminQuizQuestion" type="text" placeholder="Entrez la question"></div>
+                <div class="form-row">
+                  <div class="form-group"><label>Type de question</label>
+                    <select id="adminQuestionType"><option value="single">Choix unique</option><option value="multiple">Choix multiple</option></select>
+                  </div>
+                  <div class="form-group"><label>Points</label><input id="adminQuestionPoints" type="number" min="1" value="1"></div>
+                </div>
+                <div class="form-group"><label>Option 1</label><input id="adminOption1" type="text" placeholder="Option 1"></div>
+                <div class="form-group"><label>Option 2</label><input id="adminOption2" type="text" placeholder="Option 2"></div>
+                <div class="form-group"><label>Option 3 (optionnel)</label><input id="adminOption3" type="text" placeholder="Option 3"></div>
+                <div class="form-group"><label>Option 4 (optionnel)</label><input id="adminOption4" type="text" placeholder="Option 4"></div>
+                <div class="form-group"><label>Option 5 (optionnel)</label><input id="adminOption5" type="text" placeholder="Option 5"></div>
+                <div class="form-group"><label>Option 6 (optionnel)</label><input id="adminOption6" type="text" placeholder="Option 6"></div>
+                <div class="form-row">
+                  <div class="form-group"><label>Indices (séparer par , pour multiple) des réponses correctes (1..6)</label><input id="adminQuizCorrect" type="text" value="1"></div>
+                  <div class="form-group"><label>Image (optionnelle)</label><input id="adminQuizImage" type="file" accept="image/*"></div>
+                </div>
+                <div class="form-group"><label>Explication / Feedback (apparaîtra après soumission)</label><textarea id="adminQuestionFeedback" rows="2"></textarea></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveQuiz"><i class="fa-solid fa-plus"></i> Ajouter la question</button> <button id="adminBtnPreviewQuiz">Aperçu quiz (comme élève)</button></div>
+              </div>
+            </div>
+
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Questions existantes</strong></div>
+                <div id="quizQuestionsList"><p class="muted">Aucune question pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dictionary (kept) -->
+          <div id="tab-dictionary" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un terme au lexique</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Terme arabe</label><input id="adminDictAr" type="text" placeholder="مصطلح علمي"></div>
+                  <div class="form-group"><label>Terme français</label><input id="adminDictFr" type="text" placeholder="Terme scientifique"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Définition</label><textarea id="adminDictDef" rows="3"></textarea></div>
+                </div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveDict"><i class="fa-solid fa-plus"></i> Ajouter le terme</button> <button class="btn btn-ghost" id="adminBtnResetDict">Nouveau terme</button></div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content"><div id="dictionaryTermsList"><p class="muted">Aucun terme pour le moment.</p></div></div>
+            </div>
+          </div>
+
+          <!-- Lessons (Drive links kept) -->
+          <div id="tab-lessons" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une leçon</h3>
+                <div class="form-row"><div class="form-group"><label>Titre de la leçon</label><input id="adminLessonTitle" type="text"></div><div class="form-group"><label>Chapitre</label><input id="adminLessonChapter" type="text"></div></div>
+                <div class="form-group"><label>Lien Google Drive (PDF)</label><input type="url" id="adminLessonDriveLink" placeholder="https://drive.google.com/file/d/..."></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveLesson"><i class="fa-solid fa-plus"></i> Ajouter la leçon</button></div>
+              </div>
+            </div>
+            <div class="content-card"><div class="card-content"><div id="lessonsAdminList"><p class="muted">Aucune leçon pour le moment.</p></div></div></div>
+          </div>
+
+          <!-- Exercises (Drive links kept) -->
+          <div id="tab-exercises" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un exercice</h3>
+                <div class="form-row"><div class="form-group"><label>Titre</label><input id="adminExerciseTitle" type="text"></div><div class="form-group"><label>Chapitre</label><input id="adminExerciseChapter" type="text"></div></div>
+                <div class="form-group"><label>Lien Google Drive (PDF)</label><input type="url" id="adminExerciseDriveLink"></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExercise">Ajouter l'exercice</button></div>
+              </div>
+            </div>
+            <div class="content-card"><div class="card-content"><div id="exercisesAdminList"><p class="muted">Aucun exercice pour le moment.</p></div></div></div>
+          </div>
+
+          <!-- Exams -->
+          <div id="tab-exams" class="admin-section" style="display:none;">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un examen</h3>
+                <div class="form-row"><div class="form-group"><label>Titre</label><input id="adminExamTitle" type="text"></div><div class="form-group"><label>Série</label><input id="adminExamSeries" type="text"></div></div>
+                <div class="form-group"><label>Lien Google Drive (PDF)</label><input type="url" id="adminExamDriveLink"></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExam">Ajouter l'examen</button></div>
+              </div>
+            </div>
+            <div class="content-card"><div class="card-content"><div id="examsAdminList"><p class="muted">Aucun examen pour le moment.</p></div></div></div>
+          </div>
+
+          <!-- Announcement (kept and with delete image button) -->
+          <div id="tab-announcement" class="admin-section" style="display:none;">
+            <div class="content-card"><div class="card-content">
+              <h3 class="mb-2">Gestion des Annonces</h3>
+              <div class="form-group"><label>Annonce actuelle</label><textarea id="announcementInput" rows="4">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</textarea></div>
+              <div class="form-group"><label>Image d'annonce (optionnelle)</label><input type="file" id="announcementImageInput" accept="image/*"><img id="announcementImagePreview" style="display:none;max-width:200px;margin-top:8px;"></div>
+              <div class="mt-2"><button id="btnSaveAnnouncement" class="btn btn-success">Enregistrer l'annonce</button> <button id="btnDeleteAnnouncementImage" style="display:none;">Supprimer image annonce</button></div>
+            </div></div>
+          </div>
+
+          <!-- Revisions -->
+          <div id="tab-revisions" class="admin-section" style="display:none;">
+            <div class="content-card"><div class="card-content"><h3>Demandes de Récorrection</h3><div id="revisionRequestsList"><p class="muted">Aucune demande pour le moment.</p></div></div></div>
+          </div>
+
+          <!-- Messages -->
+          <div id="tab-messages" class="admin-section" style="display:none;">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>إرسال رسالة إلى الطلاب</h3>
+              <div class="form-group"><label>عنوان الرسالة</label><input id="adminMessageTitle" type="text"></div>
+              <div class="form-group"><label>محتوى الرسالة</label><textarea id="adminMessageContent" rows="4"></textarea></div>
+              <div class="form-group"><label>إرسال إلى</label><select id="adminMessageTarget"><option value="all">جميع الطلاب</option><option value="specific">طالب محدد</option></select></div>
+              <div class="form-group" id="specificStudentContainer" style="display:none;"><label>اختر الطالب</label><select id="adminMessageStudent"><option value="">اختر طالباً</option></select></div>
+              <div class="mt-2"><button id="adminBtnSendMessage" class="btn btn-success">إرسال الرسالة</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div id="adminMessagesList"><p class="muted">لا توجد رسائل حتى الآن.</p></div></div></div>
+          </div>
+
+          <!-- LaTeX Courses (Overleaf-like area in admin) -->
+          <div 
+id="tab-latex" class="admin-section" style="display:none;">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3 class="mb-2">إضافة درس LaTeX (محرر مشابه لـ Overleaf)</h3>
+              <div class="form-group"><label>عنوان الدرس</label><input id="latexTitle" type="text" placeholder="أدخل عنوان الدرس"></div>
+              <div class="form-group">
+                <label>محتوى LaTeX (مؤشّر أسطر مرقّم 1..2000)</label>
+                <div style="display:flex; align-items:flex-start;">
+                  <pre id="latexLineNumbers" style="user-select:none; white-space:pre; margin:0 8px 0 0; width:72px; overflow:auto; background:#fafafa; border:1px solid #eee; padding:8px; border-radius:6px; font-family: ui-monospace, Menlo, Monaco, monospace; font-size:13px;"></pre>
+                  <textarea id="latexCode" rows="12" style="width:100%; border:1px solid #eee; padding:8px; border-radius:6px; font-family: ui-monospace, Menlo, Monaco, monospace; font-size:13px;"></textarea>
+                </div>
+                <small>المعاينة ستكون على الجانب أو في قسم المعاينة أدناه. يستعمل MathJax.</small>
+              </div>
+              <div class="form-group"><label>وصف الدرس</label><textarea id="latexDescription" rows="2" style="width:100%; padding:8px; border-radius:6px; border:1px solid #eee;"></textarea></div>
+              <div class="form-group"><label>تصنيف</label><input id="latexCategory" type="text" style="width:100%; padding:8px; border-radius:6px; border:1px solid #eee;"></div>
+              <div class="form-group"><label>معاينة LaTeX</label><div id="latexPreview" style="min-height:80px; border:1px solid #f0f0f0; background:#fff; padding:10px; border-radius:6px;">ستظهر المعاينة هنا</div></div>
+              <div class="mt-2"><button id="btnSaveLatex" class="btn btn-accent">حفظ الدرس</button> <button id="btnResetLatex" class="btn">جديد</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content">
+              <h4>قائمة دروس LaTeX (الإدارة)</h4>
+              <div id="latexContentsList"><p class="muted">لا توجد دروس حتى الآن.</p></div>
+            </div></div>
+<script>
+(function(){
+  const MAX_LINES = 2000;
+  const ln = document.getElementById('latexLineNumbers');
+  const ta = document.getElementById('latexCode');
+  const preview = document.getElementById('latexPreview');
+
+  // generate line numbers
+  (function gen(){
+    if (!ln) return;
+    let s=''; for (let i=1;i<=MAX_LINES;i++){ s += i + '\\n'; }
+    ln.textContent = s;
+  })();
+
+  // sync scroll
+  function sync(){ if (ln && ta) ln.scrollTop = ta.scrollTop; }
+  if (ta) ta.addEventListener('scroll', sync);
+  if (ta) ta.addEventListener('input', updatePreview);
+
+  // safe MathJax typeset queue
+  window._mjPreviewQueue = window._mjPreviewQueue || [];
+  function typeset(node){
+    if (window.MathJax && MathJax.typesetPromise) return MathJax.typesetPromise([node]);
+    return new Promise((resolve)=>{
+      window._mjPreviewQueue.push({node, resolve});
+      if (!window._mjPreviewChecker){
+        window._mjPreviewChecker = setInterval(()=>{
+          if (window.MathJax && MathJax.typesetPromise){
+            clearInterval(window._mjPreviewChecker); window._mjPreviewChecker=null;
+            const q = window._mjPreviewQueue.slice(); window._mjPreviewQueue=[];
+            q.reduce((p,it)=> p.then(()=> MathJax.typesetPromise([it.node]).then(()=> it.resolve()).catch(()=> it.resolve())), Promise.resolve());
+          }
+        }, 200);
+      }
+    });
+  }
+
+  function updatePreview(){
+    const code = ta.value || '';
+    if (!preview) return;
+    preview.textContent = code ? ('\\\\[' + code + '\\\\]') : 'ستظهر المعاينة هنا';
+    typeset(preview).catch(()=>{});
+  }
+  setTimeout(updatePreview, 120);
+
+  // storage helpers (reuse existing appData structure if present)
+  window.appData = window.appData || (localStorage.getItem('appData_v1') ? JSON.parse(localStorage.getItem('appData_v1')) : { latexContents: [], quizzes: [] });
+  function saveApp(){ localStorage.setItem('appData_v1', JSON.stringify(window.appData)); }
+
+  // save lesson
+  function saveLesson(){
+    const title = document.getElementById('latexTitle').value.trim();
+    const code = document.getElementById('latexCode').value;
+    const desc = document.getElementById('latexDescription').value;
+    const cat = document.getElementById('latexCategory').value;
+    if (!title || !code) return alert('العنوان و الكود مطلوبان');
+    window.appData.latexContents = window.appData.latexContents || [];
+    window.appData.latexContents.push({ id: 'ltx_'+Date.now(), title, code, description: desc, category: cat, createdAt: Date.now() });
+    saveApp();
+    alert('درس محفوظ');
+    renderList();
+    // clear inputs
+    document.getElementById('latexTitle').value=''; document.getElementById('latexCode').value=''; document.getElementById('latexDescription').value=''; document.getElementById('latexCategory').value='';
+    updatePreview();
+  }
+
+  // render admin list
+  function renderList(){
+    const c = document.getElementById('latexContentsList'); if (!c) return;
+    c.innerHTML = '';
+    if (!window.appData.latexContents || !window.appData.latexContents.length) { c.innerHTML = '<p class="muted">لا توجد دروس حتى الآن.</p>'; return; }
+    window.appData.latexContents.forEach(item=>{
+      const d = document.createElement('div'); d.className='content-row';
+      d.innerHTML = '<strong>'+ (item.title || '') +'</strong><div class="muted small">'+ (item.description || '') +'</div>';
+      const b1 = document.createElement('button'); b1.textContent='معاينة'; b1.className='btn';
+      b1.addEventListener('click', ()=> {
+        preview.textContent = '\\\\[' + item.code + '\\\\]';
+        typeset(preview).catch(()=>{});
+      });
+      const b2 = document.createElement('button'); b2.textContent='حذف'; b2.className='btn';
+      b2.addEventListener('click', ()=> {
+        if (!confirm('حذف الدرس؟')) return;
+        window.appData.latexContents = window.appData.latexContents.filter(x=>x.id !== item.id);
+        saveApp(); renderList();
+      });
+      d.appendChild(b1); d.appendChild(b2);
+      c.appendChild(d);
+    });
+  }
+
+  document.getElementById('btnSaveLatex').addEventListener('click', saveLesson);
+  document.getElementById('btnResetLatex').addEventListener('click', ()=>{ document.getElementById('latexTitle').value=''; document.getElementById('latexCode').value=''; document.getElementById('latexDescription').value=''; document.getElementById('latexCategory').value=''; updatePreview(); });
+
+  // expose functions for other scripts if needed
+  window.renderLatexAdminList = renderList;
+  window.updateLatexPreview = updatePreview;
+
+  // initial render
+  setTimeout(()=>{ renderList(); }, 100);
+
+})();
+</script>
+id="tab-sitecover" class="admin-section" style="display:none;">
+            <div class="content-card"><div class="card-content">
+              <h3>صورة واجهة الموقع</h3>
+              <div class="form-group"><label>رفع صورة الواجهة</label><input id="siteCoverInput" type="file" accept="image/*"></div>
+              <div class="form-group"><label>تفعيل عرض صورة الواجهة</label><input id="siteCoverEnable" type="checkbox"></div>
+              <div class="form-group"><img id="siteCoverPreview" src="" style="display:none;max-width:240px;"></div>
+              <div class="mt-2"><button id="btnSaveSiteCover">حفظ إعدادات واجهة الموقع</button> <button id="btnRemoveSiteCover">إزالة صورة الواجهة</button></div>
+            </div></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Login modals (kept) -->
+  <div class="login-modal" id="studentLoginModal" style="display:none;">
+    <div class="login-form">
+      <h2>Espace Élève</h2>
+      <div class="form-group"><label>Nom d'utilisateur</label><input id="studentUsername" type="text" placeholder="Votre nom d'utilisateur"></div>
+      <div class="form-group"><label>Mot de passe</label><input id="studentPassword" type="password" placeholder="Votre mot de passe"></div>
+      <div class="form-buttons flex"><button id="cancelStudentLogin" class="btn btn-ghost">Annuler</button><button id="submitStudentLogin" class="btn btn-primary">Se connecter</button></div>
+    </div>
+  </div>
+
+  <div class="login-modal" id="loginModal" style="display:none;">
+    <div class="login-form">
+      <h2>Espace Professeur</h2>
+      <div class="form-group"><label>Nom d'utilisateur</label><input id="username" type="text" placeholder="Nom d'utilisateur"></div>
+      <div class="form-group"><label>Mot de passe</label><input id="password" type="password" placeholder="Mot de passe"></div>
+      <div class="form-buttons flex"><button id="cancelLogin" class="btn btn-ghost">Annuler</button><button id="submitLogin" class="btn btn-accent">Se connecter</button></div>
+    </div>
+  </div>
+
+  <!-- Footer (kept) -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section"><h3>Informations de Contact</h3><ul class="contact-info"><li><i class="fas fa-user"></i> Professeur: Pr. Ali Bairouk</li><li><i class="fas fa-envelope"></i> Email: bairoukali.contacter@gmail.com</li><li><i class="fas fa-phone"></i> Téléphone: 0620565105</li></ul></div>
+        <div class="footer-section"><h3>Liens Rapides</h3><ul class="contact-info"><li><i class="fas fa-book"></i> Lexique</li><li><i class="fas fa-question-circle"></i> Quiz</li><li><i class="fas fa-chart-line"></i> Notes</li></ul></div>
+        <div class="footer-section"><h3>À Propos du Site</h3><p>Lycée de l'Excellence est une plateforme éducative spécialisée en physique.</p></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2025 Lycée de l'Excellence. Tous droits réservés</p></div>
+    </div>
+  </footer>
+
+  <!-- JavaScript (main logic) -->
+  <script>
+  /* =============================
+     Data model (localStorage)
+     ============================= */
+  const STORAGE_KEY = 'lyceeExcellence_v_final';
+  let appData = {
+    students: [],
+    grades: [],
+    quizzes: [],
+    dictionary: [],
+    lessons: [],
+    exercises: [],
+    exams: [],
+    messages: [],
+    latexContents: [],
+    responses: {}, // responses[studentId] = { quizId: { questionId: selectionIndex OR [indices] } }
+    currentUser: null,
+    isAdmin: false,
+    announcement: { text: document.getElementById('announcementText').textContent || '', image: null },
+    siteCover: { enabled:false, url:null }
+  };
+
+  function loadData(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        Object.assign(appData, parsed);
+      }
+    } catch(e){ console.error('loadData',e); }
+  }
+  function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
+
+  /* simple helper */
+  function $(id){ return document.getElementById(id); }
+  function genId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+  function escapeHtml(s){ return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+  /* =============================
+     Init
+     ============================= */
+  document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    ensureDemoData();
+    wireEvents();
+    refreshUI();
+    // initial population small delay to ensure DOM ready
+    setTimeout(()=>{ renderAll(); }, 50);
+  });
+
+  function ensureDemoData(){
+    if (!appData.students || appData.students.length === 0){
+      appData.students.push({ id:'s1', fullname:'Ahmed Amine', username:'ahmed.amine', password:'pass', code:'P-2024-001', classroom:'2ème Bac' });
+      saveData();
+    }
+  }
+
+  /* =============================
+     Wire events (login, nav, admin actions)
+     ============================= */
+  function wireEvents(){
+    // nav links
+    document.querySelectorAll('.nav-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const s=a.getAttribute('data-section'); showSection(s); }));
+    document.querySelectorAll('.feature-card').forEach(c => c.addEventListener('click', ()=> { const s=c.getAttribute('data-section'); showSection(s); }));
+
+    // login modal toggles
+    $('studentLoginBtn').addEventListener('click', ()=> $('studentLoginModal').style.display='block');
+    $('loginBtn').addEventListener('click', ()=> $('loginModal').style.display='block');
+    $('cancelStudentLogin').addEventListener('click', ()=> $('studentLoginModal').style.display='none');
+    $('cancelLogin').addEventListener('click', ()=> $('loginModal').style.display='none');
+
+    // submit login
+    $('submitStudentLogin').addEventListener('click', ()=> {
+      const u = $('studentUsername').value.trim(), p = $('studentPassword').value;
+      loginStudent(u,p);
+    });
+    $('submitLogin').addEventListener('click', ()=> {
+      const u = $('username').value.trim(), p = $('password').value;
+      loginAdmin(u,p);
+    });
+
+    // logouts
+    $('studentLogoutBtn').addEventListener('click', ()=> { appData.currentUser=null; appData.isAdmin=false; saveData(); refreshUI(); });
+    $('logoutBtn').addEventListener('click', ()=> { appData.currentUser=null; appData.isAdmin=false; saveData(); refreshUI(); });
+
+    // student tabs
+    document.querySelectorAll('.student-tab').forEach(t => t.addEventListener('click', ()=> { const name = t.getAttribute('data-tab'); switchStudentTab(name); }));
+
+    // admin sidebar links
+    document.querySelectorAll('.admin-tab-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const tab = a.getAttribute('data-tab'); switchAdminTab(tab); }));
+
+    // Grades search
+    $('btnSearchByCode').addEventListener('click', ()=> searchGradesByCode($('searchCode').value.trim()));
+
+    // Admin: quizzes
+    $('btnCreateQuiz').addEventListener('click', adminCreateQuiz);
+    $('adminBtnSaveQuiz').addEventListener('click', adminAddQuestion);
+    $('adminBtnPreviewQuiz').addEventListener('click', ()=> { const qid = $('adminSelectQuiz').value; if (!qid){ alert('Sélectionner quiz'); return;} previewQuizAsStudent(qid); });
+
+    // lessons/exercises/exams admin add
+    $('adminBtnSaveLesson').addEventListener('click', adminSaveLesson);
+    $('adminBtnSaveExercise').addEventListener('click', adminSaveExercise);
+    $('adminBtnSaveExam').addEventListener('click', adminSaveExam);
+
+    // announcement image handling & save/delete
+    $('announcementImageInput').addEventListener('change', handleAnnouncementImage);
+    $('btnSaveAnnouncement').addEventListener('click', ()=> { appData.announcement.text = $('announcementInput').value; $('announcementText').textContent = appData.announcement.text; saveData(); alert('Annonce enregistrée'); });
+    $('btnDeleteAnnouncementImage').addEventListener('click', ()=> { appData.announcement.image=null; saveData(); $('announcementImagePreview').style.display='none'; $('announcementImage').style.display='none'; $('btnDeleteAnnouncementImage').style.display='none'; });
+
+    // site cover
+    if ($('siteCoverInput')) $('siteCoverInput').addEventListener('change', handleSiteCoverUpload);
+    if ($('btnSaveSiteCover')) $('btnSaveSiteCover').addEventListener('click', ()=> { appData.siteCover.enabled = !!$('siteCoverEnable').checked; if (appData.siteCover.enabled && !appData.siteCover.url) return alert('Upload cover first'); saveData(); refreshUI(); alert('Saved'); });
+    if ($('btnRemoveSiteCover')) $('btnRemoveSiteCover').addEventListener('click', ()=> { appData.siteCover={enabled:false,url:null}; saveData(); refreshUI(); });
+
+    // export/import
+    $('btnExport').addEventListener('click', ()=> {
+      const blob = new Blob([JSON.stringify(appData)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='lycee_data.json'; a.click(); URL.revokeObjectURL(url);
+    });
+    $('importFile').addEventListener('change', e => {
+      const f = e.target.files[0]; if (!f) return;
+      const fr = new FileReader(); fr.onload = function(ev){ try { if (!confirm('Importer va remplacer البيانات الحالية. Continuer?')) return; appData = JSON.parse(ev.target.result); saveData(); renderAll(); refreshUI(); alert('Import réussi'); } catch(err){ alert('Fichier invalide'); } }; fr.readAsText(f);
+    });
+
+    // students admin save
+    $('btnSaveStudent').addEventListener('click', adminSaveStudent);
+    $('btnResetStudent').addEventListener('click', ()=> { $('stFullname').value=''; $('stUsername').value=''; $('stPassword').value=''; $('stCode').value=''; $('stClassroom').value=''; $('stId').value=''; });
+
+    // grades admin save
+    $('btnSaveGrade').addEventListener('click', adminSaveGrade);
+    $('btnResetGrade').addEventListener('click', ()=> { $('grStudent').value=''; $('grSubject').value=''; $('grTitle').value=''; $('grDate').value=''; $('grScore').value=''; $('grNote').value=''; $('grId').value=''; });
+
+    // messages admin
+    $('adminMessageTarget').addEventListener('change', ()=> { const v = $('adminMessageTarget').value; $('specificStudentContainer').style.display = v==='specific' ? 'block' : 'none'; populateStudentsSelect(); });
+    $('adminBtnSendMessage').addEventListener('click', adminSendMessage);
+
+    // LaTeX editor line numbers & preview
+    if ($('latexCode')) {
+      $('latexCode').addEventListener('input', updateLatexLineNumbers);
+      updateLatexLineNumbers();
+    }
+    $('btnSaveLatex').addEventListener('click', adminSaveLatex);
+  }
+
+  /* =============================
+     Navigation & UI switching
+     ============================= */
+  function hideAllMainSections(){ document.querySelectorAll('.page-section').forEach(s => s.style.display='none'); document.getElementById('student-dashboard').style.display='none'; document.getElementById('admin-panel').style.display='none'; }
+  function showSection(id){
+    hideAllMainSections();
+    if (id === 'home') { document.getElementById('home-section').style.display='block'; return; }
+    const el = document.getElementById(id);
+    if (el) el.style.display='block';
+    // refresh some content on show
+    if (id === 'quiz') renderQuizList();
+    if (id === 'lessons') renderLessons();
+    if (id === 'exercises') renderExercises();
+    if (id === 'exams') renderExams();
+    if (id === 'dictionary') renderDictionary();
+  }
+
+  function switchStudentTab(tabName){
+    document.querySelectorAll('.student-tab-content').forEach(x=>x.style.display='none');
+    document.querySelectorAll('.student-tab').forEach(t=>t.classList.remove('active'));
+    const btn = document.querySelector('.student-tab[data-tab="'+tabName+'"]');
+    if (btn) btn.classList.add('active');
+    const content = document.getElementById('student-'+tabName+'-tab');
+    if (content) content.style.display='block';
+    if (tabName === 'dashboard') loadStudentDashboard();
+    if (tabName === 'quiz') renderQuizListForStudent();
+    if (tabName === 'exercises') renderStudentExercises();
+    if (tabName === 'cours') renderLatexListForStudents();
+    if (tabName === 'messages') renderStudentMessages();
+  }
+
+  function switchAdminTab(tabName){
+    document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none');
+    document.querySelectorAll('.admin-tab-link').forEach(l=>l.classList.remove('active'));
+    const link = document.querySelector('.admin-tab-link[data-tab="'+tabName+'"]'); if (link) link.classList.add('active');
+    const el = document.getElementById(tabName); if (el) el.style.display='block';
+    // load content per tab
+    if (tabName === 'tab-students') loadStudentsTable();
+    if (tabName === 'tab-grades') loadGradesTable();
+    if (tabName === 'tab-quiz') renderQuizAdminListDetailed();
+    if (tabName === 'tab-latex') loadLatexAdminList();
+    if (tabName === 'tab-messages') renderAdminMessagesList();
+    if (tabName === 'tab-lessons') renderLessonsAdminList();
+    if (tabName === 'tab-exercises') renderExercisesAdminList();
+    if (tabName === 'tab-exams') renderExamsAdminList();
+  }
+
+  /* =============================
+     Authentication
+     ============================= */
+  function loginStudent(username, password){
+    const s = appData.students.find(x=>x.username===username && x.password===password);
+    if (!s) { alert('Nom d\'utilisateur ou mot de passe incorrect'); return; }
+    appData.currentUser = s; appData.isAdmin = false; saveData(); refreshUI(); $('studentLoginModal').style.display='none'; switchStudentTab('dashboard');
+  }
+  function loginAdmin(username, password){
+    // demo admin credentials: admin / admin123
+    if (username === 'admin' && password === 'admin123') {
+      appData.currentUser = { id:'admin', fullname:'Administrateur' }; appData.isAdmin = true; saveData(); refreshUI(); $('loginModal').style.display='none'; switchAdminTab('tab-dashboard'); return;
+    }
+    alert('Nom d\'utilisateur ou mot de passe incorrect');
+  }
+
+  /* =============================
+     Refresh UI / render lists
+     ============================= */
+  function refreshUI(){
+    // announcement
+    $('announcementText').textContent = appData.announcement.text || '';
+    if (appData.announcement.image){ $('announcementImage').src = appData.announcement.image; $('announcementImage').style.display='block'; $('announcementImagePreview').src = appData.announcement.image; $('announcementImagePreview').style.display='block'; $('btnDeleteAnnouncementImage').style.display='inline-block'; } else { $('announcementImage').style.display='none'; if ($('announcementImagePreview')) $('announcementImagePreview').style.display='none'; if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='none'; }
+
+    // admin/student panels visibility
+    document.getElementById('admin-panel').style.display = appData.isAdmin ? 'block' : 'none';
+    document.getElementById('student-dashboard').style.display = (appData.currentUser && !appData.isAdmin) ? 'block' : 'none';
+    if (appData.currentUser && !appData.isAdmin) $('studentWelcome').textContent = 'Bienvenue, ' + (appData.currentUser.fullname || '');
+
+    // site cover
+    if (appData.siteCover && appData.siteCover.enabled && appData.siteCover.url){ /* optional container not styled */ } else { /* hidden by default */ }
+
+    // update stats
+    $('stats-students').textContent = appData.students.length;
+    $('stats-quiz').textContent = appData.quizzes.reduce((acc,q)=>acc+q.questions.length,0);
+    $('stats-dictionary').textContent = appData.dictionary.length;
+    $('stats-grades').textContent = appData.grades.length;
+    $('stats-messages').textContent = appData.messages.length;
+    $('stats-latex').textContent = appData.latexContents.length;
+
+    // populate some selects
+    populateStudentsSelect();
+    populateAdminSelectQuiz();
+    renderAll(); // small refresh for lists
+  }
+
+  function renderAll(){
+    renderQuizAdminListDetailed();
+    renderQuizList();
+    renderLessons(); renderExercises(); renderExams();
+    renderLessonsAdminList(); renderExercisesAdminList(); renderExamsAdminList();
+    renderDictionary();
+    loadStudentsTable();
+    loadGradesTable();
+    loadLatexAdminList();
+    renderLatexListForStudents();
+    renderStudentMessages();
+  }
+
+  /* =============================
+     Students admin / lists
+     ============================= */
+  function adminSaveStudent(){
+    const id = $('stId').value || genId();
+    const fullname = $('stFullname').value.trim(), username = $('stUsername').value.trim(), password = $('stPassword').value, code = $('stCode').value.trim(), classroom = $('stClassroom').value.trim();
+    if (!fullname || !username) return alert('Nom complet و nom d\'utilisateur requis');
+    const existing = appData.students.find(x=>x.id=== $('stId').value);
+    if (existing) { existing.fullname=fullname; existing.username=username; existing.password=password; existing.code=code; existing.classroom=classroom; }
+    else appData.students.push({ id, fullname, username, password, code, classroom });
+    saveData(); loadStudentsTable(); populateStudentsSelect(); alert('Étudiant enregistré'); $('stFullname').value=''; $('stUsername').value=''; $('stPassword').value=''; $('stCode').value=''; $('stClassroom').value=''; $('stId').value='';
+  }
+
+  function loadStudentsTable(){
+    const tbody = document.querySelector('#studentsTable tbody'); if (!tbody) return;
+    tbody.innerHTML = '';
+    appData.students.forEach(s=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>'+escapeHtml(s.fullname)+'</td><td>'+escapeHtml(s.username)+'</td><td>'+escapeHtml(s.code||'')+'</td><td>'+escapeHtml(s.classroom||'')+'</td><td><button data-id="'+s.id+'" class="edit-student">Edit</button> <button data-id="'+s.id+'" class="del-student">Del</button></td>';
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.edit-student').forEach(b=>b.addEventListener('click', ()=> {
+      const id = b.getAttribute('data-id'); const s = appData.students.find(x=>x.id===id); if (!s) return;
+      $('stId').value=s.id; $('stFullname').value=s.fullname; $('stUsername').value=s.username; $('stPassword').value=s.password; $('stCode').value=s.code; $('stClassroom').value=s.classroom; switchAdminTab('tab-students');
+    }));
+    tbody.querySelectorAll('.del-student').forEach(b=>b.addEventListener('click', ()=> {
+      const id = b.getAttribute('data-id'); if (!confirm('Supprimer étudiant ?')) return; appData.students = appData.students.filter(x=>x.id!==id); saveData(); loadStudentsTable(); populateStudentsSelect();
+    }));
+  }
+
+  function populateStudentsSelect(){
+    const sel = $('adminMessageStudent'); if (!sel) return;
+    sel.innerHTML = '<option value="">Choisir</option>';
+    appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent = s.fullname + ' (' + (s.code||'') + ')'; sel.appendChild(o); });
+    const gr = $('grStudent'); if (gr){ gr.innerHTML='<option value="">-- Choisir étudiant --</option>'; appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent=s.fullname; gr.appendChild(o); }); }
+    const gf = $('grFilterStudent'); if (gf){ gf.innerHTML='<option value="">Tous</option>'; appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent=s.fullname; gf.appendChild(o); }); }
+  }
+
+  /* =============================
+     Grades admin
+     ============================= */
+  function adminSaveGrade(){
+    const id = genId();
+    const studentId = $('grStudent').value, subject = $('grSubject').value.trim(), title = $('grTitle').value.trim(), date = $('grDate').value || new Date().toISOString(), score = Number($('grScore').value) || 0, note = $('grNote').value;
+    if (!studentId || !subject || !title) return alert('Remplir étudiant، matière و intitulé');
+    appData.grades.push({ id, studentId, subject, title, date, score, note });
+    saveData(); loadGradesTable(); alert('Note ajoutée');
+    $('grStudent').value=''; $('grSubject').value=''; $('grTitle').value=''; $('grDate').value=''; $('grScore').value=''; $('grNote').value='';
+  }
+
+  function loadGradesTable(){
+    const tbody = document.querySelector('#gradesAdminTable tbody'); if (!tbody) return; tbody.innerHTML='';
+    appData.grades.forEach(g=>{
+      const st = appData.students.find(s=>s.id===g.studentId);
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>'+escapeHtml(st?st.fullname:'')+'</td><td>'+new Date(g.date).toLocaleDateString()+'</td><td>'+escapeHtml(g.subject)+'</td><td>'+escapeHtml(g.title)+'</td><td>'+g.score+'</td><td>'+escapeHtml(g.note||'')+'</td><td><button data-id="'+g.id+'" class="del-grade">Del</button></td>';
+      tbody.appendChild(tr);
+    });
+    tbody.querySelectorAll('.del-grade').forEach(b=>b.addEventListener('click', ()=> { const id=b.getAttribute('data-id'); if (!confirm('Supprimer note ?')) return; appData.grades = appData.grades.filter(x=>x.id!==id); saveData(); loadGradesTable(); }));
+  }
+
+  /* =============================
+     Messages admin / student
+     ============================= */
+  function adminSendMessage(){
+    const title = $('adminMessageTitle').value.trim(), content = $('adminMessageContent').value.trim(), target = $('adminMessageTarget').value;
+    if (!title || !content) return alert('Titre و contenu requis');
+    if (target === 'specific'){ const sid = $('adminMessageStudent').value; if (!sid) return alert('Choisir طالب'); appData.messages.push({ id: genId(), title, content, target:'specific', specific:sid, createdAt:Date.now() }); }
+    else appData.messages.push({ id: genId(), title, content, target:'all', createdAt:Date.now() });
+    saveData(); renderAdminMessagesList(); renderStudentMessages(); alert('Message envoyé'); $('adminMessageTitle').value=''; $('adminMessageContent').value='';
+  }
+
+  function renderAdminMessagesList(){
+    const c = $('adminMessagesList'); if (!c) return; c.innerHTML='';
+    if (!appData.messages.length) return c.innerHTML='<p class="muted">لا توجد رسائل</p>';
+    appData.messages.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content+' (cible:'+m.target+')'; const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if (!confirm('Supprimer message ?')) return; appData.messages=appData.messages.filter(x=>x.id!==m.id); saveData(); renderAdminMessagesList(); renderStudentMessages(); }); d.appendChild(del); c.appendChild(d); });
+  }
+
+  function renderStudentMessages(){
+    const c = $('studentMessagesList'); if (!c) return; c.innerHTML='';
+    if (!appData.currentUser) return c.innerHTML='<p class="muted">Connectez-vous</p>';
+    const list = appData.messages.filter(m => m.target==='all' || (m.target==='specific' && m.specific===appData.currentUser.id));
+    if (!list.length) return c.innerHTML='<p class="muted">لا توجد رسائل حتى الآن.</p>';
+    list.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content; c.appendChild(d); });
+  }
+
+  /* =============================
+     Quiz: admin create / add / manage
+     ============================= */
+  function adminCreateQuiz(){
+    const title = $('newQuizTitle').value.trim(); const duration = Number($('newQuizDuration').value) || 0; const shuffle = !!$('newQuizShuffle').checked; const multiAttempts = !!$('newQuizAllowMultipleAttempts').checked;
+    if (!title) return alert('Titre requis');
+    const quiz = { id: genId(), title, durationMinutes: duration, shuffle, allowMultipleAttempts: multiAttempts, questions: [] };
+    appData.quizzes.push(quiz); saveData(); populateAdminSelectQuiz(); renderQuizAdminListDetailed(); alert('Quiz créé'); $('newQuizTitle').value=''; $('newQuizDuration').value='0'; $('newQuizShuffle').checked=false; $('newQuizAllowMultipleAttempts').checked=false;
+  }
+
+  function populateAdminSelectQuiz(){
+    const sel = $('adminSelectQuiz'); if (!sel) return; sel.innerHTML=''; const opt=document.createElement('option'); opt.value=''; opt.textContent='-- Sélectionner quiz --'; sel.appendChild(opt);
+    appData.quizzes.forEach(q=>{ const o=document.createElement('option'); o.value=q.id; o.textContent=q.title + ' ('+q.questions.length+' q)'; sel.appendChild(o); });
+  }
+
+  function adminAddQuestion(){
+    const qid = $('adminSelectQuiz').value; if (!qid) return alert('Sélectionner quiz');
+    const quiz = appData.quizzes.find(x=>x.id===qid); if (!quiz) return;
+    const questionText = $('adminQuizQuestion').value.trim(); if (!questionText) return alert('Question requise');
+    const type = $('adminQuestionType').value; const points = Number($('adminQuestionPoints').value) || 1;
+    const options = [ $('adminOption1').value.trim(), $('adminOption2').value.trim(), $('adminOption3').value.trim(), $('adminOption4').value.trim(), $('adminOption5').value.trim(), $('adminOption6').value.trim()].filter(x=>x && x.length>0);
+    if (options.length < 2) return alert('Au moins 2 options requises');
+    const correctStr = $('adminQuizCorrect').value.trim();
+    if (!correctStr) return alert('تحديد الإجابة الصحيحة');
+    const correctIndices = correctStr.split(',').map(s=>Number(s.trim())-1).filter(n=>!isNaN(n) && n>=0 && n<options.length);
+    if (!correctIndices.length) return alert('Indices صحيحة مفقودة');
+    const feedback = $('adminQuestionFeedback').value || '';
+    const fileInput = $('adminQuizImage');
+    // read image if provided
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const f = fileInput.files[0];
+      const fr = new FileReader();
+      fr.onload = function(ev){
+        quiz.questions.push({ id: genId(), question:questionText, type, points, options, correctIndices, feedback, imageData: ev.target.result });
+        saveData(); renderQuizAdminListDetailed(); renderQuizList(); alert('Question ajoutée avec image');
+      };
+      fr.readAsDataURL(f);
+    } else {
+      quiz.questions.push({ id: genId(), question:questionText, type, points, options, correctIndices, feedback, imageData: null });
+      saveData(); renderQuizAdminListDetailed(); renderQuizList(); alert('Question ajoutée');
+    }
+    // reset fields
+    $('adminQuizQuestion').value=''; $('adminOption1').value=''; $('adminOption2').value=''; $('adminOption3').value=''; $('adminOption4').value=''; $('adminOption5').value=''; $('adminOption6').value=''; $('adminQuizCorrect').value='1'; $('adminQuestionFeedback').value=''; if ($('adminQuizImage')) $('adminQuizImage').value='';
+  }
+
+  function renderQuizAdminListDetailed(){
+    const el = $('quizQuestionsList'); if (!el) return; el.innerHTML='';
+    if (!appData.quizzes.length) { el.innerHTML = '<p class="muted">Aucun quiz</p>'; populateAdminSelectQuiz(); return; }
+    appData.quizzes.forEach(q=>{
+      const container = document.createElement('div');
+      const header = document.createElement('div'); header.innerHTML = '<strong>'+escapeHtml(q.title)+'</strong> (durée: '+q.durationMinutes+'m, shuffle:'+ (q.shuffle?'oui':'non') +', attempts:'+(q.allowMultipleAttempts?'yes':'no')+')';
+      container.appendChild(header);
+      const ul = document.createElement('ol');
+      q.questions.forEach((qq, idx)=>{
+        const li = document.createElement('li');
+        li.innerHTML = '<div><strong>'+escapeHtml(qq.question)+'</strong> ['+qq.type+'] (points: '+qq.points+')</div>';
+        const opts = document.createElement('ul');
+        qq.options.forEach((op,i)=> {
+          const opLi = document.createElement('li'); opLi.textContent = (i+1)+'. '+op + (qq.correctIndices.includes(i) ? ' (✓ correct)' : '');
+          opts.appendChild(opLi);
+        });
+        li.appendChild(opts);
+        if (qq.feedback) { const fb = document.createElement('div'); fb.textContent = 'Feedback: '+qq.feedback; li.appendChild(fb); }
+        if (qq.imageData) { const im = document.createElement('img'); im.src=qq.imageData; im.style.maxWidth='200px'; li.appendChild(im); }
+        const btnUp = document.createElement('button'); btnUp.textContent='↑'; btnUp.addEventListener('click', ()=> { if (idx===0) return; q.questions.splice(idx-1,0,q.questions.splice(idx,1)[0]); saveData(); renderQuizAdminListDetailed(); });
+        const btnDown = document.createElement('button'); btnDown.textContent='↓'; btnDown.addEventListener('click', ()=> { if (idx===q.questions.length-1) return; q.questions.splice(idx+1,0,q.questions.splice(idx,1)[0]); saveData(); renderQuizAdminListDetailed(); });
+        const btnDel = document.createElement('button'); btnDel.textContent='Supprimer'; btnDel.addEventListener('click', ()=>{ if (!confirm('Supprimer question ?')) return; q.questions = q.questions.filter(x=>x.id!==qq.id); saveData(); renderQuizAdminListDetailed(); });
+        const btnEdit = document.createElement('button'); btnEdit.textContent='Éditer'; btnEdit.addEventListener('click', ()=> { // quick edit: populate admin form with values for modification (simple)
+          $('adminSelectQuiz').value = q.id; $('adminQuizQuestion').value = qq.question; $('adminQuestionType').value = qq.type; $('adminQuestionPoints').value = qq.points; $('adminOption1').value = qq.options[0]||''; $('adminOption2').value=qq.options[1]||''; $('adminOption3').value=qq.options[2]||''; $('adminOption4').value=qq.options[3]||''; $('adminOption5').value=qq.options[4]||''; $('adminOption6').value=qq.options[5]||''; $('adminQuizCorrect').value = qq.correctIndices.map(i=>i+1).join(','); $('adminQuestionFeedback').value = qq.feedback||''; window.scrollTo(0,0);
+          // delete old question to replace on save
+          q.questions = q.questions.filter(x=>x.id!==qq.id); saveData(); renderQuizAdminListDetailed();
+        });
+        li.appendChild(btnUp); li.appendChild(btnDown); li.appendChild(btnEdit); li.appendChild(btnDel);
+        ul.appendChild(li);
+      });
+      container.appendChild(ul);
+      const btnDelQuiz = document.createElement('button'); btnDelQuiz.textContent='Supprimer quiz entier'; btnDelQuiz.addEventListener('click', ()=> { if (!confirm('Supprimer quiz entier ?')) return; appData.quizzes = appData.quizzes.filter(x=>x.id!==q.id); saveData(); renderQuizAdminListDetailed(); renderQuizList(); });
+      container.appendChild(btnDelQuiz);
+      el.appendChild(container);
+    });
+    populateAdminSelectQuiz();
+    $('stats-quiz').textContent = appData.quizzes.reduce((acc,q)=>acc+q.questions.length,0);
+  }
+
+  /* =============================
+     Quiz: student view & runner
+     - selection visible and preserved
+     - supports single/multiple
+     - timer, navigation, submit, scoring and feedback
+     ============================= */
+  let currentRun = null; // { quizId, order[], pos, timeLeft, timerInterval }
+
+  function renderQuizList(){
+    const c = $('quizContent'); if (!c) return; c.innerHTML='';
+    if (!appData.quizzes.length) return c.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>';
+    appData.quizzes.forEach(q=>{
+      const d = document.createElement('div'); d.innerHTML = '<h3>'+escapeHtml(q.title)+'</h3><p>'+q.questions.length+' questions</p>';
+      const btn = document.createElement('button'); btn.textContent='Voir / Démarrer'; btn.addEventListener('click', ()=> {
+        if (!appData.currentUser){ $('studentLoginModal').style.display='block'; return; }
+        startQuiz(q.id);
+      });
+      d.appendChild(btn); c.appendChild(d);
+    });
+  }
+
+  function renderQuizListForStudent(){
+    const c = $('studentQuizList'); if (!c) return; c.innerHTML='';
+    if (!appData.quizzes.length) return c.innerHTML='<p class="muted">Aucun quiz</p>';
+    appData.quizzes.forEach(q=> {
+      const d = document.createElement('div'); d.innerHTML = '<strong>'+escapeHtml(q.title)+'</strong> — '+q.questions.length+' q';
+      const start = document.createElement('button'); start.textContent='Démarrer'; start.addEventListener('click', ()=> { startQuiz(q.id); });
+      const preview = document.createElement('button'); preview.textContent='Aperçu'; preview.addEventListener('click', ()=> previewQuizAsStudent(q.id));
+      d.appendChild(start); d.appendChild(preview); c.appendChild(d);
+    });
+  }
+
+  function startQuiz(quizId){
+    const quiz = appData.quizzes.find(x=>x.id===quizId); if (!quiz) return alert('Quiz introuvable');
+    // set order
+    let order = quiz.questions.map(q=>q.id);
+    if (quiz.shuffle) order = shuffle(order.slice());
+    currentRun = { quizId, order, pos:0, timeLeft: quiz.durationMinutes ? quiz.durationMinutes*60 : 0, timerInterval:null };
+    if (currentRun.timeLeft > 0){
+      currentRun.timerInterval = setInterval(()=> { currentRun.timeLeft--; renderTimer(); if (currentRun.timeLeft<=0){ clearInterval(currentRun.timerInterval); alert('Temps écoulé'); submitCurrentQuiz(); } }, 1000);
+    }
+    renderQuizRunner();
+  }
+
+  function renderTimer(){
+    // display timer somewhere in runner if desired
+  }
+
+  function renderQuizRunner(){
+    const container = $('quizContainer'); if (!container) return;
+    showSection('quiz'); switchStudentTab('quiz');
+    container.style.display='block'; container.innerHTML='';
+    if (!currentRun) return;
+    const quiz = appData.quizzes.find(x=>x.id===currentRun.quizId);
+    if (!quiz) return;
+    const qid = currentRun.order[currentRun.pos];
+    const qobj = quiz.questions.find(x=>x.id===qid);
+    // header
+    const header = document.createElement('div'); header.innerHTML = '<h3>'+escapeHtml(quiz.title)+' — Question '+(currentRun.pos+1)+'/'+currentRun.order.length+'</h3>';
+    if (quiz.durationMinutes) header.innerHTML += '<div>Temps restant: '+formatTime(currentRun.timeLeft)+'</div>';
+    container.appendChild(header);
+    // question text
+    const qdiv = document.createElement('div'); qdiv.innerHTML = '<p>'+escapeHtml(qobj.question)+'</p>'; container.appendChild(qdiv);
+    if (qobj.imageData){ const img = document.createElement('img'); img.src=qobj.imageData; img.style.maxWidth='480px'; container.appendChild(img); }
+    // prepare responses structure
+    const sid = appData.currentUser.id;
+    if (!appData.responses[sid]) appData.responses[sid] = {};
+    if (!appData.responses[sid][currentRun.quizId]) appData.responses[sid][currentRun.quizId] = {};
+    const userResp = appData.responses[sid][currentRun.quizId][qobj.id];
+
+    // options
+    const optsContainer = document.createElement('div');
+    qobj.options.forEach((opt,i)=>{
+      const optEl = document.createElement('div');
+      optEl.textContent = String.fromCharCode(65+i) + '. ' + opt;
+      optEl.style.cursor='pointer';
+      optEl.style.padding='6px';
+      optEl.setAttribute('data-index', i);
+      // selection visual:
+      if (qobj.type === 'single') {
+        if (userResp === i) { optEl.style.fontWeight='700'; optEl.style.background='#e0e0e0'; }
+      } else { // multiple
+        if (Array.isArray(userResp) && userResp.includes(i)) { optEl.style.fontWeight='700'; optEl.style.background='#e0e0e0'; }
+      }
+      optEl.addEventListener('click', ()=> {
+        if (qobj.type === 'single') {
+          appData.responses[sid][currentRun.quizId][qobj.id] = i;
+        } else {
+          let arr = Array.isArray(appData.responses[sid][currentRun.quizId][qobj.id]) ? appData.responses[sid][currentRun.quizId][qobj.id] : [];
+          if (arr.includes(i)) arr = arr.filter(x=>x!==i); else arr.push(i);
+          appData.responses[sid][currentRun.quizId][qobj.id] = arr;
+        }
+        saveData();
+        // re-render this runner to show selection
+        renderQuizRunner();
+      });
+      optsContainer.appendChild(optEl);
+    });
+    container.appendChild(optsContainer);
+
+    // navigation buttons
+    const nav = document.createElement('div');
+    const btnPrev = document.createElement('button'); btnPrev.textContent='Précédent'; btnPrev.disabled = currentRun.pos === 0; btnPrev.addEventListener('click', ()=> { currentRun.pos = Math.max(0, currentRun.pos-1); renderQuizRunner(); });
+    const btnNext = document.createElement('button'); btnNext.textContent='Suivant'; btnNext.disabled = currentRun.pos === currentRun.order.length-1; btnNext.addEventListener('click', ()=> { currentRun.pos = Math.min(currentRun.order.length-1, currentRun.pos+1); renderQuizRunner(); });
+    const btnSubmit = document.createElement('button'); btnSubmit.textContent='Soumettre le quiz'; btnSubmit.addEventListener('click', ()=> submitCurrentQuiz());
+    nav.appendChild(btnPrev); nav.appendChild(btnNext); nav.appendChild(btnSubmit);
+    container.appendChild(nav);
+  }
+
+  function submitCurrentQuiz(){
+    if (!currentRun) return;
+    if (!confirm('Soumettre le quiz ?')) return;
+    if (currentRun.timerInterval) clearInterval(currentRun.timerInterval);
+    const quiz = appData.quizzes.find(x=>x.id===currentRun.quizId);
+    const sid = appData.currentUser.id;
+    const responses = (appData.responses[sid] && appData.responses[sid][currentRun.quizId]) || {};
+    // scoring
+    let totalPoints = 0, gotPoints = 0;
+    quiz.questions.forEach(q=>{
+      totalPoints += (q.points || 1);
+      const user = responses[q.id];
+      if (q.type === 'single'){
+        if (user !== undefined && q.correctIndices.includes(user)) gotPoints += q.points || 1;
+      } else {
+        // multiple: partial credit: full points only if set equals correctIndices
+        const userArr = Array.isArray(user) ? user.slice().sort((a,b)=>a-b) : [];
+        const correctArr = q.correctIndices.slice().sort((a,b)=>a-b);
+        if (userArr.length && userArr.length === correctArr.length && userArr.every((v,i)=>v===correctArr[i])) gotPoints += q.points || 1;
+      }
+    });
+    // detailed result display
+    const resultMsg = 'Résultat: ' + gotPoints + ' / ' + totalPoints;
+    alert(resultMsg);
+    // show detailed results in student results area
+    showQuizResultsForStudent(quiz.id, responses);
+    currentRun = null;
+    $('quizContainer').style.display='none';
+    saveData();
+    renderQuizListForStudent();
+  }
+
+  function showQuizResultsForStudent(quizId, responses){
+    const quiz = appData.quizzes.find(x=>x.id===quizId); if (!quiz) return;
+    // place results in studentQuizResults
+    const container = $('studentQuizResults'); container.innerHTML = '';
+    const title = document.createElement('h3'); title.textContent = 'Résultats: ' + quiz.title; container.appendChild(title);
+    quiz.questions.forEach((q,idx)=>{
+      const block = document.createElement('div');
+      const user = responses[q.id];
+      const correctIndices = q.correctIndices;
+      let userStr = '';
+      if (q.type === 'single'){ userStr = (user === undefined ? 'Aucune réponse' : String.fromCharCode(65+user)); }
+      else if (Array.isArray(user) && user.length) userStr = user.map(i=>String.fromCharCode(65+i)).join(', '); else userStr = 'Aucune réponse';
+      const correctStr = correctIndices.map(i=>String.fromCharCode(65+i)).join(', ');
+      block.innerHTML = '<div><strong>Q'+(idx+1)+':</strong> '+escapeHtml(q.question)+'</div><div>Votre réponse: '+escapeHtml(userStr)+' — Correcte: '+escapeHtml(correctStr)+'</div>';
+      if (q.feedback) block.innerHTML += '<div>Explication: '+escapeHtml(q.feedback)+'</div>';
+      container.appendChild(block);
+    });
+  }
+
+  /* =============================
+     Quiz preview as student (admin)
+     ============================= */
+  function previewQuizAsStudent(quizId){
+    // temporarily set currentUser to demo student if admin viewing
+    if (!appData.currentUser || appData.isAdmin){
+      // set a transient current user view: use first student or dummy
+      let demo = appData.students[0] || { id:'demo', fullname:'Élève démo', username:'demo' };
+      // do not change saved currentUser permanently, but set appData.currentUser temporarily
+      const prevUser = appData.currentUser, prevIsAdmin = appData.isAdmin;
+      appData.currentUser = demo; appData.isAdmin=false;
+      saveData();
+      startQuiz(quizId);
+      // keep demo as current user until page reload; admin will still be logged in separately.
+      // If you want to revert immediately, store prev and restore after preview — but keeping demo allows interaction.
+    } else {
+      // regular student
+      startQuiz(quizId);
+    }
+  }
+
+  /* =============================
+     Lessons / Exercises / Exams (Drive links)
+     ============================= */
+  function adminSaveLesson(){ const title=$('adminLessonTitle').value.trim(), link=$('adminLessonDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.lessons.push({id:genId(),title,driveLink:link}); saveData(); renderLessons(); renderLessonsAdminList(); alert('Leçon ajoutée'); $('adminLessonTitle').value=''; $('adminLessonDriveLink').value=''; }
+  function renderLessons(){ const c=$('lessonsContent'); if(!c) return; c.innerHTML=''; if(!appData.lessons.length) return c.innerHTML='<p class="muted">Aucune leçon</p>'; appData.lessons.forEach(l=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=l.driveLink; a.target='_blank'; a.rel='noopener'; a.textContent=l.title; d.appendChild(a); c.appendChild(d); }); }
+  function renderLessonsAdminList(){ const c=$('lessonsAdminList'); if(!c) return; c.innerHTML=''; if(!appData.lessons.length) return c.innerHTML='<p class="muted">Aucune leçon</p>'; appData.lessons.forEach(l=>{ const d=document.createElement('div'); d.innerHTML = escapeHtml(l.title) + ' '; const a=document.createElement('a'); a.href=l.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=> { if(!confirm('Supprimer leçon ?')) return; appData.lessons = appData.lessons.filter(x=>x.id!==l.id); saveData(); renderLessonsAdminList(); renderLessons(); }); d.appendChild(del); c.appendChild(d); }); }
+
+  function adminSaveExercise(){ const title=$('adminExerciseTitle').value.trim(), link=$('adminExerciseDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.exercises.push({id:genId(),title,driveLink:link}); saveData(); renderExercises(); renderExercisesAdminList(); alert('Exercice ajouté'); $('adminExerciseTitle').value=''; $('adminExerciseDriveLink').value=''; }
+  function renderExercises(){ const c=$('exercisesContent'); if(!c) return; c.innerHTML=''; if(!appData.exercises.length) return c.innerHTML='<p class="muted">Aucun exercice</p>'; appData.exercises.forEach(e=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=e.driveLink; a.target='_blank'; a.textContent=e.title; d.appendChild(a); c.appendChild(d); }); }
+  function renderExercisesAdminList(){ const c=$('exercisesAdminList'); if(!c) return; c.innerHTML=''; if(!appData.exercises.length) return c.innerHTML='<p class="muted">Aucun exercice</p>'; appData.exercises.forEach(e=>{ const d=document.createElement('div'); d.innerHTML = escapeHtml(e.title) + ' '; const a=document.createElement('a'); a.href=e.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=> { if(!confirm('Supprimer exercice ?')) return; appData.exercises = appData.exercises.filter(x=>x.id!==e.id); saveData(); renderExercisesAdminList(); renderExercises(); }); d.appendChild(del); c.appendChild(d); }); }
+
+  function adminSaveExam(){ const title=$('adminExamTitle').value.trim(), link=$('adminExamDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.exams.push({id:genId(),title,driveLink:link}); saveData(); renderExams(); renderExamsAdminList(); alert('Examen ajouté'); $('adminExamTitle').value=''; $('adminExamDriveLink').value=''; }
+  function renderExams(){ const c=$('examsContent'); if(!c) return; c.innerHTML=''; if(!appData.exams.length) return c.innerHTML='<p class="muted">Aucun examen</p>'; appData.exams.forEach(e=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=e.driveLink; a.target='_blank'; a.textContent=e.title; d.appendChild(a); c.appendChild(d); }); }
+  function renderExamsAdminList(){ const c=$('examsAdminList'); if(!c) return; c.innerHTML=''; if(!appData.exams.length) return c.innerHTML='<p class="muted">Aucun examen</p>'; appData.exams.forEach(e=>{ const d=document.createElement('div'); d.innerHTML=escapeHtml(e.title)+' '; const a=document.createElement('a'); a.href=e.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer examen ?')) return; appData.exams=appData.exams.filter(x=>x.id!==e.id); saveData(); renderExamsAdminList(); renderExams(); }); d.appendChild(del); c.appendChild(d); }); }
+
+  /* =============================
+     Announcement image handling
+     ============================= */
+  function handleAnnouncementImage(e){
+    const f = e.target.files[0]; if (!f) return;
+    const fr = new FileReader(); fr.onload = function(ev){ appData.announcement.image = ev.target.result; $('announcementImagePreview').src = ev.target.result; $('announcementImagePreview').style.display='block'; $('announcementImage').src = ev.target.result; $('announcementImage').style.display='block'; $('btnDeleteAnnouncementImage').style.display='inline-block'; saveData(); }; fr.readAsDataURL(f);
+  }
+
+  /* =============================
+     Site cover handling
+     ============================= */
+  function handleSiteCoverUpload(e){
+    const f = e.target.files[0]; if (!f) return;
+    const fr = new FileReader(); fr.onload = function(ev){ appData.siteCover.url = ev.target.result; $('siteCoverPreview').src = ev.target.result; $('siteCoverPreview').style.display='block'; saveData(); }; fr.readAsDataURL(f);
+  }
+
+  /* =============================
+     LaTeX editor / Overleaf-like features
+     - line numbers 1..2000
+     - preview via MathJax
+     - save lesson and show to students
+     ============================= */
+  function updateLatexLineNumbers(){
+    const ta = $('latexCode'); const ln = $('latexLineNumbers'); const preview = $('latexPreview');
+    if (!ta || !ln || !preview) return;
+    const lines = (ta.value || '').split('\n').length;
+    const count = Math.min(Math.max(lines,1),2000);
+    let out = '';
+    for (let i=1;i<=count;i++){ out += i + '\n'; }
+    ln.textContent = out;
+    // preview
+    preview.innerHTML = ta.value ? ('\\[' + ta.value + '\\]') : 'معاينة LaTeX...';
+    if (window.MathJax) MathJax.typesetPromise([preview]).catch(()=>{});
+  }
+
+  function adminSaveLatex(){
+    const title = $('latexTitle').value.trim(); const code = $('latexCode').value; const desc = $('latexDescription').value; const cat = $('latexCategory').value;
+    if (!title || !code) return alert('Titre و code requis');
+    appData.latexContents.push({ id: genId(), title, code, description: desc, category: cat, createdAt: Date.now() });
+    saveData(); alert('Leçon LaTeX محفوظة'); loadLatexAdminList(); renderLatexListForStudents();
+    $('latexTitle').value=''; $('latexCode').value=''; $('latexDescription').value=''; $('latexCategory').value=''; updateLatexLineNumbers();
+  }
+
+  function loadLatexAdminList(){
+    const c = $('latexContentsList'); if (!c) return; c.innerHTML='';
+    if (!appData.latexContents.length) return c.innerHTML = '<p class="muted">لا توجد دروس حتى الآن.</p>';
+    appData.latexContents.forEach(item=>{
+      const d = document.createElement('div'); d.innerHTML = '<strong>' + escapeHtml(item.title) + '</strong> — ' + escapeHtml(item.description || '');
+      const btnPreview = document.createElement('button'); btnPreview.textContent='معاينة'; btnPreview.addEventListener('click', ()=> {
+        const preview = $('latexPreview'); preview.innerHTML = '\\[' + item.code + '\\]'; if (window.MathJax) MathJax.typesetPromise([preview]).catch(()=>{});
+      });
+      const btnDel = document.createElement('button'); btnDel.textContent='Supprimer'; btnDel.addEventListener('click', ()=> { if(!confirm('Supprimer الدرس ؟')) return; appData.latexContents = appData.latexContents.filter(x=>x.id!==item.id); saveData(); loadLatexAdminList(); renderLatexListForStudents(); });
+      d.appendChild(btnPreview); d.appendChild(btnDel); c.appendChild(d);
+    });
+    $('stats-latex').textContent = appData.latexContents.length;
+  }
+
+  function renderLatexListForStudents(){
+    const c = $('studentCoursList'); if (!c) return; c.innerHTML='';
+    if (!appData.latexContents.length) return c.innerHTML='<p class="muted">لا توجد دروس</p>';
+    appData.latexContents.forEach(item=>{
+      const d = document.createElement('div'); d.innerHTML = '<strong>' + escapeHtml(item.title) + '</strong> — ' + escapeHtml(item.description || '');
+      const btn = document.createElement('button'); btn.textContent='معاينة'; btn.addEventListener('click', ()=> {
+        // show preview in quizContent area (or any other)
+        const target = $('quizContent'); if (!target) return;
+        target.innerHTML = '<h3>' + escapeHtml(item.title) + '</h3><div id="studentLatexArea">\\[' + item.code + '\\]</div>';
+        if (window.MathJax) MathJax.typesetPromise([document.getElementById('studentLatexArea')]).catch(()=>{});
+      });
+      d.appendChild(btn); c.appendChild(d);
+    });
+  }
+
+  /* =============================
+     Utility functions: shuffle, formatTime
+     ============================= */
+  function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function formatTime(sec){ if (!sec || sec<=0) return '00:00'; const m=Math.floor(sec/60); const s=sec%60; return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
+
+  /* =============================
+     Grades search by code (kept)
+     ============================= */
+  function searchGradesByCode(code){
+    const s = appData.students.find(x=>x.code === code);
+    if (!s) return alert('Code parcours non trouvé');
+    const g = appData.grades.filter(x=>x.studentId === s.id);
+    $('gradesResults').style.display='block';
+    $('studentInfo').innerHTML = '<div class="content-card"><div class="card-content"><h3>' + escapeHtml(s.fullname) + '</h3><p>Classe: ' + escapeHtml(s.classroom||'') + '</p><p>Code: ' + escapeHtml(s.code||'') + '</p></div></div>';
+    const tbody = document.querySelector('#gradesTable tbody'); tbody.innerHTML = '';
+    if (!g.length) { $('noGradesMsg').style.display='block'; } else { $('noGradesMsg').style.display='none'; g.forEach(grade=>{ const row=document.createElement('tr'); row.innerHTML = '<td>' + new Date(grade.date).toLocaleDateString() + '</td><td>' + escapeHtml(grade.subject) + '</td><td>' + escapeHtml(grade.title) + '</td><td>' + grade.score + '/20</td><td>' + escapeHtml(grade.note || '') + '</td>'; tbody.appendChild(row); }); }
+  }
+
+  /* =============================
+     Helper: render dictionary
+     ============================= */
+  function renderDictionary(){
+    const el = $('dictionaryContent'); if (!el) return; el.innerHTML='';
+    if (!appData.dictionary.length) return el.innerHTML = '<p class="muted">Aucun terme dans le lexique pour le moment.</p>';
+    appData.dictionary.forEach(term=>{ const d=document.createElement('div'); d.className='content-card'; d.innerHTML = '<div class="card-content"><h3>'+escapeHtml(term.ar)+' - '+escapeHtml(term.fr)+'</h3><p>'+escapeHtml(term.definition)+'</p></div>'; el.appendChild(d); });
+  }
+
+  /* =============================
+     Helper: render lessons/exercises/exams lists already above
+     ============================= */
+
+  /* =============================
+     Final initial renders
+     ============================= */
+  // small delay render on start
+  setTimeout(()=>{ refreshUI(); }, 100);
+
+  </script>
+</body>
+</html>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>

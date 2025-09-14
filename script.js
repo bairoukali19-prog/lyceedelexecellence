@@ -1,5 +1,5 @@
 // Unified dashboard JS - FIXED & IMPROVED
-// Changes in this version (v4):
+// Changes in this version (v6):
 // - Fixed student regrade request exam selection (now shows only exams with published grades)
 // - Improved site cover with professional design
 // - Removed primitive slider and improved UI

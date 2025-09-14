@@ -9,7 +9,7 @@
 /* =============================
    Data model (localStorage)
    ============================= */
-const STORAGE_KEY = 'lyceeExcellence_v_4';
+const STORAGE_KEY = 'lyceeExcellence_v_3';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },

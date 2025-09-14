@@ -1,10 +1,10 @@
  // Unified dashboard JS - FIXED & IMPROVED
-// Changes in this version (v6):
+// Changes in this version (v8):
 // - Added slider control section in admin dashboard
 // - Fixed exam selection for student regrade requests
 // - Improved UI for slider management
 
-const STORAGE_KEY = 'lyceeExcellence_v_6';
+const STORAGE_KEY = 'lyceeExcellence_v_8';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },

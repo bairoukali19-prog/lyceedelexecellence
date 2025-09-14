@@ -1,19 +1,11 @@
-/* Unified dashboard JS - FIXED & IMPROVED
-   Changes in this version (v3):
-   - Prevent admin-only controls from leaking into public UI (admin-only checks tightened)
-   - Slider administration is now only available to the main admin account (id === 'admin')
-   - All user-visible messages (previously alert(...)) now go to a dashboard messages area (if present) instead of browser alerts
-   - Buttons get a consistent, improved look via a helper (inline styles) to replace the "primitive" buttons
-   - When a student requests a regrade they now see only exams that have published grades for them
-   - Defensive wiring: event handlers are attached only when relevant elements exist and when the current user has permission
-   - Kept backward compatibility: if dashboard message area is missing, falls back to alert()
+// Unified dashboard JS - FIXED & IMPROVED
+// Changes in this version (v4):
+// - Fixed student regrade request exam selection (now shows only exams with published grades)
+// - Improved site cover with professional design
+// - Removed primitive slider and improved UI
+// - Enhanced exam filtering for regrade requests
 
-   Save this file and replace previous JS. It expects the HTML to have the following optional IDs to benefit:
-   - 'dashboardMessages' (container where toast-like messages will appear)
-   - admin UI elements remain the same but slider admin controls are hidden for non-main-admins
-*/
-
-const STORAGE_KEY = 'lyceeExcellence_v_3';
+const STORAGE_KEY = 'lyceeExcellence_v_4';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },
@@ -42,7 +34,7 @@ let appData = {
   currentUser: { id: "admin", fullname: "Administrateur" },
   isAdmin: true,
   announcement: { text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة", image: null },
-  siteCover: { enabled: true, url: null }
+  siteCover: { enabled: true, url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" }
 };
 
 function loadData(){

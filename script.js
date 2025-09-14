@@ -11,7 +11,7 @@
 /* =============================
    Data model (localStorage)
    ============================= */
-const STORAGE_KEY = 'lyceeExcellence_v_3';
+const STORAGE_KEY = 'lyceeExcellence_v_4';
 let appData = {
   // --- Five students explicitly injected
   students: [

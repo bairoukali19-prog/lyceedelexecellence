@@ -1,14 +1,10 @@
-/* =============================
-   Unified dashboard JS - PATCHED (Sep 2025)
-   - Fix: modal cancel, robust login, prevent auto-login
-   - Fix: regrade selection shows student's graded evaluations (from grades)
-   - Improve: site cover hero (professional) and remove "لا توجد شرائح حاليا"
-   - UI polish: nicer buttons
-   =============================*/
+/* lycee_dashboard_unified.js
+   Unified JavaScript for Lycée dashboard
+   - Standalone JS extracted from the unified HTML file
+   - Place this file alongside your HTML or load it as a separate script
+*/
 
-/* =============================
-   Data model (localStorage)
-   ============================= */
+// Data model & utilities
 const STORAGE_KEY = 'lyceeExcellence_v_3';
 let appData = {
   students: [
@@ -28,590 +24,216 @@ let appData = {
   quizzes: [],
   dictionary: [],
   lessons: [],
-  exercises: [
-    { id: "mfj2mukk2edjb", title: "Série N’1 Physique-Chimie", driveLink: "https://drive.google.com/file/d/1Ck4CbEtKofWPd11xAOxJVCQI7b8v65vK/view?usp=sharing" }
-  ],
+  exercises: [ { id: "mfj2mukk2edjb", title: "Série N’1 Physique-Chimie", driveLink: "https://drive.google.com/file/d/1Ck4CbEtKofWPd11xAOxJVCQI7b8v65vK/view?usp=sharing" } ],
   exams: [],
   messages: [],
   latexContents: [],
   slides: [],
   responses: {},
   regradeRequests: [],
-  currentUser: null, // start not logged in by default
+  currentUser: null,
   isAdmin: false,
-  announcement: {
-    text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
-    image: null
-  },
+  announcement: { text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة", image: null },
   siteCover: { enabled: true, url: null },
   allowSliderManagement: false
 };
 
+/* Persistence helpers */
 function loadData(){
-  try {
+  try{
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
+    if(raw){
       const parsed = JSON.parse(raw);
       Object.assign(appData, parsed);
       appData.slides = appData.slides || [];
       appData.regradeRequests = appData.regradeRequests || [];
       appData.responses = appData.responses || {};
     }
-  } catch(e){ console.error('loadData', e); }
+  }catch(e){ console.error('loadData', e); }
 }
-
 function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
 
-/* helpers */
+/* DOM helpers */
 function $(id){ return document.getElementById(id); }
 function genId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 function escapeHtml(s){ return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
 
 /* UI polish */
 let _stylesInjected=false;
-function injectGlobalStyles(){
-  if (_stylesInjected) return; _stylesInjected=true;
-  const css = `
-    button { padding:8px 12px; border-radius:10px; border:1px solid rgba(0,0,0,0.08); background:linear-gradient(180deg,#ffffff,#f6f8fb); box-shadow:0 6px 14px rgba(12,25,40,0.06); cursor:pointer; font-weight:600; }
-    button:hover{ transform:translateY(-2px); }
-    button.danger{ background:linear-gradient(180deg,#ffecec,#fff2f2); border-color:rgba(255,60,60,0.14); color:#b02a2a; }
-    .muted{ color:rgba(0,0,0,0.56); }
-    .content-card{ background:#fff; border-radius:12px; padding:12px; box-shadow:0 6px 16px rgba(12,25,40,0.04); margin-bottom:8px; }
-    .hero-cover{ border-radius:12px; padding:28px; color:#fff; position:relative; overflow:hidden; }
-    .hero-cover .hero-inner{ max-width:1100px; margin:0 auto; }
-  `;
-  const style=document.createElement('style'); style.appendChild(document.createTextNode(css)); document.head.appendChild(style);
-}
-
-/* sanitize admin-only UI */
-function sanitizeUIForRole(){
-  document.querySelectorAll('.admin-only').forEach(el => { if (!appData.isAdmin) { el.style.display='none'; }});
-  if (!appData.allowSliderManagement || !appData.isAdmin) {
-    ['sliderAdminList','btnAddSliderImage','sliderImageUrl','sliderImageUpload','btnClearSlider','btnDeleteSlide'].forEach(id=>{ const e = $(id); if (e) e.style.display='none'; });
-  }
-}
+function injectGlobalStyles(){ if(_stylesInjected) return; _stylesInjected=true; const css=`button{transition:transform .12s ease}button:hover{transform:translateY(-2px)}`; const st=document.createElement('style'); st.appendChild(document.createTextNode(css)); document.head.appendChild(st); }
 
 /* Init */
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-  injectGlobalStyles();
-  wireEvents();
-  wireSliderAdminEvents();
-  refreshUI();
-  setTimeout(()=>{ renderAll(); renderFrontSlider(); }, 50);
-});
+document.addEventListener('DOMContentLoaded', ()=>{ loadData(); injectGlobalStyles(); wireEvents(); wireSliderAdminEvents(); refreshUI(); setTimeout(()=>{ renderAll(); renderFrontSlider(); },50); });
 
-/* Wiring events: robust login + cancel + ESC + backdrop */
+/* Event wiring */
 function wireEvents(){
   document.querySelectorAll('.nav-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const s=a.getAttribute('data-section'); showSection(s); }));
 
-  // open login modals (if exist)
-  if ($('studentLoginBtn')) $('studentLoginBtn').addEventListener('click', ()=>{ const m=$('studentLoginModal'); if (m) m.style.display='block'; });
-  if ($('loginBtn')) $('loginBtn').addEventListener('click', ()=>{ const m=$('loginModal'); if (m) m.style.display='block'; });
+  if ($('studentLoginBtn')) $('studentLoginBtn').addEventListener('click', ()=>{ const m=$('studentLoginModal'); if(m) m.style.display='flex'; });
+  if ($('loginBtn')) $('loginBtn').addEventListener('click', ()=>{ const m=$('loginModal'); if(m) m.style.display='flex'; });
 
-  // submit handlers for login (buttons or forms)
-  const submitStudentBtn = $('submitStudentLogin');
-  if (submitStudentBtn) submitStudentBtn.addEventListener('click', ev=>{ ev.preventDefault(); const u=$('studentUsername')?$('studentUsername').value.trim():'', p=$('studentPassword')?$('studentPassword').value:''; loginStudent(u,p); });
+  if ($('submitStudentLogin')) $('submitStudentLogin').addEventListener('click', ev=>{ ev.preventDefault(); const u=$('studentUsername')?$('studentUsername').value.trim():''; const p=$('studentPassword')?$('studentPassword').value:''; loginStudent(u,p); });
+  if ($('submitLogin')) $('submitLogin').addEventListener('click', ev=>{ ev.preventDefault(); const u=$('username')?$('username').value.trim():''; const p=$('password')?$('password').value:''; loginAdmin(u,p); });
 
-  const submitAdminBtn = $('submitLogin');
-  if (submitAdminBtn) submitAdminBtn.addEventListener('click', ev=>{ ev.preventDefault(); const u=$('username')?$('username').value.trim():'', p=$('password')?$('password').value:''; loginAdmin(u,p); });
+  document.body.addEventListener('click', function(ev){ const t=ev.target; if(!t) return; if(t.classList && t.classList.contains('btn-cancel')){ ev.preventDefault(); closeNearestModal(t); } if(t.dataset && t.dataset.action==='cancel'){ ev.preventDefault(); closeNearestModal(t); } });
 
-  const studentForm = $('studentLoginForm');
-  if (studentForm) studentForm.addEventListener('submit', ev=>{ ev.preventDefault(); const u=$('studentUsername')?$('studentUsername').value.trim():'', p=$('studentPassword')?$('studentPassword').value:''; loginStudent(u,p); });
+  document.body.addEventListener('click', function(ev){ const t=ev.target; if(!t) return; if(t.classList && t.classList.contains('modal')){ t.style.display='none'; } });
+  document.addEventListener('keydown', function(ev){ if(ev.key==='Escape'){ document.querySelectorAll('.modal').forEach(m=>{ if(m.style) m.style.display='none'; }); } });
 
-  const adminForm = $('adminLoginForm') || $('loginForm');
-  if (adminForm) adminForm.addEventListener('submit', ev=>{ ev.preventDefault(); const u=$('username')?$('username').value.trim():'', p=$('password')?$('password').value:''; loginAdmin(u,p); });
-
-  // Enter key in fields
-  ['studentUsername','studentPassword','username','password'].forEach(id => {
-    const el = $(id);
-    if (!el) return;
-    el.addEventListener('keydown', ev => { if (ev.key==='Enter'){ ev.preventDefault(); if (id.startsWith('student')){ const u=$('studentUsername')?$('studentUsername').value.trim():'', p=$('studentPassword')?$('studentPassword').value:''; loginStudent(u,p); } else { const u=$('username')?$('username').value.trim():'', p=$('password')?$('password').value:''; loginAdmin(u,p); } } });
-  });
-
-  // Annuler / Cancel buttons: any element with class 'btn-cancel' or data-action="cancel" closes its nearest modal.
-  document.body.addEventListener('click', function(ev){
-    const t = ev.target;
-    if (!t) return;
-    if (t.classList && t.classList.contains('btn-cancel')) {
-      ev.preventDefault();
-      closeNearestModal(t);
-      return;
-    }
-    if (t.dataset && t.dataset.action==='cancel') {
-      ev.preventDefault();
-      closeNearestModal(t);
-      return;
-    }
-  });
-
-  // Close modal when clicking backdrop (assuming modal has class 'modal' and backdrop is the element itself)
-  document.body.addEventListener('click', function(ev){
-    const t = ev.target;
-    if (!t) return;
-    if (t.classList && t.classList.contains('modal')) {
-      // click on backdrop closes modal
-      t.style.display = 'none';
-    }
-  });
-
-  // ESC to close any visible modal
-  document.addEventListener('keydown', function(ev){
-    if (ev.key === 'Escape') {
-      document.querySelectorAll('.modal').forEach(m => { if (m.style && m.style.display==='block') m.style.display='none'; });
-    }
-  });
-
-  // logout handlers
   if ($('studentLogoutBtn')) $('studentLogoutBtn').addEventListener('click', ()=>{ appData.currentUser=null; appData.isAdmin=false; saveData(); refreshUI(); });
   if ($('logoutBtn')) $('logoutBtn').addEventListener('click', ()=>{ appData.currentUser=null; appData.isAdmin=false; saveData(); refreshUI(); });
 
-  // other UI wiring (keeps original bindings safe)
   document.querySelectorAll('.student-tab').forEach(t => t.addEventListener('click', ()=> { const name = t.getAttribute('data-tab'); switchStudentTab(name); }));
   document.querySelectorAll('.admin-tab-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const tab = a.getAttribute('data-tab'); switchAdminTab(tab); }));
 
   if ($('announcementImageInput')) $('announcementImageInput').addEventListener('change', handleAnnouncementImage);
-  if ($('btnSaveAnnouncement')) $('btnSaveAnnouncement').addEventListener('click', ()=>{ if ($('announcementInput')) appData.announcement.text=$('announcementInput').value; saveData(); renderAll(); alert('Annonce enregistrée'); });
-  if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').addEventListener('click', ()=>{ appData.announcement.image=null; saveData(); renderAll(); });
+  if ($('btnSaveAnnouncement')) $('btnSaveAnnouncement').addEventListener('click', ()=>{ if ($('announcementInput')) appData.announcement.text = $('announcementInput').value; saveData(); renderAll(); alert('Annonce enregistrée'); });
+
+  if ($('btnExport')) $('btnExport').addEventListener('click', ()=>{ const blob = new Blob([JSON.stringify(appData)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='lycee_data.json'; a.click(); URL.revokeObjectURL(url); });
+  if ($('importFile')) $('importFile').addEventListener('change', e => { const f = e.target.files[0]; if (!f) return; const fr = new FileReader(); fr.onload = function(ev){ try { if (!confirm('Importer va remplacer البيانات الحالية. Continuer?')) return; appData = JSON.parse(ev.target.result); saveData(); renderAll(); refreshUI(); alert('Import réussi'); } catch(err){ alert('Fichier invalide'); } }; fr.readAsText(f); });
+
+  if ($('btnSaveStudent')) $('btnSaveStudent').addEventListener('click', adminSaveStudent);
+  if ($('btnSaveGrade')) $('btnSaveGrade').addEventListener('click', adminSaveGrade);
+  if ($('adminBtnSaveExam')) $('adminBtnSaveExam').addEventListener('click', adminSaveExam);
+  if ($('adminBtnSendMessage')) $('adminBtnSendMessage').addEventListener('click', adminSendMessage);
 }
 
-/* utility: close modal ancestor */
-function closeNearestModal(el){
-  let p = el;
-  for (let i=0;i<6;i++){
-    if (!p) break;
-    if (p.classList && p.classList.contains('modal')) { p.style.display='none'; return; }
-    p = p.parentNode;
-  }
-}
+function closeNearestModal(el){ let p=el; for(let i=0;i<6;i++){ if(!p) break; if(p.classList && p.classList.contains('modal')){ p.style.display='none'; return; } p=p.parentNode; } }
 
 /* UI switching */
 function hideAllMainSections(){ document.querySelectorAll('.page-section').forEach(s => s.style.display='none'); if ($('student-dashboard')) $('student-dashboard').style.display='none'; if ($('admin-panel')) $('admin-panel').style.display='none'; }
-function showSection(id){
-  hideAllMainSections();
-  if (id === 'home') { if ($('home-section')) $('home-section').style.display='block'; return; }
-  const el = document.getElementById(id);
-  if (el) el.style.display='block';
-  if (id === 'quiz') renderQuizList();
-  if (id === 'lessons') renderLessons();
-  if (id === 'exercises') renderExercises();
-  if (id === 'exams') renderExams();
-  if (id === 'dictionary') renderDictionary();
-}
+function showSection(id){ hideAllMainSections(); if (id === 'home') { if ($('home-section')) $('home-section').style.display='block'; return; } const el = document.getElementById(id); if (el) el.style.display='block'; if (id === 'quiz') renderQuizList(); if (id === 'lessons') renderLessons(); if (id === 'exams') renderExams(); if (id === 'dictionary') renderDictionary(); }
 
-function switchStudentTab(tabName){
-  document.querySelectorAll('.student-tab-content').forEach(x=>x.style.display='none');
-  document.querySelectorAll('.student-tab').forEach(t=>t.classList.remove('active'));
-  const btn = document.querySelector('.student-tab[data-tab="'+tabName+'"]');
-  if (btn) btn.classList.add('active');
-  const content = document.getElementById('student-'+tabName+'-tab');
-  if (content) content.style.display='block';
-  if (tabName === 'dashboard') loadStudentDashboard();
-  if (tabName === 'quiz') renderQuizListForStudent();
-  if (tabName === 'exercises') { if (typeof renderStudentExercises === 'function') renderStudentExercises(); }
-  if (tabName === 'cours') renderLatexListForStudents();
-  if (tabName === 'messages') renderStudentMessages();
-  if (tabName === 'exams') renderExams();
-}
+function switchStudentTab(tabName){ document.querySelectorAll('.student-tab-content').forEach(x=>x.style.display='none'); document.querySelectorAll('.student-tab').forEach(t=>t.classList.remove('active')); const btn = document.querySelector('.student-tab[data-tab="'+tabName+'"]'); if (btn) btn.classList.add('active'); const content = document.getElementById('student-'+tabName+'-tab'); if (content) content.style.display='block'; if (tabName === 'dashboard') loadStudentDashboard(); if (tabName === 'quiz') renderQuizListForStudent(); if (tabName === 'exercises') { if (typeof renderStudentExercises === 'function') renderStudentExercises(); } if (tabName === 'cours') renderLatexListForStudents(); if (tabName === 'messages') renderStudentMessages(); if (tabName === 'exams') renderExams(); }
 
-function switchAdminTab(tabName){
-  document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none');
-  document.querySelectorAll('.admin-tab-link').forEach(l=>l.classList.remove('active'));
-  const link = document.querySelector('.admin-tab-link[data-tab="'+tabName+'"]'); if (link) link.classList.add('active');
-  const el = document.getElementById(tabName); if (el) el.style.display='block';
-  if (tabName === 'tab-students') loadStudentsTable();
-  if (tabName === 'tab-grades') loadGradesTable();
-  if (tabName === 'tab-quiz') renderQuizAdminListDetailed();
-  if (tabName === 'tab-latex') loadLatexAdminList();
-  if (tabName === 'tab-messages') renderAdminMessagesList();
-  if (tabName === 'tab-lessons') renderLessonsAdminList();
-  if (tabName === 'tab-exercises') renderExercisesAdminList();
-  if (tabName === 'tab-exams') { renderExamsAdminList(); renderRegradeRequestsAdminList(); }
-}
+function switchAdminTab(tabName){ document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none'); document.querySelectorAll('.admin-tab-link').forEach(l=>l.classList.remove('active')); const link = document.querySelector('.admin-tab-link[data-tab="'+tabName+'"]'); if (link) link.classList.add('active'); const el = document.getElementById(tabName); if (el) el.style.display='block'; if (tabName === 'tab-students') loadStudentsTable(); if (tabName === 'tab-grades') loadGradesTable(); if (tabName === 'tab-exams') { renderExamsAdminList(); renderRegradeRequestsAdminList(); } if (tabName === 'tab-messages') renderAdminMessagesList(); if (tabName === 'tab-slider') renderSliderAdminList(); }
 
-/* Authentication - robust checks */
-function loginStudent(username, password){
-  if (!username || !password) { alert('من فضلك أدخل اسم المستخدم و كلمة المرور'); return; }
-  const s = appData.students.find(x=>x.username===username && x.password===password);
-  if (!s) { alert('Nom d\\'utilisateur ou mot de passe incorrect'); return; }
-  appData.currentUser = s; appData.isAdmin = false; saveData(); refreshUI(); const m=$('studentLoginModal'); if (m) m.style.display='none'; switchStudentTab('dashboard');
-}
+/* Authentication */
+function loginStudent(username, password){ if(!username||!password){ alert('من فضلك أدخل اسم المستخدم و كلمة المرور'); return; } const s = appData.students.find(x=>x.username===username && x.password===password); if (!s) { alert('Nom d\'utilisateur أو mot de passe incorrect'); return; } appData.currentUser = s; appData.isAdmin = false; saveData(); refreshUI(); const m=$('studentLoginModal'); if (m) m.style.display='none'; switchStudentTab('dashboard'); }
 
-function loginAdmin(username, password){
-  if (!username || !password) { alert('من فضلك أدخل اسم المستخدم و كلمة المرور'); return; }
-  if (username === 'admin' && password === 'admin123') {
-    appData.currentUser = { id:'admin', fullname:'Administrateur' }; appData.isAdmin = true; saveData(); refreshUI(); const m=$('loginModal'); if (m) m.style.display='none'; switchAdminTab('tab-dashboard'); return;
-  }
-  alert('Nom d\\'utilisateur ou mot de passe incorrect');
-}
+function loginAdmin(username, password){ if(!username||!password){ alert('من فضلك أدخل اسم المستخدم و كلمة المرور'); return; } if (username === 'admin' && password === 'admin123') { appData.currentUser = { id:'admin', fullname:'Administrateur' }; appData.isAdmin = true; saveData(); refreshUI(); const m=$('loginModal'); if (m) m.style.display='none'; switchAdminTab('tab-dashboard'); return; } alert('Nom d\'utilisateur ou mot de passe incorrect'); }
 
-/* Refresh UI */
-function refreshUI(){
-  if ($('announcementText')) $('announcementText').textContent = appData.announcement.text || '';
-  if (appData.announcement.image){ if ($('announcementImage')) { $('announcementImage').src = appData.announcement.image; $('announcementImage').style.display='block'; } if ($('announcementImagePreview')) { $('announcementImagePreview').src = appData.announcement.image; $('announcementImagePreview').style.display='block'; } if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='inline-block'; } else { if ($('announcementImage')) $('announcementImage').style.display='none'; if ($('announcementImagePreview')) $('announcementImagePreview').style.display='none'; if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='none'; }
-
+/* Refresh UI / render lists */
+function refreshUI(){ if ($('announcementText')) $('announcementText').textContent = appData.announcement.text || ''; if (appData.announcement.image){ if ($('announcementImage')) { $('announcementImage').src = appData.announcement.image; $('announcementImage').style.display='block'; } if ($('announcementImagePreview')) { $('announcementImagePreview').src = appData.announcement.image; $('announcementImagePreview').style.display='block'; } if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='inline-block'; } else { if ($('announcementImage')) $('announcementImage').style.display='none'; if ($('announcementImagePreview')) $('announcementImagePreview').style.display='none'; if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='none'; }
   if ($('admin-panel')) $('admin-panel').style.display = appData.isAdmin ? 'block' : 'none';
   if ($('student-dashboard')) $('student-dashboard').style.display = (appData.currentUser && !appData.isAdmin) ? 'block' : 'none';
   if (appData.currentUser && !appData.isAdmin && $('studentWelcome')) $('studentWelcome').textContent = 'Bienvenue, ' + (appData.currentUser.fullname || '');
-
   if ($('stats-students')) $('stats-students').textContent = appData.students.length;
   if ($('stats-quiz')) $('stats-quiz').textContent = appData.quizzes.reduce((acc,q)=>acc+q.questions.length,0);
-  if ($('stats-dictionary')) $('stats-dictionary').textContent = appData.dictionary.length;
   if ($('stats-grades')) $('stats-grades').textContent = appData.grades.length;
-  if ($('stats-messages')) $('stats-messages').textContent = appData.messages.length;
-  if ($('stats-latex')) $('stats-latex').textContent = appData.latexContents.length;
-
   populateStudentsSelect();
   populateAdminSelectQuiz();
-
-  sanitizeUIForRole();
   renderAll();
 }
 
-/* Students admin (unchanged mostly) */
-function adminSaveStudent(){
-  const id = $('stId') ? $('stId').value || genId() : genId();
-  const fullname = $('stFullname') ? $('stFullname').value.trim() : '';
-  const username = $('stUsername') ? $('stUsername').value.trim() : '';
-  const password = $('stPassword') ? $('stPassword').value : '';
-  const code = $('stCode') ? $('stCode').value.trim() : '';
-  const classroom = $('stClassroom') ? $('stClassroom').value.trim() : '';
-  if (!fullname || !username) return alert('Nom complet و nom d\\'utilisateur requis');
-  const existing = appData.students.find(x=>x.id===id);
-  if (existing) { existing.fullname=fullname; existing.username=username; existing.password=password; existing.code=code; existing.classroom=classroom; }
-  else appData.students.push({ id, fullname, username, password, code, classroom });
-  saveData(); loadStudentsTable(); populateStudentsSelect(); alert('Étudiant enregistré');
-  if ($('stFullname')) $('stFullname').value=''; if ($('stUsername')) $('stUsername').value=''; if ($('stPassword')) $('stPassword').value=''; if ($('stCode')) $('stCode').value=''; if ($('stClassroom')) $('stClassroom').value=''; if ($('stId')) $('stId').value='';
-}
-function loadStudentsTable(){
-  const tbody = document.querySelector('#studentsTable tbody'); if (!tbody) return;
-  tbody.innerHTML = '';
-  appData.students.forEach(s=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td>'+escapeHtml(s.fullname)+'</td><td>'+escapeHtml(s.username)+'</td><td>'+escapeHtml(s.code||'')+'</td><td>'+escapeHtml(s.classroom||'')+'</td><td><button data-id="'+s.id+'" class="edit-student">Edit</button> <button data-id="'+s.id+'" class="del-student danger">Del</button></td>';
-    tbody.appendChild(tr);
-  });
-  tbody.querySelectorAll('.edit-student').forEach(b=>b.addEventListener('click', ()=> {
-    const id = b.getAttribute('data-id'); const s = appData.students.find(x=>x.id===id); if (!s) return;
-    if ($('stId')) $('stId').value=s.id; if ($('stFullname')) $('stFullname').value=s.fullname; if ($('stUsername')) $('stUsername').value=s.username; if ($('stPassword')) $('stPassword').value=s.password; if ($('stCode')) $('stCode').value=s.code; if ($('stClassroom')) $('stClassroom').value=s.classroom; switchAdminTab('tab-students');
-  }));
-  tbody.querySelectorAll('.del-student').forEach(b=>b.addEventListener('click', ()=> {
-    const id = b.getAttribute('data-id'); if (!confirm('Supprimer étudiant ?')) return; appData.students = appData.students.filter(x=>x.id!==id); saveData(); loadStudentsTable(); populateStudentsSelect();
-  }));
-}
-function populateStudentsSelect(){
-  const sel = $('adminMessageStudent'); if (!sel) return;
-  sel.innerHTML = '<option value="">Choisir</option>';
-  appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent = s.fullname + ' (' + (s.code||'') + ')'; sel.appendChild(o); });
-  const gr = $('grStudent'); if (gr){ gr.innerHTML='<option value="">-- Choisir étudiant --</option>'; appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent=s.fullname; gr.appendChild(o); }); }
-  const gf = $('grFilterStudent'); if (gf){ gf.innerHTML='<option value="">Tous</option>'; appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent=s.fullname; gf.appendChild(o); }); }
-}
+function sanitizeUIForRole(){ document.querySelectorAll('.admin-only').forEach(el=>{ if(!appData.isAdmin) el.style.display='none'; }); if(!appData.allowSliderManagement || !appData.isAdmin){ ['sliderAdminList','btnAddSliderImage','sliderImageUrl','sliderImageUpload','btnClearSlider','btnDeleteSlide'].forEach(id=>{ const e=$(id); if(e) e.style.display='none'; }); } }
+
+/* Students admin */
+function adminSaveStudent(){ const id = $('stId') ? $('stId').value || genId() : genId(); const fullname = $('stFullname') ? $('stFullname').value.trim() : ''; const username = $('stUsername') ? $('stUsername').value.trim() : ''; const password = $('stPassword') ? $('stPassword').value : ''; const code = $('stCode') ? $('stCode').value.trim() : ''; const classroom = $('stClassroom') ? $('stClassroom').value.trim() : ''; if (!fullname || !username) return alert('Nom complet و nom d\'utilisateur requis'); const existing = appData.students.find(x=>x.id===id); if (existing) { existing.fullname=fullname; existing.username=username; existing.password=password; existing.code=code; existing.classroom=classroom; } else appData.students.push({ id, fullname, username, password, code, classroom }); saveData(); loadStudentsTable(); populateStudentsSelect(); alert('Étudiant enregistré'); if ($('stFullname')) $('stFullname').value=''; if ($('stUsername')) $('stUsername').value=''; if ($('stPassword')) $('stPassword').value=''; if ($('stCode')) $('stCode').value=''; if ($('stClassroom')) $('stClassroom').value=''; if ($('stId')) $('stId').value=''; }
+
+function loadStudentsTable(){ const tbody = document.querySelector('#studentsTable tbody'); if (!tbody) return; tbody.innerHTML = ''; appData.students.forEach(s=>{ const tr = document.createElement('tr'); tr.innerHTML = '<td>'+escapeHtml(s.fullname)+'</td><td>'+escapeHtml(s.username)+'</td><td>'+escapeHtml(s.code||'')+'</td><td>'+escapeHtml(s.classroom||'')+'</td><td><button data-id="'+s.id+'" class="edit-student">Edit</button> <button data-id="'+s.id+'" class="del-student danger">Del</button></td>'; tbody.appendChild(tr); }); tbody.querySelectorAll('.edit-student').forEach(b=>b.addEventListener('click', ()=> { const id = b.getAttribute('data-id'); const s = appData.students.find(x=>x.id===id); if (!s) return; if ($('stId')) $('stId').value=s.id; if ($('stFullname')) $('stFullname').value=s.fullname; if ($('stUsername')) $('stUsername').value=s.username; if ($('stPassword')) $('stPassword').value=s.password; if ($('stCode')) $('stCode').value=s.code; if ($('stClassroom')) $('stClassroom').value=s.classroom; switchAdminTab('tab-students'); })); tbody.querySelectorAll('.del-student').forEach(b=>b.addEventListener('click', ()=> { const id = b.getAttribute('data-id'); if (!confirm('Supprimer étudiant ?')) return; appData.students = appData.students.filter(x=>x.id!==id); saveData(); loadStudentsTable(); populateStudentsSelect(); })); }
+
+function populateStudentsSelect(){ const sel = $('adminMessageStudent'); if (!sel) return; sel.innerHTML = '<option value="">Choisir</option>'; appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent = s.fullname + ' (' + (s.code||'') + ')'; sel.appendChild(o); }); const gr = $('grStudent'); if (gr){ gr.innerHTML='<option value="">-- Choisir étudiant --</option>'; appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent=s.fullname; gr.appendChild(o); }); } const gf = $('grFilterStudent'); if (gf){ gf.innerHTML='<option value="">Tous</option>'; appData.students.forEach(s=>{ const o = document.createElement('option'); o.value=s.id; o.textContent=s.fullname; gf.appendChild(o); }); } }
 
 /* Grades admin */
-function adminSaveGrade(){
-  const id = genId();
-  const studentId = $('grStudent') ? $('grStudent').value : '';
-  const subject = $('grSubject') ? $('grSubject').value.trim() : '';
-  const title = $('grTitle') ? $('grTitle').value.trim() : '';
-  const date = $('grDate') ? ($('grDate').value || new Date().toISOString()) : new Date().toISOString();
-  const score = $('grScore') ? Number($('grScore').value) || 0 : 0;
-  const note = $('grNote') ? $('grNote').value : '';
-  if (!studentId || !subject || !title) return alert('Remplir étudiant، matière و intitulé');
-  appData.grades.push({ id, studentId, subject, title, date, score, note });
-  saveData(); loadGradesTable(); alert('Note ajoutée');
-  notifyStudents('grade','تمت إضافة نقطة جديدة','تمت إضافة نقطة جديدة إلى حسابك. تحقق من Tableau de bord.');
-  if ($('grStudent')) $('grStudent').value=''; if ($('grSubject')) $('grSubject').value=''; if ($('grTitle')) $('grTitle').value=''; if ($('grDate')) $('grDate').value=''; if ($('grScore')) $('grScore').value=''; if ($('grNote')) $('grNote').value='';
-}
-function loadGradesTable(){
-  const tbody = document.querySelector('#gradesAdminTable tbody'); if (!tbody) return; tbody.innerHTML='';
-  appData.grades.forEach(g=>{
-    const st = appData.students.find(s=>s.id===g.studentId);
-    const tr = document.createElement('tr');
-    tr.innerHTML = '<td>'+escapeHtml(st?st.fullname:'')+'</td><td>'+new Date(g.date).toLocaleDateString()+'</td><td>'+escapeHtml(g.subject)+'</td><td>'+escapeHtml(g.title)+'</td><td>'+g.score+'</td><td>'+escapeHtml(g.note||'')+'</td><td><button data-id="'+g.id+'" class="del-grade danger">Del</button></td>';
-    tbody.appendChild(tr);
-  });
-  tbody.querySelectorAll('.del-grade').forEach(b=>b.addEventListener('click', ()=> { const id=b.getAttribute('data-id'); if (!confirm('Supprimer note ?')) return; appData.grades = appData.grades.filter(x=>x.id!==id); saveData(); loadGradesTable(); }));
-}
+function adminSaveGrade(){ const id = genId(); const studentId = $('grStudent') ? $('grStudent').value : ''; const subject = $('grSubject') ? $('grSubject').value.trim() : ''; const title = $('grTitle') ? $('grTitle').value.trim() : ''; const date = $('grDate') ? ($('grDate').value || new Date().toISOString()) : new Date().toISOString(); const score = $('grScore') ? Number($('grScore').value) || 0 : 0; const note = $('grNote') ? $('grNote').value : ''; if (!studentId || !subject || !title) return alert('Remplir étudiant، matière و intitulé'); appData.grades.push({ id, studentId, subject, title, date, score, note }); saveData(); loadGradesTable(); alert('Note ajoutée'); notifyStudents('grade','تمت إضافة نقطة جديدة','تمت إضافة نقطة جديدة إلى حسابك. تحقق من Tableau de bord.'); if ($('grStudent')) $('grStudent').value=''; if ($('grSubject')) $('grSubject').value=''; if ($('grTitle')) $('grTitle').value=''; if ($('grDate')) $('grDate').value=''; if ($('grScore')) $('grScore').value=''; if ($('grNote')) $('grNote').value=''; }
+
+function loadGradesTable(){ const tbody = document.querySelector('#gradesAdminTable tbody'); if (!tbody) return; tbody.innerHTML=''; appData.grades.forEach(g=>{ const st = appData.students.find(s=>s.id===g.studentId); const tr = document.createElement('tr'); tr.innerHTML = '<td>'+escapeHtml(st?st.fullname:'')+'</td><td>'+new Date(g.date).toLocaleDateString()+'</td><td>'+escapeHtml(g.subject)+'</td><td>'+escapeHtml(g.title)+'</td><td>'+g.score+'</td><td>'+escapeHtml(g.note||'')+'</td><td><button data-id="'+g.id+'" class="del-grade danger">Del</button></td>'; tbody.appendChild(tr); }); tbody.querySelectorAll('.del-grade').forEach(b=>b.addEventListener('click', ()=> { const id=b.getAttribute('data-id'); if (!confirm('Supprimer note ?')) return; appData.grades = appData.grades.filter(x=>x.id!==id); saveData(); loadGradesTable(); })); }
 
 /* Messages */
-function adminSendMessage(){
-  const title = $('adminMessageTitle') ? $('adminMessageTitle').value.trim() : '';
-  const content = $('adminMessageContent') ? $('adminMessageContent').value.trim() : '';
-  const target = $('adminMessageTarget') ? $('adminMessageTarget').value : 'all';
-  if (!title || !content) return alert('Titre و contenu requis');
-  if (target === 'specific'){ const sid = $('adminMessageStudent').value; if (!sid) return alert('Choisir طالب'); appData.messages.push({ id: genId(), title, content, target:'specific', specific:sid, createdAt:Date.now() }); }
-  else appData.messages.push({ id: genId(), title, content, target:'all', createdAt:Date.now() });
-  saveData(); renderAdminMessagesList(); renderStudentMessages(); renderDashboardMessages(); alert('Message envoyé'); if ($('adminMessageTitle')) $('adminMessageTitle').value=''; if ($('adminMessageContent')) $('adminMessageContent').value='';
-}
-function renderAdminMessagesList(){
-  const c = $('adminMessagesList'); if (!c) return; c.innerHTML='';
-  if (!appData.messages.length) return c.innerHTML='<p class="muted">لا توجد رسائل</p>';
-  appData.messages.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content+' (cible:'+m.target+')'; const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if (!confirm('Supprimer message ?')) return; appData.messages=appData.messages.filter(x=>x.id!==m.id); saveData(); renderAdminMessagesList(); renderStudentMessages(); renderDashboardMessages(); }); d.appendChild(del); c.appendChild(d); });
-}
-function renderStudentMessages(){
-  const c = $('studentMessagesList'); if (!c) return; c.innerHTML='';
-  if (!appData.currentUser) return c.innerHTML='<p class="muted">Connectez-vous</p>';
-  const list = appData.messages.filter(m => m.target==='all' || (m.target==='specific' && m.specific===appData.currentUser.id));
-  if (!list.length) return c.innerHTML='<p class="muted">لا توجد رسائل حتى الآن.</p>';
-  list.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content; c.appendChild(d); });
-}
-function renderDashboardMessages(){
-  const dash = $('studentDashboardMessages') || $('studentMessagesQuick');
-  if (!dash) return;
-  dash.innerHTML = '';
-  if (!appData.currentUser) { dash.innerHTML = '<p class="muted">Connectez-vous</p>'; return; }
-  const list = appData.messages.filter(m => m.target==='all' || (m.target==='specific' && m.specific===appData.currentUser.id));
-  if (!list.length) { dash.innerHTML = '<p class="muted">لا توجد رسائل</p>'; return; }
-  const ul = document.createElement('ul');
-  list.slice().reverse().forEach(m => {
-    const li = document.createElement('li');
-    li.innerHTML = '<strong>['+ new Date(m.createdAt).toLocaleDateString() +'] ' + escapeHtml(m.title) + '</strong> — ' + escapeHtml(m.content);
-    ul.appendChild(li);
-  });
-  dash.appendChild(ul);
-}
+function adminSendMessage(){ const title = $('adminMessageTitle') ? $('adminMessageTitle').value.trim() : ''; const content = $('adminMessageContent') ? $('adminMessageContent').value.trim() : ''; const target = $('adminMessageTarget') ? $('adminMessageTarget').value : 'all'; if (!title || !content) return alert('Titre و contenu requis'); if (target === 'specific'){ const sid = $('adminMessageStudent').value; if (!sid) return alert('Choisir طالب'); appData.messages.push({ id: genId(), title, content, target:'specific', specific:sid, createdAt:Date.now() }); } else appData.messages.push({ id: genId(), title, content, target:'all', createdAt:Date.now() }); saveData(); renderAdminMessagesList(); renderStudentMessages(); renderDashboardMessages(); alert('Message envoyé'); if ($('adminMessageTitle')) $('adminMessageTitle').value=''; if ($('adminMessageContent')) $('adminMessageContent').value=''; }
 
-/* Quiz admin/student (unchanged behavior mostly) */
-function adminCreateQuiz(){ if (!$('newQuizTitle')) return; const title=$('newQuizTitle').value.trim(); const duration=Number($('newQuizDuration').value)||0; const shuffle=!!$('newQuizShuffle').checked; const multiAttempts=!!$('newQuizAllowMultipleAttempts').checked; if(!title) return alert('Titre requis'); const quiz={id:genId(),title,durationMinutes:duration,shuffle,allowMultipleAttempts:multiAttempts,questions:[]}; appData.quizzes.push(quiz); saveData(); populateAdminSelectQuiz(); renderQuizAdminListDetailed(); alert('Quiz créé'); notifyStudents('quiz','Quiz جديد متاح','تم إضافة Quiz جديد. راجع قسم Quiz في Tableau de bord.'); if ($('newQuizTitle')) $('newQuizTitle').value=''; }
-function populateAdminSelectQuiz(){ const sel=$('adminSelectQuiz'); if(!sel) return; sel.innerHTML=''; const opt=document.createElement('option'); opt.value=''; opt.textContent='-- Sélectionner quiz --'; sel.appendChild(opt); appData.quizzes.forEach(q=>{ const o=document.createElement('option'); o.value=q.id; o.textContent=q.title + ' ('+q.questions.length+' q)'; sel.appendChild(o); }); }
-function adminAddQuestion(){ const qid=$('adminSelectQuiz')?$('adminSelectQuiz').value:''; if(!qid) return alert('Sélectionner quiz'); const quiz=appData.quizzes.find(x=>x.id===qid); if(!quiz) return; const questionText=$('adminQuizQuestion')?$('adminQuizQuestion').value.trim():''; if(!questionText) return alert('Question requise'); const type=$('adminQuestionType')?$('adminQuestionType').value:'single'; const points=$('adminQuestionPoints')?Number($('adminQuestionPoints').value)||1:1; const optsCandidates=['adminOption1','adminOption2','adminOption3','adminOption4','adminOption5','adminOption6']; const options=optsCandidates.map(id=>$(id)?$(id).value.trim():'').filter(x=>x&&x.length>0); if(options.length<2) return alert('Au moins 2 options requises'); const correctStr=$('adminQuizCorrect')?$('adminQuizCorrect').value.trim():'1'; const correctIndices=correctStr.split(',').map(s=>Number(s.trim())-1).filter(n=>!isNaN(n)&&n>=0&&n<options.length); if(!correctIndices.length) return alert('Indices صحيحة مفقودة'); const feedback=$('adminQuestionFeedback')?$('adminQuestionFeedback').value:''; const fileInput=$('adminQuizImage'); if(fileInput&&fileInput.files&&fileInput.files[0]){ const f=fileInput.files[0]; const fr=new FileReader(); fr.onload=function(ev){ quiz.questions.push({ id:genId(), question:questionText, type, points, options, correctIndices, feedback, imageData:ev.target.result }); saveData(); renderQuizAdminListDetailed(); renderQuizList(); alert('Question ajoutée avec image'); }; fr.readAsDataURL(f); } else { quiz.questions.push({ id:genId(), question:questionText, type, points, options, correctIndices, feedback, imageData:null }); saveData(); renderQuizAdminListDetailed(); renderQuizList(); alert('Question ajoutée'); } ['adminQuizQuestion','adminOption1','adminOption2','adminOption3','adminOption4','adminOption5','adminOption6','adminQuizCorrect','adminQuestionFeedback','adminQuizImage'].forEach(id=>{ if($(id)) try{ $(id).value=''; }catch(e){} }); }
-function renderQuizAdminListDetailed(){ const el=$('quizQuestionsList'); if(!el) return; el.innerHTML=''; if(!appData.quizzes.length){ if($('adminSelectQuiz')) populateAdminSelectQuiz(); if(el) el.innerHTML='<p class="muted">Aucun quiz</p>'; return;} appData.quizzes.forEach(q=>{ const container=document.createElement('div'); const header=document.createElement('div'); header.innerHTML='<strong>'+escapeHtml(q.title)+'</strong> (durée: '+q.durationMinutes+'m, shuffle:'+ (q.shuffle?'oui':'non') +', attempts:'+(q.allowMultipleAttempts?'yes':'no')+')'; container.appendChild(header); const ul=document.createElement('ol'); q.questions.forEach((qq, idx)=>{ const li=document.createElement('li'); li.innerHTML='<div><strong>'+escapeHtml(qq.question)+'</strong> ['+qq.type+'] (points: '+qq.points+')</div>'; const opts=document.createElement('ul'); qq.options.forEach((op,i)=>{ const opLi=document.createElement('li'); opLi.textContent=(i+1)+'. '+op + (qq.correctIndices.includes(i)?' (✓ correct)':''); opts.appendChild(opLi); }); li.appendChild(opts); if(qq.feedback){ const fb=document.createElement('div'); fb.textContent='Feedback: '+qq.feedback; li.appendChild(fb); } if(qq.imageData){ const im=document.createElement('img'); im.src=qq.imageData; im.style.maxWidth='200px'; li.appendChild(im); } const btnUp=document.createElement('button'); btnUp.textContent='↑'; btnUp.addEventListener('click', ()=>{ if(idx===0) return; q.questions.splice(idx-1,0,q.questions.splice(idx,1)[0]); saveData(); renderQuizAdminListDetailed(); }); const btnDown=document.createElement('button'); btnDown.textContent='↓'; btnDown.addEventListener('click', ()=>{ if(idx===q.questions.length-1) return; q.questions.splice(idx+1,0,q.questions.splice(idx,1)[0]); saveData(); renderQuizAdminListDetailed(); }); const btnDel=document.createElement('button'); btnDel.textContent='Supprimer'; btnDel.addEventListener('click', ()=>{ if(!confirm('Supprimer question ?')) return; q.questions = q.questions.filter(x=>x.id!==qq.id); saveData(); renderQuizAdminListDetailed(); }); const btnEdit=document.createElement('button'); btnEdit.textContent='Éditer'; btnEdit.addEventListener('click', ()=>{ if($('adminSelectQuiz')) $('adminSelectQuiz').value=q.id; if($('adminQuizQuestion')) $('adminQuizQuestion').value=qq.question; if($('adminQuestionType')) $('adminQuestionType').value=qq.type; if($('adminQuestionPoints')) $('adminQuestionPoints').value=qq.points; if($('adminOption1')) $('adminOption1').value=qq.options[0]||''; if($('adminOption2')) $('adminOption2').value=qq.options[1]||''; if($('adminOption3')) $('adminOption3').value=qq.options[2]||''; if($('adminOption4')) $('adminOption4').value=qq.options[3]||''; if($('adminOption5')) $('adminOption5').value=qq.options[4]||''; if($('adminOption6')) $('adminOption6').value=qq.options[5]||''; if($('adminQuizCorrect')) $('adminQuizCorrect').value=qq.correctIndices.map(i=>i+1).join(','); if($('adminQuestionFeedback')) $('adminQuestionFeedback').value=qq.feedback||''; window.scrollTo(0,0); q.questions = q.questions.filter(x=>x.id!==qq.id); saveData(); renderQuizAdminListDetailed(); }); li.appendChild(btnUp); li.appendChild(btnDown); li.appendChild(btnEdit); li.appendChild(btnDel); ul.appendChild(li); }); container.appendChild(ul); const btnDelQuiz=document.createElement('button'); btnDelQuiz.textContent='Supprimer quiz entier'; btnDelQuiz.addEventListener('click', ()=>{ if(!confirm('Supprimer quiz entier ?')) return; appData.quizzes = appData.quizzes.filter(x=>x.id!==q.id); saveData(); renderQuizAdminListDetailed(); renderQuizList(); }); container.appendChild(btnDelQuiz); el.appendChild(container); }); populateAdminSelectQuiz(); if($('stats-quiz')) $('stats-quiz').textContent=appData.quizzes.reduce((acc,q)=>acc+q.questions.length,0); }
+function renderAdminMessagesList(){ const c = $('adminMessagesList'); if (!c) return; c.innerHTML=''; if (!appData.messages.length) return c.innerHTML='<p class="muted">لا توجد رسائل</p>'; appData.messages.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content+' (cible:'+m.target+')'; const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if (!confirm('Supprimer message ?')) return; appData.messages=appData.messages.filter(x=>x.id!==m.id); saveData(); renderAdminMessagesList(); renderStudentMessages(); renderDashboardMessages(); }); d.appendChild(del); c.appendChild(d); }); }
 
-/* Student quiz runner (unchanged) */
-let currentRun=null;
-function renderQuizList(){ const c=$('quizContent'); if(!c) return; c.innerHTML=''; if(!appData.quizzes.length) return c.innerHTML='<p class="muted">Aucun quiz disponible pour le moment.</p>'; appData.quizzes.forEach(q=>{ const d=document.createElement('div'); d.innerHTML='<h3>'+escapeHtml(q.title)+'</h3><p>'+q.questions.length+' questions</p>'; const btn=document.createElement('button'); btn.textContent='Voir / Démarrer'; btn.addEventListener('click', ()=>{ if(!appData.currentUser){ const m=$('studentLoginModal'); if(m) m.style.display='block'; return; } startQuiz(q.id); }); d.appendChild(btn); c.appendChild(d); }); }
-function renderQuizListForStudent(){ const c=$('studentQuizList'); if(!c) return; c.innerHTML=''; if(!appData.quizzes.length) return c.innerHTML='<p class="muted">Aucun quiz</p>'; appData.quizzes.forEach(q=>{ const d=document.createElement('div'); d.innerHTML='<strong>'+escapeHtml(q.title)+'</strong> — '+q.questions.length+' q'; const start=document.createElement('button'); start.textContent='Démarrer'; start.addEventListener('click', ()=>{ startQuiz(q.id); }); const preview=document.createElement('button'); preview.textContent='Aperçu'; preview.addEventListener('click', ()=> previewQuizAsStudent(q.id)); d.appendChild(start); d.appendChild(preview); c.appendChild(d); }); }
-function startQuiz(quizId){ const quiz=appData.quizzes.find(x=>x.id===quizId); if(!quiz) return alert('Quiz introuvable'); let order=quiz.questions.map(q=>q.id); if(quiz.shuffle) order=shuffle(order.slice()); currentRun={ quizId, order, pos:0, timeLeft: quiz.durationMinutes ? quiz.durationMinutes*60 : 0, timerInterval:null }; if(currentRun.timeLeft>0){ currentRun.timerInterval=setInterval(()=>{ currentRun.timeLeft--; renderTimer(); if(currentRun.timeLeft<=0){ clearInterval(currentRun.timerInterval); alert('Temps écoulé'); submitCurrentQuiz(); } },1000); } renderQuizRunner(); }
-function renderTimer(){ const area=$('quizTimer'); if(area&&currentRun) area.textContent=formatTime(currentRun.timeLeft); }
-function renderQuizRunner(){ const container=$('quizContainer'); if(!container) return; showSection('quiz'); switchStudentTab('quiz'); container.style.display='block'; container.innerHTML=''; if(!currentRun) return; const quiz=appData.quizzes.find(x=>x.id===currentRun.quizId); if(!quiz) return; const qid=currentRun.order[currentRun.pos]; const qobj=quiz.questions.find(x=>x.id===qid); const header=document.createElement('div'); header.innerHTML='<h3>'+escapeHtml(quiz.title)+' — Question '+(currentRun.pos+1)+'/'+currentRun.order.length+'</h3>'; if(quiz.durationMinutes) header.innerHTML+='<div id="quizTimer">Temps restant: '+formatTime(currentRun.timeLeft)+'</div>'; container.appendChild(header); const qdiv=document.createElement('div'); qdiv.innerHTML='<p>'+escapeHtml(qobj.question)+'</p>'; container.appendChild(qdiv); if(qobj.imageData){ const img=document.createElement('img'); img.src=qobj.imageData; img.style.maxWidth='480px'; container.appendChild(img); } const sid=appData.currentUser.id; if(!appData.responses[sid]) appData.responses[sid]={}; if(!appData.responses[sid][currentRun.quizId]) appData.responses[sid][currentRun.quizId]={}; const userResp=appData.responses[sid][currentRun.quizId][qobj.id]; const optsContainer=document.createElement('div'); qobj.options.forEach((opt,i)=>{ const optEl=document.createElement('div'); optEl.textContent=String.fromCharCode(65+i)+'. '+opt; optEl.style.cursor='pointer'; optEl.style.padding='6px'; optEl.style.margin='4px 0'; optEl.style.borderRadius='6px'; optEl.setAttribute('data-index', i); if(qobj.type==='single'){ if(userResp===i){ optEl.style.fontWeight='700'; optEl.style.background='#e0e0e0'; } } else { if(Array.isArray(userResp) && userResp.includes(i)){ optEl.style.fontWeight='700'; optEl.style.background='#e0e0e0'; } } optEl.addEventListener('click', ()=>{ if(qobj.type==='single'){ appData.responses[sid][currentRun.quizId][qobj.id]=i; } else { let arr=Array.isArray(appData.responses[sid][currentRun.quizId][qobj.id])?appData.responses[sid][currentRun.quizId][qobj.id]:[]; if(arr.includes(i)) arr=arr.filter(x=>x!==i); else arr.push(i); appData.responses[sid][currentRun.quizId][qobj.id]=arr; } saveData(); renderQuizRunner(); }); optsContainer.appendChild(optEl); }); container.appendChild(optsContainer); const nav=document.createElement('div'); nav.style.marginTop='12px'; const btnPrev=document.createElement('button'); btnPrev.textContent='Précédent'; btnPrev.disabled=currentRun.pos===0; btnPrev.addEventListener('click', ()=>{ currentRun.pos=Math.max(0,currentRun.pos-1); renderQuizRunner(); }); const btnNext=document.createElement('button'); btnNext.textContent='Suivant'; btnNext.disabled=currentRun.pos===currentRun.order.length-1; btnNext.addEventListener('click', ()=>{ currentRun.pos=Math.min(currentRun.order.length-1,currentRun.pos+1); renderQuizRunner(); }); const btnSubmit=document.createElement('button'); btnSubmit.textContent='Soumettre le quiz'; btnSubmit.addEventListener('click', ()=> submitCurrentQuiz()); nav.appendChild(btnPrev); nav.appendChild(btnNext); nav.appendChild(btnSubmit); container.appendChild(nav); }
-function submitCurrentQuiz(){ if(!currentRun) return; if(!confirm('Soumettre le quiz ?')) return; if(currentRun.timerInterval) clearInterval(currentRun.timerInterval); const quiz=appData.quizzes.find(x=>x.id===currentRun.quizId); const sid=appData.currentUser.id; const responses=(appData.responses[sid] && appData.responses[sid][currentRun.quizId])||{}; let totalPoints=0, gotPoints=0; quiz.questions.forEach(q=>{ totalPoints+=(q.points||1); const user=responses[q.id]; if(q.type==='single'){ if(user!==undefined && q.correctIndices.includes(user)) gotPoints+=q.points||1; } else { const userArr=Array.isArray(user)?user.slice().sort((a,b)=>a-b):[]; const correctArr=q.correctIndices.slice().sort((a,b)=>a-b); if(userArr.length && userArr.length===correctArr.length && userArr.every((v,i)=>v===correctArr[i])) gotPoints+=q.points||1; } }); alert('Résultat: '+gotPoints+' / '+totalPoints); showQuizResultsForStudent(quiz.id,responses); currentRun=null; if($('quizContainer')) $('quizContainer').style.display='none'; saveData(); renderQuizListForStudent(); }
-function showQuizResultsForStudent(quizId,responses){ const quiz=appData.quizzes.find(x=>x.id===quizId); if(!quiz) return; const container=$('studentQuizResults'); if(!container) return; container.innerHTML=''; const title=document.createElement('h3'); title.textContent='Résultats: '+quiz.title; container.appendChild(title); quiz.questions.forEach((q,idx)=>{ const block=document.createElement('div'); block.style.marginBottom='8px'; const user=responses[q.id]; const correctIndices=q.correctIndices; let userStr=''; if(q.type==='single'){ userStr=(user===undefined?'Aucune réponse':String.fromCharCode(65+user)); } else if(Array.isArray(user) && user.length) userStr=user.map(i=>String.fromCharCode(65+i)).join(', '); else userStr='Aucune réponse'; const correctStr=correctIndices.map(i=>String.fromCharCode(65+i)).join(', '); block.innerHTML='<div><strong>Q'+(idx+1)+':</strong> '+escapeHtml(q.question)+'</div><div>Votre réponse: '+escapeHtml(userStr)+' — Correcte: '+escapeHtml(correctStr)+'</div>'; if(q.feedback) block.innerHTML+='<div>Explication: '+escapeHtml(q.feedback)+'</div>'; container.appendChild(block); }); }
-function previewQuizAsStudent(quizId){ // do not auto-login as demo; if not logged in show login modal; if admin, show preview modal without changing currentUser
-  const quiz = appData.quizzes.find(q=>q.id===quizId);
-  if (!quiz) return alert('Quiz introuvable');
-  if (!appData.currentUser){
-    const m=$('studentLoginModal'); if (m) m.style.display='block'; else alert('Connectez-vous pour démarrer le quiz');
-    return;
-  }
-  // if admin -> show preview area but do not modify currentUser
-  if (appData.isAdmin){
-    // simple preview display in a modal area if exists
-    const preview = $('adminQuizPreview');
-    if (preview){
-      preview.innerHTML='';
-      const title = document.createElement('h3'); title.textContent = 'Aperçu: ' + quiz.title; preview.appendChild(title);
-      quiz.questions.forEach((q,idx)=>{ const qd=document.createElement('div'); qd.innerHTML = '<strong>Q'+(idx+1)+':</strong> ' + escapeHtml(q.question); const ul=document.createElement('ul'); q.options.forEach((op,i)=>{ const li=document.createElement('li'); li.textContent = String.fromCharCode(65+i) + '. ' + op; ul.appendChild(li); }); qd.appendChild(ul); preview.appendChild(qd); });
-      preview.style.display='block';
-    } else {
-      // fallback: open quiz runner as admin but do not set currentUser -> won't allow submit
-      alert('Admin preview: ouvrir quiz en mode aperçu (sans soumission).');
-      // we can simulate by temporarily setting a "preview user" that is not persisted:
-      const oldUser = appData.currentUser, oldAdmin = appData.isAdmin;
-      appData.currentUser = { id: 'preview-temp', fullname: 'Aperçu' }; appData.isAdmin = false;
-      renderQuizListForStudent();
-      startQuiz(quizId);
-      // revert will happen when user navigates away or on page reload; do not persist preview
-      setTimeout(()=>{ appData.currentUser = oldUser; appData.isAdmin = oldAdmin; saveData(); refreshUI(); }, 1500);
-    }
-    return;
-  }
-  // normal student start
-  startQuiz(quizId);
-}
+function renderStudentMessages(){ const c = $('studentMessagesList'); if (!c) return; c.innerHTML=''; if (!appData.currentUser) return c.innerHTML='<p class="muted">Connectez-vous</p>'; const list = appData.messages.filter(m => m.target==='all' || (m.target==='specific' && m.specific===appData.currentUser.id)); if (!list.length) return c.innerHTML='<p class="muted">لا توجد رسائل حتى الآن.</p>'; list.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content; c.appendChild(d); }); }
+
+function renderDashboardMessages(){ const dash = $('studentDashboardMessages') || $('studentMessagesQuick'); if (!dash) return; dash.innerHTML=''; if (!appData.currentUser){ dash.innerHTML='<p class="muted">Connectez-vous</p>'; return; } const list = appData.messages.filter(m => m.target==='all' || (m.target==='specific' && m.specific===appData.currentUser.id)); if (!list.length){ dash.innerHTML='<p class="muted">لا توجد رسائل</p>'; return; } const ul = document.createElement('ul'); list.slice().reverse().forEach(m=>{ const li = document.createElement('li'); li.innerHTML = '<strong>['+ new Date(m.createdAt).toLocaleDateString() +'] ' + escapeHtml(m.title) + '</strong> — ' + escapeHtml(m.content); ul.appendChild(li); }); dash.appendChild(ul); }
+
+/* Quiz (student runner kept minimal but functional) */
+function renderQuizList(){ const c = $('quizContent'); if (!c) return; c.innerHTML=''; if (!appData.quizzes.length) return c.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>'; appData.quizzes.forEach(q=>{ const d=document.createElement('div'); d.innerHTML = '<h3>'+escapeHtml(q.title)+'</h3><p>'+q.questions.length+' questions</p>'; const btn = document.createElement('button'); btn.textContent='Voir / Démarrer'; btn.addEventListener('click', ()=>{ if (!appData.currentUser){ const m=$('studentLoginModal'); if(m) m.style.display='flex'; return; } startQuiz(q.id); }); d.appendChild(btn); c.appendChild(d); }); }
+
+function renderQuizListForStudent(){ const c = $('studentQuizList'); if (!c) return; c.innerHTML=''; if (!appData.quizzes.length) return c.innerHTML='<p class="muted">Aucun quiz</p>'; appData.quizzes.forEach(q=> { const d = document.createElement('div'); d.innerHTML = '<strong>'+escapeHtml(q.title)+'</strong> — '+q.questions.length+' q'; const start = document.createElement('button'); start.textContent='Démarrer'; start.addEventListener('click', ()=> { startQuiz(q.id); }); const preview = document.createElement('button'); preview.textContent='Aperçu'; preview.addEventListener('click', ()=> previewQuizAsStudent(q.id)); d.appendChild(start); d.appendChild(preview); c.appendChild(d); }); }
+
+let currentRun = null;
+function startQuiz(quizId){ const quiz = appData.quizzes.find(x=>x.id===quizId); if (!quiz) return alert('Quiz introuvable'); let order = quiz.questions.map(q=>q.id); if (quiz.shuffle) order = shuffle(order.slice()); currentRun = { quizId, order, pos:0, timeLeft: quiz.durationMinutes ? quiz.durationMinutes*60 : 0, timerInterval:null }; if (currentRun.timeLeft > 0){ currentRun.timerInterval = setInterval(()=> { currentRun.timeLeft--; renderTimer(); if (currentRun.timeLeft<=0){ clearInterval(currentRun.timerInterval); alert('Temps écoulé'); submitCurrentQuiz(); } }, 1000); } renderQuizRunner(); }
+
+function renderTimer(){ const area = $('quizTimer'); if (area && currentRun) area.textContent = formatTime(currentRun.timeLeft); }
+
+function renderQuizRunner(){ const container = $('quizContainer'); if (!container) return; showSection('quiz'); switchStudentTab('quiz'); container.style.display='block'; container.innerHTML=''; if (!currentRun) return; const quiz = appData.quizzes.find(x=>x.id===currentRun.quizId); if (!quiz) return; const qid = currentRun.order[currentRun.pos]; const qobj = quiz.questions.find(x=>x.id===qid); const header = document.createElement('div'); header.innerHTML = '<h3>'+escapeHtml(quiz.title)+' — Question '+(currentRun.pos+1)+'/'+currentRun.order.length+'</h3>'; if (quiz.durationMinutes) header.innerHTML += '<div id="quizTimer">Temps restant: '+formatTime(currentRun.timeLeft)+'</div>'; container.appendChild(header); const qdiv = document.createElement('div'); qdiv.innerHTML = '<p>'+escapeHtml(qobj.question)+'</p>'; container.appendChild(qdiv); if (qobj.imageData){ const img = document.createElement('img'); img.src=qobj.imageData; img.style.maxWidth='480px'; container.appendChild(img); } const sid = appData.currentUser.id; if (!appData.responses[sid]) appData.responses[sid] = {}; if (!appData.responses[sid][currentRun.quizId]) appData.responses[sid][currentRun.quizId] = {}; const userResp = appData.responses[sid][currentRun.quizId][qobj.id]; const optsContainer = document.createElement('div'); qobj.options.forEach((opt,i)=>{ const optEl = document.createElement('div'); optEl.textContent = String.fromCharCode(65+i) + '. ' + opt; optEl.style.cursor='pointer'; optEl.style.padding='6px'; optEl.style.margin='4px 0'; optEl.style.borderRadius='6px'; optEl.setAttribute('data-index', i); if (qobj.type === 'single') { if (userResp === i) { optEl.style.fontWeight='700'; optEl.style.background='#e0e0e0'; } } else { if (Array.isArray(userResp) && userResp.includes(i)) { optEl.style.fontWeight='700'; optEl.style.background='#e0e0e0'; } } optEl.addEventListener('click', ()=> { if (qobj.type === 'single') { appData.responses[sid][currentRun.quizId][qobj.id] = i; } else { let arr = Array.isArray(appData.responses[sid][currentRun.quizId][qobj.id]) ? appData.responses[sid][currentRun.quizId][qobj.id] : []; if (arr.includes(i)) arr = arr.filter(x=>x!==i); else arr.push(i); appData.responses[sid][currentRun.quizId][qobj.id] = arr; } saveData(); renderQuizRunner(); }); optsContainer.appendChild(optEl); }); container.appendChild(optsContainer); const nav = document.createElement('div'); nav.style.marginTop='12px'; const btnPrev = document.createElement('button'); btnPrev.textContent='Précédent'; btnPrev.disabled = currentRun.pos === 0; btnPrev.addEventListener('click', ()=> { currentRun.pos = Math.max(0, currentRun.pos-1); renderQuizRunner(); }); const btnNext = document.createElement('button'); btnNext.textContent='Suivant'; btnNext.disabled = currentRun.pos === currentRun.order.length-1; btnNext.addEventListener('click', ()=> { currentRun.pos = Math.min(currentRun.order.length-1, currentRun.pos+1); renderQuizRunner(); }); const btnSubmit = document.createElement('button'); btnSubmit.textContent='Soumettre le quiz'; btnSubmit.addEventListener('click', ()=> submitCurrentQuiz()); nav.appendChild(btnPrev); nav.appendChild(btnNext); nav.appendChild(btnSubmit); container.appendChild(nav); }
+
+function submitCurrentQuiz(){ if (!currentRun) return; if (!confirm('Soumettre le quiz ?')) return; if (currentRun.timerInterval) clearInterval(currentRun.timerInterval); const quiz = appData.quizzes.find(x=>x.id===currentRun.quizId); const sid = appData.currentUser.id; const responses = (appData.responses[sid] && appData.responses[sid][currentRun.quizId]) || {}; let totalPoints = 0, gotPoints = 0; quiz.questions.forEach(q=>{ totalPoints += (q.points || 1); const user = responses[q.id]; if (q.type === 'single'){ if (user !== undefined && q.correctIndices.includes(user)) gotPoints += q.points || 1; } else { const userArr = Array.isArray(user) ? user.slice().sort((a,b)=>a-b) : []; const correctArr = q.correctIndices.slice().sort((a,b)=>a-b); if (userArr.length && userArr.length === correctArr.length && userArr.every((v,i)=>v===correctArr[i])) gotPoints += q.points || 1; } }); alert('Résultat: ' + gotPoints + ' / ' + totalPoints); showQuizResultsForStudent(quiz.id, responses); currentRun = null; if ($('quizContainer')) $('quizContainer').style.display='none'; saveData(); renderQuizListForStudent(); }
+
+function showQuizResultsForStudent(quizId, responses){ const quiz = appData.quizzes.find(x=>x.id===quizId); if (!quiz) return; const container = $('studentQuizResults'); if (!container) return; container.innerHTML = ''; const title = document.createElement('h3'); title.textContent = 'Résultats: ' + quiz.title; container.appendChild(title); quiz.questions.forEach((q,idx)=>{ const block = document.createElement('div'); block.style.marginBottom='8px'; const user = responses[q.id]; const correctIndices = q.correctIndices; let userStr = ''; if (q.type === 'single'){ userStr = (user === undefined ? 'Aucune réponse' : String.fromCharCode(65+user)); } else if (Array.isArray(user) && user.length) userStr = user.map(i=>String.fromCharCode(65+i)).join(', '); else userStr = 'Aucune réponse'; const correctStr = correctIndices.map(i=>String.fromCharCode(65+i)).join(', '); block.innerHTML = '<div><strong>Q'+(idx+1)+':</strong> '+escapeHtml(q.question)+'</div><div>Votre réponse: '+escapeHtml(userStr)+' — Correcte: '+escapeHtml(correctStr)+'</div>'; if (q.feedback) block.innerHTML += '<div>Explication: '+escapeHtml(q.feedback)+'</div>'; container.appendChild(block); }); }
+
+function previewQuizAsStudent(quizId){ const quiz = appData.quizzes.find(q=>q.id===quizId); if(!quiz) return alert('Quiz introuvable'); if(!appData.currentUser){ const m=$('studentLoginModal'); if(m) m.style.display='flex'; return; } if(appData.isAdmin){ const oldUser=appData.currentUser, oldAdmin=appData.isAdmin; appData.currentUser={ id:'preview-temp', fullname:'Aperçu' }; appData.isAdmin=false; renderQuizListForStudent(); startQuiz(quizId); setTimeout(()=>{ appData.currentUser=oldUser; appData.isAdmin=oldAdmin; saveData(); refreshUI(); }, 1500); return; } startQuiz(quizId); }
 
 /* Lessons / Exercises / Exams + regrade */
-function adminSaveLesson(){ if(!$('adminLessonTitle')) return; const title=$('adminLessonTitle').value.trim(), link=$('adminLessonDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.lessons.push({id:genId(),title,driveLink:link}); saveData(); renderLessons(); renderLessonsAdminList(); alert('Leçon ajoutée'); if($('adminLessonTitle'))$('adminLessonTitle').value=''; if($('adminLessonDriveLink'))$('adminLessonDriveLink').value=''; }
+function adminSaveLesson(){ if (!$('adminLessonTitle')) return; const title=$('adminLessonTitle').value.trim(), link=$('adminLessonDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.lessons.push({id:genId(),title,driveLink:link}); saveData(); renderLessons(); renderLessonsAdminList(); alert('Leçon ajoutée'); if ($('adminLessonTitle')) $('adminLessonTitle').value=''; if ($('adminLessonDriveLink')) $('adminLessonDriveLink').value=''; }
 function renderLessons(){ const c=$('lessonsContent'); if(!c) return; c.innerHTML=''; if(!appData.lessons.length) return c.innerHTML='<p class="muted">Aucune leçon</p>'; appData.lessons.forEach(l=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=l.driveLink; a.target='_blank'; a.rel='noopener'; a.textContent=l.title; d.appendChild(a); c.appendChild(d); }); }
-function renderLessonsAdminList(){ const c=$('lessonsAdminList'); if(!c) return; c.innerHTML=''; if(!appData.lessons.length) return c.innerHTML='<p class="muted">Aucune leçon</p>'; appData.lessons.forEach(l=>{ const d=document.createElement('div'); d.innerHTML=escapeHtml(l.title)+' '; const a=document.createElement('a'); a.href=l.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer leçon ?')) return; appData.lessons=appData.lessons.filter(x=>x.id!==l.id); saveData(); renderLessonsAdminList(); renderLessons(); }); d.appendChild(del); c.appendChild(d); }); }
-function adminSaveExercise(){ if(!$('adminExerciseTitle')) return; const title=$('adminExerciseTitle').value.trim(), link=$('adminExerciseDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.exercises.push({id:genId(),title,driveLink:link}); saveData(); renderExercises(); renderExercisesAdminList(); alert('Exercice ajouté'); if($('adminExerciseTitle'))$('adminExerciseTitle').value=''; if($('adminExerciseDriveLink'))$('adminExerciseDriveLink').value=''; }
+function renderLessonsAdminList(){ const c=$('lessonsAdminList'); if(!c) return; c.innerHTML=''; if(!appData.lessons.length) return c.innerHTML='<p class="muted">Aucune leçon</p>'; appData.lessons.forEach(l=>{ const d=document.createElement('div'); d.innerHTML = escapeHtml(l.title) + ' '; const a=document.createElement('a'); a.href=l.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=> { if(!confirm('Supprimer leçon ?')) return; appData.lessons = appData.lessons.filter(x=>x.id!==l.id); saveData(); renderLessonsAdminList(); renderLessons(); }); d.appendChild(del); c.appendChild(d); }); }
+
+function adminSaveExercise(){ if (!$('adminExerciseTitle')) return; const title=$('adminExerciseTitle').value.trim(), link=$('adminExerciseDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.exercises.push({id:genId(),title,driveLink:link}); saveData(); renderExercises(); renderExercisesAdminList(); alert('Exercice ajouté'); if ($('adminExerciseTitle')) $('adminExerciseTitle').value=''; if ($('adminExerciseDriveLink')) $('adminExerciseDriveLink').value=''; }
 function renderExercises(){ const c=$('exercisesContent'); if(!c) return; c.innerHTML=''; if(!appData.exercises.length) return c.innerHTML='<p class="muted">Aucun exercice</p>'; appData.exercises.forEach(e=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=e.driveLink; a.target='_blank'; a.textContent=e.title; d.appendChild(a); c.appendChild(d); }); }
-function renderExercisesAdminList(){ const c=$('exercisesAdminList'); if(!c) return; c.innerHTML=''; if(!appData.exercises.length) return c.innerHTML='<p class="muted">Aucun exercice</p>'; appData.exercises.forEach(e=>{ const d=document.createElement('div'); d.innerHTML=escapeHtml(e.title)+' '; const a=document.createElement('a'); a.href=e.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer exercice ?')) return; appData.exercises=appData.exercises.filter(x=>x.id!==e.id); saveData(); renderExercisesAdminList(); renderExercises(); }); d.appendChild(del); c.appendChild(d); }); }
 
-/* Exams: show a robust regrade select based on grades (student's published grades list) */
-function adminSaveExam(){ if(!$('adminExamTitle')) return; const title=$('adminExamTitle').value.trim(), link=$('adminExamDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.exams.push({id:genId(),title,driveLink:link}); saveData(); renderExams(); renderExamsAdminList(); alert('Examen added'); if($('adminExamTitle'))$('adminExamTitle').value=''; if($('adminExamDriveLink'))$('adminExamDriveLink').value=''; }
+function adminSaveExam(){ if (!$('adminExamTitle')) return; const title=$('adminExamTitle').value.trim(), link=$('adminExamDriveLink').value.trim(); if(!title||!link) return alert('Titre و lien requis'); appData.exams.push({id:genId(),title,driveLink:link}); saveData(); renderExams(); renderExamsAdminList(); alert('Examen ajouté'); if ($('adminExamTitle')) $('adminExamTitle').value=''; if ($('adminExamDriveLink')) $('adminExamDriveLink').value=''; }
 
-function renderExams(){
-  const c=$('examsContent'); if(!c) return; c.innerHTML='';
-  if(!appData.exams.length) {
-    // Instead of "لا توجد شرائح حاليا" we show a clean message or the hero, but here keep simple:
-    return c.innerHTML='<p class="muted">Aucun examen</p>';
-  }
-
-  if (appData.currentUser && !appData.isAdmin){
-    // Build the select from the student's grades (only evaluations that have grades)
-    const studentId = appData.currentUser.id;
-    const studentGrades = (appData.grades||[]).filter(g => g.studentId === studentId).sort((a,b)=>new Date(b.date)-new Date(a.date));
-    const wrapper = document.createElement('div'); wrapper.className='content-card';
-    const title = document.createElement('h3'); title.textContent = 'طلب إعادة التصحيح — الاختبارات المتاحة'; wrapper.appendChild(title);
-    if (!studentGrades.length){
-      const p = document.createElement('p'); p.className='muted'; p.textContent = 'لا توجد امتحانات لها نقاط منشورة بعد.';
-      wrapper.appendChild(p); c.appendChild(wrapper); return;
-    }
-    // select built from grades — value = grade.id (robust mapping)
-    let sel = $('studentRegradeSelect');
-    if (!sel){
-      sel = document.createElement('select'); sel.id='studentRegradeSelect'; sel.style.minWidth='240px'; sel.style.marginRight='8px';
-    } else { sel.innerHTML=''; }
-    const defaultOpt = document.createElement('option'); defaultOpt.value=''; defaultOpt.textContent = 'Sélectionnez une évaluation...'; sel.appendChild(defaultOpt);
-    studentGrades.forEach(g => {
-      const opt = document.createElement('option'); opt.value = g.id; opt.textContent = g.title + ' — ' + (g.subject||'') + ' (' + new Date(g.date).toLocaleDateString() + ')'; sel.appendChild(opt);
-    });
-    // note textarea and button
-    let txt = $('studentRegradeNote'); if(!txt){ txt = document.createElement('textarea'); txt.id='studentRegradeNote'; txt.placeholder='ملاحظة (اختياري)'; txt.style.display='block'; txt.style.marginTop='8px'; txt.style.width='100%'; txt.rows=3; } else txt.value='';
-    let btn = $('studentRegradeSubmit'); if(!btn){ btn = document.createElement('button'); btn.id='studentRegradeSubmit'; btn.textContent='طلب إعادة تصحيح'; btn.style.marginTop='8px'; }
-    btn.addEventListener('click', ()=>{
-      const selEl = $('studentRegradeSelect'); const gradeId = selEl ? selEl.value : '';
-      if (!gradeId) return alert('اختار التقييم الذي تريد طلب إعادة تصحيح له');
-      const note = $('studentRegradeNote') ? $('studentRegradeNote').value.trim() : '';
-      studentRequestRegradeByGrade(gradeId, note);
-      alert('تم إرسال طلب إعادة التصحيح');
-      if (selEl) selEl.value=''; if ($('studentRegradeNote')) $('studentRegradeNote').value='';
-      renderRegradeRequestsAdminList(); renderStudentMessages(); renderDashboardMessages();
-    });
-    wrapper.appendChild(sel); wrapper.appendChild(txt); wrapper.appendChild(btn); c.appendChild(wrapper);
-  } else {
-    // admin or not logged -> show admin/exams list (read-only)
-    appData.exams.forEach(e=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=e.driveLink; a.target='_blank'; a.textContent=e.title; d.appendChild(a); c.appendChild(d); });
-  }
-}
+function renderExams(){ const c=$('examsContent'); if(!c) return; c.innerHTML=''; if(!appData.exams.length){ return c.innerHTML='<p class="muted">Aucun examen</p>'; }
+  if(appData.currentUser && !appData.isAdmin){ const studentId=appData.currentUser.id; const studentGrades=(appData.grades||[]).filter(g=>g.studentId===studentId).sort((a,b)=>new Date(b.date)-new Date(a.date)); const wrapper=document.createElement('div'); wrapper.className='content-card'; const title=document.createElement('h3'); title.textContent='طلب إعادة التصحيح — الاختبارات المتاحة'; wrapper.appendChild(title); if(!studentGrades.length){ const p=document.createElement('p'); p.className='muted'; p.textContent='لا توجد امتحانات لها نقاط منشورة بعد.'; wrapper.appendChild(p); c.appendChild(wrapper); return; } let sel=$('studentRegradeSelect'); if(!sel){ sel=document.createElement('select'); sel.id='studentRegradeSelect'; sel.style.minWidth='240px'; sel.style.marginRight='8px'; } else sel.innerHTML=''; const defaultOpt=document.createElement('option'); defaultOpt.value=''; defaultOpt.textContent='Sélectionnez une évaluation...'; sel.appendChild(defaultOpt); studentGrades.forEach(g=>{ const opt=document.createElement('option'); opt.value=g.id; opt.textContent=g.title+' — '+(g.subject||'')+' ('+new Date(g.date).toLocaleDateString()+')'; sel.appendChild(opt); }); let txt=$('studentRegradeNote'); if(!txt){ txt=document.createElement('textarea'); txt.id='studentRegradeNote'; txt.placeholder='ملاحظة (اختياري)'; txt.style.display='block'; txt.style.marginTop='8px'; txt.style.width='100%'; txt.rows=3; } else txt.value=''; let btn=$('studentRegradeSubmit'); if(!btn){ btn=document.createElement('button'); btn.id='studentRegradeSubmit'; btn.textContent='طلب إعادة تصحيح'; btn.style.marginTop='8px'; } btn.addEventListener('click', ()=>{ const selEl=$('studentRegradeSelect'); const gradeId = selEl ? selEl.value : ''; if(!gradeId) return alert('اختار التقييم الذي تريد طلب إعادة تصحيح له'); const note=$('studentRegradeNote')?$('studentRegradeNote').value.trim():''; studentRequestRegradeByGrade(gradeId, note); alert('تم إرسال طلب إعادة التصحيح'); if(selEl) selEl.value=''; if($('studentRegradeNote')) $('studentRegradeNote').value=''; renderRegradeRequestsAdminList(); renderStudentMessages(); renderDashboardMessages(); }); wrapper.appendChild(sel); wrapper.appendChild(txt); wrapper.appendChild(btn); c.appendChild(wrapper); } else { appData.exams.forEach(e=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=e.driveLink; a.target='_blank'; a.textContent=e.title; d.appendChild(a); c.appendChild(d); }); } }
 
 function renderExamsAdminList(){ const c=$('examsAdminList'); if(!c) return; c.innerHTML=''; if(!appData.exams.length) return c.innerHTML='<p class="muted">Aucun examen</p>'; appData.exams.forEach(e=>{ const d=document.createElement('div'); d.innerHTML=escapeHtml(e.title)+' '; const a=document.createElement('a'); a.href=e.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer examen ?')) return; appData.exams=appData.exams.filter(x=>x.id!==e.id); saveData(); renderExamsAdminList(); renderExams(); }); d.appendChild(del); c.appendChild(d); }); }
 
-/* New: request regrade by grade id (robust) */
-function studentRequestRegradeByGrade(gradeId, note){
-  if (!appData.currentUser) return alert('Connectez-vous');
-  const grade = (appData.grades||[]).find(g=>g.id===gradeId);
-  if (!grade) return alert('التقييم غير موجود');
-  // try find an exam that matches the grade title (optional)
-  const matchingExam = appData.exams.find(e => (e.title||'').trim().toLowerCase() === (grade.title||'').trim().toLowerCase());
-  const req = { id: genId(), examId: matchingExam ? matchingExam.id : null, gradeId: grade.id, studentId: appData.currentUser.id, note: note || '', createdAt: Date.now(), handled:false };
-  appData.regradeRequests = appData.regradeRequests || []; appData.regradeRequests.push(req); saveData();
-  appData.messages = appData.messages || []; appData.messages.push({ id: genId(), title:'طلب إعادة تصحيح', content: 'طالب طلب إعادة تصحيح للتقييم: ' + grade.title + (note ? ' — ملاحظة: ' + note : ''), target:'all', createdAt:Date.now() }); saveData();
-  renderRegradeRequestsAdminList(); renderStudentMessages(); renderDashboardMessages();
-}
+function studentRequestRegradeByGrade(gradeId, note){ if(!appData.currentUser) return alert('Connectez-vous'); const grade=(appData.grades||[]).find(g=>g.id===gradeId); if(!grade) return alert('التقييم غير موجود'); const matchingExam = appData.exams.find(e=>(e.title||'').trim().toLowerCase() === (grade.title||'').trim().toLowerCase()); const req={ id:genId(), examId: matchingExam ? matchingExam.id : null, gradeId: grade.id, studentId: appData.currentUser.id, note: note||'', createdAt: Date.now(), handled:false }; appData.regradeRequests = appData.regradeRequests||[]; appData.regradeRequests.push(req); saveData(); appData.messages = appData.messages || []; appData.messages.push({ id:genId(), title:'طلب إعادة تصحيح', content: 'طالب طلب إعادة تصحيح للتقييم: '+grade.title + (note ? ' — ملاحظة: ' + note : ''), target:'all', createdAt:Date.now() }); saveData(); renderRegradeRequestsAdminList(); renderStudentMessages(); renderDashboardMessages(); }
 
-/* older function kept for compatibility (exam-id based) */
-function studentRequestRegrade(examId, note){
-  if (!appData.currentUser) return alert('Connectez-vous');
-  // attempt to find a grade that matches this exam for the student
-  const studentId = appData.currentUser.id;
-  const exam = appData.exams.find(e=>e.id === examId);
-  let grade = null;
-  if (exam) grade = (appData.grades||[]).find(g => g.studentId === studentId && ((g.title||'').trim().toLowerCase() === (exam.title||'').trim().toLowerCase()));
-  const req = { id: genId(), examId: exam ? exam.id : null, gradeId: grade ? grade.id : null, studentId, note: note || '', createdAt: Date.now(), handled:false };
-  appData.regradeRequests = appData.regradeRequests || []; appData.regradeRequests.push(req); saveData();
-  appData.messages = appData.messages || []; appData.messages.push({ id: genId(), title:'طلب إعادة تصحيح', content: 'طالب طلب إعادة تصحيح لامتحان: ' + (exam?exam.title:examId) + (note ? ' — ملاحظة: '+note : ''), target:'all', createdAt:Date.now() }); saveData();
-  renderRegradeRequestsAdminList(); renderStudentMessages(); renderDashboardMessages();
-}
+function renderRegradeRequestsAdminList(){ const c=$('regradeRequestsList'); if(!c) return; c.innerHTML=''; const list=appData.regradeRequests||[]; if(!list.length){ if(c) c.innerHTML='<p class="muted">لا توجد طلبات إعادة تصحيح</p>'; return; } list.forEach(req=>{ const st=appData.students.find(s=>s.id===req.studentId); const ex=appData.exams.find(e=>e.id===req.examId); const gr=appData.grades.find(g=>g.id===req.gradeId); const d=document.createElement('div'); d.style.marginBottom='8px'; d.innerHTML='['+new Date(req.createdAt).toLocaleString()+'] <strong>'+escapeHtml(st?st.fullname:'')+'</strong> — ' + escapeHtml(gr? (gr.title + ' ('+gr.subject+')') : (ex?ex.title:'(exam)')) + ' — ' + escapeHtml(req.note||''); const markDone=document.createElement('button'); markDone.textContent = req.handled ? 'معالج' : 'وضع كمُعالَج'; markDone.style.marginLeft='8px'; markDone.addEventListener('click', ()=>{ req.handled = true; saveData(); renderRegradeRequestsAdminList(); alert('وضع كمُعالَج'); }); const del=document.createElement('button'); del.textContent='حذف'; del.style.marginLeft='6px'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer request ?')) return; appData.regradeRequests = appData.regradeRequests.filter(r=>r.id!==req.id); saveData(); renderRegradeRequestsAdminList(); }); d.appendChild(markDone); d.appendChild(del); c.appendChild(d); }); }
 
-function renderRegradeRequestsAdminList(){
-  const c = $('regradeRequestsList'); if(!c) return; c.innerHTML=''; const list = appData.regradeRequests || []; if(!list.length){ c.innerHTML='<p class="muted">لا توجد طلبات إعادة تصحيح</p>'; return; } list.forEach(req=>{ const st = appData.students.find(s=>s.id===req.studentId); const ex = appData.exams.find(e=>e.id===req.examId); const gr = appData.grades.find(g=>g.id===req.gradeId); const d=document.createElement('div'); d.style.marginBottom='8px'; d.innerHTML='['+new Date(req.createdAt).toLocaleString()+'] <strong>'+escapeHtml(st?st.fullname:'')+'</strong> — ' + escapeHtml(gr? (gr.title + ' ('+gr.subject+')') : (ex?ex.title:'(exam)')) + ' — ' + escapeHtml(req.note||''); const markDone=document.createElement('button'); markDone.textContent = req.handled ? 'معالج' : 'وضع كمُعالَج'; markDone.style.marginLeft='8px'; markDone.addEventListener('click', ()=>{ req.handled=true; saveData(); renderRegradeRequestsAdminList(); alert('وضع كمُعالَج'); }); const del=document.createElement('button'); del.textContent='حذف'; del.style.marginLeft='6px'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer request ?')) return; appData.regradeRequests = appData.regradeRequests.filter(r=>r.id!==req.id); saveData(); renderRegradeRequestsAdminList(); }); d.appendChild(markDone); d.appendChild(del); c.appendChild(d); }); }
+/* Announcement image handling */
+function handleAnnouncementImage(e){ const f = e.target.files[0]; if (!f) return; const fr = new FileReader(); fr.onload = function(ev){ appData.announcement.image = ev.target.result; if ($('announcementImagePreview')) { $('announcementImagePreview').src = ev.target.result; $('announcementImagePreview').style.display='block'; } if ($('announcementImage')) { $('announcementImage').src = ev.target.result; $('announcementImage').style.display='block'; } if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='inline-block'; saveData(); renderAll(); }; fr.readAsDataURL(f); }
 
-/* Announcement handling */
-function handleAnnouncementImage(e){ const f=e.target.files[0]; if(!f) return; const fr=new FileReader(); fr.onload=function(ev){ appData.announcement.image=ev.target.result; if($('announcementImagePreview')){$('announcementImagePreview').src=ev.target.result;$('announcementImagePreview').style.display='block';} if($('announcementImage')){$('announcementImage').src=ev.target.result;$('announcementImage').style.display='block';} if($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='inline-block'; saveData(); renderAll(); }; fr.readAsDataURL(f); }
+/* Slider handling */
+function wireSliderAdminEvents(){ if(!appData.allowSliderManagement || !appData.isAdmin){ const c=$('sliderAdminList'); if(c) c.innerHTML=''; return; } const btn=$('btnAddSliderImage'); if(btn){ btn.addEventListener('click', ()=>{ const url=$('sliderImageUrl')?$('sliderImageUrl').value.trim():''; const fileInput=$('sliderImageUpload'); if(url) adminAddSliderImageFromUrl(url); else if(fileInput && fileInput.files && fileInput.files[0]) adminAddSliderImageFromFile(fileInput.files[0]); else alert('Choisir une image ou fournir URL'); if($('sliderImageUrl')) $('sliderImageUrl').value=''; if(fileInput) fileInput.value=''; }); } const clr=$('btnClearSlider'); if(clr) clr.addEventListener('click', ()=> { if (!confirm('Vider tout le slider ?')) return; appData.slides = []; saveData(); renderSliderAdminList(); renderFrontSlider(); }); }
 
-/* Slider handling (front page hero) */
-function wireSliderAdminEvents(){ if(!appData.allowSliderManagement || !appData.isAdmin){ const c=$('sliderAdminList'); if(c) c.innerHTML=''; return; } const btn=$('btnAddSliderImage'); if(btn) btn.addEventListener('click', ()=>{ const url=$('sliderImageUrl')?$('sliderImageUrl').value.trim():'', fileInput=$('sliderImageUpload'); if(url) adminAddSliderImageFromUrl(url); else if(fileInput&&fileInput.files&&fileInput.files[0]) adminAddSliderImageFromFile(fileInput.files[0]); else alert('Choisir une image ou fournir URL'); if($('sliderImageUrl')) $('sliderImageUrl').value=''; if(fileInput) fileInput.value=''; }); const clr=$('btnClearSlider'); if(clr) clr.addEventListener('click', ()=>{ if(!confirm('Vider tout le slider ?')) return; appData.slides=[]; saveData(); renderSliderAdminList(); renderFrontSlider(); }); }
-function renderFrontSlider(){
-  const container = $('front-hero-slider'); if(!container) return; container.innerHTML='';
-  // If slides available -> show simple horizontal carousel
-  if (appData.slides && appData.slides.length){
-    const wrapper = document.createElement('div'); wrapper.style.whiteSpace='nowrap'; wrapper.style.overflowX='auto'; wrapper.style.padding='8px 0';
-    appData.slides.forEach((sld,i)=>{ const slide=document.createElement('div'); slide.className='slide'; slide.style.display='inline-block'; slide.style.verticalAlign='top'; slide.style.minWidth='260px'; slide.style.maxWidth='420px'; slide.style.margin='0 10px'; slide.style.borderRadius='8px'; slide.style.overflow='hidden'; slide.style.boxShadow='0 8px 24px rgba(12,25,40,0.06)'; const img=document.createElement('img'); img.src=sld.url||''; img.alt=sld.alt||('Slide '+(i+1)); img.style.width='100%'; img.style.height='180px'; img.style.objectFit='cover'; img.onerror = ()=>{ img.style.display='none'; }; slide.appendChild(img); if(sld.alt){ const cap=document.createElement('div'); cap.textContent=sld.alt; cap.style.padding='8px'; cap.style.fontSize='13px'; slide.appendChild(cap); } wrapper.appendChild(slide); });
-    container.appendChild(wrapper);
-    return;
-  }
-  // No slides -> show a professional hero using announcement and optional siteCover.url
-  const hero = document.createElement('div'); hero.className='hero-cover'; hero.style.background = appData.siteCover && appData.siteCover.url ? `linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25)), url('${appData.siteCover.url}') center/cover no-repeat` : 'linear-gradient(180deg, #2b6cb0, #3182ce)';
-  hero.style.padding='36px'; hero.style.marginBottom='12px';
-  const inner = document.createElement('div'); inner.className='hero-inner';
-  const h = document.createElement('h1'); h.style.fontSize='28px'; h.style.margin='0 0 8px 0'; h.textContent = 'Bienvenue sur la plateforme du lycée';
-  const p = document.createElement('p'); p.style.margin='0 0 12px 0'; p.style.fontSize='16px'; p.textContent = appData.announcement && appData.announcement.text ? appData.announcement.text : 'تابعوا آخر الإعلانات و النتائج من هنا.';
-  inner.appendChild(h); inner.appendChild(p);
-  // CTA: if not logged in show login buttons
-  if (!appData.currentUser){
-    const btnGroup = document.createElement('div'); btnGroup.style.marginTop='12px';
-    const sbtn = document.createElement('button'); sbtn.textContent='تسجيل التلميذ'; sbtn.addEventListener('click', ()=>{ const m=$('studentLoginModal'); if(m) m.style.display='block'; });
-    const abtn = document.createElement('button'); abtn.textContent='تسجيل الأستاذ'; abtn.style.marginLeft='8px'; abtn.addEventListener('click', ()=>{ const m=$('loginModal'); if(m) m.style.display='block'; });
-    btnGroup.appendChild(sbtn); btnGroup.appendChild(abtn); inner.appendChild(btnGroup);
-  } else {
-    const sub = document.createElement('div'); sub.style.marginTop='12px'; sub.innerHTML = '<em>مرحباً، ' + escapeHtml(appData.currentUser.fullname || '') + '</em>'; inner.appendChild(sub);
-  }
-  hero.appendChild(inner); container.appendChild(hero);
-}
+function renderFrontSlider(){ const container = $('front-hero-slider'); if (!container) return; container.innerHTML = ''; if (appData.slides && appData.slides.length){ const wrapper = document.createElement('div'); wrapper.style.whiteSpace='nowrap'; wrapper.style.overflowX='auto'; wrapper.style.padding='8px 0'; appData.slides.forEach((sld,i) => { const slide = document.createElement('div'); slide.className = 'slide'; slide.style.display = 'inline-block'; slide.style.verticalAlign = 'top'; slide.style.minWidth = '260px'; slide.style.maxWidth = '420px'; slide.style.margin = '0 10px'; slide.style.borderRadius = '8px'; slide.style.overflow = 'hidden'; slide.style.boxShadow = '0 8px 24px rgba(12,25,40,0.06)'; const img = document.createElement('img'); img.src = sld.url || ''; img.alt = sld.alt || ('Slide '+(i+1)); img.style.width = '100%'; img.style.height = '180px'; img.style.objectFit = 'cover'; img.onerror = () => { img.style.display = 'none'; }; slide.appendChild(img); if (sld.alt) { const cap = document.createElement('div'); cap.textContent = sld.alt; cap.style.padding = '8px'; cap.style.fontSize = '13px'; cap.style.background = '#fff'; cap.style.color = '#111'; slide.appendChild(cap); } wrapper.appendChild(slide); }); container.appendChild(wrapper); return; } const hero = document.createElement('div'); hero.className = 'hero-cover'; hero.style.background = appData.siteCover && appData.siteCover.url ? `linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25)), url('${appData.siteCover.url}') center/cover no-repeat` : 'linear-gradient(180deg, #2b6cb0, #3182ce)'; hero.style.padding = '36px'; hero.style.marginBottom = '12px'; const inner = document.createElement('div'); inner.className = 'hero-inner'; const h = document.createElement('h1'); h.style.fontSize = '28px'; h.style.margin = '0 0 8px 0'; h.textContent = 'Bienvenue sur la plateforme du lycée'; const p = document.createElement('p'); p.style.margin = '0 0 12px 0'; p.style.fontSize = '16px'; p.textContent = appData.announcement && appData.announcement.text ? appData.announcement.text : 'تابعوا آخر الإعلانات و النتائج من هنا.'; inner.appendChild(h); inner.appendChild(p); if (!appData.currentUser){ const btnGroup = document.createElement('div'); btnGroup.style.marginTop = '12px'; const sbtn = document.createElement('button'); sbtn.textContent = 'تسجيل التلميذ'; sbtn.addEventListener('click', ()=>{ const m = $('studentLoginModal'); if (m) m.style.display='flex'; }); const abtn = document.createElement('button'); abtn.textContent = 'تسجيل الأستاذ'; abtn.style.marginLeft='8px'; abtn.addEventListener('click', ()=>{ const m = $('loginModal'); if (m) m.style.display='flex'; }); btnGroup.appendChild(sbtn); btnGroup.appendChild(abtn); inner.appendChild(btnGroup); } else { const sub = document.createElement('div'); sub.style.marginTop='12px'; sub.innerHTML = '<em>مرحباً، ' + escapeHtml(appData.currentUser.fullname || '') + '</em>'; inner.appendChild(sub); } hero.appendChild(inner); container.appendChild(hero); }
 
-/* Slider admin render (only when allowed) */
-function renderSliderAdminList(){ const c=$('sliderAdminList'); if(!c) return; if(!appData.allowSliderManagement || !appData.isAdmin){ if(c) c.innerHTML=''; return; } c.innerHTML=''; if(!appData.slides.length) { c.innerHTML='<p class="muted">Aucun slide pour le moment.</p>'; return; } appData.slides.forEach((sld,idx)=>{ const d=document.createElement('div'); d.className='content-row'; d.style.marginBottom='8px'; const img=document.createElement('img'); img.src=sld.url; img.style.maxWidth='140px'; img.onerror=()=>{ img.style.display='none'; }; const info=document.createElement('span'); info.style.marginLeft='8px'; info.innerHTML = escapeHtml(sld.alt || ('Slide '+(idx+1))); const del=document.createElement('button'); del.textContent='حذف'; del.style.marginLeft='8px'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer ce slide ?')) return; appData.slides.splice(idx,1); saveData(); renderSliderAdminList(); renderFrontSlider(); }); const up=document.createElement('button'); up.textContent='↑'; up.style.marginLeft='6px'; up.addEventListener('click', ()=>{ if(idx===0) return; const a=appData.slides[idx-1]; appData.slides[idx-1]=appData.slides[idx]; appData.slides[idx]=a; saveData(); renderSliderAdminList(); renderFrontSlider(); }); const down=document.createElement('button'); down.textContent='↓'; down.style.marginLeft='6px'; down.addEventListener('click', ()=>{ if(idx===appData.slides.length-1) return; const a=appData.slides[idx+1]; appData.slides[idx+1]=appData.slides[idx]; appData.slides[idx]=a; saveData(); renderSliderAdminList(); renderFrontSlider(); }); d.appendChild(img); d.appendChild(info); d.appendChild(up); d.appendChild(down); d.appendChild(del); c.appendChild(d); }); }
+function renderSliderAdminList(){ const c = $('sliderAdminList'); if(!c) return; if(!appData.allowSliderManagement || !appData.isAdmin){ if(c) c.innerHTML=''; return; } c.innerHTML=''; if(!appData.slides.length){ c.innerHTML='<p class="muted">Aucun slide pour le moment.</p>'; return; } appData.slides.forEach((sld,idx)=>{ const d=document.createElement('div'); d.className='content-row'; d.style.marginBottom='8px'; const img=document.createElement('img'); img.src=sld.url; img.style.maxWidth='140px'; img.onerror=()=>{ img.style.display='none'; }; const info=document.createElement('span'); info.style.marginLeft='8px'; info.innerHTML = escapeHtml(sld.alt || ('Slide '+(idx+1))); const del=document.createElement('button'); del.textContent='حذف'; del.style.marginLeft='8px'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer ce slide ?')) return; appData.slides.splice(idx,1); saveData(); renderSliderAdminList(); renderFrontSlider(); }); const up=document.createElement('button'); up.textContent='↑'; up.style.marginLeft='6px'; up.addEventListener('click', ()=>{ if(idx===0) return; const a=appData.slides[idx-1]; appData.slides[idx-1]=appData.slides[idx]; appData.slides[idx]=a; saveData(); renderSliderAdminList(); renderFrontSlider(); }); const down=document.createElement('button'); down.textContent='↓'; down.style.marginLeft='6px'; down.addEventListener('click', ()=>{ if(idx===appData.slides.length-1) return; const a=appData.slides[idx+1]; appData.slides[idx+1]=appData.slides[idx]; appData.slides[idx]=a; saveData(); renderSliderAdminList(); renderFrontSlider(); }); d.appendChild(img); d.appendChild(info); d.appendChild(up); d.appendChild(down); d.appendChild(del); c.appendChild(d); }); }
 
 function adminAddSliderImageFromUrl(url){ if(!appData.allowSliderManagement||!appData.isAdmin) return alert('Non autorisé'); if(!url) return alert('ضع رابط الصورة للسلايد'); appData.slides = appData.slides || []; appData.slides.push({ id: genId(), url: url, alt: '' }); saveData(); renderSliderAdminList(); renderFrontSlider(); alert('Slide ajouté'); }
+
 function adminAddSliderImageFromFile(file){ if(!appData.allowSliderManagement||!appData.isAdmin) return alert('Non autorisé'); if(!file) return; const fr=new FileReader(); fr.onload=function(ev){ appData.slides = appData.slides || []; appData.slides.push({ id: genId(), url: ev.target.result, alt: '' }); saveData(); renderSliderAdminList(); renderFrontSlider(); alert('Slide ajouté (upload)'); }; fr.readAsDataURL(file); }
 
 /* Student dashboard */
-function loadStudentDashboard(){
-  if(!appData.currentUser || appData.isAdmin) return;
-  const studentId = appData.currentUser.id;
-  const recentEl = $('studentRecentGrades'); if (recentEl) {
-    const grades = (appData.grades||[]).filter(g=>g.studentId===studentId).sort((a,b)=>new Date(b.date)-new Date(a.date));
-    if(!grades.length) recentEl.innerHTML='<p class="muted">Aucune note disponible pour le moment.</p>';
-    else recentEl.innerHTML = '<ul>' + grades.slice(0,6).map(g=>'<li>'+ escapeHtml(g.subject) +' - '+ escapeHtml(g.title) +' : '+ (g.score||0) +'/20 ('+ new Date(g.date).toLocaleDateString()+')</li>').join('') + '</ul>';
-  }
-  const quizEl=$('studentQuizList'); if(quizEl){ const list=(appData.quizzes||[]).map(q=>({id:q.id,title:q.title,count:q.questions.length})); if(!list.length) quizEl.innerHTML='<p class="muted">Aucun quiz disponible pour le moment.</p>'; else quizEl.innerHTML='<ul>'+list.map(q=>'<li>'+escapeHtml(q.title)+' ('+q.count+' questions)</li>').join('')+'</ul>'; }
-  const examsEl=$('studentExamsQuick'); if(examsEl){
-    const studentGrades = (appData.grades||[]).filter(g=>g.studentId===studentId);
-    if(!studentGrades.length) examsEl.innerHTML='<p class="muted">لا توجد امتحانات لها نقاط منشورة بعد</p>';
-    else {
-      examsEl.innerHTML = '<ul>' + studentGrades.map(g => '<li>' + escapeHtml(g.title) + ' — ' + escapeHtml(g.subject||'') + ' <button data-gradeid="'+g.id+'" class="dashboard-regrade">طلب إعادة تصحيح</button></li>').join('') + '</ul>';
-      document.querySelectorAll('.dashboard-regrade').forEach(btn=>{
-        btn.addEventListener('click', ()=>{ const gradeId = btn.getAttribute('data-gradeid'); const note = prompt('اكتب ملاحظة لطلب إعادة التصحيح (اختياري):'); if(note===null) return; studentRequestRegradeByGrade(gradeId, note || ''); alert('تم إرسال طلب إعادة التصحيح'); });
-      });
-    }
-  }
-  populateStudentRegradeSelect();
-  renderDashboardMessages();
-}
+function loadStudentDashboard(){ if(!appData.currentUser || appData.isAdmin) return; const studentId=appData.currentUser.id; const recentEl=$('studentRecentGrades'); if(recentEl){ const grades=(appData.grades||[]).filter(g=>g.studentId===studentId).sort((a,b)=>new Date(b.date)-new Date(a.date)); if(!grades.length) recentEl.innerHTML='<p class="muted">Aucune note disponible pour le moment.</p>'; else recentEl.innerHTML = '<ul>' + grades.slice(0,6).map(g=>'<li>'+ escapeHtml(g.subject) +' - '+ escapeHtml(g.title) +' : '+ (g.score||0) +'/20 ('+ new Date(g.date).toLocaleDateString()+')</li>').join('') + '</ul>'; } const quizEl=$('studentQuizList'); if(quizEl){ const list=(appData.quizzes||[]).map(q=>({id:q.id,title:q.title,count:q.questions.length})); if(!list.length) quizEl.innerHTML='<p class="muted">Aucun quiz disponible pour le moment.</p>'; else quizEl.innerHTML='<ul>'+list.map(q=>'<li>'+escapeHtml(q.title)+' ('+q.count+' questions)</li>').join('')+'</ul>'; } const examsEl=$('studentExamsQuick'); if(examsEl){ const studentGrades=(appData.grades||[]).filter(g=>g.studentId===studentId); if(!studentGrades.length) examsEl.innerHTML='<p class="muted">لا توجد امتحانات لها نقاط منشورة بعد</p>'; else { examsEl.innerHTML = '<ul>' + studentGrades.map(g => '<li>' + escapeHtml(g.title) + ' — ' + escapeHtml(g.subject||'') + ' <button data-gradeid="'+g.id+'" class="dashboard-regrade">طلب إعادة تصحيح</button></li>').join('') + '</ul>'; document.querySelectorAll('.dashboard-regrade').forEach(btn=>{ btn.addEventListener('click', ()=>{ const gradeId=btn.getAttribute('data-gradeid'); const note = prompt('اكتب ملاحظة لطلب إعادة التصحيح (اختياري):'); if(note===null) return; studentRequestRegradeByGrade(gradeId, note || ''); alert('تم إرسال طلب إعادة التصحيح'); }); }); } } populateStudentRegradeSelect(); renderDashboardMessages(); }
 
-/* notify helper */
-function notifyStudents(type, title, content){
-  appData.messages = appData.messages || [];
-  appData.messages.push({ id: genId(), title, content, target:'all', createdAt:Date.now() });
-  saveData();
-  renderAdminMessagesList();
-  renderStudentMessages();
-  renderDashboardMessages();
-  if(appData.currentUser && !appData.isAdmin){
-    loadStudentDashboard();
-    alert(title + '\n' + content);
-  }
-}
+function notifyStudents(type, title, content){ appData.messages = appData.messages || []; appData.messages.push({ id: genId(), title, content, target:'all', createdAt:Date.now() }); saveData(); renderAdminMessagesList(); renderStudentMessages(); renderDashboardMessages(); if (appData.currentUser && !appData.isAdmin) { loadStudentDashboard(); alert(title + '\n' + content); } }
 
-/* LaTeX editor omitted here for brevity (keep original implementations if needed) */
-function updateLatexLineNumbers(){ const ta=$('latexCode'), ln=$('latexLineNumbers'), preview=$('latexPreview'); if(!ta||!ln||!preview) return; const lines=(ta.value||'').split('\n').length; const count=Math.min(Math.max(lines,1),2000); let out=''; for(let i=1;i<=count;i++) out += i + '\n'; ln.textContent = out; preview.innerHTML = ta.value ? ('\\[' + ta.value.replace(/ /g,'\\ ') + '\\]') : 'معاينة LaTeX...'; if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([preview]).catch(()=>{}); }
-function adminSaveLatex(){ if(!$('latexTitle')) return; const title=$('latexTitle').value.trim(), code=$('latexCode').value, desc=$('latexDescription').value, cat=$('latexCategory').value; if(!title||!code) return alert('Titre و code requis'); appData.latexContents.push({ id: genId(), title, code, description: desc, category: cat, createdAt: Date.now() }); saveData(); alert('Leçon LaTeX محفوظة'); loadLatexAdminList(); renderLatexListForStudents(); if($('latexTitle'))$('latexTitle').value=''; if($('latexCode'))$('latexCode').value=''; if($('latexDescription'))$('latexDescription').value=''; if($('latexCategory'))$('latexCategory').value=''; updateLatexLineNumbers(); }
-function loadLatexAdminList(){ const c=$('latexContentsList'); if(!c) return; c.innerHTML=''; if(!appData.latexContents.length) return c.innerHTML='<p class="muted">لا توجد دروس حتى الآن.</p>'; appData.latexContents.forEach(item=>{ const d=document.createElement('div'); d.innerHTML='<strong>'+escapeHtml(item.title)+'</strong> — '+escapeHtml(item.description||''); const btnPreview=document.createElement('button'); btnPreview.textContent='معاينة'; btnPreview.addEventListener('click', ()=>{ const preview=$('latexPreview'); if(!preview) return; preview.innerHTML='\\[' + item.code + '\\]'; if(window.MathJax) MathJax.typesetPromise([preview]).catch(()=>{}); }); const btnDel=document.createElement('button'); btnDel.textContent='Supprimer'; btnDel.addEventListener('click', ()=>{ if(!confirm('Supprimer الدرس ؟')) return; appData.latexContents = appData.latexContents.filter(x=>x.id!==item.id); saveData(); loadLatexAdminList(); renderLatexListForStudents(); }); d.appendChild(btnPreview); d.appendChild(btnDel); c.appendChild(d); }); if($('stats-latex')) $('stats-latex').textContent = appData.latexContents.length; }
-function renderLatexListForStudents(){ const c=$('studentCoursList'); if(!c) return; c.innerHTML=''; if(!appData.latexContents.length) return c.innerHTML='<p class="muted">لا توجد دروس</p>'; appData.latexContents.forEach(item=>{ const d=document.createElement('div'); d.innerHTML='<strong>'+escapeHtml(item.title)+'</strong> — '+escapeHtml(item.description||''); const btn=document.createElement('button'); btn.textContent='معاينة'; btn.addEventListener('click', ()=>{ const target=$('quizContent'); if(!target) return; target.innerHTML='<h3>'+escapeHtml(item.title)+'</h3><div id="studentLatexArea">\\['+item.code+'\\]</div>'; if(window.MathJax) MathJax.typesetPromise([document.getElementById('studentLatexArea')]).catch(()=>{}); }); d.appendChild(btn); c.appendChild(d); }); }
+/* LaTeX editor helpers (minimal) */
+function updateLatexLineNumbers(){ const ta = $('latexCode'); const ln = $('latexLineNumbers'); const preview = $('latexPreview'); if (!ta || !ln || !preview) return; const lines = (ta.value || '').split('\n').length; const count = Math.min(Math.max(lines,1),2000); let out = ''; for (let i=1;i<=count;i++){ out += i + '\n'; } ln.textContent = out; preview.innerHTML = ta.value ? ('\\[' + ta.value.replace(/ /g,'\\ ') + '\\]') : 'معاينة LaTeX...'; if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([preview]).catch(()=>{}); }
+function adminSaveLatex(){ if (!$('latexTitle')) return; const title = $('latexTitle').value.trim(); const code = $('latexCode').value; const desc = $('latexDescription').value; const cat = $('latexCategory').value; if (!title || !code) return alert('Titre و code requis'); appData.latexContents.push({ id: genId(), title, code, description: desc, category: cat, createdAt: Date.now() }); saveData(); alert('Leçon LaTeX محفوظة'); loadLatexAdminList(); renderLatexListForStudents(); if ($('latexTitle')) $('latexTitle').value=''; if ($('latexCode')) $('latexCode').value=''; if ($('latexDescription')) $('latexDescription').value=''; if ($('latexCategory')) $('latexCategory').value=''; updateLatexLineNumbers(); }
+function loadLatexAdminList(){ const c=$('latexContentsList'); if(!c) return; c.innerHTML=''; if(!appData.latexContents.length) return c.innerHTML='<p class="muted">لا توجد دروس حتى الآن.</p>'; appData.latexContents.forEach(item=>{ const d=document.createElement('div'); d.innerHTML = '<strong>' + escapeHtml(item.title) + '</strong> — ' + escapeHtml(item.description || ''); const btnPreview=document.createElement('button'); btnPreview.textContent='معاينة'; btnPreview.addEventListener('click', ()=> { const preview=$('latexPreview'); if(!preview) return; preview.innerHTML = '\\[' + item.code + '\\]'; if(window.MathJax) MathJax.typesetPromise([preview]).catch(()=>{}); }); const btnDel=document.createElement('button'); btnDel.textContent='Supprimer'; btnDel.addEventListener('click', ()=> { if(!confirm('Supprimer الدرس ؟')) return; appData.latexContents = appData.latexContents.filter(x=>x.id!==item.id); saveData(); loadLatexAdminList(); renderLatexListForStudents(); }); d.appendChild(btnPreview); d.appendChild(btnDel); c.appendChild(d); }); if($('stats-latex')) $('stats-latex').textContent = appData.latexContents.length; }
+function renderLatexListForStudents(){ const c=$('studentCoursList'); if(!c) return; c.innerHTML=''; if(!appData.latexContents.length) return c.innerHTML='<p class="muted">لا توجد دروس</p>'; appData.latexContents.forEach(item=>{ const d=document.createElement('div'); d.innerHTML = '<strong>' + escapeHtml(item.title) + '</strong> — ' + escapeHtml(item.description || ''); const btn=document.createElement('button'); btn.textContent='معاينة'; btn.addEventListener('click', ()=> { const target=$('quizContent'); if(!target) return; target.innerHTML = '<h3>' + escapeHtml(item.title) + '</h3><div id="studentLatexArea">\\[' + item.code + '\\]</div>'; if(window.MathJax) MathJax.typesetPromise([document.getElementById('studentLatexArea')]).catch(()=>{}); }); d.appendChild(btn); c.appendChild(d); }); }
 
 /* Utility & renderAll */
-function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-function formatTime(sec){ if(!sec||sec<=0) return '00:00'; const m=Math.floor(sec/60); const s=sec%60; return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
+function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function formatTime(sec){ if (!sec || sec<=0) return '00:00'; const m=Math.floor(sec/60); const s=sec%60; return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
+
 function renderAll(){ renderQuizAdminListDetailed(); renderQuizList(); renderLessons(); renderExercises(); renderExams(); renderLessonsAdminList(); renderExercisesAdminList(); renderExamsAdminList(); renderDictionary(); loadStudentsTable(); loadGradesTable(); loadLatexAdminList(); renderLatexListForStudents(); renderStudentMessages(); renderFrontSlider(); renderSliderAdminList(); renderAdminMessagesList(); renderRegradeRequestsAdminList(); renderDashboardMessages(); }
 
-/* Grades search by code */
-function searchGradesByCode(code){ const s = appData.students.find(x=>x.code===code); if(!s) return alert('Code parcours non trouvé'); const g = appData.grades.filter(x=>x.studentId===s.id); if($('gradesResults')) $('gradesResults').style.display='block'; if($('studentInfo')) $('studentInfo').innerHTML = '<div class="content-card"><div class="card-content"><h3>' + escapeHtml(s.fullname) + '</h3><p>Classe: ' + escapeHtml(s.classroom||'') + '</p><p>Code: ' + escapeHtml(s.code||'') + '</p></div></div>'; const tbody=document.querySelector('#gradesTable tbody'); if(!tbody) return; tbody.innerHTML=''; if(!g.length) { if($('noGradesMsg')) $('noGradesMsg').style.display='block'; } else { if($('noGradesMsg')) $('noGradesMsg').style.display='none'; g.forEach(grade=>{ const row=document.createElement('tr'); row.innerHTML = '<td>' + new Date(grade.date).toLocaleDateString() + '</td><td>' + escapeHtml(grade.subject) + '</td><td>' + escapeHtml(grade.title) + '</td><td>' + grade.score + '/20</td><td>' + escapeHtml(grade.note || '') + '</td>'; tbody.appendChild(row); }); } }
+/* The remaining small admin quiz-list function used above */
+function renderQuizAdminListDetailed(){ const el=$('quizQuestionsList'); if(!el) return; el.innerHTML=''; if(!appData.quizzes.length){ if($('adminSelectQuiz')) populateAdminSelectQuiz(); if(el) el.innerHTML='<p class="muted">Aucun quiz</p>'; return; } appData.quizzes.forEach(q=>{ const container=document.createElement('div'); const header=document.createElement('div'); header.innerHTML = '<strong>'+escapeHtml(q.title)+'</strong> (questions: '+q.questions.length+')'; container.appendChild(header); el.appendChild(container); }); populateAdminSelectQuiz(); if($('stats-quiz')) $('stats-quiz').textContent = appData.quizzes.reduce((acc,q)=>acc+q.questions.length,0); }
+function populateAdminSelectQuiz(){ const sel=$('adminSelectQuiz'); if(!sel) return; sel.innerHTML=''; const opt=document.createElement('option'); opt.value=''; opt.textContent='-- Sélectionner quiz --'; sel.appendChild(opt); appData.quizzes.forEach(q=>{ const o=document.createElement('option'); o.value=q.id; o.textContent=q.title + ' ('+q.questions.length+' q)'; sel.appendChild(o); }); }
 
-/* Dictionary */
-function renderDictionary(){ const el=$('dictionaryContent'); if(!el) return; el.innerHTML=''; if(!appData.dictionary.length) return el.innerHTML='<p class="muted">Aucun terme dans le lexique pour le moment.</p>'; appData.dictionary.forEach(term=>{ const d=document.createElement('div'); d.className='content-card'; d.innerHTML = '<div class="card-content"><h3>'+escapeHtml(term.ar)+' - '+escapeHtml(term.fr)+'</h3><p>'+escapeHtml(term.definition)+'</p></div>'; el.appendChild(d); }); }
+function renderExercisesAdminList(){ const c=$('exercisesAdminList'); if(!c) return; c.innerHTML=''; if(!appData.exercises.length) return c.innerHTML='<p class="muted">Aucun exercice</p>'; appData.exercises.forEach(e=>{ const d=document.createElement('div'); d.innerHTML = escapeHtml(e.title) + ' '; const a=document.createElement('a'); a.href=e.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=document.createElement('button'); del.textContent='Supprimer'; del.addEventListener('click', ()=>{ if(!confirm('Supprimer exercice ?')) return; appData.exercises = appData.exercises.filter(x=>x.id!==e.id); saveData(); renderExercisesAdminList(); renderExercises(); }); d.appendChild(del); c.appendChild(d); }); }
 
-/* populate select of regrade (keeps it updated) */
-function populateStudentRegradeSelect(){
-  if(!appData.currentUser || appData.isAdmin) return;
-  const sel = $('studentRegradeSelect');
-  if(!sel) return;
-  const studentGrades = (appData.grades||[]).filter(g=>g.studentId===appData.currentUser.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
-  sel.innerHTML='';
-  const def = document.createElement('option'); def.value=''; def.textContent='Sélectionnez une évaluation...'; sel.appendChild(def);
-  studentGrades.forEach(g => {
-    const o=document.createElement('option'); o.value=g.id; o.textContent = g.title + ' — ' + (g.subject||'') + ' (' + new Date(g.date).toLocaleDateString() + ')'; sel.appendChild(o);
-  });
-}
+function renderExercises(){ const c=$('exercisesContent'); if(!c) return; c.innerHTML=''; if(!appData.exercises.length) return c.innerHTML='<p class="muted">Aucun exercice</p>'; appData.exercises.forEach(e=>{ const d=document.createElement('div'); const a=document.createElement('a'); a.href=e.driveLink; a.target='_blank'; a.textContent=e.title; d.appendChild(a); c.appendChild(d); }); }
 
-/* End of file */
+function populateStudentRegradeSelect(){ if(!appData.currentUser || appData.isAdmin) return; const sel=$('studentRegradeSelect'); if(!sel) return; const studentGrades=(appData.grades||[]).filter(g=>g.studentId===appData.currentUser.id).sort((a,b)=>new Date(b.date)-new Date(a.date)); sel.innerHTML=''; const def=document.createElement('option'); def.value=''; def.textContent='Sélectionnez une évaluation...'; sel.appendChild(def); studentGrades.forEach(g=>{ const o=document.createElement('option'); o.value=g.id; o.textContent=g.title + ' — ' + (g.subject||'') + ' (' + new Date(g.date).toLocaleDateString() + ')'; sel.appendChild(o); }); }
+
+function searchGradesByCode(code){ const s = appData.students.find(x=>x.code === code); if (!s) return alert('Code parcours non trouvé'); const g = appData.grades.filter(x=>x.studentId === s.id); if ($('gradesResults')) $('gradesResults').style.display='block'; if ($('studentInfo')) $('studentInfo').innerHTML = '<div class="content-card"><div class="card-content"><h3>' + escapeHtml(s.fullname) + '</h3><p>Classe: ' + escapeHtml(s.classroom||'') + '</p><p>Code: ' + escapeHtml(s.code||'') + '</p></div></div>'; const tbody = document.querySelector('#gradesTable tbody'); if (!tbody) return; tbody.innerHTML = ''; if (!g.length) { if ($('noGradesMsg')) $('noGradesMsg').style.display='block'; } else { if ($('noGradesMsg')) $('noGradesMsg').style.display='none'; g.forEach(grade=>{ const row=document.createElement('tr'); row.innerHTML = '<td>' + new Date(grade.date).toLocaleDateString() + '</td><td>' + escapeHtml(grade.subject) + '</td><td>' + escapeHtml(grade.title) + '</td><td>' + grade.score + '/20</td><td>' + escapeHtml(grade.note || '') + '</td>'; tbody.appendChild(row); }); } }
+
+function renderDictionary(){ const el = $('dictionaryContent'); if (!el) return; el.innerHTML=''; if (!appData.dictionary.length) return el.innerHTML = '<p class="muted">Aucun terme dans le lexique pour le moment.</p>'; appData.dictionary.forEach(term=>{ const d=document.createElement('div'); d.className='content-card'; d.innerHTML = '<div class="card-content"><h3>'+escapeHtml(term.ar)+' - '+escapeHtml(term.fr)+'</h3><p>'+escapeHtml(term.definition)+'</p></div>'; el.appendChild(d); }); }
+
+/* expose a small API if needed */
+window.lyceeApp = {
+  loadData, saveData, appData, genId
+};
+
+/* End of unified JS */

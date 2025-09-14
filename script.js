@@ -1,11 +1,11 @@
 // Unified dashboard JS - FIXED & IMPROVED
-// Changes in this version (v6):
+// Changes in this version (v5):
 // - Fixed student regrade request exam selection (now shows only exams with published grades)
-// - Improved site cover with professional design
-// - Removed primitive slider and improved UI
-// - Enhanced exam filtering for regrade requests
+// - Improved site cover with professional slider design
+// - Fixed student messaging system (now shows student names)
+// - Fixed grade search by student code
 
-const STORAGE_KEY = 'lyceeExcellence_v_6';
+const STORAGE_KEY = 'lyceeExcellence_v_5';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },
@@ -28,13 +28,17 @@ let appData = {
   exams: [],
   messages: [],
   latexContents: [],
-  slides: [],
+  slides: [
+    { id: "slide1", url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80", alt: "تعليم متميز" },
+    { id: "slide2", url: "https://images.unsplash.com/photo-1501504905252-473c47e087f8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80", alt: "فصول دراسية حديثة" },
+    { id: "slide3", url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80", alt: "تعاون أكاديمي" }
+  ],
   responses: {},
   regradeRequests: [],
   currentUser: { id: "admin", fullname: "Administrateur" },
   isAdmin: true,
   announcement: { text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة", image: null },
-  siteCover: { enabled: true, url: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" }
+  siteCover: { enabled: true, url: null }
 };
 
 function loadData(){
@@ -180,6 +184,13 @@ function wireEvents(){
     updateLatexLineNumbers();
   }
   if ($('btnSaveLatex')) $('btnSaveLatex').addEventListener('click', adminSaveLatex);
+  
+  // Search grades by code
+  if ($('btnSearchGrades')) $('btnSearchGrades').addEventListener('click', ()=> {
+    const code = $('searchCodeInput').value.trim();
+    if (!code) return pushNotification('Code requis','Veuillez entrer un code',{ severity:'warn' });
+    searchGradesByCode(code);
+  });
 }
 
 /* UI switching helpers unchanged (kept compact) */
@@ -305,7 +316,27 @@ function adminSendMessage(){
 function renderAdminMessagesList(){
   const c = $('adminMessagesList'); if (!c) return; c.innerHTML='';
   if (!appData.messages.length) return c.innerHTML='<p class="muted">لا توجد رسائل</p>';
-  appData.messages.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content+' (cible:'+m.target+')'; const del = makeButton('Supprimer', ()=>{ if (!confirm('Supprimer message ?')) return; appData.messages=appData.messages.filter(x=>x.id!==m.id); saveData(); renderAdminMessagesList(); renderStudentMessages(); }); d.appendChild(del); c.appendChild(d); });
+  appData.messages.forEach(m=>{ 
+    const d=document.createElement('div'); 
+    d.style.marginBottom = '10px';
+    d.style.padding = '10px';
+    d.style.border = '1px solid #eee';
+    d.style.borderRadius = '5px';
+    
+    let targetInfo = '';
+    if (m.target === 'specific') {
+      const student = appData.students.find(s => s.id === m.specific);
+      targetInfo = student ? ` (إلى: ${student.fullname})` : ` (إلى: ${m.specific})`;
+    } else {
+      targetInfo = ' (إلى الجميع)';
+    }
+    
+    d.innerHTML = '<strong>'+escapeHtml(m.title)+targetInfo+'</strong><br>'+escapeHtml(m.content)+'<br><small>'+new Date(m.createdAt).toLocaleString()+'</small>';
+    const del = makeButton('Supprimer', ()=>{ if (!confirm('Supprimer message ?')) return; appData.messages=appData.messages.filter(x=>x.id!==m.id); saveData(); renderAdminMessagesList(); renderStudentMessages(); });
+    del.style.marginTop = '5px';
+    d.appendChild(del);
+    c.appendChild(d);
+  });
 }
 
 function renderStudentMessages(){
@@ -313,7 +344,15 @@ function renderStudentMessages(){
   if (!appData.currentUser) return c.innerHTML='<p class="muted">Connectez-vous</p>';
   const list = appData.messages.filter(m => m.target==='all' || (m.target==='specific' && m.specific===appData.currentUser.id));
   if (!list.length) return c.innerHTML='<p class="muted">لا توجد رسائل حتى الآن.</p>';
-  list.forEach(m=>{ const d=document.createElement('div'); d.textContent='['+new Date(m.createdAt).toLocaleString()+'] '+m.title+' - '+m.content; c.appendChild(d); });
+  list.forEach(m=>{ 
+    const d=document.createElement('div');
+    d.style.marginBottom = '10px';
+    d.style.padding = '10px';
+    d.style.border = '1px solid #eee';
+    d.style.borderRadius = '5px';
+    d.innerHTML = '<strong>'+escapeHtml(m.title)+'</strong><br>'+escapeHtml(m.content)+'<br><small>'+new Date(m.createdAt).toLocaleString()+'</small>';
+    c.appendChild(d);
+  });
 }
 
 /* =============================
@@ -372,17 +411,308 @@ function handleAnnouncementImage(e){ const f = e.target.files[0]; if (!f) return
 /* Slider handling: render front slider (public) and admin slider list (admin only)
    Important: slider admin controls are shown ONLY to the main admin 사용자 (id 'admin')
 */
-function renderFrontSlider(){ const container = $('front-hero-slider'); if (!container) return; container.innerHTML = ''; if (!appData.slides || !appData.slides.length){ container.innerHTML = '<div class="muted">لا توجد شرائح حاليا</div>'; return; } const wrapper = document.createElement('div'); wrapper.style.whiteSpace='nowrap'; wrapper.style.overflowX='auto'; wrapper.style.padding='8px 0'; appData.slides.forEach((sld, i) => { const slide = document.createElement('div'); slide.className = 'slide'; slide.style.display = 'inline-block'; slide.style.verticalAlign = 'top'; slide.style.minWidth = '220px'; slide.style.maxWidth = '320px'; slide.style.position = 'relative'; slide.style.borderRadius = '8px'; slide.style.overflow = 'hidden'; slide.style.boxShadow = '0 6px 16px rgba(12,25,40,0.06)'; slide.style.background = '#fff'; slide.style.padding = '6px'; slide.style.margin = '0 8px'; const img = document.createElement('img'); img.src = sld.url || ''; img.alt = sld.alt || ('Slide '+(i+1)); img.style.maxHeight = '160px'; img.style.width = '100%'; img.style.objectFit = 'cover'; img.onerror = () => { img.style.display = 'none'; }; slide.appendChild(img); if (sld.alt) { const cap = document.createElement('div'); cap.textContent = sld.alt; cap.style.paddingTop='6px'; cap.style.fontSize='13px'; slide.appendChild(cap); } wrapper.appendChild(slide); }); container.appendChild(wrapper); }
+let currentSlide = 0;
+let slideInterval;
 
-function renderSliderAdminList(){ const c = $('sliderAdminList'); if (!c) return; // only the main admin may see slider admin
-  if (!appData.currentUser || !appData.isAdmin || appData.currentUser.id !== 'admin'){ c.innerHTML = '<p class="muted">لا تملك صلاحية تعديل السلايد</p>'; return; }
+function renderFrontSlider(){ 
+  const container = $('front-hero-slider'); 
+  if (!container) return; 
+  container.innerHTML = ''; 
+  
+  if (!appData.slides || !appData.slides.length){ 
+    container.innerHTML = '<div class="muted">لا توجد شرائح حاليا</div>'; 
+    return; 
+  }
+  
+  // Create slider container
+  const sliderContainer = document.createElement('div');
+  sliderContainer.className = 'slider-container';
+  sliderContainer.style.position = 'relative';
+  sliderContainer.style.height = '400px';
+  sliderContainer.style.overflow = 'hidden';
+  sliderContainer.style.borderRadius = '10px';
+  sliderContainer.style.margin = '20px 0';
+  
+  // Create slides
+  const slidesWrapper = document.createElement('div');
+  slidesWrapper.className = 'slides-wrapper';
+  slidesWrapper.style.display = 'flex';
+  slidesWrapper.style.transition = 'transform 0.5s ease';
+  slidesWrapper.style.width = `${appData.slides.length * 100}%`;
+  slidesWrapper.style.height = '100%';
+  
+  appData.slides.forEach((sld, i) => {
+    const slide = document.createElement('div');
+    slide.className = 'slide';
+    slide.style.width = `${100 / appData.slides.length}%`;
+    slide.style.flexShrink = '0';
+    slide.style.position = 'relative';
+    slide.style.background = '#f0f0f0';
+    
+    const img = document.createElement('img');
+    img.src = sld.url || '';
+    img.alt = sld.alt || ('Slide '+(i+1));
+    img.style.width = '100%';
+    img.style.height = '100%';
+    img.style.objectFit = 'cover';
+    img.onerror = () => { 
+      img.style.display = 'none'; 
+      slide.style.background = 'linear-gradient(135deg, #3498db, #2ecc71)';
+      slide.style.display = 'flex';
+      slide.style.alignItems = 'center';
+      slide.style.justifyContent = 'center';
+      slide.style.color = 'white';
+      slide.style.fontSize = '24px';
+      slide.textContent = sld.alt || ('Slide '+(i+1));
+    };
+    
+    slide.appendChild(img);
+    
+    if (sld.alt) {
+      const caption = document.createElement('div');
+      caption.textContent = sld.alt;
+      caption.style.position = 'absolute';
+      caption.style.bottom = '0';
+      caption.style.left = '0';
+      caption.style.right = '0';
+      caption.style.background = 'rgba(0,0,0,0.7)';
+      caption.style.color = 'white';
+      caption.style.padding = '15px';
+      caption.style.textAlign = 'center';
+      caption.style.fontSize = '18px';
+      slide.appendChild(caption);
+    }
+    
+    slidesWrapper.appendChild(slide);
+  });
+  
+  sliderContainer.appendChild(slidesWrapper);
+  
+  // Create navigation buttons
+  if (appData.slides.length > 1) {
+    const prevBtn = document.createElement('button');
+    prevBtn.innerHTML = '&#10094;';
+    prevBtn.className = 'slider-nav slider-prev';
+    prevBtn.style.position = 'absolute';
+    prevBtn.style.top = '50%';
+    prevBtn.style.left = '15px';
+    prevBtn.style.transform = 'translateY(-50%)';
+    prevBtn.style.background = 'rgba(0,0,0,0.5)';
+    prevBtn.style.color = 'white';
+    prevBtn.style.border = 'none';
+    prevBtn.style.borderRadius = '50%';
+    prevBtn.style.width = '40px';
+    prevBtn.style.height = '40px';
+    prevBtn.style.fontSize = '20px';
+    prevBtn.style.cursor = 'pointer';
+    prevBtn.addEventListener('click', () => {
+      showSlide(currentSlide - 1);
+    });
+    
+    const nextBtn = document.createElement('button');
+    nextBtn.innerHTML = '&#10095;';
+    nextBtn.className = 'slider-nav slider-next';
+    nextBtn.style.position = 'absolute';
+    nextBtn.style.top = '50%';
+    nextBtn.style.right = '15px';
+    nextBtn.style.transform = 'translateY(-50%)';
+    nextBtn.style.background = 'rgba(0,0,0,0.5)';
+    nextBtn.style.color = 'white';
+    nextBtn.style.border = 'none';
+    nextBtn.style.borderRadius = '50%';
+    nextBtn.style.width = '40px';
+    nextBtn.style.height = '40px';
+    nextBtn.style.fontSize = '20px';
+    nextBtn.style.cursor = 'pointer';
+    nextBtn.addEventListener('click', () => {
+      showSlide(currentSlide + 1);
+    });
+    
+    sliderContainer.appendChild(prevBtn);
+    sliderContainer.appendChild(nextBtn);
+    
+    // Create indicators
+    const indicators = document.createElement('div');
+    indicators.className = 'slider-indicators';
+    indicators.style.position = 'absolute';
+    indicators.style.bottom = '15px';
+    indicators.style.left = '0';
+    indicators.style.right = '0';
+    indicators.style.display = 'flex';
+    indicators.style.justifyContent = 'center';
+    indicators.style.gap = '10px';
+    
+    appData.slides.forEach((_, i) => {
+      const indicator = document.createElement('span');
+      indicator.className = 'slider-indicator';
+      indicator.style.width = '12px';
+      indicator.style.height = '12px';
+      indicator.style.borderRadius = '50%';
+      indicator.style.background = i === currentSlide ? '#3498db' : 'rgba(255,255,255,0.5)';
+      indicator.style.cursor = 'pointer';
+      indicator.addEventListener('click', () => {
+        showSlide(i);
+      });
+      indicators.appendChild(indicator);
+    });
+    
+    sliderContainer.appendChild(indicators);
+  }
+  
+  container.appendChild(sliderContainer);
+  
+  // Start auto-sliding if there are multiple slides
+  if (appData.slides.length > 1) {
+    startSlider();
+  }
+}
+
+function showSlide(n) {
+  const slidesWrapper = document.querySelector('.slides-wrapper');
+  const indicators = document.querySelectorAll('.slider-indicator');
+  const slides = appData.slides;
+  
+  if (n >= slides.length) {
+    currentSlide = 0;
+  } else if (n < 0) {
+    currentSlide = slides.length - 1;
+  } else {
+    currentSlide = n;
+  }
+  
+  slidesWrapper.style.transform = `translateX(-${currentSlide * (100 / slides.length)}%)`;
+  
+  indicators.forEach((indicator, i) => {
+    indicator.style.background = i === currentSlide ? '#3498db' : 'rgba(255,255,255,0.5)';
+  });
+}
+
+function startSlider() {
+  if (slideInterval) {
+    clearInterval(slideInterval);
+  }
+  
+  slideInterval = setInterval(() => {
+    showSlide(currentSlide + 1);
+  }, 5000);
+}
+
+function renderSliderAdminList(){ 
+  const c = $('sliderAdminList'); 
+  if (!c) return; 
+  
+  // only the main admin may see slider admin
+  if (!appData.currentUser || !appData.isAdmin || appData.currentUser.id !== 'admin'){ 
+    c.innerHTML = '<p class="muted">لا تملك صلاحية تعديل السلايد</p>'; 
+    return; 
+  }
+  
   c.innerHTML = '';
-  if (!appData.slides || !appData.slides.length) { c.innerHTML = '<p class="muted">Aucun slide pour le moment.</p>'; return; }
-  appData.slides.forEach((sld, idx) => { const d = document.createElement('div'); d.className='content-row'; d.style.marginBottom='8px'; const img = document.createElement('img'); img.src = sld.url; img.style.maxWidth='140px'; img.style.display='inline-block'; img.style.verticalAlign='middle'; img.onerror = ()=>{ img.style.display='none'; }; const info = document.createElement('span'); info.style.marginLeft='8px'; info.innerHTML = escapeHtml(sld.alt || ('Slide '+(idx+1))); const del = makeButton('حذف', ()=>{ if(!confirm('Supprimer ce slide ?')) return; appData.slides.splice(idx,1); saveData(); renderSliderAdminList(); renderFrontSlider(); pushNotification('Slide supprimé','Slide supprimé',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); }); const up = makeButton('↑', ()=>{ if(idx===0) return; const a=appData.slides[idx-1]; appData.slides[idx-1]=appData.slides[idx]; appData.slides[idx]=a; saveData(); renderSliderAdminList(); renderFrontSlider(); }); const down = makeButton('↓', ()=>{ if(idx===appData.slides.length-1) return; const a=appData.slides[idx+1]; appData.slides[idx+1]=appData.slides[idx]; appData.slides[idx]=a; saveData(); renderSliderAdminList(); renderFrontSlider(); }); d.appendChild(img); d.appendChild(info); d.appendChild(up); d.appendChild(down); d.appendChild(del); c.appendChild(d); }); }
+  
+  if (!appData.slides || !appData.slides.length) { 
+    c.innerHTML = '<p class="muted">Aucun slide pour le moment.</p>'; 
+    return; 
+  }
+  
+  appData.slides.forEach((sld, idx) => { 
+    const d = document.createElement('div'); 
+    d.className='content-row'; 
+    d.style.marginBottom='15px';
+    d.style.padding='10px';
+    d.style.border='1px solid #eee';
+    d.style.borderRadius='5px';
+    
+    const img = document.createElement('img'); 
+    img.src = sld.url; 
+    img.style.maxWidth='140px'; 
+    img.style.maxHeight='100px';
+    img.style.objectFit='cover';
+    img.style.display='inline-block'; 
+    img.style.verticalAlign='middle';
+    img.style.marginRight='10px';
+    img.onerror = ()=>{ 
+      img.style.display='none'; 
+    }; 
+    
+    const info = document.createElement('span'); 
+    info.style.marginLeft='8px'; 
+    info.innerHTML = escapeHtml(sld.alt || ('Slide '+(idx+1)));
+    
+    const up = makeButton('↑', ()=>{ 
+      if(idx===0) return; 
+      const a=appData.slides[idx-1]; 
+      appData.slides[idx-1]=appData.slides[idx]; 
+      appData.slides[idx]=a; 
+      saveData(); 
+      renderSliderAdminList(); 
+      renderFrontSlider(); 
+    });
+    
+    const down = makeButton('↓', ()=>{ 
+      if(idx===appData.slides.length-1) return; 
+      const a=appData.slides[idx+1]; 
+      appData.slides[idx+1]=appData.slides[idx]; 
+      appData.slides[idx]=a; 
+      saveData(); 
+      renderSliderAdminList(); 
+      renderFrontSlider(); 
+    });
+    
+    const edit = makeButton('تعديل', ()=>{
+      const newAlt = prompt('النص البديل للشريحة:', sld.alt || '');
+      if (newAlt !== null) {
+        sld.alt = newAlt;
+        saveData();
+        renderSliderAdminList();
+        renderFrontSlider();
+        pushNotification('تم التعديل', 'تم تعديل الشريحة بنجاح', { target:'specific', specific: appData.currentUser.id });
+      }
+    });
+    
+    const del = makeButton('حذف', ()=>{ 
+      if(!confirm('Supprimer ce slide ?')) return; 
+      appData.slides.splice(idx,1); 
+      saveData(); 
+      renderSliderAdminList(); 
+      renderFrontSlider(); 
+      pushNotification('Slide supprimé','Slide supprimé',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+    });
+    
+    d.appendChild(img); 
+    d.appendChild(info);
+    d.appendChild(up); 
+    d.appendChild(down);
+    d.appendChild(edit);
+    d.appendChild(del); 
+    c.appendChild(d); 
+  }); 
+}
 
-function adminAddSliderImageFromUrl(url){ if (!url) return pushNotification('رابط غير صالح','ضع رابط الصورة للسلايد'); appData.slides = appData.slides || []; appData.slides.push({ id: genId(), url: url, alt: '' }); saveData(); renderSliderAdminList(); renderFrontSlider(); pushNotification('Slide ajouté','تم إضافة سلايد جديد',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); }
+function adminAddSliderImageFromUrl(url){ 
+  if (!url) return pushNotification('رابط غير صالح','ضع رابط الصورة للسلايد');
+  const alt = prompt('النص البديل للشريحة (اختياري):', '');
+  appData.slides = appData.slides || []; 
+  appData.slides.push({ id: genId(), url: url, alt: alt || '' }); 
+  saveData(); 
+  renderSliderAdminList(); 
+  renderFrontSlider(); 
+  pushNotification('Slide ajouté','تم إضافة سلايد جديد',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+}
 
-function adminAddSliderImageFromFile(file){ if (!file) return; const fr = new FileReader(); fr.onload = function(ev){ appData.slides = appData.slides || []; appData.slides.push({ id: genId(), url: ev.target.result, alt: '' }); saveData(); renderSliderAdminList(); renderFrontSlider(); pushNotification('Slide ajouté (upload)','تم رفع سلايد جديد (upload)',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); }; fr.readAsDataURL(file); }
+function adminAddSliderImageFromFile(file){ 
+  if (!file) return; 
+  const fr = new FileReader(); 
+  fr.onload = function(ev){ 
+    const alt = prompt('النص البديل للشريحة (اختياري):', '');
+    appData.slides = appData.slides || []; 
+    appData.slides.push({ id: genId(), url: ev.target.result, alt: alt || '' }); 
+    saveData(); 
+    renderSliderAdminList(); 
+    renderFrontSlider(); 
+    pushNotification('Slide ajouté (upload)','تم رفع سلايد جديد (upload)',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+  }; 
+  fr.readAsDataURL(file); 
+}
 
 function wireSliderAdminEvents(){
   // Only wire slider admin events if main admin
@@ -390,7 +720,17 @@ function wireSliderAdminEvents(){
   const btn = $('btnAddSliderImage');
   if (btn){
     // if not main admin, hide button entirely
-    if (!isMainAdmin){ btn.style.display='none'; const upload = $('sliderImageUpload'); if (upload) upload.style.display='none'; const urlInput = $('sliderImageUrl'); if (urlInput) urlInput.style.display='none'; const clr = $('btnClearSlider'); if (clr) clr.style.display='none'; return; }
+    if (!isMainAdmin){ 
+      btn.style.display='none'; 
+      const upload = $('sliderImageUpload'); 
+      if (upload) upload.style.display='none'; 
+      const urlInput = $('sliderImageUrl'); 
+      if (urlInput) urlInput.style.display='none'; 
+      const clr = $('btnClearSlider'); 
+      if (clr) clr.style.display='none'; 
+      return; 
+    }
+    
     btn.addEventListener('click', ()=> {
       const url = $('sliderImageUrl') ? $('sliderImageUrl').value.trim() : '';
       const fileInput = $('sliderImageUpload');
@@ -401,24 +741,67 @@ function wireSliderAdminEvents(){
       if (fileInput) fileInput.value='';
     });
   }
+  
   const clr = $('btnClearSlider');
-  if (clr) clr.addEventListener('click', ()=> { if (!confirm('Vider tout le slider ?')) return; appData.slides = []; saveData(); renderSliderAdminList(); renderFrontSlider(); pushNotification('Slider vidé','جميع السلايدات محذوفة',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); });
+  if (clr) clr.addEventListener('click', ()=> { 
+    if (!confirm('Vider tout le slider ?')) return; 
+    appData.slides = []; 
+    saveData(); 
+    renderSliderAdminList(); 
+    renderFrontSlider(); 
+    pushNotification('Slider vidé','جميع السلايدات محذوفة',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+  });
 }
 
 /* Student dashboard */
-function loadStudentDashboard(){ if (!appData.currentUser || appData.isAdmin) return; const studentId = appData.currentUser.id; const recentEl = $('studentRecentGrades'); if (recentEl) { const grades = (appData.grades||[]).filter(g=>g.studentId===studentId).sort((a,b)=>new Date(b.date)-new Date(a.date)); if (!grades.length) recentEl.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>'; else { recentEl.innerHTML = '<ul>' + grades.slice(0,6).map(g=>'<li>'+ escapeHtml(g.subject) +' - '+ escapeHtml(g.title) +' : '+ (g.score||0) +'/20 ('+ new Date(g.date).toLocaleDateString()+')</li>').join('') + '</ul>'; } }
-  const quizEl = $('studentQuizList'); if (quizEl) { const list = (appData.quizzes||[]).map(q=>({id:q.id,title:q.title, count:q.questions?q.questions.length:0})); if (!list.length) quizEl.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>'; else quizEl.innerHTML = '<ul>' + list.map(q=>'<li>'+ escapeHtml(q.title) +' ('+ q.count +' questions)</li>').join('') + '</ul>'; }
-  const examsEl = $('studentExamsQuick'); if (examsEl){ if (!appData.exams || !appData.exams.length) examsEl.innerHTML = '<p class="muted">Aucun examen</p>'; else { // show only exams that have published grades for this student
+function loadStudentDashboard(){ 
+  if (!appData.currentUser || appData.isAdmin) return; 
+  const studentId = appData.currentUser.id; 
+  
+  const recentEl = $('studentRecentGrades'); 
+  if (recentEl) { 
+    const grades = (appData.grades||[]).filter(g=>g.studentId===studentId).sort((a,b)=>new Date(b.date)-new Date(a.date)); 
+    if (!grades.length) recentEl.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>'; 
+    else { 
+      recentEl.innerHTML = '<ul>' + grades.slice(0,6).map(g=>'<li>'+ escapeHtml(g.subject) +' - '+ escapeHtml(g.title) +' : '+ (g.score||0) +'/20 ('+ new Date(g.date).toLocaleDateString()+')</li>').join('') + '</ul>'; 
+    } 
+  }
+  
+  const quizEl = $('studentQuizList'); 
+  if (quizEl) { 
+    const list = (appData.quizzes||[]).map(q=>({id:q.id,title:q.title, count:q.questions?q.questions.length:0})); 
+    if (!list.length) quizEl.innerHTML = '<p class="muted">Aucun quiz disponible pour le moment.</p>'; 
+    else quizEl.innerHTML = '<ul>' + list.map(q=>'<li>'+ escapeHtml(q.title) +' ('+ q.count +' questions)</li>').join('') + '</ul>'; 
+  }
+  
+  const examsEl = $('studentExamsQuick'); 
+  if (examsEl){ 
+    if (!appData.exams || !appData.exams.length) examsEl.innerHTML = '<p class="muted">Aucun examen</p>'; 
+    else { 
+      // show only exams that have published grades for this student
       const studentId = appData.currentUser.id;
-      const validExams = appData.exams.filter(e => (appData.grades||[]).some(g => g.studentId === studentId && (g.title && e.title && (g.title === e.title || g.title.includes(e.title) || e.title.includes(g.title)))) );
+      const validExams = appData.exams.filter(e => 
+        (appData.grades||[]).some(g => g.studentId === studentId && (g.title && e.title && (g.title === e.title || g.title.includes(e.title) || e.title.includes(g.title))))
+      );
+      
       if (!validExams.length) examsEl.innerHTML = '<p class="muted">لا توجد امتحانات لها نقاط منشورة يمكنك طلب إعادة التصحيح لها</p>';
       else {
         examsEl.innerHTML = '<ul>' + validExams.map(e => {
           return '<li>' + escapeHtml(e.title) + ' <button data-exid="'+e.id+'" class="dashboard-regrade">طلب إعادة تصحيح</button></li>';
         }).join('') + '</ul>';
-        document.querySelectorAll('.dashboard-regrade').forEach(btn=>{ btn.addEventListener('click', ()=> { const exid = btn.getAttribute('data-exid'); const note = prompt('اكتب ملاحظة لطلب إعادة التصحيح (اختياري):'); if (note === null) return; studentRequestRegrade(exid, note || ''); pushNotification('طلب إعادة تصحيح','تم إرسال طلب إعادة التصحيح', { target:'specific', specific: studentId }); }); });
+        
+        document.querySelectorAll('.dashboard-regrade').forEach(btn=>{ 
+          btn.addEventListener('click', ()=> { 
+            const exid = btn.getAttribute('data-exid'); 
+            const note = prompt('اكتب ملاحظة لطلب إعادة التصحيح (اختياري):'); 
+            if (note === null) return; 
+            studentRequestRegrade(exid, note || ''); 
+            pushNotification('طلب إعادة تصحيح','تم إرسال طلب إعادة التصحيح', { target:'specific', specific: studentId }); 
+          }); 
+        });
       }
-    } }
+    } 
+  }
 }
 
 /* Notification helper kept for backward compatibility */
@@ -435,7 +818,29 @@ function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.ran
 function formatTime(sec){ if (!sec || sec<=0) return '00:00'; const m=Math.floor(sec/60); const s=sec%60; return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
 function renderAll(){ renderQuizAdminListDetailed(); renderQuizList(); renderLessons(); renderExercises(); renderExams(); renderLessonsAdminList(); renderExercisesAdminList(); renderExamsAdminList(); renderDictionary(); loadStudentsTable(); loadGradesTable(); loadLatexAdminList(); renderLatexListForStudents(); renderStudentMessages(); renderFrontSlider(); renderSliderAdminList(); }
 
-function searchGradesByCode(code){ const s = appData.students.find(x=>x.code === code); if (!s) return pushNotification('Code non trouvé','Code parcours non trouvé',{ severity:'warn' }); const g = appData.grades.filter(x=>x.studentId === s.id); if ($('gradesResults')) $('gradesResults').style.display='block'; if ($('studentInfo')) $('studentInfo').innerHTML = '<div class="content-card"><div class="card-content"><h3>' + escapeHtml(s.fullname) + '</h3><p>Classe: ' + escapeHtml(s.classroom||'') + '</p><p>Code: ' + escapeHtml(s.code||'') + '</p></div></div>'; const tbody = document.querySelector('#gradesTable tbody'); if (!tbody) return; tbody.innerHTML = ''; if (!g.length) { if ($('noGradesMsg')) $('noGradesMsg').style.display='block'; } else { if ($('noGradesMsg')) $('noGradesMsg').style.display='none'; g.forEach(grade=>{ const row=document.createElement('tr'); row.innerHTML = '<td>' + new Date(grade.date).toLocaleDateString() + '</td><td>' + escapeHtml(grade.subject) + '</td><td>' + escapeHtml(grade.title) + '</td><td>' + grade.score + '/20</td><td>' + escapeHtml(grade.note || '') + '</td>'; tbody.appendChild(row); }); } }
+function searchGradesByCode(code){ 
+  const s = appData.students.find(x=>x.code === code); 
+  if (!s) return pushNotification('Code non trouvé','Code parcours non trouvé',{ severity:'warn' }); 
+  const g = appData.grades.filter(x=>x.studentId === s.id); 
+  
+  if ($('gradesResults')) $('gradesResults').style.display='block'; 
+  if ($('studentInfo')) $('studentInfo').innerHTML = '<div class="content-card"><div class="card-content"><h3>' + escapeHtml(s.fullname) + '</h3><p>Classe: ' + escapeHtml(s.classroom||'') + '</p><p>Code: ' + escapeHtml(s.code||'') + '</p></div></div>'; 
+  
+  const tbody = document.querySelector('#gradesTable tbody'); 
+  if (!tbody) return; 
+  tbody.innerHTML = ''; 
+  
+  if (!g.length) { 
+    if ($('noGradesMsg')) $('noGradesMsg').style.display='block'; 
+  } else { 
+    if ($('noGradesMsg')) $('noGradesMsg').style.display='none'; 
+    g.forEach(grade=>{ 
+      const row=document.createElement('tr'); 
+      row.innerHTML = '<td>' + new Date(grade.date).toLocaleDateString() + '</td><td>' + escapeHtml(grade.subject) + '</td><td>' + escapeHtml(grade.title) + '</td><td>' + grade.score + '/20</td><td>' + escapeHtml(grade.note || '') + '</td>'; 
+      tbody.appendChild(row); 
+    }); 
+  } 
+}
 
 function renderDictionary(){ const el = $('dictionaryContent'); if (!el) return; el.innerHTML=''; if (!appData.dictionary.length) return el.innerHTML = '<p class="muted">Aucun terme dans le lexique pour le moment.</p>'; appData.dictionary.forEach(term=>{ const d=document.createElement('div'); d.className='content-card'; d.innerHTML = '<div class="card-content"><h3>'+escapeHtml(term.ar)+' - '+escapeHtml(term.fr)+'</h3><p>'+escapeHtml(term.definition)+'</p></div>'; el.appendChild(d); }); }
 

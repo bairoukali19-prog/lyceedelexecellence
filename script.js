@@ -5,7 +5,7 @@
 */
 
 // Data model & utilities
-const STORAGE_KEY = 'lyceeExcellence_v_3';
+const STORAGE_KEY = 'lyceeExcellence_v_6';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },

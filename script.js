@@ -5,7 +5,7 @@
 // - Removed primitive slider and improved UI
 // - Enhanced exam filtering for regrade requests
 
-const STORAGE_KEY = 'lyceeExcellence_v_4';
+const STORAGE_KEY = 'lyceeExcellence_v_6';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },

@@ -3,7 +3,7 @@
 // Author: assistant (for user)
 // Usage: استبدل الملف القديم بهذه النسخة
 
-const STORAGE_KEY = 'lyceeExcellence_v4_fixed';
+const STORAGE_KEY = 'lyceeExcellence_v6_fixed';
 
 // --- بيانات ابتدائية (موديل مبسط) ---
 let appData = {

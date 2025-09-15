@@ -1,12 +1,12 @@
  /* Unified dashboard JS - FIXED & IMPROVED
-   Changes in this version (v5):
+   Changes in this version (v10):
    - Fixed student regrade request: now shows exams with published grades in selection dropdown
    - Added professional site cover with title and subtitle
    - Added complete slider administration in teacher dashboard
    - Fixed evaluation selection for students in regrade requests
 */
 
-const STORAGE_KEY = 'lyceeExcellence_v_5';
+const STORAGE_KEY = 'lyceeExcellence_v_10';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },

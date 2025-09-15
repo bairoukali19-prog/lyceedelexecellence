@@ -1,13 +1,12 @@
-/* Unified dashboard JS - FIXED & IMPROVED
-   Changes in this version (v9):
-   - Fixed student regrade request: now shows only exams with published grades
-   - Improved site cover with professional design
-   - Added slider administration section in teacher dashboard
-   - Removed unnecessary slides from public interface
-   - Fixed evaluation selection in student regrade request
+ /* Unified dashboard JS - FIXED & IMPROVED
+   Changes in this version (v5):
+   - Fixed student regrade request: now shows exams with published grades in selection dropdown
+   - Added professional site cover with title and subtitle
+   - Added complete slider administration in teacher dashboard
+   - Fixed evaluation selection for students in regrade requests
 */
 
-const STORAGE_KEY = 'lyceeExcellence_v_9';
+const STORAGE_KEY = 'lyceeExcellence_v_5';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },
@@ -36,7 +35,13 @@ let appData = {
   currentUser: { id: "admin", fullname: "Administrateur" },
   isAdmin: true,
   announcement: { text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة", image: null },
-  siteCover: { enabled: true, url: null, title: "مرحبا بكم في منصة التميز الدراسي", subtitle: "منصة متكاملة للتعلم والإدارة التربوية" }
+  siteCover: { 
+    enabled: true, 
+    url: null, 
+    title: "مرحبا بكم في منصة التميز الدراسي", 
+    subtitle: "منصة متكاملة للتعلم والإدارة التربوية",
+    showInPublic: true
+  }
 };
 
 function loadData(){
@@ -48,7 +53,13 @@ function loadData(){
       appData.slides = appData.slides || [];
       appData.regradeRequests = appData.regradeRequests || [];
       appData.responses = appData.responses || {};
-      appData.siteCover = appData.siteCover || { enabled: true, url: null, title: "مرحبا بكم في منصة التميز الدراسي", subtitle: "منصة متكاملة للتعلم والإدارة التربوية" };
+      appData.siteCover = appData.siteCover || { 
+        enabled: true, 
+        url: null, 
+        title: "مرحبا بكم في منصة التميز الدراسي", 
+        subtitle: "منصة متكاملة للتعلم والإدارة التربوية",
+        showInPublic: true
+      };
     }
   } catch(e){ console.error('loadData', e); }
 }
@@ -188,6 +199,7 @@ function wireEvents(){
   if ($('siteCoverImageInput')) $('siteCoverImageInput').addEventListener('change', handleSiteCoverImage);
   if ($('btnSaveSiteCover')) $('btnSaveSiteCover').addEventListener('click', saveSiteCover);
   if ($('btnDeleteSiteCoverImage')) $('btnDeleteSiteCoverImage').addEventListener('click', deleteSiteCoverImage);
+  if ($('siteCoverEnabled')) $('siteCoverEnabled').addEventListener('change', toggleSiteCoverVisibility);
   
   // إضافة الأحداث الخاصة بالسلايدر في لوحة التحكم
   if ($('btnAddSliderImage')) $('btnAddSliderImage').addEventListener('click', adminAddSliderImage);
@@ -198,9 +210,9 @@ function wireEvents(){
 function hideAllMainSections(){ document.querySelectorAll('.page-section').forEach(s => s.style.display='none'); if ($('student-dashboard')) $('student-dashboard').style.display='none'; if ($('admin-panel')) $('admin-panel').style.display='none'; }
 function showSection(id){ hideAllMainSections(); if (id === 'home') { if ($('home-section')) $('home-section').style.display='block'; return; } const el = document.getElementById(id); if (el) el.style.display='block'; if (id === 'quiz') renderQuizList(); if (id === 'lessons') renderLessons(); if (id === 'exercises') renderExercises(); if (id === 'exams') renderExams(); if (id === 'dictionary') renderDictionary(); }
 
-function switchStudentTab(tabName){ document.querySelectorAll('.student-tab-content').forEach(x=>x.style.display='none'); document.querySelectorAll('.student-tab').forEach(t=>t.classList.remove('active')); const btn = document.querySelector('.student-tab[data-tab="'+tabName+'"]'); if (btn) btn.classList.add('active'); const content = document.getElementById('student-'+tabName+'-tab'); if (content) content.style.display='block'; if (tabName === 'dashboard') loadStudentDashboard(); if (tabName === 'quiz') renderQuizListForStudent(); if (tabName === 'exercises') { if (typeof renderStudentExercises === 'function') renderStudentExercises(); } if (tabName === 'cours') renderLatexListForStudents(); if (tabName === 'messages') renderStudentMessages(); if (tabName === 'exams') renderExams(); }
+function switchStudentTab(tabName){ document.querySelectorAll('.student-tab-content').forEach(x=>x.style.display='none'); document.querySelectorAll('.student-tab').forEach(t=>t.classList.remove('active')); const btn = document.querySelector('.student-tab[data-tab="'+tabName+'"]'); if (btn) btn.classList.add('active'); const content = document.getElementById('student-'+tabName+'-tab'); if (content) content.style.display='block'; if (tabName === 'dashboard') loadStudentDashboard(); if (tabName === 'quiz') renderQuizListForStudent(); if (tabName === 'exercises') { if (typeof renderStudentExercises === 'function') renderStudentExercises(); } if (tabName === 'cours') renderLatexListForStudents(); if (tabName === 'messages') renderStudentMessages(); if (tabName === 'exams') renderExams(); if (tabName === 'regrade') renderRegradeRequestForm(); }
 
-function switchAdminTab(tabName){ document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none'); document.querySelectorAll('.admin-tab-link').forEach(l=>l.classList.remove('active')); const link = document.querySelector('.admin-tab-link[data-tab="'+tabName+'"]'); if (link) link.classList.add('active'); const el = document.getElementById(tabName); if (el) el.style.display='block'; if (tabName === 'tab-students') loadStudentsTable(); if (tabName === 'tab-grades') loadGradesTable(); if (tabName === 'tab-quiz') renderQuizAdminListDetailed(); if (tabName === 'tab-latex') loadLatexAdminList(); if (tabName === 'tab-messages') renderAdminMessagesList(); if (tabName === 'tab-lessons') renderLessonsAdminList(); if (tabName === 'tab-exercises') renderExercisesAdminList(); if (tabName === 'tab-exams') { renderExamsAdminList(); renderRegradeRequestsAdminList(); } if (tabName === 'tab-slider') renderSliderAdminList(); }
+function switchAdminTab(tabName){ document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none'); document.querySelectorAll('.admin-tab-link').forEach(l=>l.classList.remove('active')); const link = document.querySelector('.admin-tab-link[data-tab="'+tabName+'"]'); if (link) link.classList.add('active'); const el = document.getElementById(tabName); if (el) el.style.display='block'; if (tabName === 'tab-students') loadStudentsTable(); if (tabName === 'tab-grades') loadGradesTable(); if (tabName === 'tab-quiz') renderQuizAdminListDetailed(); if (tabName === 'tab-latex') loadLatexAdminList(); if (tabName === 'tab-messages') renderAdminMessagesList(); if (tabName === 'tab-lessons') renderLessonsAdminList(); if (tabName === 'tab-exercises') renderExercisesAdminList(); if (tabName === 'tab-exams') { renderExamsAdminList(); renderRegradeRequestsAdminList(); } if (tabName === 'tab-slider') renderSliderAdminList(); if (tabName === 'tab-sitecover') updateSiteCoverUI(); }
 
 /* Authentication */
 function loginStudent(username, password){
@@ -419,9 +431,160 @@ function renderExams(){
 
 function renderExamsAdminList(){ const c=$('examsAdminList'); if(!c) return; c.innerHTML=''; if(!appData.exams.length) return c.innerHTML='<p class="muted">Aucun examen</p>'; appData.exams.forEach(e=>{ const d=document.createElement('div'); d.innerHTML=escapeHtml(e.title)+' '; const a=document.createElement('a'); a.href=e.driveLink; a.textContent='ouvrir'; a.target='_blank'; d.appendChild(a); const del=makeButton('Supprimer', ()=>{ if(!confirm('Supprimer examen ?')) return; appData.exams=appData.exams.filter(x=>x.id!==e.id); saveData(); renderExamsAdminList(); renderExams(); pushNotification('Examen محذوف', e.title, { target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); }); d.appendChild(del); c.appendChild(d); }); }
 
-function studentRequestRegrade(examId, note){ if (!appData.currentUser) return pushNotification('Connectez-vous', 'يرجى تسجيل الدخول', { severity:'warn' }); const req = { id: genId(), examId, studentId: appData.currentUser.id, note: note || '', createdAt: Date.now(), handled:false }; appData.regradeRequests = appData.regradeRequests || []; appData.regradeRequests.push(req); saveData(); appData.messages = appData.messages || []; appData.messages.push({ id: genId(), title: 'طلب إعادة تصحيح', content: 'طالب طلب إعادة تصحيح لامتحان (id:' + examId + ') — ملاحظة: ' + note, target:'all', createdAt:Date.now() }); saveData(); renderRegradeRequestsAdminList(); renderStudentMessages(); }
+function renderRegradeRequestForm() {
+  const container = $('studentRegradeForm');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  if (!appData.currentUser || appData.isAdmin) {
+    container.innerHTML = '<p class="muted">يجب تسجيل الدخول كطالب</p>';
+    return;
+  }
+  
+  const studentId = appData.currentUser.id;
+  
+  // الحصول على التقييمات التي لدى الطالب درجات فيها
+  const evaluationsWithGrades = [];
+  appData.grades.forEach(grade => {
+    if (grade.studentId === studentId) {
+      // التحقق إذا كان التقييم موجودًا في قائمة الامتحانات
+      const exam = appData.exams.find(e => 
+        e.title && grade.title && 
+        (e.title === grade.title || e.title.includes(grade.title) || grade.title.includes(e.title))
+      );
+      
+      if (exam && !evaluationsWithGrades.some(e => e.id === exam.id)) {
+        evaluationsWithGrades.push({
+          id: exam.id,
+          title: exam.title,
+          grade: grade
+        });
+      }
+    }
+  });
+  
+  if (evaluationsWithGrades.length === 0) {
+    container.innerHTML = '<p class="muted">لا توجد تقييمات منشورة يمكنك طلب إعادة تصحيحها</p>';
+    return;
+  }
+  
+  const form = document.createElement('div');
+  form.innerHTML = `
+    <div class="form-group">
+      <label for="regradeEvaluation">التقييم:</label>
+      <select id="regradeEvaluation" class="form-control">
+        <option value="">-- اختر التقييم --</option>
+        ${evaluationsWithGrades.map(e => `<option value="${e.id}">${escapeHtml(e.title)} (${e.grade.score}/20)</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="regradeNote">ملاحظات (اختياري):</label>
+      <textarea id="regradeNote" class="form-control" rows="3" placeholder="اشرح سبب طلب إعادة التصحيح"></textarea>
+    </div>
+    <button id="submitRegradeRequest" class="btn btn-primary">إرسال طلب إعادة التصحيح</button>
+  `;
+  
+  container.appendChild(form);
+  
+  // إضافة事件 للمعاينة
+  if ($('submitRegradeRequest')) {
+    $('submitRegradeRequest').addEventListener('click', () => {
+      const evaluationId = $('regradeEvaluation').value;
+      const note = $('regradeNote').value;
+      
+      if (!evaluationId) {
+        pushNotification('خطأ', 'يجب اختيار التقييم', { severity: 'error', target: 'specific', specific: studentId });
+        return;
+      }
+      
+      studentRequestRegrade(evaluationId, note || '');
+      pushNotification('تم إرسال الطلب', 'تم إرسال طلب إعادة التصحيح بنجاح', { target: 'specific', specific: studentId });
+      
+      // مسح الحقول
+      $('regradeEvaluation').value = '';
+      $('regradeNote').value = '';
+    });
+  }
+}
 
-function renderRegradeRequestsAdminList(){ const c = $('regradeRequestsList'); if (!c) return; c.innerHTML = ''; const list = appData.regradeRequests || []; if (!list.length) { c.innerHTML = '<p class="muted">لا توجد طلبات إعادة تصحيح</p>'; return; } list.forEach(req=>{ const st = appData.students.find(s=>s.id===req.studentId); const ex = appData.exams.find(e=>e.id===req.examId); const d = document.createElement('div'); d.style.marginBottom='8px'; d.innerHTML = '['+new Date(req.createdAt).toLocaleString()+'] <strong>' + escapeHtml(st?st.fullname:'') + '</strong> — ' + escapeHtml(ex?ex.title:'(exam)') + ' — ' + escapeHtml(req.note || ''); const markDone = makeButton(req.handled ? 'معالج' : 'وضع كمُعالَج', ()=>{ req.handled = true; saveData(); renderRegradeRequestsAdminList(); pushNotification('تم المعالجة', 'تم وضع الطلب كمُعالَج', { target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); }); markDone.style.marginLeft='8px'; const del = makeButton('حذف', ()=>{ if (!confirm('Supprimer request ?')) return; appData.regradeRequests = appData.regradeRequests.filter(r=>r.id!==req.id); saveData(); renderRegradeRequestsAdminList(); pushNotification('Request supprimé', '', { target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); }); del.style.marginLeft='6px'; d.appendChild(markDone); d.appendChild(del); c.appendChild(d); }); }
+function studentRequestRegrade(examId, note){ 
+  if (!appData.currentUser) return pushNotification('Connectez-vous', 'يرجى تسجيل الدخول', { severity:'warn' }); 
+  const req = { 
+    id: genId(), 
+    examId, 
+    studentId: appData.currentUser.id, 
+    note: note || '', 
+    createdAt: Date.now(), 
+    handled:false 
+  }; 
+  appData.regradeRequests = appData.regradeRequests || []; 
+  appData.regradeRequests.push(req); 
+  saveData(); 
+  appData.messages = appData.messages || []; 
+  appData.messages.push({ 
+    id: genId(), 
+    title: 'طلب إعادة تصحيح', 
+    content: `طالب ${appData.currentUser.fullname} طلب إعادة تصحيح لامتحان - ملاحظة: ${note}`, 
+    target:'all', 
+    createdAt:Date.now() 
+  }); 
+  saveData(); 
+  renderRegradeRequestsAdminList(); 
+  renderStudentMessages(); 
+}
+
+function renderRegradeRequestsAdminList(){ 
+  const c = $('regradeRequestsList'); 
+  if (!c) return; 
+  c.innerHTML = ''; 
+  const list = appData.regradeRequests || []; 
+  if (!list.length) { 
+    c.innerHTML = '<p class="muted">لا توجد طلبات إعادة تصحيح</p>'; 
+    return; 
+  } 
+  list.forEach(req=>{ 
+    const st = appData.students.find(s=>s.id===req.studentId); 
+    const ex = appData.exams.find(e=>e.id===req.examId); 
+    const d = document.createElement('div'); 
+    d.style.marginBottom='8px'; 
+    d.style.padding='10px';
+    d.style.border='1px solid #eee';
+    d.style.borderRadius='5px';
+    d.innerHTML = `
+      <div><strong>الطالب:</strong> ${escapeHtml(st?st.fullname:'')}</div>
+      <div><strong>التقييم:</strong> ${escapeHtml(ex?ex.title:'(غير معروف)')}</div>
+      <div><strong>التاريخ:</strong> ${new Date(req.createdAt).toLocaleString()}</div>
+      <div><strong>ملاحظات:</strong> ${escapeHtml(req.note || 'لا توجد ملاحظات')}</div>
+      <div><strong>الحالة:</strong> ${req.handled ? 'تم المعالجة' : 'قيد الانتظار'}</div>
+    `;
+    
+    const markDone = makeButton(req.handled ? 'تم المعالجة' : 'وضع كمُعالَج', ()=>{ 
+      req.handled = !req.handled; 
+      saveData(); 
+      renderRegradeRequestsAdminList(); 
+      pushNotification('تم تحديث الحالة', `تم ${req.handled ? 'معالجة' : 'إلغاء معالجة'} طلب إعادة التصحيح`, { target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+    });
+    
+    markDone.style.marginLeft='8px'; 
+    const del = makeButton('حذف', ()=>{ 
+      if (!confirm('حذف طلب إعادة التصحيح؟')) return; 
+      appData.regradeRequests = appData.regradeRequests.filter(r=>r.id!==req.id); 
+      saveData(); 
+      renderRegradeRequestsAdminList(); 
+      pushNotification('تم الحذف', 'تم حذف طلب إعادة التصحيح', { target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+    }); 
+    del.style.marginLeft='6px'; 
+    
+    const actions = document.createElement('div');
+    actions.style.marginTop = '10px';
+    actions.appendChild(markDone); 
+    actions.appendChild(del); 
+    d.appendChild(actions);
+    
+    c.appendChild(d); 
+  }); 
+}
 
 /* Announcement image handling */
 function handleAnnouncementImage(e){ const f = e.target.files[0]; if (!f) return; const fr = new FileReader(); fr.onload = function(ev){ appData.announcement.image = ev.target.result; if ($('announcementImagePreview')) { $('announcementImagePreview').src = ev.target.result; $('announcementImagePreview').style.display='block'; } if ($('announcementImage')) { $('announcementImage').src = ev.target.result; $('announcementImage').style.display='block'; } if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='inline-block'; saveData(); pushNotification('Image annonce', 'صورة الاعلان تم رفعها', { target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); }; fr.readAsDataURL(f); }
@@ -457,13 +620,25 @@ function deleteSiteCoverImage() {
   pushNotification('صورة الموقع', 'تم حذف صورة الغلاف', { target:'specific', specific: appData.currentUser?appData.currentUser.id:null });
 }
 
+function toggleSiteCoverVisibility() {
+  if ($('siteCoverEnabled')) {
+    appData.siteCover.enabled = $('siteCoverEnabled').checked;
+    updateSiteCoverUI();
+    saveData();
+  }
+}
+
 function updateSiteCoverUI() {
   // Update cover in public view
   const coverElement = $('site-cover');
   if (coverElement) {
-    if (appData.siteCover.enabled && appData.siteCover.url) {
-      coverElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${appData.siteCover.url}')`;
+    if (appData.siteCover.enabled) {
       coverElement.style.display = 'block';
+      if (appData.siteCover.url) {
+        coverElement.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('${appData.siteCover.url}')`;
+      } else {
+        coverElement.style.backgroundImage = 'linear-gradient(135deg, var(--primary), var(--dark))';
+      }
     } else {
       coverElement.style.display = 'none';
     }
@@ -507,176 +682,278 @@ function renderFrontSlider(){
   
   container.style.display = 'block';
   const wrapper = document.createElement('div'); 
-  wrapper.style.whiteSpace='nowrap'; 
-  wrapper.style.overflowX='auto'; 
-  wrapper.style.padding='8px 0'; 
+  wrapper.className = 'slides-container';
+  wrapper.style.display = 'flex';
+  wrapper.style.flexWrap = 'nowrap';
+  wrapper.style.overflowX = 'auto';
+  wrapper.style.padding = '10px 0';
+  wrapper.style.gap = '15px';
   
   appData.slides.forEach((sld, i) => { 
     const slide = document.createElement('div'); 
-    slide.className = 'slide'; 
-    slide.style.display = 'inline-block'; 
-    slide.style.verticalAlign = 'top'; 
-    slide.style.minWidth = '220px'; 
-    slide.style.maxWidth = '320px'; 
-    slide.style.position = 'relative'; 
+    slide.className = 'slide-card'; 
+    slide.style.flex = '0 0 auto';
+    slide.style.width = '300px';
     slide.style.borderRadius = '8px'; 
     slide.style.overflow = 'hidden'; 
-    slide.style.boxShadow = '0 6px 16px rgba(12,25,40,0.06)'; 
-    slide.style.background = '#fff'; 
-    slide.style.padding = '6px'; 
-    slide.style.margin = '0 8px'; 
+    slide.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)'; 
+    slide.style.background = '#fff';
     
     const img = document.createElement('img'); 
     img.src = sld.url || ''; 
     img.alt = sld.alt || ('Slide '+(i+1)); 
-    img.style.maxHeight = '160px'; 
-    img.style.width = '100%'; 
+    img.style.width = '100%';
+    img.style.height = '180px';
     img.style.objectFit = 'cover'; 
-    img.onerror = () => { img.style.display = 'none'; }; 
-    slide.appendChild(img); 
+    img.onerror = () => { 
+      img.style.display = 'none'; 
+      slide.style.background = '#f0f0f0';
+      slide.style.display = 'flex';
+      slide.style.alignItems = 'center';
+      slide.style.justifyContent = 'center';
+      slide.innerHTML = '<div>صورة غير متوفرة</div>';
+    }; 
+    
+    const content = document.createElement('div');
+    content.style.padding = '10px';
     
     if (sld.alt) { 
-      const cap = document.createElement('div'); 
-      cap.textContent = sld.alt; 
-      cap.style.paddingTop='6px'; 
-      cap.style.fontSize='13px'; 
-      slide.appendChild(cap); 
-    } 
+      const title = document.createElement('div'); 
+      title.textContent = sld.alt; 
+      title.style.fontWeight = 'bold';
+      title.style.marginBottom = '5px';
+      content.appendChild(title); 
+    }
+    
+    if (sld.desc) {
+      const desc = document.createElement('div');
+      desc.textContent = sld.desc;
+      desc.style.fontSize = '14px';
+      desc.style.color = '#666';
+      content.appendChild(desc);
+    }
+    
+    slide.appendChild(img);
+    slide.appendChild(content);
     wrapper.appendChild(slide); 
   }); 
-  container.appendChild(wrapper); 
+  
+  container.appendChild(wrapper);
 }
 
 function renderSliderAdminList(){ 
   const c = $('sliderAdminList'); 
   if (!c) return; 
   
-  // only the main admin may see slider admin
-  if (!appData.currentUser || !appData.isAdmin || appData.currentUser.id !== 'admin'){ 
-    c.innerHTML = '<p class="muted">لا تملك صلاحية تعديل السلايد</p>'; 
-    return; 
-  }
-  
   c.innerHTML = '';
   if (!appData.slides || !appData.slides.length) { 
-    c.innerHTML = '<p class="muted">Aucun slide pour le moment.</p>'; 
+    c.innerHTML = '<p class="muted">لا توجد شرائح حالياً</p>'; 
     return; 
   } 
   
+  const table = document.createElement('table');
+  table.style.width = '100%';
+  table.style.borderCollapse = 'collapse';
+  table.style.marginTop = '10px';
+  
+  const thead = document.createElement('thead');
+  thead.innerHTML = `
+    <tr>
+      <th style="text-align: right; padding: 10px; border-bottom: 1px solid #ddd;">الصورة</th>
+      <th style="text-align: right; padding: 10px; border-bottom: 1px solid #ddd;">العنوان</th>
+      <th style="text-align: right; padding: 10px; border-bottom: 1px solid #ddd;">الوصف</th>
+      <th style="text-align: right; padding: 10px; border-bottom: 1px solid #ddd;">الإجراءات</th>
+    </tr>
+  `;
+  table.appendChild(thead);
+  
+  const tbody = document.createElement('tbody');
+  
   appData.slides.forEach((sld, idx) => { 
-    const d = document.createElement('div'); 
-    d.className='content-row'; 
-    d.style.marginBottom='8px'; 
+    const row = document.createElement('tr');
     
-    const img = document.createElement('img'); 
-    img.src = sld.url; 
-    img.style.maxWidth='140px'; 
-    img.style.display='inline-block'; 
-    img.style.verticalAlign='middle'; 
-    img.onerror = ()=>{ img.style.display='none'; }; 
+    const imgCell = document.createElement('td');
+    imgCell.style.padding = '10px';
+    imgCell.style.borderBottom = '1px solid #eee';
+    const img = document.createElement('img');
+    img.src = sld.url;
+    img.style.maxWidth = '100px';
+    img.style.maxHeight = '60px';
+    img.style.objectFit = 'cover';
+    img.onerror = () => { img.style.display = 'none'; };
+    imgCell.appendChild(img);
     
-    const info = document.createElement('span'); 
-    info.style.marginLeft='8px'; 
-    info.innerHTML = escapeHtml(sld.alt || ('Slide '+(idx+1))); 
+    const titleCell = document.createElement('td');
+    titleCell.style.padding = '10px';
+    titleCell.style.borderBottom = '1px solid #eee';
+    titleCell.textContent = sld.alt || 'بدون عنوان';
     
-    const del = makeButton('حذف', ()=>{ 
-      if(!confirm('Supprimer ce slide ?')) return; 
-      appData.slides.splice(idx,1); 
-      saveData(); 
-      renderSliderAdminList(); 
-      renderFrontSlider(); 
-      pushNotification('Slide supprimé','Slide supprimé',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
-    }); 
+    const descCell = document.createElement('td');
+    descCell.style.padding = '10px';
+    descCell.style.borderBottom = '1px solid #eee';
+    descCell.textContent = sld.desc || 'بدون وصف';
     
-    const up = makeButton('↑', ()=>{ 
-      if(idx===0) return; 
-      const a=appData.slides[idx-1]; 
-      appData.slides[idx-1]=appData.slides[idx]; 
-      appData.slides[idx]=a; 
-      saveData(); 
-      renderSliderAdminList(); 
-      renderFrontSlider(); 
-    }); 
+    const actionsCell = document.createElement('td');
+    actionsCell.style.padding = '10px';
+    actionsCell.style.borderBottom = '1px solid #eee';
     
-    const down = makeButton('↓', ()=>{ 
-      if(idx===appData.slides.length-1) return; 
-      const a=appData.slides[idx+1]; 
-      appData.slides[idx+1]=appData.slides[idx]; 
-      appData.slides[idx]=a; 
-      saveData(); 
-      renderSliderAdminList(); 
-      renderFrontSlider(); 
-    }); 
+    const editBtn = makeButton('تعديل', () => editSlide(idx));
+    const upBtn = makeButton('▲', () => moveSlideUp(idx));
+    const downBtn = makeButton('▼', () => moveSlideDown(idx));
+    const delBtn = makeButton('حذف', () => deleteSlide(idx));
     
-    d.appendChild(img); 
-    d.appendChild(info); 
-    d.appendChild(up); 
-    d.appendChild(down); 
-    d.appendChild(del); 
-    c.appendChild(d); 
-  }); 
+    actionsCell.appendChild(editBtn);
+    actionsCell.appendChild(upBtn);
+    actionsCell.appendChild(downBtn);
+    actionsCell.appendChild(delBtn);
+    
+    row.appendChild(imgCell);
+    row.appendChild(titleCell);
+    row.appendChild(descCell);
+    row.appendChild(actionsCell);
+    
+    tbody.appendChild(row);
+  });
+  
+  table.appendChild(tbody);
+  c.appendChild(table);
+}
+
+function editSlide(index) {
+  const slide = appData.slides[index];
+  const newTitle = prompt('العنوان الجديد:', slide.alt || '');
+  if (newTitle === null) return;
+  
+  const newDesc = prompt('الوصف الجديد:', slide.desc || '');
+  if (newDesc === null) return;
+  
+  slide.alt = newTitle;
+  slide.desc = newDesc;
+  
+  saveData();
+  renderSliderAdminList();
+  renderFrontSlider();
+  pushNotification('تم التعديل', 'تم تعديل الشريحة بنجاح', { target: 'specific', specific: appData.currentUser.id });
+}
+
+function moveSlideUp(index) {
+  if (index <= 0) return;
+  
+  const temp = appData.slides[index];
+  appData.slides[index] = appData.slides[index - 1];
+  appData.slides[index - 1] = temp;
+  
+  saveData();
+  renderSliderAdminList();
+  renderFrontSlider();
+}
+
+function moveSlideDown(index) {
+  if (index >= appData.slides.length - 1) return;
+  
+  const temp = appData.slides[index];
+  appData.slides[index] = appData.slides[index + 1];
+  appData.slides[index + 1] = temp;
+  
+  saveData();
+  renderSliderAdminList();
+  renderFrontSlider();
+}
+
+function deleteSlide(index) {
+  if (!confirm('هل أنت متأكد من حذف هذه الشريحة؟')) return;
+  
+  appData.slides.splice(index, 1);
+  saveData();
+  renderSliderAdminList();
+  renderFrontSlider();
+  pushNotification('تم الحذف', 'تم حذف الشريحة بنجاح', { target: 'specific', specific: appData.currentUser.id });
 }
 
 function adminAddSliderImage(){
   const url = $('sliderImageUrl') ? $('sliderImageUrl').value.trim() : '';
+  const title = $('sliderImageTitle') ? $('sliderImageTitle').value.trim() : '';
+  const desc = $('sliderImageDesc') ? $('sliderImageDesc').value.trim() : '';
   const fileInput = $('sliderImageUpload');
   
-  if (url) {
-    adminAddSliderImageFromUrl(url);
-  } else if (fileInput && fileInput.files && fileInput.files[0]) {
-    adminAddSliderImageFromFile(fileInput.files[0]);
-  } else {
-    pushNotification('Choisir une image','Choisir image او وضع رابط URL',{ severity:'warn', target:'specific', specific: appData.currentUser?appData.currentUser.id:null });
+  if (!title) {
+    pushNotification('خطأ', 'يجب إدخال عنوان للشريحة', { severity: 'error', target: 'specific', specific: appData.currentUser.id });
+    return;
   }
   
-  if ($('sliderImageUrl')) $('sliderImageUrl').value='';
-  if (fileInput) fileInput.value='';
+  if (url) {
+    adminAddSliderImageFromUrl(url, title, desc);
+  } else if (fileInput && fileInput.files && fileInput.files[0]) {
+    adminAddSliderImageFromFile(fileInput.files[0], title, desc);
+  } else {
+    pushNotification('خطأ', 'يجب إدخال رابط URL أو تحميل صورة', { severity: 'error', target: 'specific', specific: appData.currentUser.id });
+  }
+  
+  if ($('sliderImageUrl')) $('sliderImageUrl').value = '';
+  if ($('sliderImageTitle')) $('sliderImageTitle').value = '';
+  if ($('sliderImageDesc')) $('sliderImageDesc').value = '';
+  if (fileInput) fileInput.value = '';
 }
 
-function adminAddSliderImageFromUrl(url){ 
-  if (!url) return pushNotification('رابط غير صالح','ضع رابط الصورة للسلايد'); 
+function adminAddSliderImageFromUrl(url, title, desc){ 
+  if (!url) return pushNotification('خطأ', 'يجب إدخال رابط صحيح', { severity: 'error', target: 'specific', specific: appData.currentUser.id }); 
+  
   appData.slides = appData.slides || []; 
-  appData.slides.push({ id: genId(), url: url, alt: '' }); 
+  appData.slides.push({ 
+    id: genId(), 
+    url: url, 
+    alt: title, 
+    desc: desc 
+  }); 
+  
   saveData(); 
   renderSliderAdminList(); 
   renderFrontSlider(); 
-  pushNotification('Slide ajouté','تم إضافة سلايد جديد',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+  pushNotification('تم الإضافة', 'تم إضافة شريحة جديدة بنجاح', { target: 'specific', specific: appData.currentUser.id }); 
 }
 
-function adminAddSliderImageFromFile(file){ 
+function adminAddSliderImageFromFile(file, title, desc){ 
   if (!file) return; 
+  
   const fr = new FileReader(); 
   fr.onload = function(ev){ 
     appData.slides = appData.slides || []; 
-    appData.slides.push({ id: genId(), url: ev.target.result, alt: '' }); 
+    appData.slides.push({ 
+      id: genId(), 
+      url: ev.target.result, 
+      alt: title, 
+      desc: desc 
+    }); 
+    
     saveData(); 
     renderSliderAdminList(); 
     renderFrontSlider(); 
-    pushNotification('Slide ajouté (upload)','تم رفع سلايد جديد (upload)',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+    pushNotification('تم الإضافة', 'تم إضافة شريحة جديدة بنجاح', { target: 'specific', specific: appData.currentUser.id }); 
   }; 
+  
   fr.readAsDataURL(file); 
 }
 
 function clearAllSlides(){ 
-  if (!confirm('Vider tout le slider ?')) return; 
+  if (!confirm('هل أنت متأكد من حذف جميع الشرائح؟')) return; 
+  
   appData.slides = []; 
   saveData(); 
   renderSliderAdminList(); 
   renderFrontSlider(); 
-  pushNotification('Slider vidé','جميع السلايدات محذوفة',{ target:'specific', specific: appData.currentUser?appData.currentUser.id:null }); 
+  pushNotification('تم الحذف', 'تم حذف جميع الشرائح', { target: 'specific', specific: appData.currentUser.id }); 
 }
 
 function wireSliderAdminEvents(){
-  // Only wire slider admin events if main admin
-  const isMainAdmin = appData.currentUser && appData.isAdmin && appData.currentUser.id === 'admin';
   const btn = $('btnAddSliderImage');
-  if (btn){
-    // if not main admin, hide button entirely
-    if (!isMainAdmin){ btn.style.display='none'; const upload = $('sliderImageUpload'); if (upload) upload.style.display='none'; const urlInput = $('sliderImageUrl'); if (urlInput) urlInput.style.display='none'; const clr = $('btnClearSlider'); if (clr) clr.style.display='none'; return; }
+  if (btn) {
     btn.addEventListener('click', adminAddSliderImage);
   }
+  
   const clr = $('btnClearSlider');
-  if (clr) clr.addEventListener('click', clearAllSlides);
+  if (clr) {
+    clr.addEventListener('click', clearAllSlides);
+  }
 }
 
 /* Student dashboard */
@@ -748,7 +1025,7 @@ function renderLatexListForStudents(){ const c = $('studentCoursList'); if (!c) 
 /* Utility & renderAll */
 function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function formatTime(sec){ if (!sec || sec<=0) return '00:00'; const m=Math.floor(sec/60); const s=sec%60; return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); }
-function renderAll(){ renderQuizAdminListDetailed(); renderQuizList(); renderLessons(); renderExercises(); renderExams(); renderLessonsAdminList(); renderExercisesAdminList(); renderExamsAdminList(); renderDictionary(); loadStudentsTable(); loadGradesTable(); loadLatexAdminList(); renderLatexListForStudents(); renderStudentMessages(); renderFrontSlider(); renderSliderAdminList(); }
+function renderAll(){ renderQuizAdminListDetailed(); renderQuizList(); renderLessons(); renderExercises(); renderExams(); renderLessonsAdminList(); renderExercisesAdminList(); renderExamsAdminList(); renderDictionary(); loadStudentsTable(); loadGradesTable(); loadLatexAdminList(); renderLatexListForStudents(); renderStudentMessages(); renderFrontSlider(); renderSliderAdminList(); renderRegradeRequestForm(); }
 
 function searchGradesByCode(code){ const s = appData.students.find(x=>x.code === code); if (!s) return pushNotification('Code non trouvé','Code parcours non trouvé',{ severity:'warn' }); const g = appData.grades.filter(x=>x.studentId === s.id); if ($('gradesResults')) $('gradesResults').style.display='block'; if ($('studentInfo')) $('studentInfo').innerHTML = '<div class="content-card"><div class="card-content"><h3>' + escapeHtml(s.fullname) + '</h3><p>Classe: ' + escapeHtml(s.classroom||'') + '</p><p>Code: ' + escapeHtml(s.code||'') + '</p></div></div>'; const tbody = document.querySelector('#gradesTable tbody'); if (!tbody) return; tbody.innerHTML = ''; if (!g.length) { if ($('noGradesMsg')) $('noGradesMsg').style.display='block'; } else { if ($('noGradesMsg')) $('noGradesMsg').style.display='none'; g.forEach(grade=>{ const row=document.createElement('tr'); row.innerHTML = '<td>' + new Date(grade.date).toLocaleDateString() + '</td><td>' + escapeHtml(grade.subject) + '</td><td>' + escapeHtml(grade.title) + '</td><td>' + grade.score + '/20</td><td>' + escapeHtml(grade.note || '') + '</td>'; tbody.appendChild(row); }); } }
 

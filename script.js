@@ -1,8 +1,8 @@
 // deepseek_javascript_20250914_729457.fixed.js
-// نسخة معدّلة: إصلاحات تحكّم السلايدر وDemande de Récorrection
-// استندنا إلى محتوى الملف الأصلي المرفوع من طرفك. (source file referenced)
+// نسخة كاملة ومعدّلة: إصلاحات تحكّم السلايدر وDemande de Récorrection
+// الصق هذا الملف مكان ملف الـ JS عندك (app.js أو deepseek_javascript_20250914_729457.js)
 
-const STORAGE_KEY = 'lyceeExcellence_v_6';
+const STORAGE_KEY = 'lyceeExcellence_v_8';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },
@@ -365,4 +365,3 @@ if (document.readyState === 'loading'){ document.addEventListener('DOMContentLoa
 
 // expose for debugging
 window.__deepseek_fixed = { appData, saveData, loadData, renderAll, getExamsAvailableForStudent };
-

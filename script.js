@@ -1,6 +1,6 @@
 /* =============================
    Unified dashboard JS - UPDATED (includes the 5 students from uploaded JSON)
-   Source data file: the uploaded lycee_data (4).json was used. :contentReference[oaicite:1]{index=1}
+   Source data file: the uploaded lycee_data (12).json was used. :contentReference[oaicite:1]{index=1}
    - Copy this entire file and save as e.g. deepseek_integrated_fixed.js
    - Replaces previous JS; is a single unified file for the dashboard.
    =============================*/
@@ -8,7 +8,7 @@
 /* =============================
    Data model (localStorage)
    ============================= */
-const STORAGE_KEY = 'lyceeExcellence_v_3';
+const STORAGE_KEY = 'lyceeExcellence_v_12';
 let appData = {
   // --- Five students explicitly injected from your uploaded JSON
   students: [

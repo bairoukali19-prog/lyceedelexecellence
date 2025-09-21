@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  <link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lycée de l’Excellence - Physique</title>
+  <!-- MathJax for LaTeX rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="container header-content">
+      <div class="logo">
+        <img id="mainLogo" alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ0iI1MTIiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGZpbGw9IiMzNDk4ZGIiIGQ9Ik0yNTYgOGMxMTkgMCAyMTYgOTcgMjE2IDIxNnMtOTcgMjE2LTIxNiAyMTZTNDAgMzgzIDQwIDI2NFMxMzcgOCAyNTYgOHptMCA0NDhjMTEwLjUgMCAyMDAtODkuNSAyMDAtMjAwIDAtMTEwLjUtODkuNS0yMDAtMjAwLTIwMCAxMDkgMCAyMDAgODkuNSAyMDAgMjAwIDAgMTEwLjUtODkuNSAyMDAtMjAwIDIwMHoiLz48L3N2Zz4=" onerror="this.style.display='none';" />
+        <h1 id="siteTitle">Lycée de l'Excellence</h1>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#" class="nav-link" data-section="home">Accueil</a></li>
+          <li><a href="#" class="nav-link" data-section="dictionary">Lexique</a></li>
+          <li><a href="#" class="nav-link" data-section="quiz">Quiz</a></li>
+          <li><a href="#" class="nav-link" data-section="grades">Notes</a></li>
+          <li><a href="#" class="nav-link" data-section="exams">Examens</a></li>
+          <li><a href="#" class="nav-link" data-section="exercises">Exercices</a></li>
+          <li><a href="#" class="nav-link" data-section="lessons">Leçons</a></li>
+        </ul>
+      </nav>
+      <div class="auth-buttons">
+        <button class="btn btn-primary" id="studentLoginBtn"><i class="fa-solid fa-user-graduate"></i> Espace Élève</button>
+        <button class="btn btn-accent" id="loginBtn"><i class="fa-solid fa-user-shield"></i> Espace Professeur</button>
+      </div>
+    </div>
+  </header>
+  
+  <!-- Hero -->
+  <section class="hero" id="home-section">
+    <div class="container hero-content">
+      <h2>Bienvenue au Lycée de l'Excellence</h2>
+      <p>Plateforme éducative dédiée à la physique sous la supervision du Professeur Ali Bairouk</p>
+    </div>
+  </section>
+  
+  <!-- Announcement -->
+  <div class="announcement-box" id="announcementBox">
+    <i class="fas fa-bullhorn"></i>
+    <div class="announcement-content">
+      <p id="announcementText">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</p>
+      <img id="announcementImage" class="announcement-image" src="" alt="Announcement image">
+    </div>
+  </div>
+  
+  <!-- Slider under announcement -->
+  <div class="hero-slider" id="front-hero-slider">
+    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&auto=format&fit=crop&q=60" alt="Slide 1" class="active">
+    <img src="https://images.unsplash.com/photo-1591123120675-6f7f1aae0e5b?w=1200&auto=format&fit=crop&q=60" alt="Slide 2">
+    <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=1200&auto=format&fit=crop&q=60" alt="Slide 3">
+  </div>
+  
+  <div class="container">
+    <!-- Features -->
+    <h2 class="section-title">Sections du Site</h2>
+    <div class="features">
+      <div class="feature-card" data-section="dictionary">
+        <div class="feature-icon"><i class="fas fa-book"></i></div>
+        <div class="feature-content"><h3>Lexique Scientifique</h3><p>Traduction des termes scientifiques عربى → français.</p></div>
+      </div>
+      <div class="feature-card" data-section="quiz">
+        <div class="feature-icon"><i class="fas fa-question-circle"></i></div>
+        <div class="feature-content"><h3>Quiz</h3><p>اختبارات تفاعلية احترافية.</p></div>
+      </div>
+      <div class="feature-card" data-section="grades">
+        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+        <div class="feature-content"><h3>Notes</h3><p>عرض النقاط عبر حساب التلميذ أو Code Parcours.</p></div>
+      </div>
+      <div class="feature-card" data-section="exams">
+        <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+        <div class="feature-content"><h3>Examens Antérieurs</h3><p>امتحانات مع التصحيحات.</p></div>
+      </div>
+      <div class="feature-card" data-section="exercises">
+        <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+        <div class="feature-content"><h3>Exercices et Solutions</h3><p>تمارين محلولة بتفصيل.</p></div>
+      </div>
+      <div class="feature-card" data-section="lessons">
+        <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+        <div class="feature-content"><h3>Leçons</h3><p>دروس شاملة للبرنامج.</p></div>
+      </div>
+    </div>
+    
+    <!-- Student Dashboard -->
+    <section id="student-dashboard" class="student-dashboard">
+      <div class="welcome-banner">
+        <h2 id="studentWelcome">Bienvenue, Élève</h2>
+        <p>Vous trouverez ici toutes vos ressources pédagogiques</p>
+      </div>
+      
+      <!-- Student Tabs Navigation -->
+      <div class="student-tabs">
+        <div class="student-tab active" data-tab="dashboard">Tableau de bord</div>
+        <div class="student-tab" data-tab="quiz">Quiz</div>
+        <div class="student-tab" data-tab="exercises">Exercices</div>
+        <div class="student-tab" data-tab="dictionary">Lexique</div>
+        <div class="student-tab" data-tab="revision">Demande de récorrection</div>
+        <div class="student-tab" data-tab="messages">الرسائل</div>
+        <div class="student-tab" data-tab="cours">Cours online</div>
+      </div>
+      
+      <!-- Dashboard tab content -->
+      <div id="student-dashboard-tab" class="student-tab-content active">
+        <div class="dashboard-card">
+          <h3>Vos Notes Récentes</h3>
+          <div id="studentRecentGrades"><p class="muted">Aucune note disponible pour le moment.</p></div>
+        </div>
+        <div class="dashboard-card">
+          <h3>Quiz disponibles</h3>
+          <div id="studentQuizList"><p class="muted">Aucun quiz disponible pour le moment.</p></div>
+        </div>
+        <div class="dashboard-card">
+          <h3>Ressources Disponibles</h3>
+          <div class="content-grid" id="studentResources"></div>
+        </div>
+      </div>
+      
+      <!-- Student Quiz tab -->
+      <div id="student-quiz-tab" class="student-tab-content">
+        <div class="dashboard-card">
+          <h3>Quiz Disponibles</h3>
+          <div id="studentQuizList2"><p class="muted">Aucun quiz disponible pour le moment.</p></div>
+        </div>
+        <div class="dashboard-card">
+          <h3>Résultats des Quiz</h3>
+          <div id="studentQuizResults"><p class="muted">Aucun résultat de quiz pour le moment.</p></div>
+        </div>
+        <!-- Quiz runtime container -->
+        <div id="quizContainer" class="quiz-container"></div>
+      </div>
+      
+      <!-- Exercises, Dictionary, Revision, Messages, Cours tabs -->
+      <div id="student-exercises-tab" class="student-tab-content">
+        <div class="dashboard-card">
+          <h3>Exercices Disponibles</h3>
+          <div class="content-grid" id="studentExercisesList"></div>
+        </div>
+      </div>
+      
+      <div id="student-dictionary-tab" class="student-tab-content">
+        <div class="dashboard-card">
+          <h3>Lexique Scientifique</h3>
+          <div class="content-grid" id="studentDictionaryContent"></div>
+        </div>
+      </div>
+      
+      <div id="student-revision-tab" class="student-tab-content">
+        <div class="dashboard-card">
+          <h3>Demande de Récorrection de Note</h3>
+          <div class="revision-request-form">
+            <form id="revisionRequestForm">
+              <div class="form-group">
+                <label for="revisionExam">Examen/Devoir</label>
+                <select id="revisionExam" required><option value="">Sélectionnez une évaluation</option></select>
+              </div>
+              <div class="form-group">
+                <label for="revisionMessage">Message</label>
+                <textarea id="revisionMessage" rows="3" required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+            </form>
+          </div>
+        </div>
+        <div class="dashboard-card">
+          <h3>Vos Demandes de Récorrection</h3>
+          <div id="studentRevisionRequests"><p class="muted">Vous n'avez pas encore soumis de demandes de récorrection.</p></div>
+        </div>
+      </div>
+      
+      <div id="student-messages-tab" class="student-tab-content">
+        <div class="dashboard-card">
+          <h3>الرسائل الموجهة إليك</h3>
+          <div id="studentMessagesList"><p class="muted">لا توجد رسائل حتى الآن.</p></div>
+        </div>
+      </div>
+      
+      <div id="student-cours-tab" class="student-tab-content">
+        <div class="dashboard-card">
+          <h3>الدروس العلمية - Cours online</h3>
+          <div id="studentCoursList" class="latex-content"><p class="muted">لا توجد دروس متاحة حتى الآن.</p></div>
+        </div>
+      </div>
+      
+      <div class="flex right">
+        <button class="btn btn-ghost" id="studentLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+      </div>
+    </section>
+    
+    <!-- Other sections -->
+    <section id="dictionary" class="page-section">
+      <div class="section-header"><h2>Lexique Scientifique</h2><p>Ar → Fr</p></div>
+      <div class="content-grid" id="dictionaryContent"></div>
+    </section>
+    
+    <section id="quiz" class="page-section">
+      <div class="section-header"><h2>Quiz de Physique</h2><p>Testez vos connaissances</p></div>
+      <div id="quizContent"></div>
+    </section>
+    
+    <section id="grades" class="page-section">
+      <div class="section-header"><h2>Consultation des Notes</h2></div>
+      <div class="content-card mb-3">
+        <div class="card-content">
+          <div class="form-row">
+            <div class="form-group"><label for="searchCode">Code Parcours</label><input type="text" id="searchCode" placeholder="Ex: P-2024-001"></div>
+            <div class="form-group"><label>&nbsp;</label><button class="btn btn-primary w-100" id="btnSearchByCode"><i class="fa-solid fa-magnifying-glass"></i> Voir les notes</button></div>
+          </div>
+        </div>
+      </div>
+      <div id="gradesResults">
+        <h3 class="section-title">Vos Résultats</h3>
+        <div id="studentInfo" class="mb-2"></div>
+        <div class="content-card">
+          <div class="card-content">
+            <table id="gradesTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Matière</th>
+                  <th>Intitulé</th>
+                  <th>Note /20</th>
+                  <th>Remarque</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <p id="noGradesMsg">Aucune note pour le moment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <section id="exams" class="page-section">
+      <div class="section-header"><h2>Examens Antérieurs</h2><p>Consultez & téléchargez</p></div>
+      <div class="content-grid" id="examsContent"></div>
+    </section>
+    
+    <section id="exercises" class="page-section">
+      <div class="section-header"><h2>Exercices et Solutions</h2><p>تمارين محلولة بتفصيل</p></div>
+      <div class="content-grid" id="exercisesContent"></div>
+    </section>
+    
+    <section id="lessons" class="page-section">
+      <div class="section-header"><h2>Leçons</h2><p>دروس شاملة للبرنامج</p></div>
+      <div class="content-grid" id="lessonsContent"></div>
+    </section>
+    
+    <!-- Admin Panel -->
+    <section id="admin-panel" class="admin-panel">
+      <div class="admin-header">
+        <h2>Panneau d'Administration</h2>
+        <div class="flex right">
+          <button id="btnExport" class="btn btn-outline"><i class="fa-solid fa-file-export"></i> Exporter JSON</button>
+          <label class="btn btn-outline" for="importFile"><i class="fa-solid fa-file-import"></i> Importer JSON</label>
+          <input type="file" id="importFile" accept="application/json">
+          <button id="logoutBtn" class="btn btn-ghost"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
+        </div>
+      </div>
+      
+      <div class="admin-dashboard">
+        <div class="admin-sidebar">
+          <h3>Tableau de Bord</h3>
+          <ul class="admin-menu">
+            <li class="active"><a href="#" class="admin-tab-link" data-tab="tab-dashboard"><i class="fas fa-tachometer-alt"></i> Tableau de bord</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-students"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-grades"><i class="fa-solid fa-chart-line"></i> Notes</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-quiz"><i class="fa-solid fa-question-circle"></i> Quiz</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-dictionary"><i class="fa-solid fa-book"></i> Lexique</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-lessons"><i class="fa-solid fa-graduation-cap"></i> Leçons</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exercises"><i class="fa-solid fa-tasks"></i> Exercices</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exams"><i class="fa-solid fa-file-alt"></i> Examens</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-announcement"><i class="fa-solid fa-bullhorn"></i> Annonces</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-revisions"><i class="fa-solid fa-edit"></i> Demandes de récorrection</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-messages"><i class="fa-solid fa-envelope"></i> الرسائل</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-latex"><i class="fa-solid fa-square-root-variable"></i> LaTeX Courses</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-sitecover"><i class="fa-solid fa-image"></i> Site Cover</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-slider"><i class="fa-solid fa-images"></i> Slider</a></li>
+          </ul>
+        </div>
+        
+        <div class="admin-content">
+          <!-- Dashboard -->
+          <div id="tab-dashboard" class="admin-section active">
+            <h2>Tableau de Bord</h2>
+            <div class="stats-grid">
+              <div class="stat-card"><h3 id="stats-students">0</h3><p>Étudiants</p></div>
+              <div class="stat-card"><h3 id="stats-quiz">0</h3><p>Questions de Quiz</p></div>
+              <div class="stat-card"><h3 id="stats-dictionary">0</h3><p>Termes de Lexique</p></div>
+              <div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes Enregistrées</p></div>
+              <div class="stat-card"><h3 id="stats-messages">0</h3><p>رسائل</p></div>
+              <div class="stat-card"><h3 id="stats-latex">0</h3><p>دروس LaTeX</p></div>
+            </div>
+            <div class="content-card">
+              <div class="card-content"><h3>Activité Récente</h3><div id="recent-activity"><p class="muted">Aucune activité récente.</p></div></div>
+            </div>
+          </div>
+          
+          <!-- Students -->
+          <div id="tab-students" class="admin-section">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Créer / Modifier un Étudiant</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Nom complet</label><input id="stFullname" type="text" placeholder="Ex: Ahmed Amine"></div>
+                  <div class="form-group"><label>Nom d'utilisateur</label><input id="stUsername" type="text" placeholder="Ex: ahmed.amine"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Mot de passe</label><input id="stPassword" type="text" placeholder="••••••"></div>
+                  <div class="form-group"><label>Code Parcours</label><input id="stCode" type="text" placeholder="Ex: P-2024-001"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Classe</label><input id="stClassroom" type="text" placeholder="2ème Bac Sciences Physiques"></div>
+                  <div class="form-group"><label>&nbsp;</label>
+                    <div class="inline">
+                      <button class="btn btn-success" id="btnSaveStudent"><i class="fa-solid fa-save"></i> Enregistrer</button>
+                      <button class="btn btn-ghost" id="btnResetStudent">Vider</button>
+                    </div>
+                  </div>
+                </div>
+                <input type="hidden" id="stId">
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Liste des Étudiants</strong><input class="right" id="filterStudents" placeholder="Filtrer..." /></div>
+                <table id="studentsTable"><thead><tr><th>Nom</th><th>Utilisateur</th><th>Code</th><th>Classe</th><th>Actions</th></tr></thead><tbody></tbody></table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Grades -->
+          <div id="tab-grades" class="admin-section">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une Note</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Étudiant</label><select id="grStudent"></select></div>
+                  <div class="form-group"><label>Matière</label><input id="grSubject" type="text" placeholder="Électricité, Mécanique..."></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Intitulé</label><input id="grTitle" type="text" placeholder="Contrôle 1"></div>
+                  <div class="form-group"><label>Date</label><input id="grDate" type="date"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Note /20</label><input id="grScore" type="number" min="0" max="20" step="0.25" placeholder="16.5"></div>
+                  <div class="form-group"><label>Remarque</label><input id="grNote" type="text" placeholder="Très bien"></div>
+                </div>
+                <input type="hidden" id="grId">
+                <div class="mt-2"><button class="btn btn-success" id="btnSaveGrade"><i class="fa-solid fa-plus"></i> Enregistrer la note</button><button class="btn btn-ghost" id="btnResetGrade">Vider</button></div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Notes par Étudiant</strong><select id="grFilterStudent" class="right"></select></div>
+                <table id="gradesAdminTable"><thead><tr><th>Étudiant</th><th>Date</th><th>Matière</th><th>Intitulé</th><th>Note</th><th>Remarque</th><th>Actions</th></tr></thead><tbody></tbody></table>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quiz -->
+          <div id="tab-quiz" class="admin-section">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Créer / Gérer Quiz Professionnel</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Titre du quiz</label><input id="newQuizTitle" type="text" placeholder="Titre du quiz"></div>
+                  <div class="form-group"><label>Durée (minutes, 0 = sans limite)</label><input id="newQuizDuration" type="number" min="0" value="0"></div>
+                </div>
+                <div class="form-row">
+                  <label><input type="checkbox" id="newQuizShuffle"> Mélanger questions</label>
+                  <label><input type="checkbox" id="newQuizAllowMultipleAttempts"> Autoriser plusieurs tentatives</label>
+                </div>
+                <div class="mt-2"><button class="btn btn-success" id="btnCreateQuiz"><i class="fa-solid fa-plus"></i> Créer Quiz</button></div>
+              </div>
+            </div>
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une question</h3>
+                <div class="form-group"><label>Sélectionnez quiz</label><select id="adminSelectQuiz"></select></div>
+                <div class="form-group"><label>Question</label><input id="adminQuizQuestion" type="text" placeholder="Entrez la question"></div>
+                <div class="form-row">
+                  <div class="form-group"><label>Type de question</label>
+                    <select id="adminQuestionType"><option value="single">Choix unique</option><option value="multiple">Choix multiple</option></select>
+                  </div>
+                  <div class="form-group"><label>Points</label><input id="adminQuestionPoints" type="number" min="1" value="1"></div>
+                </div>
+                <div class="form-group"><label>Option 1</label><input id="adminOption1" type="text" placeholder="Option 1"></div>
+                <div class="form-group"><label>Option 2</label><input id="adminOption2" type="text" placeholder="Option 2"></div>
+                <div class="form-group"><label>Option 3 (optionnel)</label><input id="adminOption3" type="text" placeholder="Option 3"></div>
+                <div class="form-group"><label>Option 4 (optionnel)</label><input id="adminOption4" type="text" placeholder="Option 4"></div>
+                <div class="form-group"><label>Option 5 (optionnel)</label><input id="adminOption5" type="text" placeholder="Option 5"></div>
+                <div class="form-group"><label>Option 6 (optionnel)</label><input id="adminOption6" type="text" placeholder="Option 6"></div>
+                <div class="form-row">
+                  <div class="form-group"><label>Indices (séparer par , pour multiple) des réponses correctes (1..6)</label><input id="adminQuizCorrect" type="text" value="1"></div>
+                  <div class="form-group"><label>Image (optionnelle)</label><input id="adminQuizImage" type="file" accept="image/*"></div>
+                </div>
+                <div class="form-group"><label>Explication / Feedback (apparaîtra après soumission)</label><textarea id="adminQuestionFeedback" rows="2"></textarea></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveQuiz"><i class="fa-solid fa-plus"></i> Ajouter la question</button> <button id="adminBtnPreviewQuiz">Aperçu quiz (comme élève)</button></div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content">
+                <div class="flex mb-2"><strong>Questions existantes</strong></div>
+                <div id="quizQuestionsList"><p class="muted">Aucune question pour le moment.</p></div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Dictionary -->
+          <div id="tab-dictionary" class="admin-section">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un terme au lexique</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>Terme arabe</label><input id="adminDictAr" type="text" placeholder="مصطلح علمي"></div>
+                  <div class="form-group"><label>Terme français</label><input id="adminDictFr" type="text" placeholder="Terme scientifique"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>Définition</label><textarea id="adminDictDef" rows="3"></textarea></div>
+                </div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveDict"><i class="fa-solid fa-plus"></i> Ajouter le terme</button> <button class="btn btn-ghost" id="adminBtnResetDict">Nouveau terme</button></div>
+              </div>
+            </div>
+            <div class="content-card">
+              <div class="card-content"><div id="dictionaryTermsList"><p class="muted">Aucun terme pour le moment.</p></div></div>
+            </div>
+          </div>
+          
+          <!-- Lessons -->
+          <div id="tab-lessons" class="admin-section">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter une leçon</h3>
+                <div class="form-row"><div class="form-group"><label>Titre de la leçon</label><input id="adminLessonTitle" type="text"></div><div class="form-group"><label>Chapitre</label><input id="adminLessonChapter" type="text"></div></div>
+                <div class="form-group"><label>Lien Google Drive (PDF)</label><input type="url" id="adminLessonDriveLink" placeholder="https://drive.google.com/file/d/..."></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveLesson"><i class="fa-solid fa-plus"></i> Ajouter la leçon</button></div>
+              </div>
+            </div>
+            <div class="content-card"><div class="card-content"><div id="lessonsAdminList"><p class="muted">Aucune leçon pour le moment.</p></div></div></div>
+          </div>
+          
+          <!-- Exercises -->
+          <div id="tab-exercises" class="admin-section">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un exercice</h3>
+                <div class="form-row"><div class="form-group"><label>Titre</label><input id="adminExerciseTitle" type="text"></div><div class="form-group"><label>Chapitre</label><input id="adminExerciseChapter" type="text"></div></div>
+                <div class="form-group"><label>Lien Google Drive (PDF)</label><input type="url" id="adminExerciseDriveLink"></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExercise">Ajouter l'exercice</button></div>
+              </div>
+            </div>
+            <div class="content-card"><div class="card-content"><div id="exercisesAdminList"><p class="muted">Aucun exercice pour le moment.</p></div></div></div>
+          </div>
+          
+          <!-- Exams -->
+          <div id="tab-exams" class="admin-section">
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3 class="mb-2">Ajouter un examen</h3>
+                <div class="form-row"><div class="form-group"><label>Titre</label><input id="adminExamTitle" type="text"></div><div class="form-group"><label>Série</label><input id="adminExamSeries" type="text"></div></div>
+                <div class="form-group"><label>Lien Google Drive (PDF)</label><input type="url" id="adminExamDriveLink"></div>
+                <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExam">Ajouter l'examen</button></div>
+              </div>
+            </div>
+            <div class="content-card"><div class="card-content"><div id="examsAdminList"><p class="muted">Aucun examen pour le moment.</p></div></div></div>
+          </div>
+          
+          <!-- Announcement -->
+          <div id="tab-announcement" class="admin-section">
+            <div class="content-card"><div class="card-content">
+              <h3 class="mb-2">Gestion des Annonces</h3>
+              <div class="form-group"><label>Annonce actuelle</label><textarea id="announcementInput" rows="4">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</textarea></div>
+              <div class="form-group"><label>Image d'annonce (optionnelle)</label><input type="file" id="announcementImageInput" accept="image/*"><img id="announcementImagePreview"></div>
+              <div class="mt-2"><button id="btnSaveAnnouncement" class="btn btn-success">Enregistrer l'annonce</button> <button id="btnDeleteAnnouncementImage">Supprimer image annonce</button></div>
+            </div></div>
+          </div>
+          
+          <!-- Revisions -->
+          <div id="tab-revisions" class="admin-section">
+            <div class="content-card"><div class="card-content"><h3>Demandes de Récorrection</h3><div id="revisionRequestsList"><p class="muted">Aucune demande pour le moment.</p></div></div></div>
+          </div>
+          
+          <!-- Messages -->
+          <div id="tab-messages" class="admin-section">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>إرسال رسالة إلى الطلاب</h3>
+              <div class="form-group"><label>عنوان الرسالة</label><input id="adminMessageTitle" type="text"></div>
+              <div class="form-group"><label>محتوى الرسالة</label><textarea id="adminMessageContent" rows="4"></textarea></div>
+              <div class="form-group"><label>إرسال إلى</label><select id="adminMessageTarget"><option value="all">جميع الطلاب</option><option value="specific">طالب محدد</option></select></div>
+              <div class="form-group" id="specificStudentContainer"><label>اختر الطالب</label><select id="adminMessageStudent"><option value="">اختر طالباً</option></select></div>
+              <div class="mt-2"><button id="adminBtnSendMessage" class="btn btn-success">إرسال الرسالة</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div id="adminMessagesList"><p class="muted">لا توجد رسائل حتى الآن.</p></div></div></div>
+          </div>
+          
+          <!-- LaTeX Courses -->
+          <div id="tab-latex" class="admin-section">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3 class="mb-2">إضافة درس LaTeX (محرر مشابه لـ Overleaf)</h3>
+              <div class="form-group"><label>عنوان الدرس</label><input id="latexTitle" type="text" placeholder="أدخل عنوان الدرس"></div>
+              <div class="form-group">
+                <label>محتوى LaTeX (مؤشّر أسطر مرقّم 1..2000)</label>
+                <div>
+                  <pre id="latexLineNumbers"></pre>
+                  <textarea id="latexCode" rows="12"></textarea>
+                </div>
+                <small>المعاينة ستكون على الجانب أو في قسم المعاينة أدناه. يستعمل MathJax.</small>
+              </div>
+              <div class="form-group"><label>وصف الدرس</label><textarea id="latexDescription" rows="2"></textarea></div>
+              <div class="form-group"><label>تصنيف</label><input id="latexCategory" type="text"></div>
+              <div class="form-group"><label>معاينة LaTeX</label><div id="latexPreview">ستظهر المعاينة هنا</div></div>
+              <div class="mt-2"><button id="btnSaveLatex" class="btn btn-accent">حفظ الدرس</button> <button id="btnResetLatex" class="btn">جديد</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content">
+              <h4>قائمة دروس LaTeX (الإدارة)</h4>
+              <div id="latexContentsList"><p class="muted">لا توجد دروس حتى الآن.</p></div>
+            </div></div>
+          </div>
+          
+          <!-- Site Cover -->
+          <div id="tab-sitecover" class="admin-section">
+            <div class="content-card"><div class="card-content">
+              <h3>صورة واجهة الموقع</h3>
+              <div class="form-group"><label>رفع صورة الواجهة</label><input id="siteCoverInput" type="file" accept="image/*"></div>
+              <div class="form-group"><label>تفعيل عرض صورة الواجهة</label><input id="siteCoverEnable" type="checkbox"></div>
+              <div class="form-group"><img id="siteCoverPreview" src=""></div>
+              <div class="mt-2"><button id="btnSaveSiteCover">حفظ إعدادات واجهة الموقع</button> <button id="btnRemoveSiteCover">إزالة صورة الواجهة</button></div>
+            </div></div>
+          </div>
+          
+          <!-- Slider -->
+          <div id="tab-slider" class="admin-section">
+            <div class="content-card"><div class="card-content">
+              <h3>Gestion du Slider (sous l'annonce)</h3>
+              <div class="form-group"><label>Ajouter image via URL</label><input type="text" id="sliderImageUrl" placeholder="https://..."/></div>
+              <div class="form-group"><label>Ou télécharger une image</label><input type="file" id="sliderImageUpload" accept="image/*"/></div>
+              <div class="mt-2"><button id="btnAddSliderImage" class="btn btn-success">Ajouter au slider</button> <button id="btnClearSlider" class="btn">Vider slider</button></div>
+              <div><h4>Slides actuels</h4><div id="sliderAdminList"><p class="muted">Aucun slide pour le moment.</p></div></div>
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <!-- Login modals -->
+  <div class="login-modal" id="studentLoginModal">
+    <div class="login-form">
+      <h2>Espace Élève</h2>
+      <div class="form-group"><label>Nom d'utilisateur</label><input id="studentUsername" type="text" placeholder="Votre nom d'utilisateur"></div>
+      <div class="form-group"><label>Mot de passe</label><input id="studentPassword" type="password" placeholder="Votre mot de passe"></div>
+      <div class="form-buttons flex"><button id="cancelStudentLogin" class="btn btn-ghost">Annuler</button><button id="submitStudentLogin" class="btn btn-primary">Se connecter</button></div>
+    </div>
+  </div>
+  
+  <div class="login-modal" id="loginModal">
+    <div class="login-form">
+      <h2>Espace Professeur</h2>
+      <div class="form-group"><label>Nom d'utilisateur</label><input id="username" type="text" placeholder="Nom d'utilisateur"></div>
+      <div class="form-group"><label>Mot de passe</label><input id="password" type="password" placeholder="Mot de passe"></div>
+      <div class="form-buttons flex"><button id="cancelLogin" class="btn btn-ghost">Annuler</button><button id="submitLogin" class="btn btn-accent">Se connecter</button></div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section"><h3>Informations de Contact</h3><ul class="contact-info"><li><i class="fas fa-user"></i> Professeur: Pr. Ali Bairouk</li><li><i class="fas fa-envelope"></i> Email: bairoukali.contacter@gmail.com</li><li><i class="fas fa-phone"></i> Téléphone: 0620565105</li></ul></div>
+        <div class="footer-section"><h3>Liens Rapides</h3><ul class="contact-info"><li><i class="fas fa-book"></i> Lexique</li><li><i class="fas fa-question-circle"></i> Quiz</li><li><i class="fas fa-chart-line"></i> Notes</li></ul></div>
+        <div class="footer-section"><h3>À Propos du Site</h3><p>Lycée de l'Excellence est une plateforme éducative spécialisée en physique.</p></div>
+      </div>
+      <div class="footer-bottom"><p>&copy; 2025 Lycée de l'Excellence. Tous droits réservés</p></div>
+    </div>
+  </footer>
+
+  <!-- JavaScript code -->
+  <script>
+  (function(){
+    'use strict';
+
+    /* ---------- small helpers ---------- */
+    const $ = sel => document.querySelector(sel);
+    const $$ = sel => Array.from(document.querySelectorAll(sel));
+    const lsKey = k => 'lycee_' + k;
+    const LS = {
+      load(k, fallback){ try{ const v = localStorage.getItem(lsKey(k)); return v ? JSON.parse(v) : fallback; }catch(e){ return fallback; } },
+      save(k, v){ try{ localStorage.setItem(lsKey(k), JSON.stringify(v)); }catch(e){ console.warn('LS save failed', e); } }
+    };
+    const uid = (p='id') => p + '_' + Math.random().toString(36).slice(2,9);
+    function escapeHtml(s){ if(s===null||s===undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    /* ---------- state ---------- */
+    let students = LS.load('students', []);
+    let grades = LS.load('grades', []);
+    let messages = LS.load('messages', []);
+    let sliderImages = LS.load('sliderImages', []);
+    let revisions = LS.load('revisions', []);
+    let quizzes = LS.load('quizzes', []);
+    let dictionary = LS.load('dictionary', []);
+    let lessons = LS.load('lessons', []);
+    let exercises = LS.load('exercises', []);
+    let exams = LS.load('exams', []);
+    let latexCourses = LS.load('latexCourses', []);
+
+    /* ---------- section utilities (robust) ---------- */
+    const SECTION_SELECTORS = ['.page-section', '#home-section', '#student-dashboard', '#admin-panel'];
+    function hideAllSections(){
+      SECTION_SELECTORS.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          el.style.display = 'none';
+          el.setAttribute('aria-hidden','true');
+        });
+      });
+      // also hide any student-tab-content
+      document.querySelectorAll('.student-tab-content').forEach(e => { e.style.display='none'; });
+    }
+    function findSectionByName(name){
+      if(!name) return null;
+      // try exact id, then id + '-section', then section with that id, then any element with that id
+      let el = document.getElementById(name) || document.getElementById(name + '-section') || document.querySelector('section#' + name) || document.querySelector('#' + name);
+      return el;
+    }
+    function showSectionByName(name){
+      const el = findSectionByName(name);
+      if(!el){
+        console.warn('showSection: not found', name);
+        return;
+      }
+      hideAllSections();
+      el.style.display = 'block';
+      el.removeAttribute('aria-hidden');
+      window.scrollTo({top:0});
+    }
+
+    /* ---------- slider (prevent interval leaks) ---------- */
+    let sliderInterval = null;
+    function initSlider() {
+      const slider = $('#front-hero-slider');
+      if (!slider) return;
+      
+      const slides = slider.querySelectorAll('img');
+      if (slides.length === 0) return;
+      
+      let currentSlide = 0;
+      
+      // Show first slide
+      slides[0].classList.add('active');
+      
+      // Clear existing interval
+      if (sliderInterval) clearInterval(sliderInterval);
+      
+      // Set new interval
+      sliderInterval = setInterval(() => {
+        // Hide current slide
+        slides[currentSlide].classList.remove('active');
+        
+        // Move to next slide
+        currentSlide = (currentSlide + 1) % slides.length;
+        
+        // Show next slide
+        slides[currentSlide].classList.add('active');
+      }, 8000);
+    }
+
+    /* ---------- rendering helpers ---------- */
+    function renderStudentsTable(){
+      const tbody = document.querySelector('#studentsTable tbody');
+      if(!tbody) return;
+      tbody.innerHTML = '';
+      students.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(s.fullname||'')}</td>
+          <td>${escapeHtml(s.username||'')}</td>
+          <td>${escapeHtml(s.code||'')}</td>
+          <td>${escapeHtml(s.classroom||'')}</td>
+          <td>
+            <button class="btn btn-ghost btn-edit-student" data-id="${s.id}"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="btn btn-ghost btn-del-student" data-id="${s.id}"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      renderStudentsForAdminSelect();
+    }
+    
+    function renderStudentsForAdminSelect(){
+      const sel = document.getElementById('adminMessageStudent');
+      if(!sel) return;
+      const previous = sel.value;
+      sel.innerHTML = '<option value="">اختر طالباً</option>';
+      students.forEach(s=>{ 
+        const o = document.createElement('option'); 
+        o.value = s.id; 
+        o.textContent = `${s.fullname} (${s.username})`; 
+        sel.appendChild(o); 
+      });
+      if(previous) sel.value = previous;
+    }
+    
+    function renderGrStudentSelects(){
+      const grStudent = document.getElementById('grStudent');
+      const grFilterStudent = document.getElementById('grFilterStudent');
+      if(grStudent){ 
+        grStudent.innerHTML = '<option value="">-- Choisir --</option>'; 
+        students.forEach(s=>{ 
+          const o = document.createElement('option'); 
+          o.value = s.id; 
+          o.textContent = `${s.fullname} (${s.username})`; 
+          grStudent.appendChild(o); 
+        }); 
+      }
+      if(grFilterStudent){ 
+        grFilterStudent.innerHTML = '<option value="">Tous</option>'; 
+        students.forEach(s=>{ 
+          const o = document.createElement('option'); 
+          o.value = s.id; 
+          o.textContent = `${s.fullname} (${s.username})`; 
+          grFilterStudent.appendChild(o); 
+        }); 
+      }
+    }
+    
+    function renderGradesAdminTable(){
+      const tbody = document.querySelector('#gradesAdminTable tbody');
+      if(!tbody) return;
+      tbody.innerHTML = '';
+      grades.forEach(g=>{
+        const st = students.find(s=>s.id===g.studentId) || {fullname: 'N/A'};
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${escapeHtml(st.fullname)}</td>
+          <td>${escapeHtml(g.date||'')}</td>
+          <td>${escapeHtml(g.subject||'')}</td>
+          <td>${escapeHtml(g.title||'')}</td>
+          <td>${g.score!=null?escapeHtml(String(g.score)) : ''}</td>
+          <td>${escapeHtml(g.note||'')}</td>
+          <td><button class="btn btn-ghost btn-del-grade" data-id="${g.id}">Supprimer</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+    
+    function renderRevisionRequestsAdmin(){
+      const container = document.getElementById('revisionRequestsList');
+      if(!container) return;
+      if(!revisions || revisions.length === 0){ container.innerHTML = '<p class="muted">Aucune demande pour le moment.</p>'; return; }
+      container.innerHTML = '';
+      const table = document.createElement('table'); table.style.width='100%';
+      table.innerHTML = '<thead><tr><th>Étudiant</th><th>Évaluation</th><th>Message</th><th>Date</th><th>Statut</th></tr></thead>';
+      const tbody = document.createElement('tbody');
+      revisions.slice().reverse().forEach(r=>{
+        const st = students.find(s=>s.id===r.studentId) || {fullname:'N/A'};
+        const g = grades.find(gg=>gg.id===r.gradeId) || {subject:'N/A', title:'N/A', score:''};
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${escapeHtml(st.fullname)}</td><td>${escapeHtml(g.subject)} - ${escapeHtml(g.title)} - ${g.score}/20</td><td>${escapeHtml(r.message)}</td><td>${escapeHtml(new Date(r.date).toLocaleString())}</td><td>${escapeHtml(r.status)}</td>`;
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody); container.appendChild(table);
+    }
+    
+    function renderStudentRecentGrades(currentStudentId){
+      const containers = document.querySelectorAll('#studentRecentGrades');
+      if(!containers || containers.length===0) return;
+      containers.forEach(container => {
+        if(!container) return;
+        const list = grades.filter(g=>g.studentId===currentStudentId && g.published);
+        if(!list || list.length===0){ container.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>'; return; }
+        container.innerHTML = '';
+        list.slice().sort((a,b)=> new Date(b.date) - new Date(a.date)).forEach(g=>{
+          const div = document.createElement('div'); 
+          div.className = 'grade-item';
+          div.innerHTML = `
+            <strong>${g.subject}</strong> — ${g.title} — <span class="grade-score">${g.score}/20</span> 
+            <small>(${g.date||''})</small>
+            ${g.note ? `<br><em>${g.note}</em>` : ''}
+          `;
+          container.appendChild(div);
+        });
+      });
+    }
+    
+    function renderStudentMessages(currentStudentId){
+      const containers = document.querySelectorAll('#studentMessagesList');
+      if(!containers || containers.length===0) return;
+      containers.forEach(container => {
+        if(!container) return;
+        const studentMessages = messages.filter(m=> m.target==='all' || (m.target==='student' && m.studentId===currentStudentId));
+        if(studentMessages.length===0){ container.innerHTML = '<p class="muted">لا توجد رسائل حتى الآن.</p>'; return; }
+        container.innerHTML = '';
+        studentMessages.slice().sort((a,b)=> new Date(b.date) - new Date(a.date)).forEach(m=>{
+          const card = document.createElement('div'); 
+          card.className = 'message-card';
+          const h = document.createElement('h4'); 
+          h.textContent = m.title || 'رسالة'; 
+          const d = document.createElement('div'); 
+          d.textContent = m.content; 
+          const small = document.createElement('small'); 
+          small.textContent = new Date(m.date).toLocaleString();
+          card.appendChild(h); 
+          card.appendChild(d); 
+          card.appendChild(small); 
+          container.appendChild(card);
+        });
+      });
+    }
+    
+    function renderStudentRevisionSelect(currentStudentId){
+      const sel = document.getElementById('revisionExam'); 
+      if(!sel) return;
+      sel.innerHTML = '<option value="">Sélectionnez une évaluation</option>';
+      const list = grades.filter(g=>g.studentId===currentStudentId && g.published);
+      list.forEach(g=>{ 
+        const opt = document.createElement('option'); 
+        opt.value = g.id; 
+        opt.textContent = `${g.date||''} — ${g.subject} — ${g.title} — ${g.score}/20`; 
+        sel.appendChild(opt); 
+      });
+      
+      // Render revision requests
+      const requestsContainer = document.getElementById('studentRevisionRequests');
+      if (requestsContainer) {
+        const studentRevisions = revisions.filter(r => r.studentId === currentStudentId);
+        if (studentRevisions.length === 0) {
+          requestsContainer.innerHTML = '<p class="muted">Vous n\'avez pas encore soumis de demandes de récorrection.</p>';
+        } else {
+          requestsContainer.innerHTML = '';
+          studentRevisions.forEach(req => {
+            const grade = grades.find(g => g.id === req.gradeId);
+            if (grade) {
+              const div = document.createElement('div');
+              div.className = 'revision-request';
+              div.innerHTML = `
+                <strong>${grade.subject} - ${grade.title}</strong> (${grade.score}/20)
+                <br><em>${req.message}</em>
+                <br><small>Date: ${new Date(req.date).toLocaleString()} | Statut: ${req.status}</small>
+              `;
+              requestsContainer.appendChild(div);
+            }
+          });
+        }
+      }
+    }
+
+    /* ---------- event wiring & CRUD ---------- */
+    function setupStudentForm(){
+      const saveBtn = document.getElementById('btnSaveStudent'); 
+      if(!saveBtn) return;
+      saveBtn.addEventListener('click', ()=>{
+        const id = document.getElementById('stId') ? document.getElementById('stId').value || null : null;
+        const fullname = document.getElementById('stFullname') ? document.getElementById('stFullname').value.trim() : '';
+        const username = document.getElementById('stUsername') ? document.getElementById('stUsername').value.trim() : '';
+        const password = document.getElementById('stPassword') ? document.getElementById('stPassword').value : 'secret';
+        const code = document.getElementById('stCode') ? document.getElementById('stCode').value.trim() : '';
+        const classroom = document.getElementById('stClassroom') ? document.getElementById('stClassroom').value.trim() : '';
+        
+        if(!fullname || !username){ alert('Nom complet et nom d\'utilisateur requis'); return; }
+        
+        if(id){
+          const s = students.find(x=>x.id===id); 
+          if(s){ 
+            s.fullname=fullname; 
+            s.username=username; 
+            s.password=password; 
+            s.code=code; 
+            s.classroom=classroom; 
+          }
+        } else {
+          if(students.some(x=>x.username===username)){ alert('Nom d\'utilisateur déjà utilisé'); return; }
+          students.push({id: uid('stu'), fullname, username, password, code, classroom});
+        }
+        
+        // reset inputs
+        ['stId','stFullname','stUsername','stPassword','stCode','stClassroom'].forEach(i=>{ 
+          const el=document.getElementById(i); 
+          if(el) el.value=''; 
+        });
+        
+        LS.save('students', students);
+        renderStudentsTable(); 
+        renderGrStudentSelects(); 
+        renderStudentsForAdminSelect();
+      });
+      
+      document.getElementById('btnResetStudent') && document.getElementById('btnResetStudent').addEventListener('click', ()=>{ 
+        ['stId','stFullname','stUsername','stPassword','stCode','stClassroom'].forEach(i=>{ 
+          const el=document.getElementById(i); 
+          if(el) el.value=''; 
+        }); 
+      });
+
+      const studentsTable = document.getElementById('studentsTable');
+      if(studentsTable){
+        studentsTable.addEventListener('click', (ev)=>{
+          const btn = ev.target.closest('button'); 
+          if(!btn) return;
+          
+          if(btn.classList.contains('btn-edit-student')){
+            const id = btn.dataset.id; 
+            const s = students.find(x=>x.id===id); 
+            if(!s) return;
+            
+            if(document.getElementById('stId')) document.getElementById('stId').value = s.id;
+            if(document.getElementById('stFullname')) document.getElementById('stFullname').value = s.fullname;
+            if(document.getElementById('stUsername')) document.getElementById('stUsername').value = s.username;
+            if(document.getElementById('stPassword')) document.getElementById('stPassword').value = s.password;
+            if(document.getElementById('stCode')) document.getElementById('stCode').value = s.code;
+            if(document.getElementById('stClassroom')) document.getElementById('stClassroom').value = s.classroom;
+            
+            window.scrollTo({top:0, behavior:'smooth'});
+          }
+          
+          if(btn.classList.contains('btn-del-student')){
+            const id = btn.dataset.id; 
+            if(!confirm('Supprimer cet étudiant ?')) return;
+            
+            students = students.filter(x=>x.id!==id);
+            grades = grades.filter(g=>g.studentId!==id);
+            messages = messages.filter(m=> !(m.target==='student' && m.studentId===id));
+            revisions = revisions.filter(r=> r.studentId!==id);
+            
+            LS.save('students', students); 
+            LS.save('grades', grades); 
+            LS.save('messages', messages); 
+            LS.save('revisions', revisions);
+            
+            renderStudentsTable(); 
+            renderGradesAdminTable(); 
+            renderGrStudentSelects();
+          }
+        });
+      }
+      
+      const filterInput = document.getElementById('filterStudents');
+      if(filterInput) filterInput.addEventListener('input', (e)=>{ 
+        const q = e.target.value.trim().toLowerCase(); 
+        const tbody = document.querySelector('#studentsTable tbody'); 
+        if(!tbody) return; 
+        Array.from(tbody.querySelectorAll('tr')).forEach(tr=>{ 
+          const name = (tr.children[0] && tr.children[0].textContent || '').toLowerCase(); 
+          tr.style.display = name.includes(q) ? '' : 'none'; 
+        }); 
+      });
+    }
+
+    function setupGradesForm(){
+      const saveBtn = document.getElementById('btnSaveGrade'); 
+      if(saveBtn) saveBtn.addEventListener('click', ()=>{
+        const id = document.getElementById('grId') ? document.getElementById('grId').value || null : null;
+        const studentId = document.getElementById('grStudent') ? document.getElementById('grStudent').value : '';
+        if(!studentId){ alert('Choisissez un étudiant'); return; }
+        
+        const subject = document.getElementById('grSubject') ? document.getElementById('grSubject').value.trim() : '';
+        const title = document.getElementById('grTitle') ? document.getElementById('grTitle').value.trim() : '';
+        const date = document.getElementById('grDate') ? document.getElementById('grDate').value : new Date().toISOString().slice(0,10);
+        const score = parseFloat(document.getElementById('grScore') ? document.getElementById('grScore').value : 0) || 0;
+        const note = document.getElementById('grNote') ? document.getElementById('grNote').value.trim() : '';
+        
+        if(id){
+          const g = grades.find(x=>x.id===id); 
+            g.studentId=studentId; 
+            g.subject=subject; 
+            g.title=title; 
+            g.date=date; 
+            g.score=score; 
+            g.note=note; 
+            g.published = true; 
+        } else {
+          grades.push({id: uid('gr'), studentId, subject, title, date, score, note, published: true});
+        }
+        
+        ['grId','grSubject','grTitle','grDate','grScore','grNote'].forEach(i=>{ 
+          const el = document.getElementById(i); 
+          if(el) el.value=''; 
+        });
+        
+        LS.save('grades', grades);
+        renderGradesAdminTable();
+        
+        // Update student view if they are logged in
+        const currentStudent = sessionStorage.getItem('currentStudent');
+        if (currentStudent) {
+          const student = JSON.parse(currentStudent);
+          if (student.id === studentId) {
+            renderStudentRecentGrades(studentId);
+            renderStudentRevisionSelect(studentId);
+          }
+        }
+      });
+      
+      document.getElementById('btnResetGrade') && document.getElementById('btnResetGrade').addEventListener('click', ()=>{ 
+        ['grId','grSubject','grTitle','grDate','grScore','grNote'].forEach(i=>{ 
+          const el=document.getElementById(i); 
+          if(el) el.value=''; 
+        }); 
+      });
+      
+      const gradesTable = document.getElementById('gradesAdminTable');
+      if(gradesTable) gradesTable.addEventListener('click', (ev)=>{ 
+        const btn = ev.target.closest('button'); 
+        if(!btn) return; 
+        
+        if(btn.classList.contains('btn-del-grade')){
+          const id=btn.dataset.id; 
+          if(!confirm('Supprimer la note ?')) return; 
+          
+          grades = grades.filter(g=>g.id!==id); 
+          LS.save('grades', grades); 
+          renderGradesAdminTable(); 
+        } 
+      });
+      
+      const grFilter = document.getElementById('grFilterStudent'); 
+      if(grFilter) grFilter.addEventListener('change', (e)=>{ 
+        const sid = e.target.value; 
+        const tbody = document.querySelector('#gradesAdminTable tbody'); 
+        if(!tbody) return; 
+        
+        Array.from(tbody.querySelectorAll('tr')).forEach(tr=>{ 
+          if(!sid) { 
+            tr.style.display=''; 
+            return; 
+          } 
+          
+          const studentId = tr.querySelector('button') ? tr.querySelector('button').dataset.id : '';
+          tr.style.display = studentId === sid ? '' : 'none';
+        }); 
+      });
+    }
+
+    function setupMessagesAdmin(){
+      const targetSel = document.getElementById('adminMessageTarget');
+      if(targetSel) targetSel.addEventListener('change', (e)=>{ 
+        const v = e.target.value; 
+        const container = document.getElementById('specificStudentContainer'); 
+        if(container) container.style.display = v === 'specific' ? 'block' : 'none'; 
+      });
+      
+      const sendBtn = document.getElementById('adminBtnSendMessage');
+      if(sendBtn) sendBtn.addEventListener('click', ()=>{
+        const title = (document.getElementById('adminMessageTitle') && document.getElementById('adminMessageTitle').value.trim()) || 'رسالة من الأستاذ';
+        const content = (document.getElementById('adminMessageContent') && document.getElementById('adminMessageContent').value.trim()) || '';
+        if(!content){ alert('Contenu requis'); return; }
+        
+        const target = document.getElementById('adminMessageTarget') ? document.getElementById('adminMessageTarget').value : 'all';
+        
+        if(target === 'specific'){ 
+          const sid = document.getElementById('adminMessageStudent') ? document.getElementById('adminMessageStudent').value : ''; 
+          if(!sid){ alert('Choisissez un étudiant'); return; } 
+          
+          messages.push({
+            id: uid('msg'), 
+            title, 
+            content, 
+            target: 'student', 
+            studentId: sid, 
+            date: new Date().toISOString()
+          }); 
+        } else {
+          messages.push({
+            id: uid('msg'), 
+            title, 
+            content, 
+            target: 'all', 
+            date: new Date().toISOString()
+          });
+        }
+        
+        LS.save('messages', messages);
+        
+        if(document.getElementById('adminMessageTitle')) document.getElementById('adminMessageTitle').value='';
+        if(document.getElementById('adminMessageContent')) document.getElementById('adminMessageContent').value='';
+        
+        alert('Message envoyé');
+      });
+    }
+
+    function setupRevisionForm(){
+      const form = document.getElementById('revisionRequestForm');
+      if(!form) return;
+      
+      form.addEventListener('submit', (ev)=>{
+        ev.preventDefault();
+        
+        const gradeId = document.getElementById('revisionExam') ? document.getElementById('revisionExam').value : '';
+        const message = document.getElementById('revisionMessage') ? document.getElementById('revisionMessage').value.trim() : '';
+        
+        const cur = sessionStorage.getItem('currentStudent'); 
+        if(!cur){ alert('Vous devez être connecté en tant qu\'élève'); return; }
+        
+        const st = JSON.parse(cur);
+        if(!gradeId){ alert('Sélectionnez une évaluation'); return; }
+        
+        revisions.push({
+          id: uid('rev'), 
+          gradeId, 
+          studentId: st.id, 
+          message, 
+          date: new Date().toISOString(), 
+          status: 'pending'
+        });
+        
+        LS.save('revisions', revisions);
+        
+        if(document.getElementById('revisionMessage')) document.getElementById('revisionMessage').value='';
+        
+        // Update the revision requests list
+        renderStudentRevisionSelect(st.id);
+        
+        alert('Demande envoyée');
+      });
+    }
+
+    /* ---------- Auth & modal wiring ---------- */
+    function setupLoginModals(){
+      const studentLoginBtn = document.getElementById('studentLoginBtn'); 
+      if(studentLoginBtn) studentLoginBtn.addEventListener('click', ()=>{ 
+        const m = document.getElementById('studentLoginModal'); 
+        if(m) { 
+          m.style.display='flex'; 
+          m.setAttribute('aria-hidden','false'); 
+        } 
+      });
+      
+      const loginBtn = document.getElementById('loginBtn'); 
+      if(loginBtn) loginBtn.addEventListener('click', ()=>{ 
+        const m = document.getElementById('loginModal'); 
+        if(m) { 
+          m.style.display='flex'; 
+          m.setAttribute('aria-hidden','false'); 
+        } 
+      });
+      
+      document.getElementById('cancelStudentLogin') && document.getElementById('cancelStudentLogin').addEventListener('click', ()=>{ 
+        const m=document.getElementById('studentLoginModal'); 
+        if(m){ 
+          m.style.display='none'; 
+          m.setAttribute('aria-hidden','true'); 
+        }
+      });
+      
+      document.getElementById('cancelLogin') && document.getElementById('cancelLogin').addEventListener('click', ()=>{ 
+        const m=document.getElementById('loginModal'); 
+        if(m){ 
+          m.style.display='none'; 
+          m.setAttribute('aria-hidden','true'); 
+        }
+      });
+
+      // teacher login opens admin panel (demo: any credentials accepted)
+      document.getElementById('submitLogin') && document.getElementById('submitLogin').addEventListener('click', ()=>{
+        const m = document.getElementById('loginModal'); 
+        if(m){ 
+          m.style.display='none'; 
+          m.setAttribute('aria-hidden','true'); 
+        }
+        
+        const ap = document.getElementById('admin-panel'); 
+        if(ap){ 
+          ap.style.display='block'; 
+          ap.removeAttribute('aria-hidden'); 
+          showAdminDefaultTab(); 
+        }
+        
+        renderAll();
+      });
+
+      // student login: check stored students; if none, allow demo
+      document.getElementById('submitStudentLogin') && document.getElementById('submitStudentLogin').addEventListener('click', ()=>{
+        const username = document.getElementById('studentUsername') ? document.getElementById('studentUsername').value.trim() : '';
+        const password = document.getElementById('studentPassword') ? document.getElementById('studentPassword').value : '';
+        
+        let s = students.find(x=> x.username===username && x.password===password);
+        
+        if(!s){
+          // accept demo credentials if no students or explicit demo
+          if((username==='demo' && password==='demo') || students.length===0){
+            s = {
+              id:'stu_demo', 
+              fullname:'Demo Élève', 
+              username:'demo', 
+              password:'demo', 
+              code:'P-2025-001', 
+              classroom:'2ème Bac Sciences Physiques'
+            };
+            
+            if(!students.find(x=>x.id==='stu_demo')){
+              students.push(s); 
+              LS.save('students', students); 
+            }
+          } else { 
+            alert('Combinaison invalide'); 
+            return; 
+          }
+        }
+        
+        sessionStorage.setItem('currentStudent', JSON.stringify(s));
+        
+        const m = document.getElementById('studentLoginModal'); 
+        if(m){ 
+          m.style.display='none'; 
+          m.setAttribute('aria-hidden','true'); 
+        }
+        
+        const sd = document.getElementById('student-dashboard'); 
+        if(sd){ 
+          sd.style.display='block'; 
+          sd.removeAttribute('aria-hidden'); 
+        }
+        
+        document.getElementById('studentWelcome') && (document.getElementById('studentWelcome').textContent = `Bienvenue, ${s.fullname}`);
+        
+        renderStudentRecentGrades(s.id); 
+        renderStudentMessages(s.id); 
+        renderStudentRevisionSelect(s.id);
+      });
+
+      document.getElementById('studentLogoutBtn') && document.getElementById('studentLogoutBtn').addEventListener('click', ()=>{ 
+        sessionStorage.removeItem('currentStudent'); 
+        showSectionByName('home'); 
+      });
+      
+      document.getElementById('logoutBtn') && document.getElementById('logoutBtn').addEventListener('click', ()=>{ 
+        const ap = document.getElementById('admin-panel'); 
+        if(ap){ 
+          ap.style.display='none'; 
+          ap.setAttribute('aria-hidden','true'); 
+        } 
+        showSectionByName('home'); 
+      });
+    }
+
+    function showAdminDefaultTab(){
+      // hide all admin sections then show dashboard tab content
+      document.querySelectorAll('.admin-section').forEach(s=> s.style.display='none');
+      const dash = document.getElementById('tab-dashboard'); 
+      if(dash) dash.style.display='block';
+      
+      // ensure admin-tab-link active appropriately
+      document.querySelectorAll('.admin-tab-link').forEach(a=> a.classList.remove('active'));
+      const first = document.querySelector('.admin-tab-link[data-tab="tab-dashboard"]'); 
+      if(first) first.classList.add('active');
+    }
+
+    /* ---------- navigation hooks ---------- */
+    function hookNav(){
+      // nav links
+      $$('.nav-link').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          const sec = a.dataset.section;
+          if(!sec) return;
+          
+          // try direct name, else try name + '-section'
+          showSectionByName(sec);
+        });
+      });
+      
+      // feature-card quick links
+      $$('.feature-card').forEach(fc => fc.addEventListener('click', ()=>{ 
+        const s = fc.dataset.section; 
+        if(s) showSectionByName(s); 
+      }));
+
+      // admin left menu
+      $$('.admin-tab-link').forEach(l => l.addEventListener('click', (ev)=>{
+        ev.preventDefault();
+        
+        $$('.admin-tab-link').forEach(x => x.classList.remove('active'));
+        l.classList.add('active');
+        
+        const tab = l.dataset.tab;
+        if(!tab) return;
+        
+        $$('.admin-section').forEach(s => s.style.display='none');
+        const show = document.getElementById(tab);
+        if(show) show.style.display='block';
+      }));
+
+      // student tabs
+      $$('.student-tab').forEach(t => t.addEventListener('click', ()=>{
+        $$('.student-tab').forEach(x => x.classList.remove('active')); 
+        t.classList.add('active');
+        
+        $$('.student-tab-content').forEach(c => c.style.display='none');
+        
+        const mapping = {
+          dashboard: 'student-dashboard-tab', 
+          quiz: 'student-quiz-tab', 
+          exercises:'student-exercises-tab', 
+          dictionary:'student-dictionary-tab', 
+          revision:'student-revision-tab', 
+          messages:'student-messages-tab', 
+          cours:'student-cours-tab'
+        };
+        
+        const id = mapping[t.dataset.tab];
+        if(id){ 
+          const el = document.getElementById(id); 
+          if(el) el.style.display='block'; 
+        }
+      }));
+    }
+
+    function wireQuickSearchByCode(){
+      const btn = document.getElementById('btnSearchByCode');
+      if(!btn) return;
+      
+      btn.addEventListener('click', ()=>{
+        const code = document.getElementById('searchCode') ? document.getElementById('searchCode').value.trim() : '';
+        if(!code){ alert('Entrez un Code Parcours'); return; }
+        
+        const st = students.find(s=> s.code===code);
+        if(!st){ alert('Aucun étudiant trouvé pour ce code'); return; }
+        
+        const gradesResults = document.getElementById('gradesResults'); 
+        if(gradesResults) gradesResults.style.display='block';
+        
+        const studentInfo = document.getElementById('studentInfo'); 
+        if(studentInfo) studentInfo.textContent = `${st.fullname} — ${st.classroom || ''}`;
+        
+        renderGradesForStudent(st.id);
+        showSectionByName('grades');
+      });
+    }
+
+    function renderGradesForStudent(studentId){
+      const rows = document.querySelector('#gradesTable tbody'); 
+      if(!rows) return; 
+      
+      rows.innerHTML='';
+      const list = grades.filter(g=>g.studentId===studentId && g.published);
+      
+      if(!list || list.length===0){ 
+        const ng = document.getElementById('noGradesMsg'); 
+        if(ng) ng.style.display='block'; 
+        return; 
+      }
+      
+      const ng = document.getElementById('noGradesMsg'); 
+      if(ng) ng.style.display='none';
+      
+      list.forEach(g=>{ 
+        const tr = document.createElement('tr'); 
+        tr.innerHTML = `
+          <td>${escapeHtml(g.date||'')}</td>
+          <td>${escapeHtml(g.subject||'')}</td>
+          <td>${escapeHtml(g.title||'')}</td>
+          <td>${escapeHtml(g.score!=null?String(g.score):'')}</td>
+          <td>${escapeHtml(g.note||'')}</td>
+        `; 
+        rows.appendChild(tr); 
+      });
+    }
+
+    /* ---------- seed data if empty (keeps demo) ---------- */
+    function seedIfEmpty(){
+      let changed=false;
+      
+      if(!students || students.length===0){ 
+        students.push({
+          id:'stu_demo', 
+          fullname:'Demo Élève', 
+          username:'demo', 
+          password:'demo', 
+          code:'P-2025-001', 
+          classroom:'2ème Bac Sciences Physiques'
+        }); 
+        changed=true; 
+      }
+      
+      if(!grades || grades.length===0){ 
+        grades.push({
+          id:'gr_demo1', 
+          studentId:'stu_demo', 
+          subject:'Électricité', 
+          title:'Contrôle 1', 
+          date:'2025-06-10', 
+          score:14.5, 
+          note:'Très bien', 
+          published:true
+        }); 
+        changed=true; 
+      }
+      
+      if(!sliderImages || sliderImages.length===0){ 
+        sliderImages.push({
+          id:'slide_demo', 
+          src:'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&auto=format&fit=crop&q=60'
+        }); 
+        changed=true; 
+      }
+      
+      if(changed){ 
+        LS.save('students', students); 
+        LS.save('grades', grades); 
+        LS.save('sliderImages', sliderImages); 
+      }
+    }
+
+    /* ---------- render all ---------- */
+    function renderAll(){
+      renderStudentsTable(); 
+      renderGrStudentSelects(); 
+      renderGradesAdminTable(); 
+      renderRevisionRequestsAdmin();
+      
+      // update admin stats
+      const sCount = document.getElementById('stats-students'); 
+      if(sCount) sCount.textContent = students.length;
+      
+      const cur = sessionStorage.getItem('currentStudent'); 
+      if(cur){ 
+        const s = JSON.parse(cur); 
+        document.getElementById('studentWelcome') && (document.getElementById('studentWelcome').textContent = `Bienvenue, ${s.fullname}`); 
+        renderStudentRecentGrades(s.id); 
+        renderStudentMessages(s.id); 
+        renderStudentRevisionSelect(s.id); 
+      }
+    }
+
+    /* ---------- init ---------- */
+    function init(){
+      seedIfEmpty();
+      
+      hookNav(); 
+      setupStudentForm(); 
+      setupGradesForm(); 
+      setupMessagesAdmin(); 
+      setupRevisionForm(); 
+      setupLoginModals(); 
+      wireQuickSearchByCode();
+      
+      renderAll();
+      initSlider();
+      
+      // default: show hero/home (try 'home' then 'home-section')
+      showSectionByName('home') || showSectionByName('home-section');
+      
+      // expose storage for debugging if needed
+      window.__lycee_storage = {students, grades, messages, sliderImages, revisions};
+      
+      console.log('Lycée script initialized');
+    }
+
+    if(document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+  </script>
+
+<!-- PATCH v3: Robust grade rendering + student dashboard + inline regrade buttons -->
+<script>
+(function(){
+  'use strict';
+  // Helpers
+  function tryParse(v){ try{ return JSON.parse(v); }catch(e){ return null; } }
+  function allLocalArrays(){
+    const arrs = [];
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      const v = tryParse(localStorage.getItem(k));
+      if(Array.isArray(v)) arrs.push({key:k, arr:v});
+    }
+    return arrs;
+  }
+  function detectGradesArray(){
+    // look for arrays that contain grade-like objects
+    const prefer = ['lycee_grades','grades','app_grades','gradesData','my_grades'];
+    for(const k of prefer){
+      const v = tryParse(localStorage.getItem(k));
+      if(Array.isArray(v)) return {key:k, arr:v};
+    }
+    const arrs = allLocalArrays();
+    for(const a of arrs){
+      const s0 = a.arr[0];
+      if(!s0) continue;
+      const keys = Object.keys(s0);
+      const gradeLike = keys.includes('score') || keys.includes('title') || keys.includes('subject') || keys.includes('studentId') || keys.includes('studentCode') || keys.includes('date');
+      if(gradeLike) return a;
+    }
+    return {key:null, arr:[]};
+  }
+  function detectStudentsArray(){
+    const prefer = ['lycee_students','students','app_students','user_list'];
+    for(const k of prefer){
+      const v = tryParse(localStorage.getItem(k));
+      if(Array.isArray(v)) return {key:k, arr:v};
+    }
+    const arrs = allLocalArrays();
+    for(const a of arrs){
+      const s0 = a.arr[0];
+      if(!s0) continue;
+      const keys = Object.keys(s0);
+      const studLike = keys.includes('fullname') || keys.includes('username') || keys.includes('code') || keys.includes('classroom');
+      if(studLike) return a;
+    }
+    return {key:null, arr:[]};
+  }
+
+  function getGrades(){ return detectGradesArray().arr || []; }
+  function getStudents(){ return detectStudentsArray().arr || []; }
+
+  function getStudentIdentifier(s){
+    if(!s) return null;
+    return s.id || s.code || s.username || s._id || s.email || null;
+  }
+
+  function gradeMatchesStudent(grade, studentIdOrCode){
+    if(!grade || !studentIdOrCode) return false;
+    const candidates = [
+      grade.studentId, grade.student_id, grade.studentCode, grade.student_code, grade.code, grade.ownerId, grade.username,
+      (grade.student && (grade.student.id || grade.student.code || grade.student.username))
+    ];
+    for(const c of candidates){
+      if(!c) continue;
+      if(String(c) === String(studentIdOrCode)) return true;
+    }
+    // also check student's code if provided
+    const studs = getStudents();
+    const st = studs.find(s => (s.id===studentIdOrCode || s.code===studentIdOrCode || s.username===studentIdOrCode));
+    if(st){
+      if(grade.studentId && String(grade.studentId) === String(st.id)) return true;
+      if(grade.studentCode && String(grade.studentCode) === String(st.code)) return true;
+    }
+    return false;
+  }
+
+  function populateRevisionSelect(studentIdOrCode){
+    const sel = document.getElementById('revisionExam');
+    if(!sel) return false;
+    // Save selection to restore
+    const prev = sel.value;
+    // clear
+    sel.innerHTML = '';
+    const first = document.createElement('option');
+    first.value = ''; first.textContent = 'Sélectionnez une évaluation';
+    sel.appendChild(first);
+    const grades = getGrades();
+    const matched = grades.filter(g => (g && (g.published === undefined || g.published === true) && gradeMatchesStudent(g, studentIdOrCode)));
+    if(!matched || matched.length === 0) return false;
+    matched.slice().sort((a,b)=> new Date(b.date||b.createdAt||0) - new Date(a.date||a.createdAt||0)).forEach(g=>{
+      const o = document.createElement('option');
+      o.value = g.id || g._id || g.gradeId || g.code || JSON.stringify(g).slice(0,8);
+      const date = g.date || g.createdAt || '';
+      const subj = g.subject || g.matiere || '';
+      const title = g.title || g.intitule || '';
+      const score = (g.score !== undefined ? g.score : (g.note !== undefined ? g.note : ''));
+      o.textContent = [date, subj, title, (score !== '' ? (score + '/20') : '')].filter(Boolean).join(' — ');
+      sel.appendChild(o);
+    });
+    // try to restore prev selection
+    try{ sel.value = prev; }catch(e){}
+    return true;
+  }
+
+  function renderStudentRecentGradesUI(studentIdOrCode){
+    const containers = document.querySelectorAll('#studentRecentGrades');
+    if(!containers || containers.length === 0) return false;
+    const grades = getGrades();
+    const matched = grades.filter(g => (g && (g.published === undefined || g.published === true) && gradeMatchesStudent(g, studentIdOrCode)));
+    containers.forEach(container=>{
+      container.innerHTML = '';
+      if(!matched || matched.length === 0){
+        container.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
+        return;
+      }
+      matched.slice().sort((a,b)=> new Date(b.date||b.createdAt||0) - new Date(a.date||a.createdAt||0)).forEach(g=>{
+        const div = document.createElement('div');
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.style.padding = '6px 0';
+        const left = document.createElement('div');
+        left.innerHTML = `<strong>${escapeHtml(g.subject||g.matiere||'')}</strong> — ${escapeHtml(g.title||g.intitule||'')} — <span>${escapeHtml(String(g.score !== undefined ? g.score : (g.note !== undefined ? g.note : '')))} /20</span> <small style="color:#666">(${escapeHtml(g.date||g.createdAt||'')})</small>`;
+        const right = document.createElement('div');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'طلب إعادة تصحيح';
+        btn.style.marginLeft = '8px';
+        btn.className = 'btn';
+        btn.addEventListener('click', function(){
+          // ensure revision select populated and select this grade
+          const ok = populateRevisionSelect(studentIdOrCode);
+          const sel = document.getElementById('revisionExam');
+          if(ok && sel){
+            // find option corresponding to this grade (by id or by text containing title)
+            let found = null;
+            for(const opt of Array.from(sel.options)){
+              if(!opt.value) continue;
+              if(opt.value === (g.id || g._id || g.gradeId || g.code) || opt.textContent.includes((g.title||g.intitule||'').toString())){ found = opt; break; }
+            }
+            if(found) sel.value = found.value;
+            // scroll to form and focus message
+            const form = document.getElementById('revisionRequestForm');
+            if(form){ form.scrollIntoView({behavior:'smooth', block:'center'}); const ta = document.getElementById('revisionMessage'); if(ta) ta.focus(); }
+          } else {
+            alert('لا يمكن العثور على التقييم المُنشر للطلب - تأكد أن النقاط منشورة من لوحة الأستاذ.');
+          }
+        });
+        right.appendChild(btn);
+        div.appendChild(left);
+        div.appendChild(right);
+        container.appendChild(div);
+      });
+    });
+    return true;
+  }
+
+  function escapeHtml(s){ if(s===null||s===undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // Wire the existing search btn and student login logic
+  function wireSearchAndDashboard(){
+    const btn = document.getElementById('btnSearchByCode');
+    if(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        const input = document.getElementById('searchCode');
+        const code = input ? input.value.trim() : '';
+        if(!code){ alert('Entrez un Code Parcours'); return; }
+        // try find student record
+        const studs = getStudents();
+        let student = studs.find(s => (s.id===code || s.code===code || s.username===code));
+        // if no student, try to find grades referencing that code
+        const gradesArr = getGrades();
+        if(!student){
+          const found = gradesArr.find(g => (g.studentCode && String(g.studentCode) === String(code)) || (g.studentId && String(g.studentId) === String(code)));
+          if(found){
+            // create temporary session student using code
+            student = { id: code, code: code, fullname: '(Sans profil) ' + code };
+            try{ sessionStorage.setItem('currentStudent', JSON.stringify(student)); }catch(e){}
+            window.lastSearchedStudentId = code;
+            populateGradesTableForAndUI(code);
+            return;
+          }
+        }
+        if(!student){
+          alert('Aucun élève trouvé pour ce Code Parcours'); return;
+        }
+        // save session
+        try{ sessionStorage.setItem('currentStudent', JSON.stringify(student)); }catch(e){}
+        window.lastSearchedStudentId = student.id || student.code || student.username;
+        populateGradesTableForAndUI(student.id || student.code || student.username);
+      });
+    }
+  }
+
+  function populateGradesTableForAndUI(studentIdOrCode){
+    const ok = populateGradesTableFor(studentIdOrCode);
+    renderStudentRecentGradesUI(studentIdOrCode);
+    const ok2 = populateRevisionSelect(studentIdOrCode);
+    // also ensure revision select is visible in student tab if needed
+    return ok || ok2;
+  }
+
+  // Populate grades table into #gradesTable
+  function populateGradesTableFor(studentIdOrCode){
+    const grades = getGrades();
+    const tbody = document.querySelector('#gradesTable tbody');
+    if(!tbody) return false;
+    tbody.innerHTML = '';
+    const matched = grades.filter(g => (g && (g.published === undefined || g.published === true) && gradeMatchesStudent(g, studentIdOrCode)));
+    if(!matched || matched.length === 0){
+      const noEl = document.getElementById('noGradesMsg'); if(noEl) noEl.style.display = 'block';
+      return false;
+    }
+    if(document.getElementById('noGradesMsg')) document.getElementById('noGradesMsg').style.display = 'none';
+    matched.slice().sort((a,b)=> new Date(b.date||b.createdAt||0) - new Date(a.date||a.createdAt||0)).forEach(g=>{
+      const tr = document.createElement('tr');
+      const date = g.date || g.createdAt || '';
+      const subj = g.subject || g.matiere || '';
+      const title = g.title || g.intitule || '';
+      const score = (g.score !== undefined ? g.score : (g.note !== undefined ? g.note : ''));
+      tr.innerHTML = `<td>${escapeHtml(date)}</td><td>${escapeHtml(subj)}</td><td>${escapeHtml(title)}</td><td>${escapeHtml(String(score))}</td><td>${escapeHtml(g.remarque||g.noteText||'')}</td>`;
+      tbody.appendChild(tr);
+    });
+    return true;
+  }
+
+  // When student logs in (sessionStorage set), populate dashboard + revision select
+  function populateOnStudentSession(){
+    try{
+      const cur = sessionStorage.getItem('currentStudent');
+      if(!cur) return;
+      const s = JSON.parse(cur);
+      const id = s.id || s.code || s.username;
+      populateGradesTableForAndUI(id);
+      renderStudentRecentGradesUI(id);
+    }catch(e){}
+  }
+
+  // watch storage events and polling
+  function watchStorageAndPoll(){
+    window.addEventListener('storage', function(e){
+      if(!e.key) return;
+      const keysToWatch = ['lycee_grades','grades','app_grades','gradesData','lycee_students','students'];
+      if(keysToWatch.indexOf(e.key) !== -1){
+        populateOnStudentSession();
+        const cur = sessionStorage.getItem('currentStudent'); if(cur){ const s=JSON.parse(cur); renderStudentRecentGradesUI(s.id||s.code||s.username); populateRevisionSelect(s.id||s.code||s.username); }
+      }
+    });
+    // polling
+    let lastG = JSON.stringify(getGrades());
+    setInterval(function(){
+      const now = JSON.stringify(getGrades());
+      if(now !== lastG){
+        lastG = now;
+        populateOnStudentSession();
+        const cur = sessionStorage.getItem('currentStudent'); if(cur){ const s=JSON.parse(cur); renderStudentRecentGradesUI(s.id||s.code||s.username); populateRevisionSelect(s.id||s.code||s.username); }
+      }
+    }, 1200);
+  }
+
+  // wire revision form submission to save into localStorage revisions list
+  function wireRevisionFormSubmit(){
+    const form = document.getElementById('revisionRequestForm');
+    if(!form) return;
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      const sel = document.getElementById('revisionExam');
+      const gradeId = sel ? sel.value : '';
+      const msg = (document.getElementById('revisionMessage') ? document.getElementById('revisionMessage').value.trim() : '');
+      const cur = sessionStorage.getItem('currentStudent');
+      if(!gradeId){ alert('Sélectionnez une évaluation'); return; }
+      if(!cur){ alert('Vous devez d\'abord rechercher votre Code Parcours أو تسجيل الدخول'); return; }
+      const s = JSON.parse(cur);
+      // load existing revisions array keys possibilities
+      const revKeys = ['lycee_revisions','revisions','app_revisions','recs'];
+      let revs = null; let usedKey = null;
+      for(const k of revKeys){
+        const v = tryParse(localStorage.getItem(k));
+        if(Array.isArray(v)){ revs = v; usedKey = k; break; }
+      }
+      if(revs === null){ revs = []; usedKey = revKeys[0]; }
+      const newRev = { id: 'rev_' + Math.random().toString(36).slice(2,8), gradeId: gradeId, studentId: s.id || s.code || s.username, studentCode: s.code||null, message: msg, date: new Date().toISOString(), status: 'pending' };
+      revs.push(newRev);
+      try{ localStorage.setItem(usedKey, JSON.stringify(revs)); }catch(e){ console.error(e); alert('Failed to save request locally'); return; }
+      // provide feedback
+      const statusEl = document.getElementById('revisionStatus');
+      if(statusEl){ statusEl.textContent = 'Demande envoyée ✓'; setTimeout(()=> statusEl.textContent = '', 4000); }
+      // clear message
+      if(document.getElementById('revisionMessage')) document.getElementById('revisionMessage').value = '';
+      // fire storage event manually for same-tab listeners
+      try{ window.dispatchEvent(new Event('storage')); }catch(e){}
+    });
+  }
+
+  // init
+  function ready(fn){ if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  ready(function(){
+    try{
+      wireSearchAndDashboard();
+      populateOnStudentSession();
+      watchStorageAndPoll();
+      wireRevisionFormSubmit();
+      // ensure student dashboard shows recent grades immediately if present
+      populateOnStudentSession();
+    }catch(e){ console.error('patch v3 error', e); }
+  });
+
+})();
+</script>
+<!-- END PATCH v3 -->
+
+</body>
+</html>
+<!-- partial -->
+  <script type="module" src="./script.js"></script>
+
+
+<!-- PATCH v3: Robust grade rendering + student dashboard + inline regrade buttons -->
+<script>
+(function(){
+  'use strict';
+  // Helpers
+  function tryParse(v){ try{ return JSON.parse(v); }catch(e){ return null; } }
+  function allLocalArrays(){
+    const arrs = [];
+    for(let i=0;i<localStorage.length;i++){
+      const k = localStorage.key(i);
+      const v = tryParse(localStorage.getItem(k));
+      if(Array.isArray(v)) arrs.push({key:k, arr:v});
+    }
+    return arrs;
+  }
+  function detectGradesArray(){
+    // look for arrays that contain grade-like objects
+    const prefer = ['lycee_grades','grades','app_grades','gradesData','my_grades'];
+    for(const k of prefer){
+      const v = tryParse(localStorage.getItem(k));
+      if(Array.isArray(v)) return {key:k, arr:v};
+    }
+    const arrs = allLocalArrays();
+    for(const a of arrs){
+      const s0 = a.arr[0];
+      if(!s0) continue;
+      const keys = Object.keys(s0);
+      const gradeLike = keys.includes('score') || keys.includes('title') || keys.includes('subject') || keys.includes('studentId') || keys.includes('studentCode') || keys.includes('date');
+      if(gradeLike) return a;
+    }
+    return {key:null, arr:[]};
+  }
+  function detectStudentsArray(){
+    const prefer = ['lycee_students','students','app_students','user_list'];
+    for(const k of prefer){
+      const v = tryParse(localStorage.getItem(k));
+      if(Array.isArray(v)) return {key:k, arr:v};
+    }
+    const arrs = allLocalArrays();
+    for(const a of arrs){
+      const s0 = a.arr[0];
+      if(!s0) continue;
+      const keys = Object.keys(s0);
+      const studLike = keys.includes('fullname') || keys.includes('username') || keys.includes('code') || keys.includes('classroom');
+      if(studLike) return a;
+    }
+    return {key:null, arr:[]};
+  }
+
+  function getGrades(){ return detectGradesArray().arr || []; }
+  function getStudents(){ return detectStudentsArray().arr || []; }
+
+  function getStudentIdentifier(s){
+    if(!s) return null;
+    return s.id || s.code || s.username || s._id || s.email || null;
+  }
+
+  function gradeMatchesStudent(grade, studentIdOrCode){
+    if(!grade || !studentIdOrCode) return false;
+    const candidates = [
+      grade.studentId, grade.student_id, grade.studentCode, grade.student_code, grade.code, grade.ownerId, grade.username,
+      (grade.student && (grade.student.id || grade.student.code || grade.student.username))
+    ];
+    for(const c of candidates){
+      if(!c) continue;
+      if(String(c) === String(studentIdOrCode)) return true;
+    }
+    // also check student's code if provided
+    const studs = getStudents();
+    const st = studs.find(s => (s.id===studentIdOrCode || s.code===studentIdOrCode || s.username===studentIdOrCode));
+    if(st){
+      if(grade.studentId && String(grade.studentId) === String(st.id)) return true;
+      if(grade.studentCode && String(grade.studentCode) === String(st.code)) return true;
+    }
+    return false;
+  }
+
+  function populateRevisionSelect(studentIdOrCode){
+    const sel = document.getElementById('revisionExam');
+    if(!sel) return false;
+    // Save selection to restore
+    const prev = sel.value;
+    // clear
+    sel.innerHTML = '';
+    const first = document.createElement('option');
+    first.value = ''; first.textContent = 'Sélectionnez une évaluation';
+    sel.appendChild(first);
+    const grades = getGrades();
+    const matched = grades.filter(g => (g && (g.published === undefined || g.published === true) && gradeMatchesStudent(g, studentIdOrCode)));
+    if(!matched || matched.length === 0) return false;
+    matched.slice().sort((a,b)=> new Date(b.date||b.createdAt||0) - new Date(a.date||a.createdAt||0)).forEach(g=>{
+      const o = document.createElement('option');
+      o.value = g.id || g._id || g.gradeId || g.code || JSON.stringify(g).slice(0,8);
+      const date = g.date || g.createdAt || '';
+      const subj = g.subject || g.matiere || '';
+      const title = g.title || g.intitule || '';
+      const score = (g.score !== undefined ? g.score : (g.note !== undefined ? g.note : ''));
+      o.textContent = [date, subj, title, (score !== '' ? (score + '/20') : '')].filter(Boolean).join(' — ');
+      sel.appendChild(o);
+    });
+    // try to restore prev selection
+    try{ sel.value = prev; }catch(e){}
+    return true;
+  }
+
+  function renderStudentRecentGradesUI(studentIdOrCode){
+    const containers = document.querySelectorAll('#studentRecentGrades');
+    if(!containers || containers.length === 0) return false;
+    const grades = getGrades();
+    const matched = grades.filter(g => (g && (g.published === undefined || g.published === true) && gradeMatchesStudent(g, studentIdOrCode)));
+    containers.forEach(container=>{
+      container.innerHTML = '';
+      if(!matched || matched.length === 0){
+        container.innerHTML = '<p class="muted">Aucune note disponible pour le moment.</p>';
+        return;
+      }
+      matched.slice().sort((a,b)=> new Date(b.date||b.createdAt||0) - new Date(a.date||a.createdAt||0)).forEach(g=>{
+        const div = document.createElement('div');
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        div.style.padding = '6px 0';
+        const left = document.createElement('div');
+        left.innerHTML = `<strong>${escapeHtml(g.subject||g.matiere||'')}</strong> — ${escapeHtml(g.title||g.intitule||'')} — <span>${escapeHtml(String(g.score !== undefined ? g.score : (g.note !== undefined ? g.note : '')))} /20</span> <small style="color:#666">(${escapeHtml(g.date||g.createdAt||'')})</small>`;
+        const right = document.createElement('div');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = 'طلب إعادة تصحيح';
+        btn.style.marginLeft = '8px';
+        btn.className = 'btn';
+        btn.addEventListener('click', function(){
+          // ensure revision select populated and select this grade
+          const ok = populateRevisionSelect(studentIdOrCode);
+          const sel = document.getElementById('revisionExam');
+          if(ok && sel){
+            // find option corresponding to this grade (by id or by text containing title)
+            let found = null;
+            for(const opt of Array.from(sel.options)){
+              if(!opt.value) continue;
+              if(opt.value === (g.id || g._id || g.gradeId || g.code) || opt.textContent.includes((g.title||g.intitule||'').toString())){ found = opt; break; }
+            }
+            if(found) sel.value = found.value;
+            // scroll to form and focus message
+            const form = document.getElementById('revisionRequestForm');
+            if(form){ form.scrollIntoView({behavior:'smooth', block:'center'}); const ta = document.getElementById('revisionMessage'); if(ta) ta.focus(); }
+          } else {
+            alert('لا يمكن العثور على التقييم المُنشر للطلب - تأكد أن النقاط منشورة من لوحة الأستاذ.');
+          }
+        });
+        right.appendChild(btn);
+        div.appendChild(left);
+        div.appendChild(right);
+        container.appendChild(div);
+      });
+    });
+    return true;
+  }
+
+  function escapeHtml(s){ if(s===null||s===undefined) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+  // Wire the existing search btn and student login logic
+  function wireSearchAndDashboard(){
+    const btn = document.getElementById('btnSearchByCode');
+    if(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault();
+        const input = document.getElementById('searchCode');
+        const code = input ? input.value.trim() : '';
+        if(!code){ alert('Entrez un Code Parcours'); return; }
+        // try find student record
+        const studs = getStudents();
+        let student = studs.find(s => (s.id===code || s.code===code || s.username===code));
+        // if no student, try to find grades referencing that code
+        const gradesArr = getGrades();
+        if(!student){
+          const found = gradesArr.find(g => (g.studentCode && String(g.studentCode) === String(code)) || (g.studentId && String(g.studentId) === String(code)));
+          if(found){
+            // create temporary session student using code
+            student = { id: code, code: code, fullname: '(Sans profil) ' + code };
+            try{ sessionStorage.setItem('currentStudent', JSON.stringify(student)); }catch(e){}
+            window.lastSearchedStudentId = code;
+            populateGradesTableForAndUI(code);
+            return;
+          }
+        }
+        if(!student){
+          alert('Aucun élève trouvé pour ce Code Parcours'); return;
+        }
+        // save session
+        try{ sessionStorage.setItem('currentStudent', JSON.stringify(student)); }catch(e){}
+        window.lastSearchedStudentId = student.id || student.code || student.username;
+        populateGradesTableForAndUI(student.id || student.code || student.username);
+      });
+    }
+  }
+
+  function populateGradesTableForAndUI(studentIdOrCode){
+    const ok = populateGradesTableFor(studentIdOrCode);
+    renderStudentRecentGradesUI(studentIdOrCode);
+    const ok2 = populateRevisionSelect(studentIdOrCode);
+    // also ensure revision select is visible in student tab if needed
+    return ok || ok2;
+  }
+
+  // Populate grades table into #gradesTable
+  function populateGradesTableFor(studentIdOrCode){
+    const grades = getGrades();
+    const tbody = document.querySelector('#gradesTable tbody');
+    if(!tbody) return false;
+    tbody.innerHTML = '';
+    const matched = grades.filter(g => (g && (g.published === undefined || g.published === true) && gradeMatchesStudent(g, studentIdOrCode)));
+    if(!matched || matched.length === 0){
+      const noEl = document.getElementById('noGradesMsg'); if(noEl) noEl.style.display = 'block';
+      return false;
+    }
+    if(document.getElementById('noGradesMsg')) document.getElementById('noGradesMsg').style.display = 'none';
+    matched.slice().sort((a,b)=> new Date(b.date||b.createdAt||0) - new Date(a.date||a.createdAt||0)).forEach(g=>{
+      const tr = document.createElement('tr');
+      const date = g.date || g.createdAt || '';
+      const subj = g.subject || g.matiere || '';
+      const title = g.title || g.intitule || '';
+      const score = (g.score !== undefined ? g.score : (g.note !== undefined ? g.note : ''));
+      tr.innerHTML = `<td>${escapeHtml(date)}</td><td>${escapeHtml(subj)}</td><td>${escapeHtml(title)}</td><td>${escapeHtml(String(score))}</td><td>${escapeHtml(g.remarque||g.noteText||'')}</td>`;
+      tbody.appendChild(tr);
+    });
+    return true;
+  }
+
+  // When student logs in (sessionStorage set), populate dashboard + revision select
+  function populateOnStudentSession(){
+    try{
+      const cur = sessionStorage.getItem('currentStudent');
+      if(!cur) return;
+      const s = JSON.parse(cur);
+      const id = s.id || s.code || s.username;
+      populateGradesTableForAndUI(id);
+      renderStudentRecentGradesUI(id);
+    }catch(e){}
+  }
+
+  // watch storage events and polling
+  function watchStorageAndPoll(){
+    window.addEventListener('storage', function(e){
+      if(!e.key) return;
+      const keysToWatch = ['lycee_grades','grades','app_grades','gradesData','lycee_students','students'];
+      if(keysToWatch.indexOf(e.key) !== -1){
+        populateOnStudentSession();
+        const cur = sessionStorage.getItem('currentStudent'); if(cur){ const s=JSON.parse(cur); renderStudentRecentGradesUI(s.id||s.code||s.username); populateRevisionSelect(s.id||s.code||s.username); }
+      }
+    });
+    // polling
+    let lastG = JSON.stringify(getGrades());
+    setInterval(function(){
+      const now = JSON.stringify(getGrades());
+      if(now !== lastG){
+        lastG = now;
+        populateOnStudentSession();
+        const cur = sessionStorage.getItem('currentStudent'); if(cur){ const s=JSON.parse(cur); renderStudentRecentGradesUI(s.id||s.code||s.username); populateRevisionSelect(s.id||s.code||s.username); }
+      }
+    }, 1200);
+  }
+
+  // wire revision form submission to save into localStorage revisions list
+  function wireRevisionFormSubmit(){
+    const form = document.getElementById('revisionRequestForm');
+    if(!form) return;
+    form.addEventListener('submit', function(ev){
+      ev.preventDefault();
+      const sel = document.getElementById('revisionExam');
+      const gradeId = sel ? sel.value : '';
+      const msg = (document.getElementById('revisionMessage') ? document.getElementById('revisionMessage').value.trim() : '');
+      const cur = sessionStorage.getItem('currentStudent');
+      if(!gradeId){ alert('Sélectionnez une évaluation'); return; }
+      if(!cur){ alert('Vous devez d\'abord rechercher votre Code Parcours أو تسجيل الدخول'); return; }
+      const s = JSON.parse(cur);
+      // load existing revisions array keys possibilities
+      const revKeys = ['lycee_revisions','revisions','app_revisions','recs'];
+      let revs = null; let usedKey = null;
+      for(const k of revKeys){
+        const v = tryParse(localStorage.getItem(k));
+        if(Array.isArray(v)){ revs = v; usedKey = k; break; }
+      }
+      if(revs === null){ revs = []; usedKey = revKeys[0]; }
+      const newRev = { id: 'rev_' + Math.random().toString(36).slice(2,8), gradeId: gradeId, studentId: s.id || s.code || s.username, studentCode: s.code||null, message: msg, date: new Date().toISOString(), status: 'pending' };
+      revs.push(newRev);
+      try{ localStorage.setItem(usedKey, JSON.stringify(revs)); }catch(e){ console.error(e); alert('Failed to save request locally'); return; }
+      // provide feedback
+      const statusEl = document.getElementById('revisionStatus');
+      if(statusEl){ statusEl.textContent = 'Demande envoyée ✓'; setTimeout(()=> statusEl.textContent = '', 4000); }
+      // clear message
+      if(document.getElementById('revisionMessage')) document.getElementById('revisionMessage').value = '';
+      // fire storage event manually for same-tab listeners
+      try{ window.dispatchEvent(new Event('storage')); }catch(e){}
+    });
+  }
+
+  // init
+  function ready(fn){ if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+  ready(function(){
+    try{
+      wireSearchAndDashboard();
+      populateOnStudentSession();
+      watchStorageAndPoll();
+      wireRevisionFormSubmit();
+      // ensure student dashboard shows recent grades immediately if present
+      populateOnStudentSession();
+    }catch(e){ console.error('patch v3 error', e); }
+  });
+
+})();
+</script>
+<!-- END PATCH v3 -->
+
+</body>
+</html>
+<!-- partial -->
+  <script type="module" src="./script.js"></script>
+
+</body>
+</html>

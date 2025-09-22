@@ -1,11 +1,11 @@
-  /* =============================
+/* =============================
    Unified dashboard JS - FINAL WORKING VERSION
    =============================*/
 
 /* =============================
    Data model (localStorage)
    ============================= */  
-const STORAGE_KEY = 'lyceeExcellence_v_15';
+const STORAGE_KEY = 'lyceeExcellence_v_19';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },
@@ -2475,4 +2475,4 @@ function renderDictionary(){
 
 /* =============================
    End of file
-   ============================= */
+   ============================= */  

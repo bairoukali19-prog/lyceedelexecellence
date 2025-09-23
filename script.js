@@ -1,4 +1,4 @@
-  /* =============================
+/* =============================
    Unified dashboard JS - FIXED COMPLETE VERSION
    =============================*/
 
@@ -78,11 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
    ============================= */
 function wireEvents(){
   // Prevent default behavior for all buttons to avoid page scroll
-  document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', function(e) {
+  document.addEventListener('click', function(e) {
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
       e.preventDefault();
       e.stopPropagation();
-    });
+    }
   });
 
   // nav links
@@ -287,20 +287,6 @@ function wireEvents(){
       e.stopPropagation();
       addDictionaryTerm();
     });
-  } else {
-    // البحث المتأخر عن الزر إذا لم يكن موجوداً عند التحميل
-    setTimeout(() => {
-      const btnAddDict = document.getElementById('btnAddDictionary') || 
-                         document.querySelector('button[onclick*="addDictionaryTerm"]') ||
-                         document.querySelector('button[onclick*="dictionary"]');
-      if (btnAddDict) {
-        btnAddDict.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          addDictionaryTerm();
-        });
-      }
-    }, 1000);
   }
 
   // إضافة حدث لزر "Voir les notes" في قسم Consultation des Notes - FIXED
@@ -311,24 +297,30 @@ function wireEvents(){
       const code = $('gradeSearchCode').value.trim();
       searchGradesByCode(code);
     });
-  } else {
-    // البحث المتأخر عن الزر
-    setTimeout(() => {
-      const btnViewGrades = document.getElementById('btnViewGrades') || 
-                            document.querySelector('button[onclick*="searchGradesByCode"]') ||
-                            document.querySelector('button[onclick*="grades"]');
-      if (btnViewGrades) {
-        btnViewGrades.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          const codeInput = $('gradeSearchCode') || 
-                           document.querySelector('input[placeholder*="Code"], input[placeholder*="code"], input[name*="code"]');
-          const code = codeInput ? codeInput.value.trim() : '';
-          searchGradesByCode(code);
-        });
-      }
-    }, 1000);
   }
+
+  // إضافة أحداث للأزرار الديناميكية باستخدام event delegation
+  document.addEventListener('click', function(e) {
+    // للزر "Voir les notes" في حالة عدم وجوده في البداية
+    if (e.target && (e.target.textContent.includes('Voir les notes') || 
+                     e.target.textContent.includes('View grades') || 
+                     e.target.textContent.includes('عرض النتائج'))) {
+      e.preventDefault();
+      e.stopPropagation();
+      const codeInput = document.querySelector('input[placeholder*="Code"], input[placeholder*="code"], input[name*="code"]');
+      const code = codeInput ? codeInput.value.trim() : '';
+      searchGradesByCode(code);
+    }
+    
+    // للزر "Ajouter le terme" في القاموس
+    if (e.target && (e.target.textContent.includes('Ajouter le terme') || 
+                     e.target.textContent.includes('Add term') || 
+                     e.target.textContent.includes('إضافة مصطلح'))) {
+      e.preventDefault();
+      e.stopPropagation();
+      addDictionaryTerm();
+    }
+  });
 
   if ($('latexCode')) {
     $('latexCode').addEventListener('input', updateLatexLineNumbers);
@@ -339,17 +331,6 @@ function wireEvents(){
     e.preventDefault();
     e.stopPropagation();
     adminSaveLatex();
-  });
-
-  // إضافة منع السلوك الافتراضي للروابط التي قد تسبب الانتقال لأعلى الصفحة
-  document.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', function(e) {
-      // منع الانتقال لأعلى الصفحة فقط للروابط التي ليس لها href حقيقي
-      if (this.getAttribute('href') === '#' || !this.getAttribute('href')) {
-        e.preventDefault();
-        e.stopPropagation();
-      }
-    });
   });
 }
 
@@ -813,169 +794,38 @@ function renderDictionary(){
 }
 
 /* =============================
-   Additional missing functions - FIXED
+   Additional required functions (placeholders)
    ============================= */
-
-// إضافة الدوال الناقصة لتجنب الأخطاء
-function wireSliderAdminEvents() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Slider admin events wired');
-}
-
-function handleAnnouncementImage(e) {
-  // دالة مؤقتة لمنع الأخطاء
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      appData.announcement.image = event.target.result;
-      saveData();
-      refreshUI();
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-function adminCreateQuiz() {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Create quiz functionality');
-}
-
-function adminAddQuestion() {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Add question functionality');
-}
-
-function previewQuizAsStudent(qid) {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Preview quiz: ' + qid);
-}
-
-function adminSaveLesson() {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Save lesson functionality');
-}
-
-function adminSaveExercise() {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Save exercise functionality');
-}
-
-function adminSaveExam() {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Save exam functionality');
-}
-
-function adminSendMessage() {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Send message functionality');
-}
-
-function adminSaveLatex() {
-  // دالة مؤقتة لمنع الأخطاء
-  alert('Save LaTeX functionality');
-}
-
-function updateLatexLineNumbers() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Update line numbers');
-}
-
-function loadStudentDashboard() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Load student dashboard');
-}
-
-function renderQuizListForStudent() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render quiz list for student');
-}
-
-function renderStudentExercises() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render student exercises');
-}
-
-function renderLatexListForStudents() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render LaTeX list for students');
-}
-
-function renderStudentMessages() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render student messages');
-}
-
-function renderQuizList() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render quiz list');
-}
-
-function renderLessons() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render lessons');
-}
-
-function renderExercises() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render exercises');
-}
-
-function renderExams() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render exams');
-}
-
-function renderQuizAdminListDetailed() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render quiz admin list detailed');
-}
-
-function loadLatexAdminList() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Load LaTeX admin list');
-}
-
-function renderAdminMessagesList() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render admin messages list');
-}
-
-function renderLessonsAdminList() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render lessons admin list');
-}
-
-function renderExercisesAdminList() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render exercises admin list');
-}
-
-function renderExamsAdminList() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render exams admin list');
-}
-
-function renderRegradeRequestsAdminList() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render regrade requests admin list');
-}
-
-function renderFrontSlider() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Render front slider');
-}
-
-function populateAdminSelectQuiz() {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Populate admin select quiz');
-}
-
-function notifyStudents(type, title, message) {
-  // دالة مؤقتة لمنع الأخطاء
-  console.log('Notify students: ' + type + ' - ' + title);
-}
+function wireSliderAdminEvents(){}
+function renderQuizAdminListDetailed(){}
+function renderQuizList(){}
+function renderLessons(){}
+function renderExercises(){}
+function renderExams(){}
+function renderLessonsAdminList(){}
+function renderExercisesAdminList(){}
+function renderExamsAdminList(){}
+function loadLatexAdminList(){}
+function renderLatexListForStudents(){}
+function renderStudentMessages(){}
+function renderFrontSlider(){}
+function renderQuizListForStudent(){}
+function renderStudentExercises(){}
+function loadStudentDashboard(){}
+function adminCreateQuiz(){}
+function adminAddQuestion(){}
+function previewQuizAsStudent(qid){}
+function adminSaveLesson(){}
+function adminSaveExercise(){}
+function adminSaveExam(){}
+function adminSendMessage(){}
+function updateLatexLineNumbers(){}
+function adminSaveLatex(){}
+function renderAdminMessagesList(){}
+function renderRegradeRequestsAdminList(){}
+function handleAnnouncementImage(){}
+function notifyStudents(){}
 
 /* =============================
    End of file
-   ============================= */
+   ============================= */  

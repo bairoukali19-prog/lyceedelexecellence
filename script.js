@@ -1,40 +1,44 @@
- /**
- * app-full.js
- * نسخة كاملة ومتكاملة من جافا سكريبت (بديلة/مكملة) لموقع Lycée de l’Excellence
- * تحل المشاكل التالية التي ذكرتها:
- *  - عدم القدرة على الدخول إلى واجهة الأستاذ / التلميذ
- *  - عند الضغط على أي زر/رابط ينتقل الموقع تلقائياً إلى الأعلى (القفز إلى top)
- *  - مشاكل في المودالات، التبويبات، والسلايدر
+  /**
+ * full-app.js
+ * النسخة الكاملة (شاملة) لجافا سكريبت لتصليح مشاكل الموقع:
+ *  - عدم إمكانية الدخول إلى واجهة الأستاذ/التلميذ
+ *  - القفز إلى أعلى الصفحة عند الضغط على أي زر/رابط داخل sections
+ *  - مشاكل في المودالات، التبويبات، السلايدر، وبطاقات الميزات
  *
- * الصق هذا الملف كـ script.js أو داخل وسم <script> قبل </body>.
+ * تعليمات الاستخدام:
+ *  - الصق هذا الملف كـ script.js أو داخل وسم <script> قبل </body>.
+ *  - لا يحتاج لمكتبات خارجية.
+ *  - جميع العناصر التي تُستخدم هنا يمكن تعديلها في الـ HTML عبر id أو attributes التالية:
+ *      data-section="section-id"   -> روابط/أزرار التنقل بين الأقسام
+ *      data-section-id="..."       -> لتسمية عناصر الأقسام إذا لم يكن لديها id
+ *      data-open-modal="modalId"   -> لفتح مودال
+ *      data-close-modal="modalId"  -> لغلق مودال
+ *      data-tab="key"              -> لتبويبات التلميذ/الإدارة
+ *      data-prevent-submit         -> على الفورم لمنع submit الافتراضي
+ *      href="#" أو href="javascript:void(0)" -> لن يسبب قفزة إلى الأعلى بعد الآن
  *
- * ملاحظات مهمة:
- *  - هذا الكود لا يعتمد على أي مكتبة خارجية.
- *  - يعالج الروابط التي تحتوي href="#"، ويمنع سلوكها الافتراضي.
- *  - يدعم التهيئة حتى لو كانت بعض العناصر غير موجودة في DOM (مرونة).
- *  - يحتوي تعليقات بالعربية داخل الكود لشرح كل قسم.
+ * ملاحظة: الكود مرن ويتحمل غياب بعض العناصر في DOM دون كسر التطبيق.
  */
 
 'use strict';
 
 (function () {
-  // ============================
-  // إعدادات عامة / تكوين
-  // ============================
-  const CONFIG = {
-    sliderIntervalMs: 5000,
-    debug: false, // ضع true لعرض سجلات إضافية في console
+  // -------------------------
+  // CONFIG
+  // -------------------------
+  const C = {
+    sliderInterval: 5000,
+    debug: false,
     selectors: {
-      sectionAttr: 'data-section',            // attribute used on nav links / buttons
-      navLink: '.nav-link',                  // class for navigation links
-      featureCard: '.feature-card',          // class for clickable feature cards
-      modal: '.modal',                       // generic modal class
-      modalOpenAttr: 'data-open-modal',      // attribute to open modal
-      modalCloseAttr: 'data-close-modal',    // attribute to close modal
-      studentTab: '.student-tab',            // student tab links
-      studentTabContent: '.student-tab-content', // student tab content
+      navLinkAttr: 'data-section',
+      sectionIdAttr: 'data-section-id',
+      modalOpenAttr: 'data-open-modal',
+      modalCloseAttr: 'data-close-modal',
+      studentTab: '[data-student-tab]',
+      studentTabContent: '.student-tab-content',
       adminTabLink: '.admin-tab-link',
-      adminSection: '.admin-section',
+      adminTabContent: '.admin-section',
+      featureCard: '.feature-card',
       sliderRoot: '#front-hero-slider',
       loginBtn: '#loginBtn',
       studentLoginBtn: '#studentLoginBtn',
@@ -42,164 +46,177 @@
       studentLogoutBtn: '#studentLogoutBtn',
       submitLogin: '#submitLogin',
       submitStudentLogin: '#submitStudentLogin',
-      formPreventSubmit: 'data-prevent-submit'
+      preventFormAttr: 'data-prevent-submit'
     }
   };
 
-  // ============================
-  // حالة التطبيق (بسيطة)
-  // ============================
+  // -------------------------
+  // STATE
+  // -------------------------
   const state = {
-    currentUser: null, // { username, role: 'admin'|'student' }
-    currentSection: null,
+    sections: {},       // map id -> element
+    currentUser: null,  // { username, role: 'admin'|'student' }
     sliderTimer: null
   };
 
-  // ============================
-  // مساعدة: سجل حالة التصحيح
-  // ============================
+  // -------------------------
+  // Utilities
+  // -------------------------
   function log(...args) {
-    if (CONFIG.debug) console.log('[APP]', ...args);
+    if (C.debug) console.log('[APP]', ...args);
   }
 
-  // ============================
-  // أمان: منع "القفز" إلى أعلى الصفحة عند استخدام href="#"
-  // - نستخدم delegation لمنع السلوك الافتراضي فقط للحالات الضارة
-  // ============================
-  function preventAnchorJumping() {
-    document.addEventListener('click', function (e) {
-      // إذا كان الهدف أو أحد الآباء هو رابط <a>
-      const a = e.target.closest('a');
-      if (!a) return;
+  function qs(sel, ctx = document) { return ctx.querySelector(sel); }
+  function qsa(sel, ctx = document) { return Array.from(ctx.querySelectorAll(sel)); }
 
-      const href = a.getAttribute('href');
-      // إذا الرابط مجرد '#' أو 'javascript:void(0)' أو فارغ، نمنع السلوك الافتراضي
-      if (!href || href.trim() === '#' || href.trim().toLowerCase().startsWith('javascript:void')) {
-        e.preventDefault();
-        // بعض الروابط قد تستخدم data-section لتحديد القسم؛ نتعامل معها في handler آخر
-        const section = a.getAttribute(CONFIG.selectors.sectionAttr) || a.dataset.section;
-        if (section) {
-          // ننتقل للعرض الداخلي دون أي تمرير تلقائي
-          showSection(section);
-        }
-      }
-    }, { passive: false });
-  }
-
-  // ============================
-  // دالة مساعدة: الحصول على جميع الأقسام الموجودة في DOM
-  // - نقوم ببناء خريطة لأقسام الصفحة بناء على attribute id أو data-section-target
-  // ============================
-  function buildSectionsMap() {
-    const sections = {};
-    // افترض أن كل قسم يحمل class "section" أو attribute id
-    // أفضل نهج: العناصر التي تحمل data-section-id أو id
-    document.querySelectorAll('[data-section-id], [id]').forEach(el => {
-      const id = el.getAttribute('data-section-id') || el.id;
-      if (!id) return;
-      sections[id] = el;
+  // -------------------------
+  // Build sections map robustly
+  // -------------------------
+  function buildSections() {
+    const map = {};
+    // first, any element with data-section-id or id that likely represents a page section
+    qsa(`[${C.selectors.sectionIdAttr}], section, [role="region"], [data-section]`).forEach(el => {
+      const id = el.getAttribute(C.selectors.sectionIdAttr) || el.id || el.dataset.section;
+      if (id) map[id] = el;
     });
 
-    // إذا لم نجد شيء، نحاول قراءة عناصر محددة بالاسم الشائع
-    // قوائم احتياطية شائعة في هذا المشروع:
-    const fallbackIds = [
-      'home', 'home-section', 'student-dashboard', 'admin-panel',
-      'grades', 'quiz', 'lessons', 'exams', 'exercises', 'lessons-section'
-    ];
-    fallbackIds.forEach(fid => {
+    // also, any element that has an id (common fallback)
+    qsa('[id]').forEach(el => {
+      if (el.id && !map[el.id]) map[el.id] = el;
+    });
+
+    // common specific fallbacks for this project
+    ['home', 'home-section', 'student-dashboard', 'admin-panel', 'grades', 'quiz', 'lessons', 'exams', 'exercises'].forEach(fid => {
       const el = document.getElementById(fid);
-      if (el && !sections[fid]) sections[fid] = el;
+      if (el) map[fid] = el;
     });
 
-    return sections;
+    state.sections = map;
+    log('Sections map built:', Object.keys(map));
+    return map;
   }
 
-  // ============================
-  // إظهار وإخفاء الأقسام
-  // - لا نستخدم window.scrollTo أو تغيير الهاش إلا إذا طلب صراحة
-  // ============================
-  function hideAllSections(sectionsMap) {
-    Object.values(sectionsMap).forEach(el => {
+  // -------------------------
+  // Hide/Show sections without jumping
+  // -------------------------
+  function hideAllSections() {
+    Object.values(state.sections).forEach(el => {
       if (!el) return;
       el.style.display = 'none';
       el.classList.remove('active');
     });
   }
 
-  function showSection(sectionName, options = { scrollIntoView: false, smooth: true }) {
-    const sections = window.__APP_SECTIONS_MAP || buildSectionsMap();
-    window.__APP_SECTIONS_MAP = sections;
-
-    const target = sections[sectionName] || document.getElementById(sectionName);
-    if (!target) {
-      console.warn(`showSection: القسم "${sectionName}" غير موجود في DOM.`);
-      // إذا لم نجده، نعرض الـ home إن وجد
-      const fallback = sections['home'] || document.getElementById('home') || Object.values(sections)[0];
+  /**
+   * Show a section by id (no automatic scroll to top).
+   * If the section doesn't exist, fallback gracefully to home or first section found.
+   */
+  function showSection(id, opts = { scrollIntoView: false }) {
+    if (!state.sections || Object.keys(state.sections).length === 0) buildSections();
+    const el = state.sections[id] || document.getElementById(id);
+    if (!el) {
+      console.warn(`showSection: القسم "${id}" غير موجود.`);
+      const fallback = state.sections['home'] || state.sections['home-section'] || Object.values(state.sections)[0];
       if (fallback) {
-        hideAllSections(sections);
+        hideAllSections();
         fallback.style.display = 'block';
         fallback.classList.add('active');
-        state.currentSection = fallback.id || 'home-fallback';
+        log('showSection: displayed fallback', fallback.id || null);
       }
       return;
     }
 
-    hideAllSections(sections);
-    target.style.display = 'block';
-    target.classList.add('active');
-    state.currentSection = sectionName;
-    log('showSection ->', sectionName);
+    hideAllSections();
+    el.style.display = 'block';
+    el.classList.add('active');
 
-    if (options.scrollIntoView) {
-      try {
-        target.scrollIntoView({ behavior: options.smooth ? 'smooth' : 'auto', block: 'start' });
-      } catch (err) {
-        // تجاهل الأخطاء
-      }
+    // اختياري: تمرير سلس إلى القسم إذا طلبنا ذلك (لا نفعل بشكل افتراضي)
+    if (opts.scrollIntoView) {
+      try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ }
     }
+    log('showSection: displayed', id);
   }
 
-  // ============================
-  // تهيئة الروابط / الأزرار التي توجه بين الأقسام
-  // - يبحث عن العناصر التي تملك data-section أو data-section-target
-  // - يمنع السلوك الافتراضي عند الحاجة
-  // ============================
-  function initSectionNavigation() {
-    // نستخدم delegation على document
+  // -------------------------
+  // Prevent anchor jumping globally (but allow intentional hash navigation to an existing id)
+  // Strategy:
+  //  - If href is exactly '#' or javascript:void or empty -> preventDefault and do nothing
+  //  - If href starts with '#' and target id exists -> preventDefault and showSection(targetId)
+  //  - Otherwise allow normal behavior
+  // -------------------------
+  function initAnchorProtection() {
     document.addEventListener('click', function (e) {
-      const btn = e.target.closest(`[${CONFIG.selectors.sectionAttr}]`);
-      if (!btn) return;
+      const a = e.target.closest('a');
+      if (!a) return;
+      const href = (a.getAttribute('href') || '').trim();
+      // cases to block
+      if (!href || href === '#' || href.toLowerCase().startsWith('javascript:void')) {
+        e.preventDefault();
+        // try to resolve data-section attribute if present
+        const ds = a.getAttribute(C.selectors.navLinkAttr) || a.dataset.section;
+        if (ds) showSection(ds);
+        return;
+      }
+      // hash navigation to an element within the page
+      if (href.startsWith('#')) {
+        const id = href.slice(1);
+        const target = document.getElementById(id);
+        if (target) {
+          e.preventDefault();
+          // show as section if present in our map, else optionally scroll into view
+          if (state.sections && state.sections[id]) showSection(id);
+          else {
+            // if it's not a full "section", do a smooth scroll to it (not a jump)
+            try { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ }
+          }
+        } else {
+          // href="#nonexistent" -> prevent jump to top
+          e.preventDefault();
+        }
+      }
+    }, { passive: false });
+  }
 
-      e.preventDefault(); // مهم جداً لإيقاف href="#" من القفز
-      const section = btn.getAttribute(CONFIG.selectors.sectionAttr) || btn.dataset.section;
+  // -------------------------
+  // Delegated navigation via data-section attributes (for buttons/links)
+  // - Prevent default to avoid form submit or anchor jumps
+  // - Handles authorization checks for admin/student (opens login modal if needed)
+  // -------------------------
+  function initSectionNavigation() {
+    document.addEventListener('click', function (e) {
+      const trigger = e.target.closest(`[${C.selectors.navLinkAttr}]`);
+      if (!trigger) return;
+      e.preventDefault();
+
+      const section = trigger.getAttribute(C.selectors.navLinkAttr) || trigger.dataset.section;
       if (!section) return;
 
-      // إمكانية انتظار بيانات أو تحقق دور المستخدم هنا
-      if (section === 'student-dashboard' && (!state.currentUser || state.currentUser.role !== 'student')) {
-        // إذا لم يسجل التلميذ دخوله، نطلب منه تسجيل الدخول أو نعرض مودال
-        openModalById('studentLoginModal') || openModalById('loginModal');
-        return;
-      }
-      if (section === 'admin-panel' && (!state.currentUser || state.currentUser.role !== 'admin')) {
-        openModalById('loginModal');
-        return;
+      // security checks: if section requires role, expect data-require-role attribute (admin|student)
+      const requiredRole = trigger.dataset.requireRole;
+      if (requiredRole) {
+        if (!state.currentUser || state.currentUser.role !== requiredRole) {
+          // open appropriate login modal
+          if (requiredRole === 'admin') openModalById('loginModal');
+          else if (requiredRole === 'student') openModalById('studentLoginModal');
+          return;
+        }
       }
 
+      // show section without jumping
       showSection(section);
     }, { passive: false });
   }
 
-  // ============================
-  // إدارة المودالات (Modals)
-  // - فتح/إغلاق بواسطة attributes data-open-modal / data-close-modal أو بواسطة id مباشرة
-  // - إغلاق بالنقر خارج المحتوى و بال ESC
-  // ============================
+  // -------------------------
+  // Modal helpers (open/close, trap focus, close on ESC and outside click)
+  // Elements expected: <div id="someModal" class="modal"><div class="modal-content">...</div></div>
+  // -------------------------
   function openModal(modalEl) {
     if (!modalEl) return;
     modalEl.classList.add('active');
     modalEl.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('no-scroll');
-    // وضع التركيز على أول عنصر focusable داخل المودال
+    document.body.classList.add('modal-open'); // css: .modal-open { overflow: hidden; }
+    // focus management
     const focusable = modalEl.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
     if (focusable) focusable.focus();
   }
@@ -208,118 +225,120 @@
     if (!modalEl) return;
     modalEl.classList.remove('active');
     modalEl.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('no-scroll');
+    document.body.classList.remove('modal-open');
   }
 
   function openModalById(id) {
     if (!id) return null;
-    const modal = document.getElementById(id);
-    if (modal) {
-      openModal(modal);
-      return modal;
-    }
-    return null;
+    const m = document.getElementById(id);
+    if (m) openModal(m);
+    return m;
   }
 
-  function initModalHandlers() {
-    // فتح المودال بواسطة عناصر تحمل data-open-modal="idOfModal"
+  function initModalSystem() {
+    // openers: data-open-modal="id"
     document.addEventListener('click', function (e) {
-      const opener = e.target.closest(`[${CONFIG.selectors.modalOpenAttr}]`);
+      const opener = e.target.closest(`[${C.selectors.modalOpenAttr}]`);
       if (!opener) return;
       e.preventDefault();
-      const id = opener.getAttribute(CONFIG.selectors.modalOpenAttr) || opener.dataset.openModal;
+      const id = opener.getAttribute(C.selectors.modalOpenAttr) || opener.dataset.openModal;
       openModalById(id);
     });
 
-    // إغلاق بواسطة عناصر تحمل data-close-modal
+    // closers: data-close-modal="id" OR elements inside modal with data-close-modal
     document.addEventListener('click', function (e) {
-      const closer = e.target.closest(`[${CONFIG.selectors.modalCloseAttr}]`);
+      const closer = e.target.closest(`[${C.selectors.modalCloseAttr}]`);
       if (!closer) return;
       e.preventDefault();
-      const id = closer.getAttribute(CONFIG.selectors.modalCloseAttr) || closer.dataset.closeModal;
-      if (id) {
-        closeModal(document.getElementById(id));
-      } else {
-        // إذا لم يعطِ id، نغلق المودال الأب الأقرب
-        const modal = closer.closest(CONFIG.selectors.modal);
-        closeModal(modal);
+      const id = closer.getAttribute(C.selectors.modalCloseAttr) || closer.dataset.closeModal;
+      if (id) closeModal(document.getElementById(id));
+      else {
+        const modal = closer.closest('.modal');
+        if (modal) closeModal(modal);
       }
     });
 
-    // إغلاق بالنقر خارج محتوى المودال
+    // click outside modal content closes it (delegation)
     document.addEventListener('click', function (e) {
-      const modal = e.target.closest(CONFIG.selectors.modal);
+      const modal = e.target.closest('.modal.active');
       if (!modal) return;
       const content = modal.querySelector('.modal-content') || modal.querySelector('.modal-body') || modal;
-      if (!content) return;
       if (!content.contains(e.target)) {
         closeModal(modal);
       }
     });
 
-    // إغلاق بالـ ESC
+    // ESC closes active modals
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
-        document.querySelectorAll(`${CONFIG.selectors.modal}.active`).forEach(m => closeModal(m));
+        qsa('.modal.active').forEach(m => closeModal(m));
       }
     });
   }
 
-  // ============================
-  // تهيئة السلايدر الأمامي إن وجد
-  // ============================
+  // -------------------------
+  // Slider initialization (if exists)
+  // - uses .slide or .hero-slide elements inside root
+  // - pauses on mouseenter and when document hidden (tab switch)
+  // -------------------------
   function initSlider() {
-    const root = document.querySelector(CONFIG.selectors.sliderRoot);
+    const root = qs(C.selectors.sliderRoot);
     if (!root) return;
-    const slides = Array.from(root.querySelectorAll('.slide, img, .hero-slide'));
+    const slides = qsa('.slide, .hero-slide, img', root).filter(Boolean);
     if (!slides.length) return;
 
-    // إعداد البداية
     slides.forEach((s, i) => {
       s.style.display = i === 0 ? 'block' : 'none';
       s.classList.toggle('active', i === 0);
     });
 
-    let current = 0;
-    const next = () => {
-      slides[current].style.display = 'none';
-      slides[current].classList.remove('active');
-      current = (current + 1) % slides.length;
-      slides[current].style.display = 'block';
-      slides[current].classList.add('active');
-    };
+    let idx = 0;
+    function next() {
+      slides[idx].style.display = 'none';
+      slides[idx].classList.remove('active');
+      idx = (idx + 1) % slides.length;
+      slides[idx].style.display = 'block';
+      slides[idx].classList.add('active');
+    }
 
     clearInterval(state.sliderTimer);
-    state.sliderTimer = setInterval(next, CONFIG.sliderIntervalMs);
+    state.sliderTimer = setInterval(next, C.sliderInterval);
 
-    // إيقاف عند وضع الماوس (تحسين تجربة)
     root.addEventListener('mouseenter', () => clearInterval(state.sliderTimer));
     root.addEventListener('mouseleave', () => {
       clearInterval(state.sliderTimer);
-      state.sliderTimer = setInterval(next, CONFIG.sliderIntervalMs);
+      state.sliderTimer = setInterval(next, C.sliderInterval);
+    });
+
+    // Pause slider when document not visible
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) clearInterval(state.sliderTimer);
+      else {
+        clearInterval(state.sliderTimer);
+        state.sliderTimer = setInterval(next, C.sliderInterval);
+      }
     });
   }
 
-  // ============================
-  // تهيئة تبويبات التلميذ والتبويبات الإدارية
-  // ============================
+  // -------------------------
+  // Tabs system for student/admin
+  // - expects elements with data-student-tab / data-tab attributes and matching content ids
+  // -------------------------
   function initTabs() {
-    // تبويبات التلميذ
-    const studentTabs = Array.from(document.querySelectorAll(CONFIG.selectors.studentTab));
-    const studentContents = Array.from(document.querySelectorAll(CONFIG.selectors.studentTabContent));
-    studentTabs.forEach(tab => {
+    // student tabs
+    qsa(C.selectors.studentTab).forEach(tab => {
       tab.addEventListener('click', function (e) {
         e.preventDefault();
-        const key = this.dataset.tab;
+        const key = this.dataset.studentTab;
         if (!key) return;
-        // تعطيل جميع التبويبات
-        studentTabs.forEach(t => t.classList.remove('active'));
-        studentContents.forEach(c => {
+        // deactivate all
+        qsa(C.selectors.studentTab).forEach(t => t.classList.remove('active'));
+        qsa(C.selectors.studentTabContent).forEach(c => {
           c.classList.remove('active');
           c.style.display = 'none';
         });
         this.classList.add('active');
-        const target = document.getElementById(`student-${key}-tab`) || document.querySelector(`[data-student-tab="${key}"]`);
+        const target = document.getElementById(`student-${key}-tab`) || document.querySelector(`[data-student-content="${key}"]`);
         if (target) {
           target.classList.add('active');
           target.style.display = 'block';
@@ -327,16 +346,14 @@
       });
     });
 
-    // تبويبات الإدارة
-    const adminLinks = Array.from(document.querySelectorAll(CONFIG.selectors.adminTabLink));
-    const adminSections = Array.from(document.querySelectorAll(CONFIG.selectors.adminSection));
-    adminLinks.forEach(link => {
+    // admin tabs
+    qsa(C.selectors.adminTabLink).forEach(link => {
       link.addEventListener('click', function (e) {
         e.preventDefault();
         const key = this.dataset.tab;
         if (!key) return;
-        adminLinks.forEach(l => l.classList.remove('active'));
-        adminSections.forEach(s => {
+        qsa(C.selectors.adminTabLink).forEach(l => l.classList.remove('active'));
+        qsa(C.selectors.adminTabContent).forEach(s => {
           s.classList.remove('active');
           s.style.display = 'none';
         });
@@ -350,168 +367,156 @@
     });
   }
 
-  // ============================
-  // تهيئة بطاقات المميزات (feature cards)
-  // ============================
+  // -------------------------
+  // Feature cards (clickable)
+  // -------------------------
   function initFeatureCards() {
-    document.querySelectorAll(CONFIG.selectors.featureCard).forEach(card => {
+    qsa(C.selectors.featureCard).forEach(card => {
       card.setAttribute('role', 'button');
       card.addEventListener('click', function (e) {
-        // أزرار البطاقات لا تسبب submit عادة لكن نمنع السلوك الافتراضي فقط للتحكم
+        // avoid accidental form submits
         e.preventDefault();
-        const section = this.getAttribute('data-section') || this.dataset.section;
+        const section = this.dataset.section;
         if (section) showSection(section);
       });
     });
   }
 
-  // ============================
-  // نماذج: منع إعادة تحميل الصفحة عند الضغط على زر داخل form إذا عليه attribute data-prevent-submit
-  // - يساعد لو كان لديك <form> ويحتوي على أزرار تنفيذ لا يجب أن ترسل النموذج
-  // ============================
-  function preventFormSubmits() {
+  // -------------------------
+  // Prevent accidental form submits and button-induced page jumps
+  // - if a <form> has data-prevent-submit attribute, prevent its submit
+  // - any <button type="submit"> inside such forms will not submit
+  // - intercept global submit to stop reloads where intended
+  // -------------------------
+  function initFormPrevention() {
     document.addEventListener('submit', function (e) {
       const form = e.target;
-      if (form && form.hasAttribute(CONFIG.selectors.formPreventSubmit)) {
+      if (!form || !(form instanceof HTMLFormElement)) return;
+      if (form.hasAttribute(C.selectors.preventFormAttr)) {
         e.preventDefault();
       }
     });
+
+    // also prevent <button href="#"> like behaviors: if a button is clicked and has dataset.noJump
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      // if button explicitly has type="button" nothing to do; if it's submit and inside prevent-form -> prevent default
+      const form = btn.form;
+      if (form && form.hasAttribute(C.selectors.preventFormAttr)) {
+        if (btn.type === 'submit' || !btn.type) {
+          e.preventDefault();
+        }
+      }
+    }, { passive: false });
   }
 
-  // ============================
-  // محاكاة تسجيل الدخول (يمكنك ربط API لاحقاً)
-  // - تذكر: إزالة المحاكاة عند الربط الحقيقي
-  // ============================
-  function simulateLogin(username, password, isStudent) {
-    // قاعدة بسيطة: admin/admin => مشرف، أي شيء آخر => تلميذ (إذا isStudent) أو رفض
+  // -------------------------
+  // Authentication simulation & handlers
+  // - Simple simulation: admin/admin => admin; student login accepts any credentials (for now)
+  // - After login, show corresponding panel
+  // -------------------------
+  function simulateAuth(username, password, isStudent = false) {
     if (isStudent) {
-      // قبول أي اسم/كلمة (محاكاة)
-      state.currentUser = { username: username || 'student', role: 'student' };
-      showSection('student-dashboard');
+      if (!username) username = 'student';
+      state.currentUser = { username, role: 'student' };
+      // close student login modal if present
       closeModal(document.getElementById('studentLoginModal'));
+      showSection('student-dashboard');
       return true;
     } else {
       if (username === 'admin' && password === 'admin') {
         state.currentUser = { username: 'admin', role: 'admin' };
-        showSection('admin-panel');
         closeModal(document.getElementById('loginModal'));
+        showSection('admin-panel');
         return true;
       } else {
-        alert('اسم المستخدم أو كلمة المرور غير صحيحة.');
+        alert('اسم المستخدم أو كلمة المرور غير صحيحة (جرب admin/admin للمسؤول).');
         return false;
       }
     }
   }
 
-  // ============================
-  // تهيئة أزرار/MODAL login / logout
-  // ============================
   function initAuthHandlers() {
-    // أزرار فتح المودال (إذا لم تستخدم data-open-modal)
-    const loginBtn = document.querySelector(CONFIG.selectors.loginBtn);
-    const studentLoginBtn = document.querySelector(CONFIG.selectors.studentLoginBtn);
-    const logoutBtn = document.querySelector(CONFIG.selectors.logoutBtn);
-    const studentLogoutBtn = document.querySelector(CONFIG.selectors.studentLogoutBtn);
+    const loginBtn = qs(C.selectors.loginBtn);
+    const studentLoginBtn = qs(C.selectors.studentLoginBtn);
+    const logoutBtn = qs(C.selectors.logoutBtn);
+    const studentLogoutBtn = qs(C.selectors.studentLogoutBtn);
 
-    loginBtn?.addEventListener('click', function (e) {
-      e.preventDefault();
-      openModalById('loginModal');
-    });
+    loginBtn?.addEventListener('click', function (e) { e.preventDefault(); openModalById('loginModal'); });
+    studentLoginBtn?.addEventListener('click', function (e) { e.preventDefault(); openModalById('studentLoginModal'); });
 
-    studentLoginBtn?.addEventListener('click', function (e) {
-      e.preventDefault();
-      openModalById('studentLoginModal');
-    });
+    logoutBtn?.addEventListener('click', function (e) { e.preventDefault(); state.currentUser = null; showSection('home'); });
+    studentLogoutBtn?.addEventListener('click', function (e) { e.preventDefault(); state.currentUser = null; showSection('home'); });
 
-    logoutBtn?.addEventListener('click', function (e) {
-      e.preventDefault();
-      state.currentUser = null;
-      showSection('home');
-    });
-
-    studentLogoutBtn?.addEventListener('click', function (e) {
-      e.preventDefault();
-      state.currentUser = null;
-      showSection('home');
-    });
-
-    // أزرار إرسال النماذج (محاكاة)
-    const submitLogin = document.querySelector(CONFIG.selectors.submitLogin);
-    const submitStudentLogin = document.querySelector(CONFIG.selectors.submitStudentLogin);
+    const submitLogin = qs(C.selectors.submitLogin);
+    const submitStudentLogin = qs(C.selectors.submitStudentLogin);
 
     submitLogin?.addEventListener('click', function (e) {
       e.preventDefault();
-      const username = document.getElementById('username')?.value || '';
-      const password = document.getElementById('password')?.value || '';
-      simulateLogin(username.trim(), password.trim(), false);
+      const username = qs('#username')?.value || '';
+      const password = qs('#password')?.value || '';
+      simulateAuth(username.trim(), password.trim(), false);
     });
 
     submitStudentLogin?.addEventListener('click', function (e) {
       e.preventDefault();
-      const username = document.getElementById('studentUsername')?.value || '';
-      const password = document.getElementById('studentPassword')?.value || '';
-      simulateLogin(username.trim(), password.trim(), true);
+      const username = qs('#studentUsername')?.value || '';
+      const password = qs('#studentPassword')?.value || '';
+      simulateAuth(username.trim(), password.trim(), true);
     });
   }
 
-  // ============================
-  // تهيئة التحسينات العامة عند التحميل
-  // ============================
-  function initAccessibilityImprovements() {
-    // أحسن التاب ترتيب للعناصر المهمة إن لم يكن موجود
-    document.querySelectorAll('a, button, input, textarea, select').forEach(el => {
-      if (!el.hasAttribute('tabindex')) {
-        el.setAttribute('tabindex', '0');
-      }
+  // -------------------------
+  // Accessibility small improvements
+  // -------------------------
+  function enhanceAccessibility() {
+    // ensure interactive elements are keyboard reachable
+    qsa('a, button, input, select, textarea').forEach(el => {
+      if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
     });
   }
 
-  // ============================
-  // تهيئة كل شيء
-  // ============================
-  function initApp() {
+  // -------------------------
+  // Initialize everything
+  // -------------------------
+  function init() {
     try {
-      log('Initializing app...');
+      buildSections();
+      initAnchorProtection();
+      initSectionNavigation();
+      initModalSystem();
+      initSlider();
+      initTabs();
+      initFeatureCards();
+      initFormPrevention();
+      initAuthHandlers();
+      enhanceAccessibility();
 
-      window.__APP_SECTIONS_MAP = buildSectionsMap();
-
-      preventAnchorJumping(); // منع href="#" من القفز
-      initSectionNavigation(); // التعامل مع data-section
-      initModalHandlers(); // مودالات
-      initSlider(); // سلايدر
-      initTabs(); // تبويبات
-      initFeatureCards(); // بطاقات
-      preventFormSubmits(); // منع submit للـ forms المختارة
-      initAuthHandlers(); // login/logout simulation
-      initAccessibilityImprovements(); // تحسينات وصول
-
-      // افتراضي: عرض القسم الرئيسي إن وجد
-      const defaultCandidates = ['home', 'home-section', 'student-dashboard', 'main'];
+      // show default section (prefer 'home' if exists)
+      const defaults = ['home', 'home-section', 'student-dashboard', 'main'];
       let shown = false;
-      for (const cand of defaultCandidates) {
-        if (document.getElementById(cand)) {
-          showSection(cand);
-          shown = true;
-          break;
-        }
+      for (const d of defaults) {
+        if (state.sections[d]) { showSection(d); shown = true; break; }
       }
       if (!shown) {
-        // عرض أول قسم في الخريطة
-        const first = Object.keys(window.__APP_SECTIONS_MAP)[0];
+        const first = Object.keys(state.sections)[0];
         if (first) showSection(first);
       }
 
-      log('App initialized.');
+      log('Initialization complete.');
     } catch (err) {
-      console.error('خطأ في initApp:', err);
+      console.error('Init error:', err);
     }
   }
 
-  // تشغيل تهيئة التطبيق عند تحميل DOM
+  // -------------------------
+  // Run on DOM ready
+  // -------------------------
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initApp);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    initApp();
+    init();
   }
 
 })();

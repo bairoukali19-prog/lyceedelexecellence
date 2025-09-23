@@ -1,522 +1,420 @@
-  /**
- * full-app.js
- * النسخة الكاملة (شاملة) لجافا سكريبت لتصليح مشاكل الموقع:
- *  - عدم إمكانية الدخول إلى واجهة الأستاذ/التلميذ
- *  - القفز إلى أعلى الصفحة عند الضغط على أي زر/رابط داخل sections
- *  - مشاكل في المودالات، التبويبات، السلايدر، وبطاقات الميزات
+/**
+ * app-espace-fixes.js
+ * نسخة مُحدَّثة: تحافظ على "Espace de professeur" و "Espace des élèves"
+ * وتضيف واجهة بسيطة لإدخال نقاط (notes).
  *
- * تعليمات الاستخدام:
- *  - الصق هذا الملف كـ script.js أو داخل وسم <script> قبل </body>.
- *  - لا يحتاج لمكتبات خارجية.
- *  - جميع العناصر التي تُستخدم هنا يمكن تعديلها في الـ HTML عبر id أو attributes التالية:
- *      data-section="section-id"   -> روابط/أزرار التنقل بين الأقسام
- *      data-section-id="..."       -> لتسمية عناصر الأقسام إذا لم يكن لديها id
- *      data-open-modal="modalId"   -> لفتح مودال
- *      data-close-modal="modalId"  -> لغلق مودال
- *      data-tab="key"              -> لتبويبات التلميذ/الإدارة
- *      data-prevent-submit         -> على الفورم لمنع submit الافتراضي
- *      href="#" أو href="javascript:void(0)" -> لن يسبب قفزة إلى الأعلى بعد الآن
+ * الصق هذا الملف كـ script.js أو داخل وسم <script> قبل </body>.
  *
- * ملاحظة: الكود مرن ويتحمل غياب بعض العناصر في DOM دون كسر التطبيق.
+ * تعليمات سريعة:
+ * - يفضل أن تعطي عناصر الأقسام id واضح مثل:
+ *     <section id="espace-professeur"> ... </section>
+ *     <section id="espace-eleves"> ... </section>
+ * - أزرار التنقل استخدم: data-section="espace-professeur" أو data-section="espace-eleves"
+ * - إن لم تغير HTML، الكود الآن يحاول العثور على الأقسام بالبحث عن العناوين النصية.
  */
 
 'use strict';
 
 (function () {
-  // -------------------------
-  // CONFIG
-  // -------------------------
-  const C = {
-    sliderInterval: 5000,
+  const CONFIG = {
+    sliderIntervalMs: 5000,
     debug: false,
     selectors: {
-      navLinkAttr: 'data-section',
-      sectionIdAttr: 'data-section-id',
+      navLinkAttr: 'data-section',        // عناصر التنقل تحمل هذا attribute
+      sectionIdAttr: 'data-section-id',   // (اختياري) الأقسام تحمل هذا attribute
       modalOpenAttr: 'data-open-modal',
       modalCloseAttr: 'data-close-modal',
-      studentTab: '[data-student-tab]',
-      studentTabContent: '.student-tab-content',
-      adminTabLink: '.admin-tab-link',
-      adminTabContent: '.admin-section',
-      featureCard: '.feature-card',
-      sliderRoot: '#front-hero-slider',
-      loginBtn: '#loginBtn',
-      studentLoginBtn: '#studentLoginBtn',
-      logoutBtn: '#logoutBtn',
-      studentLogoutBtn: '#studentLogoutBtn',
-      submitLogin: '#submitLogin',
-      submitStudentLogin: '#submitStudentLogin',
-      preventFormAttr: 'data-prevent-submit'
+      notesContainerIds: ['notes-list', 'notes', 'notes-container'], // محاولات التسمية
+      espaceProfLabel: 'Espace de professeur',
+      espaceElevesLabel: 'Espace des élèves',
+      loginModalId: 'loginModal',
+      studentLoginModalId: 'studentLoginModal',
+      addNoteModalId: 'addNoteModal',
+      addNoteBtnId: 'openAddNoteBtn',
     }
   };
 
-  // -------------------------
-  // STATE
-  // -------------------------
   const state = {
-    sections: {},       // map id -> element
-    currentUser: null,  // { username, role: 'admin'|'student' }
+    sections: {}, // map id -> element
+    currentUser: null,
     sliderTimer: null
   };
 
-  // -------------------------
-  // Utilities
-  // -------------------------
-  function log(...args) {
-    if (C.debug) console.log('[APP]', ...args);
-  }
-
-  function qs(sel, ctx = document) { return ctx.querySelector(sel); }
-  function qsa(sel, ctx = document) { return Array.from(ctx.querySelectorAll(sel)); }
+  function log(...args) { if (CONFIG.debug) console.log('[APP]', ...args); }
 
   // -------------------------
-  // Build sections map robustly
+  // Build sections map robustly and ensure espace-professeur / espace-eleves exist
   // -------------------------
-  function buildSections() {
+  function buildSectionsMap() {
     const map = {};
-    // first, any element with data-section-id or id that likely represents a page section
-    qsa(`[${C.selectors.sectionIdAttr}], section, [role="region"], [data-section]`).forEach(el => {
-      const id = el.getAttribute(C.selectors.sectionIdAttr) || el.id || el.dataset.section;
+
+    // 1) elements with data-section-id
+    document.querySelectorAll(`[${CONFIG.selectors.sectionIdAttr}]`).forEach(el => {
+      const id = el.getAttribute(CONFIG.selectors.sectionIdAttr);
       if (id) map[id] = el;
     });
 
-    // also, any element that has an id (common fallback)
-    qsa('[id]').forEach(el => {
-      if (el.id && !map[el.id]) map[el.id] = el;
+    // 2) elements with id
+    document.querySelectorAll('[id]').forEach(el => {
+      const id = el.id;
+      if (id) {
+        // ignore typical UI elements that are not sections? we include all then hide as needed
+        if (!map[id]) map[id] = el;
+      }
     });
 
-    // common specific fallbacks for this project
-    ['home', 'home-section', 'student-dashboard', 'admin-panel', 'grades', 'quiz', 'lessons', 'exams', 'exercises'].forEach(fid => {
-      const el = document.getElementById(fid);
-      if (el) map[fid] = el;
-    });
+    // 3) fallback: try to find "Espace de professeur" / "Espace des élèves" by common ids
+    const profIds = ['espace-professeur', 'espace_professeur', 'professeur-space', 'prof-space'];
+    const eleveIds = ['espace-eleves', 'espace_eleves', 'eleves-space', 'student-space', 'eleve-space'];
+
+    for (const id of profIds) {
+      const found = document.getElementById(id);
+      if (found) { map['espace-professeur'] = found; break; }
+    }
+    for (const id of eleveIds) {
+      const found = document.getElementById(id);
+      if (found) { map['espace-eleves'] = found; break; }
+    }
+
+    // 4) If still not found, search for elements that contain the label text in an H1/H2/H3 or with class .section-title
+    if (!map['espace-professeur']) {
+      const byText = findElementByHeadingText(CONFIG.selectors.espaceProfLabel);
+      if (byText) map['espace-professeur'] = byText;
+    }
+    if (!map['espace-eleves']) {
+      const byText = findElementByHeadingText(CONFIG.selectors.espaceElevesLabel);
+      if (byText) map['espace-eleves'] = byText;
+    }
+
+    // 5) ensure there is at least some 'home' fallback
+    if (!map['home']) {
+      const h = document.getElementById('home') || document.querySelector('.home') || Object.values(map)[0];
+      if (h) map['home'] = h;
+    }
 
     state.sections = map;
-    log('Sections map built:', Object.keys(map));
+    log('Sections built:', Object.keys(map));
     return map;
   }
 
+  function findElementByHeadingText(text) {
+    if (!text) return null;
+    // search common heading tags first
+    const headings = Array.from(document.querySelectorAll('h1,h2,h3,h4'));
+    for (const h of headings) {
+      if (h.textContent && h.textContent.trim().includes(text)) {
+        // prefer the nearest section/ancestor
+        const sec = h.closest('section, [role="region"], .section, .card, .container') || h.parentElement;
+        return sec;
+      }
+    }
+    // search for class .section-title
+    const title = Array.from(document.querySelectorAll('.section-title, .title')).find(el => el.textContent?.trim().includes(text));
+    if (title) return title.closest('section') || title.parentElement;
+    return null;
+  }
+
   // -------------------------
-  // Hide/Show sections without jumping
+  // Hide/Show sections safely (no jumping)
   // -------------------------
   function hideAllSections() {
     Object.values(state.sections).forEach(el => {
       if (!el) return;
-      el.style.display = 'none';
-      el.classList.remove('active');
+      // only hide if it's a sizeable element (to avoid hiding header/footer accidentally)
+      try {
+        el.style.display = 'none';
+        el.classList.remove('active');
+      } catch (e) { /* ignore */ }
     });
   }
 
-  /**
-   * Show a section by id (no automatic scroll to top).
-   * If the section doesn't exist, fallback gracefully to home or first section found.
-   */
   function showSection(id, opts = { scrollIntoView: false }) {
-    if (!state.sections || Object.keys(state.sections).length === 0) buildSections();
+    if (!state.sections || Object.keys(state.sections).length === 0) buildSectionsMap();
     const el = state.sections[id] || document.getElementById(id);
     if (!el) {
-      console.warn(`showSection: القسم "${id}" غير موجود.`);
-      const fallback = state.sections['home'] || state.sections['home-section'] || Object.values(state.sections)[0];
+      console.warn('showSection: القسم غير موجود:', id);
+      // fallback
+      const fallback = state.sections['home'] || Object.values(state.sections)[0];
       if (fallback) {
         hideAllSections();
         fallback.style.display = 'block';
         fallback.classList.add('active');
-        log('showSection: displayed fallback', fallback.id || null);
       }
       return;
     }
-
     hideAllSections();
     el.style.display = 'block';
     el.classList.add('active');
-
-    // اختياري: تمرير سلس إلى القسم إذا طلبنا ذلك (لا نفعل بشكل افتراضي)
     if (opts.scrollIntoView) {
-      try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) { /* ignore */ }
+      try { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (e) {}
     }
-    log('showSection: displayed', id);
+    log('Section shown:', id);
   }
 
   // -------------------------
-  // Prevent anchor jumping globally (but allow intentional hash navigation to an existing id)
-  // Strategy:
-  //  - If href is exactly '#' or javascript:void or empty -> preventDefault and do nothing
-  //  - If href starts with '#' and target id exists -> preventDefault and showSection(targetId)
-  //  - Otherwise allow normal behavior
+  // Prevent default anchor '#' jumping and smart hash handling
   // -------------------------
   function initAnchorProtection() {
     document.addEventListener('click', function (e) {
       const a = e.target.closest('a');
       if (!a) return;
       const href = (a.getAttribute('href') || '').trim();
-      // cases to block
       if (!href || href === '#' || href.toLowerCase().startsWith('javascript:void')) {
         e.preventDefault();
-        // try to resolve data-section attribute if present
-        const ds = a.getAttribute(C.selectors.navLinkAttr) || a.dataset.section;
+        const ds = a.getAttribute(CONFIG.selectors.navLinkAttr) || a.dataset.section;
         if (ds) showSection(ds);
         return;
       }
-      // hash navigation to an element within the page
       if (href.startsWith('#')) {
         const id = href.slice(1);
         const target = document.getElementById(id);
         if (target) {
           e.preventDefault();
-          // show as section if present in our map, else optionally scroll into view
-          if (state.sections && state.sections[id]) showSection(id);
+          // if it's a full section we show it, else smooth-scroll to fragment
+          if (state.sections[id]) showSection(id);
           else {
-            // if it's not a full "section", do a smooth scroll to it (not a jump)
-            try { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) { /* ignore */ }
+            try { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); } catch (err) {}
           }
         } else {
-          // href="#nonexistent" -> prevent jump to top
-          e.preventDefault();
+          e.preventDefault(); // prevent jump-to-top for broken hashes
         }
       }
     }, { passive: false });
   }
 
   // -------------------------
-  // Delegated navigation via data-section attributes (for buttons/links)
-  // - Prevent default to avoid form submit or anchor jumps
-  // - Handles authorization checks for admin/student (opens login modal if needed)
+  // Navigation via data-section attribute
   // -------------------------
   function initSectionNavigation() {
     document.addEventListener('click', function (e) {
-      const trigger = e.target.closest(`[${C.selectors.navLinkAttr}]`);
+      const trigger = e.target.closest(`[${CONFIG.selectors.navLinkAttr}]`);
       if (!trigger) return;
       e.preventDefault();
-
-      const section = trigger.getAttribute(C.selectors.navLinkAttr) || trigger.dataset.section;
+      const section = trigger.getAttribute(CONFIG.selectors.navLinkAttr) || trigger.dataset.section;
       if (!section) return;
-
-      // security checks: if section requires role, expect data-require-role attribute (admin|student)
-      const requiredRole = trigger.dataset.requireRole;
-      if (requiredRole) {
-        if (!state.currentUser || state.currentUser.role !== requiredRole) {
-          // open appropriate login modal
-          if (requiredRole === 'admin') openModalById('loginModal');
-          else if (requiredRole === 'student') openModalById('studentLoginModal');
-          return;
-        }
-      }
-
-      // show section without jumping
-      showSection(section);
+      // if section is French label, map to our normalized ids
+      const normalized = mapLabelToId(section);
+      showSection(normalized || section);
     }, { passive: false });
   }
 
+  function mapLabelToId(label) {
+    if (!label) return null;
+    const l = label.trim().toLowerCase();
+    if (l === CONFIG.selectors.espaceProfLabel.toLowerCase() || l.includes('professeur') || l.includes('prof')) return 'espace-professeur';
+    if (l === CONFIG.selectors.espaceElevesLabel.toLowerCase() || l.includes('élève') || l.includes('eleve') || l.includes('eleves') || l.includes('student')) return 'espace-eleves';
+    return null;
+  }
+
   // -------------------------
-  // Modal helpers (open/close, trap focus, close on ESC and outside click)
-  // Elements expected: <div id="someModal" class="modal"><div class="modal-content">...</div></div>
+  // Modals
   // -------------------------
   function openModal(modalEl) {
     if (!modalEl) return;
     modalEl.classList.add('active');
     modalEl.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('modal-open'); // css: .modal-open { overflow: hidden; }
-    // focus management
+    document.body.classList.add('modal-open');
     const focusable = modalEl.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
     if (focusable) focusable.focus();
   }
-
   function closeModal(modalEl) {
     if (!modalEl) return;
     modalEl.classList.remove('active');
     modalEl.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
   }
-
   function openModalById(id) {
     if (!id) return null;
     const m = document.getElementById(id);
     if (m) openModal(m);
     return m;
   }
-
-  function initModalSystem() {
-    // openers: data-open-modal="id"
+  function initModals() {
     document.addEventListener('click', function (e) {
-      const opener = e.target.closest(`[${C.selectors.modalOpenAttr}]`);
-      if (!opener) return;
-      e.preventDefault();
-      const id = opener.getAttribute(C.selectors.modalOpenAttr) || opener.dataset.openModal;
-      openModalById(id);
-    });
-
-    // closers: data-close-modal="id" OR elements inside modal with data-close-modal
-    document.addEventListener('click', function (e) {
-      const closer = e.target.closest(`[${C.selectors.modalCloseAttr}]`);
-      if (!closer) return;
-      e.preventDefault();
-      const id = closer.getAttribute(C.selectors.modalCloseAttr) || closer.dataset.closeModal;
-      if (id) closeModal(document.getElementById(id));
-      else {
-        const modal = closer.closest('.modal');
-        if (modal) closeModal(modal);
+      const opener = e.target.closest(`[${CONFIG.selectors.modalOpenAttr}]`);
+      if (opener) {
+        e.preventDefault();
+        const id = opener.getAttribute(CONFIG.selectors.modalOpenAttr) || opener.dataset.openModal;
+        openModalById(id);
+      }
+      const closer = e.target.closest(`[${CONFIG.selectors.modalCloseAttr}]`);
+      if (closer) {
+        e.preventDefault();
+        const id = closer.getAttribute(CONFIG.selectors.modalCloseAttr) || closer.dataset.closeModal;
+        if (id) closeModal(document.getElementById(id));
+        else {
+          const modal = closer.closest('.modal');
+          if (modal) closeModal(modal);
+        }
       }
     });
 
-    // click outside modal content closes it (delegation)
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') qsa('.modal.active').forEach(m => closeModal(m));
+    });
+
+    // click outside content closes
     document.addEventListener('click', function (e) {
       const modal = e.target.closest('.modal.active');
       if (!modal) return;
       const content = modal.querySelector('.modal-content') || modal.querySelector('.modal-body') || modal;
-      if (!content.contains(e.target)) {
-        closeModal(modal);
-      }
-    });
-
-    // ESC closes active modals
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        qsa('.modal.active').forEach(m => closeModal(m));
-      }
+      if (!content.contains(e.target)) closeModal(modal);
     });
   }
 
   // -------------------------
-  // Slider initialization (if exists)
-  // - uses .slide or .hero-slide elements inside root
-  // - pauses on mouseenter and when document hidden (tab switch)
+  // Slider (if present)
   // -------------------------
   function initSlider() {
-    const root = qs(C.selectors.sliderRoot);
+    const root = document.querySelector('#front-hero-slider');
     if (!root) return;
-    const slides = qsa('.slide, .hero-slide, img', root).filter(Boolean);
+    const slides = Array.from(root.querySelectorAll('.slide, .hero-slide, img')).filter(Boolean);
     if (!slides.length) return;
-
-    slides.forEach((s, i) => {
-      s.style.display = i === 0 ? 'block' : 'none';
-      s.classList.toggle('active', i === 0);
-    });
-
+    slides.forEach((s, i) => { s.style.display = i === 0 ? 'block' : 'none'; s.classList.toggle('active', i === 0); });
     let idx = 0;
     function next() {
-      slides[idx].style.display = 'none';
-      slides[idx].classList.remove('active');
+      slides[idx].style.display = 'none'; slides[idx].classList.remove('active');
       idx = (idx + 1) % slides.length;
-      slides[idx].style.display = 'block';
-      slides[idx].classList.add('active');
+      slides[idx].style.display = 'block'; slides[idx].classList.add('active');
     }
-
     clearInterval(state.sliderTimer);
-    state.sliderTimer = setInterval(next, C.sliderInterval);
-
+    state.sliderTimer = setInterval(next, CONFIG.sliderIntervalMs);
     root.addEventListener('mouseenter', () => clearInterval(state.sliderTimer));
-    root.addEventListener('mouseleave', () => {
-      clearInterval(state.sliderTimer);
-      state.sliderTimer = setInterval(next, C.sliderInterval);
-    });
-
-    // Pause slider when document not visible
+    root.addEventListener('mouseleave', () => { clearInterval(state.sliderTimer); state.sliderTimer = setInterval(next, CONFIG.sliderIntervalMs); });
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) clearInterval(state.sliderTimer);
-      else {
-        clearInterval(state.sliderTimer);
-        state.sliderTimer = setInterval(next, C.sliderInterval);
-      }
+      else { clearInterval(state.sliderTimer); state.sliderTimer = setInterval(next, CONFIG.sliderIntervalMs); }
     });
   }
 
   // -------------------------
-  // Tabs system for student/admin
-  // - expects elements with data-student-tab / data-tab attributes and matching content ids
+  // Notes (grades) system
+  // - adds ability to add a grade and display it in a notes container
   // -------------------------
-  function initTabs() {
-    // student tabs
-    qsa(C.selectors.studentTab).forEach(tab => {
-      tab.addEventListener('click', function (e) {
+  function findOrCreateNotesContainer() {
+    for (const id of CONFIG.selectors.notesContainerIds) {
+      const el = document.getElementById(id);
+      if (el) return el;
+    }
+    // create a container at end of student dashboard or body
+    const parent = state.sections['espace-eleves'] || state.sections['student-dashboard'] || document.body;
+    const container = document.createElement('div');
+    container.id = CONFIG.selectors.notesContainerIds[0];
+    container.className = 'notes-auto-created';
+    container.innerHTML = '<h3>Notes</h3><ul id="notes-list-ul"></ul>';
+    parent.appendChild(container);
+    return container;
+  }
+
+  function addGradeNote(studentName, value) {
+    const container = findOrCreateNotesContainer();
+    // find UL to append
+    let ul = container.querySelector('#notes-list-ul') || container.querySelector('ul');
+    if (!ul) {
+      ul = document.createElement('ul');
+      ul.id = 'notes-list-ul';
+      container.appendChild(ul);
+    }
+    const li = document.createElement('li');
+    const safeName = (studentName || 'Unnamed').toString();
+    const safeValue = (typeof value === 'number' || !isNaN(Number(value))) ? Number(value) : value;
+    li.textContent = `${safeName} — ${safeValue}`;
+    ul.appendChild(li);
+    // optional: flash highlight
+    li.style.transition = 'background-color 0.4s';
+    li.style.backgroundColor = '#ffffb3';
+    setTimeout(() => { li.style.backgroundColor = ''; }, 600);
+  }
+
+  // If there is a modal/form for adding notes, wire it
+  function initNotesUI() {
+    // If there's a button with id openAddNoteBtn it will open modal addNoteModal
+    const openBtn = document.getElementById(CONFIG.selectors.addNoteBtnId);
+    if (openBtn) {
+      openBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        const key = this.dataset.studentTab;
-        if (!key) return;
-        // deactivate all
-        qsa(C.selectors.studentTab).forEach(t => t.classList.remove('active'));
-        qsa(C.selectors.studentTabContent).forEach(c => {
-          c.classList.remove('active');
-          c.style.display = 'none';
-        });
-        this.classList.add('active');
-        const target = document.getElementById(`student-${key}-tab`) || document.querySelector(`[data-student-content="${key}"]`);
-        if (target) {
-          target.classList.add('active');
-          target.style.display = 'block';
-        }
+        openModalById(CONFIG.selectors.addNoteModalId);
       });
-    });
+    }
 
-    // admin tabs
-    qsa(C.selectors.adminTabLink).forEach(link => {
-      link.addEventListener('click', function (e) {
+    // If modal exists with inputs #noteStudent and #noteValue and button #saveNoteBtn
+    const saveBtn = document.getElementById('saveNoteBtn');
+    if (saveBtn) {
+      saveBtn.addEventListener('click', function (e) {
         e.preventDefault();
-        const key = this.dataset.tab;
-        if (!key) return;
-        qsa(C.selectors.adminTabLink).forEach(l => l.classList.remove('active'));
-        qsa(C.selectors.adminTabContent).forEach(s => {
-          s.classList.remove('active');
-          s.style.display = 'none';
-        });
-        this.classList.add('active');
-        const target = document.getElementById(key);
-        if (target) {
-          target.classList.add('active');
-          target.style.display = 'block';
-        }
+        const student = (document.getElementById('noteStudent')?.value || '').trim();
+        const value = document.getElementById('noteValue')?.value;
+        if (!value) { alert('المرجو إدخال قيمة النقطة'); return; }
+        addGradeNote(student || 'Étudiant', value);
+        // close modal
+        closeModal(document.getElementById(CONFIG.selectors.addNoteModalId));
       });
-    });
-  }
+    }
 
-  // -------------------------
-  // Feature cards (clickable)
-  // -------------------------
-  function initFeatureCards() {
-    qsa(C.selectors.featureCard).forEach(card => {
-      card.setAttribute('role', 'button');
-      card.addEventListener('click', function (e) {
-        // avoid accidental form submits
+    // Also allow quick test button if present
+    const quickTest = document.getElementById('addNoteQuickTest');
+    if (quickTest) {
+      quickTest.addEventListener('click', function (e) {
         e.preventDefault();
-        const section = this.dataset.section;
-        if (section) showSection(section);
+        addGradeNote('Test Student', Math.floor(Math.random() * 21));
       });
-    });
-  }
-
-  // -------------------------
-  // Prevent accidental form submits and button-induced page jumps
-  // - if a <form> has data-prevent-submit attribute, prevent its submit
-  // - any <button type="submit"> inside such forms will not submit
-  // - intercept global submit to stop reloads where intended
-  // -------------------------
-  function initFormPrevention() {
-    document.addEventListener('submit', function (e) {
-      const form = e.target;
-      if (!form || !(form instanceof HTMLFormElement)) return;
-      if (form.hasAttribute(C.selectors.preventFormAttr)) {
-        e.preventDefault();
-      }
-    });
-
-    // also prevent <button href="#"> like behaviors: if a button is clicked and has dataset.noJump
-    document.addEventListener('click', function (e) {
-      const btn = e.target.closest('button');
-      if (!btn) return;
-      // if button explicitly has type="button" nothing to do; if it's submit and inside prevent-form -> prevent default
-      const form = btn.form;
-      if (form && form.hasAttribute(C.selectors.preventFormAttr)) {
-        if (btn.type === 'submit' || !btn.type) {
-          e.preventDefault();
-        }
-      }
-    }, { passive: false });
-  }
-
-  // -------------------------
-  // Authentication simulation & handlers
-  // - Simple simulation: admin/admin => admin; student login accepts any credentials (for now)
-  // - After login, show corresponding panel
-  // -------------------------
-  function simulateAuth(username, password, isStudent = false) {
-    if (isStudent) {
-      if (!username) username = 'student';
-      state.currentUser = { username, role: 'student' };
-      // close student login modal if present
-      closeModal(document.getElementById('studentLoginModal'));
-      showSection('student-dashboard');
-      return true;
-    } else {
-      if (username === 'admin' && password === 'admin') {
-        state.currentUser = { username: 'admin', role: 'admin' };
-        closeModal(document.getElementById('loginModal'));
-        showSection('admin-panel');
-        return true;
-      } else {
-        alert('اسم المستخدم أو كلمة المرور غير صحيحة (جرب admin/admin للمسؤول).');
-        return false;
-      }
     }
   }
 
-  function initAuthHandlers() {
-    const loginBtn = qs(C.selectors.loginBtn);
-    const studentLoginBtn = qs(C.selectors.studentLoginBtn);
-    const logoutBtn = qs(C.selectors.logoutBtn);
-    const studentLogoutBtn = qs(C.selectors.studentLogoutBtn);
-
-    loginBtn?.addEventListener('click', function (e) { e.preventDefault(); openModalById('loginModal'); });
-    studentLoginBtn?.addEventListener('click', function (e) { e.preventDefault(); openModalById('studentLoginModal'); });
-
-    logoutBtn?.addEventListener('click', function (e) { e.preventDefault(); state.currentUser = null; showSection('home'); });
-    studentLogoutBtn?.addEventListener('click', function (e) { e.preventDefault(); state.currentUser = null; showSection('home'); });
-
-    const submitLogin = qs(C.selectors.submitLogin);
-    const submitStudentLogin = qs(C.selectors.submitStudentLogin);
-
-    submitLogin?.addEventListener('click', function (e) {
-      e.preventDefault();
-      const username = qs('#username')?.value || '';
-      const password = qs('#password')?.value || '';
-      simulateAuth(username.trim(), password.trim(), false);
-    });
-
-    submitStudentLogin?.addEventListener('click', function (e) {
-      e.preventDefault();
-      const username = qs('#studentUsername')?.value || '';
-      const password = qs('#studentPassword')?.value || '';
-      simulateAuth(username.trim(), password.trim(), true);
-    });
-  }
+  // -------------------------
+  // small helpers (querySelectorAll convenience)
+  // -------------------------
+  function qsa(sel, ctx = document) { return Array.from((ctx || document).querySelectorAll(sel)); }
 
   // -------------------------
-  // Accessibility small improvements
+  // Accessibility & small improvements
   // -------------------------
   function enhanceAccessibility() {
-    // ensure interactive elements are keyboard reachable
-    qsa('a, button, input, select, textarea').forEach(el => {
+    qsa('a, button, input, textarea, select').forEach(el => {
       if (!el.hasAttribute('tabindex')) el.setAttribute('tabindex', '0');
     });
   }
 
   // -------------------------
-  // Initialize everything
+  // Initialize app (tie everything together)
   // -------------------------
-  function init() {
+  function initApp() {
     try {
-      buildSections();
+      buildSectionsMap();
       initAnchorProtection();
       initSectionNavigation();
-      initModalSystem();
+      initModals();
       initSlider();
-      initTabs();
-      initFeatureCards();
-      initFormPrevention();
-      initAuthHandlers();
+      initNotesUI();
       enhanceAccessibility();
 
-      // show default section (prefer 'home' if exists)
-      const defaults = ['home', 'home-section', 'student-dashboard', 'main'];
-      let shown = false;
-      for (const d of defaults) {
-        if (state.sections[d]) { showSection(d); shown = true; break; }
+      // ensure espace-professeur and espace-eleves are visible in the sections map
+      if (!state.sections['espace-professeur'] && document.getElementById('espace-professeur')) {
+        state.sections['espace-professeur'] = document.getElementById('espace-professeur');
       }
-      if (!shown) {
-        const first = Object.keys(state.sections)[0];
-        if (first) showSection(first);
+      if (!state.sections['espace-eleves'] && document.getElementById('espace-eleves')) {
+        state.sections['espace-eleves'] = document.getElementById('espace-eleves');
       }
 
-      log('Initialization complete.');
+      // Default: show home or espace-eleves if user is student etc. but we default to home
+      const defaultId = state.sections['home'] ? 'home' : (state.sections['espace-eleves'] ? 'espace-eleves' : Object.keys(state.sections)[0]);
+      if (defaultId) showSection(defaultId);
+
+      log('App initialized with sections:', Object.keys(state.sections));
     } catch (err) {
-      console.error('Init error:', err);
+      console.error('initApp error:', err);
     }
   }
 
-  // -------------------------
-  // Run on DOM ready
-  // -------------------------
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // run on DOM ready
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
+  else initApp();
+
+  // Export small API on window for debugging / manual calls
+  window.MyApp = window.MyApp || {};
+  window.MyApp.showSection = showSection;
+  window.MyApp.addGradeNote = addGradeNote;
+  window.MyApp.rebuildSections = buildSectionsMap;
 
 })();
+ 

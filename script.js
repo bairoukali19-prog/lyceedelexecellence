@@ -1,4 +1,4 @@
-/* =============================
+ /* =============================
    Unified dashboard JS - COMPLETELY FIXED VERSION
    =============================*/
 
@@ -42,96 +42,102 @@ let appData = {
   siteCover: { enabled: true, url: null }
 };
 
+/* =============================
+   Utility Functions
+   ============================= */
 function loadData(){
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
+      // دمج البيانات بدلاً من الاستبدال الكامل
       Object.keys(parsed).forEach(key => {
         if (appData.hasOwnProperty(key)) {
           appData[key] = parsed[key];
         }
       });
     }
-  } catch(e){ console.error('loadData', e); }
+  } catch(e){ 
+    console.error('خطأ في تحميل البيانات:', e); 
+  }
 }
 
 function saveData(){ 
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); 
   } catch(e) {
-    console.error('saveData', e);
+    console.error('خطأ في حفظ البيانات:', e);
   }
 }
 
-/* helpers */
 function $(id){ 
-  if (typeof id === 'string') {
-    return document.getElementById(id); 
-  }
-  return id;
+  return document.getElementById(id); 
 }
-function genId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+function genId(){ 
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7); 
+}
+
 function escapeHtml(s){ 
   if (s == null) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
 /* =============================
-   Init - FIXED SCROLL ISSUE
+   INITIALIZATION - الإصلاح الجذري
    ============================= */
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('=== APPLICATION STARTING ===');
+  console.log('بدء تحميل التطبيق...');
   
-  // منع السلوك الافتراضي لجميع الأزرار والروابط في الصفحة
+  // حل جذري: منع جميع الأحداث التي تسبب الانتقال للأعلى
   document.addEventListener('click', function(e) {
-    const target = e.target;
-    
-    // منع جميع الأزرار
-    if (target.tagName === 'BUTTON' || target.closest('button')) {
+    // منع السلوك الافتراضي لجميع الأزرار
+    if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
       e.preventDefault();
       e.stopPropagation();
-      e.stopImmediatePropagation();
-      console.log('Button prevented:', target.textContent || target.id);
-      return false;
+      console.log('تم منع زر:', e.target.textContent || e.target.id);
     }
     
-    // منع جميع الروابط الداخلية
-    if (target.tagName === 'A') {
-      const href = target.getAttribute('href');
-      if (href === '#' || href === '' || href === null || target.hasAttribute('data-section')) {
-        e.preventDefault();
-        e.stopPropagation();
-        e.stopImmediatePropagation();
-        console.log('Link prevented:', href);
-        return false;
-      }
+    // منع السلوك الافتراضي للروابط التي لها #
+    if (e.target.tagName === 'A' && e.target.getAttribute('href') === '#') {
+      e.preventDefault();
+      e.stopPropagation();
     }
-  }, true); // استخدام capture phase لمنع الأحداث مبكرًا
+    
+    // منع السلوك الافتراضي للروابط التي لها data-section
+    if (e.target.hasAttribute('data-section') || e.target.closest('[data-section]')) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true); // استخدام capture phase لمنع الأحداث مبكراً
 
   loadData();
   wireEvents();
   refreshUI();
   
-  // التأكد من أن الصفحة لا تنزلق للأعلى
+  // التأكد من أن الصفحة تبدأ من الأعلى
   window.scrollTo(0, 0);
-  document.body.scrollTop = 0;
-  document.documentElement.scrollTop = 0;
 });
 
 /* =============================
-   COMPLETE EVENT FIX - حل جذري لمشكلة الانتقال للأعلى
+   EVENT WIRING - الإصلاح الشامل
    ============================= */
 function wireEvents(){
-  console.log('=== WIRING EVENTS ===');
+  console.log('تهيئة الأحداث...');
   
-  // حل جذري: إعادة تعريف addEventListener لمنع السلوك الافتراضي
+  // حل شامل: إعادة تعريف addEventListener لمنع السلوك الافتراضي
   const originalAddEventListener = EventTarget.prototype.addEventListener;
   EventTarget.prototype.addEventListener = function(type, listener, options) {
-    const wrappedListener = function(event) {
-      if (type === 'click') {
+    if (type === 'click') {
+      const wrappedListener = function(event) {
+        // منع السلوك الافتراضي لجميع الأزرار والروابط
         if (event.target.tagName === 'BUTTON' || 
-            event.target.closest('button') || 
+            event.target.closest('button') ||
             (event.target.tagName === 'A' && 
              (event.target.getAttribute('href') === '#' || 
               event.target.hasAttribute('data-section')))) {
@@ -139,66 +145,27 @@ function wireEvents(){
           event.stopPropagation();
           event.stopImmediatePropagation();
         }
-      }
-      listener.call(this, event);
-    };
-    return originalAddEventListener.call(this, type, wrappedListener, options);
+        return listener.call(this, event);
+      };
+      return originalAddEventListener.call(this, type, wrappedListener, options);
+    }
+    return originalAddEventListener.call(this, type, listener, options);
   };
 
-  // منع السلوك الافتراضي لجميع النماذج
-  document.addEventListener('submit', function(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    e.stopImmediatePropagation();
-    return false;
-  }, true);
-
-  // إصلاح شامل للروابط
-  document.addEventListener('click', function(e) {
-    const target = e.target;
-    
-    // جميع الروابط التي لها data-section
-    if (target.hasAttribute('data-section') || target.closest('[data-section]')) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      
-      const link = target.hasAttribute('data-section') ? target : target.closest('[data-section]');
-      const section = link.getAttribute('data-section');
-      if (section) {
-        showSection(section);
-      }
-      return false;
-    }
-    
-    // جميع الأزرار
-    if (target.tagName === 'BUTTON' || target.closest('button')) {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      
-      const button = target.tagName === 'BUTTON' ? target : target.closest('button');
-      handleButtonClick(button);
-      return false;
-    }
-    
-    // الروابط التي تسبب المشكلة
-    if (target.tagName === 'A' && target.getAttribute('href') === '#') {
-      e.preventDefault();
-      e.stopPropagation();
-      e.stopImmediatePropagation();
-      return false;
-    }
-  }, true); // استخدام capture phase
-
-  // أحداث تسجيل الدخول المحددة
+  // إعداد أحداث تسجيل الدخول
   setupLoginEvents();
+  
+  // إعداد أحداث التنقل
   setupNavigationEvents();
+  
+  // إعداد أحداث الوظائف
   setupFunctionalEvents();
+  
+  console.log('تم تهيئة جميع الأحداث بنجاح');
 }
 
 /* =============================
-   Login Events - FIXED
+   LOGIN EVENTS - أحداث تسجيل الدخول
    ============================= */
 function setupLoginEvents() {
   // تسجيل الدخول كطالب
@@ -253,17 +220,36 @@ function setupLoginEvents() {
 }
 
 /* =============================
-   Navigation Events - FIXED
+   NAVIGATION EVENTS - أحداث التنقل
    ============================= */
 function setupNavigationEvents() {
+  // التنقل بين الأقسام الرئيسية
+  document.addEventListener('click', function(e) {
+    if (e.target.hasAttribute('data-section') || e.target.closest('[data-section]')) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const element = e.target.hasAttribute('data-section') ? e.target : e.target.closest('[data-section]');
+      const sectionId = element.getAttribute('data-section');
+      
+      if (sectionId) {
+        showSection(sectionId);
+      }
+    }
+  });
+
   // تبويبات الطالب
   document.addEventListener('click', function(e) {
     if (e.target.classList.contains('student-tab') || e.target.closest('.student-tab')) {
       e.preventDefault();
       e.stopPropagation();
+      
       const tab = e.target.classList.contains('student-tab') ? e.target : e.target.closest('.student-tab');
       const tabName = tab.getAttribute('data-tab');
-      if (tabName) switchStudentTab(tabName);
+      
+      if (tabName) {
+        switchStudentTab(tabName);
+      }
     }
   });
 
@@ -272,29 +258,36 @@ function setupNavigationEvents() {
     if (e.target.classList.contains('admin-tab-link') || e.target.closest('.admin-tab-link')) {
       e.preventDefault();
       e.stopPropagation();
+      
       const tab = e.target.classList.contains('admin-tab-link') ? e.target : e.target.closest('.admin-tab-link');
       const tabName = tab.getAttribute('data-tab');
-      if (tabName) switchAdminTab(tabName);
+      
+      if (tabName) {
+        switchAdminTab(tabName);
+      }
     }
   });
 }
 
 /* =============================
-   Functional Events - FIXED
+   FUNCTIONAL EVENTS - أحداث الوظائف
    ============================= */
 function setupFunctionalEvents() {
-  // زر القاموس
+  // زر إضافة مصطلح في القاموس
   document.addEventListener('click', function(e) {
     if (e.target.id === 'btnAddDictionary' || 
         e.target.classList.contains('btnAddDictionary') ||
-        (e.target.tagName === 'BUTTON' && e.target.textContent.includes('Ajouter'))) {
+        (e.target.tagName === 'BUTTON' && 
+         (e.target.textContent.includes('Ajouter') || 
+          e.target.textContent.includes('Add') || 
+          e.target.textContent.includes('إضافة')))) {
       e.preventDefault();
       e.stopPropagation();
       addDictionaryTerm();
     }
   });
 
-  // زر عرض النتائج - الإصلاح النهائي
+  // زر "Voir les notes" - الإصلاح النهائي
   document.addEventListener('click', function(e) {
     const target = e.target;
     const isGradesButton = target.id === 'btnViewGrades' || 
@@ -309,7 +302,7 @@ function setupFunctionalEvents() {
       e.stopPropagation();
       e.stopImmediatePropagation();
       
-      console.log('Grades button clicked');
+      console.log('تم النقر على زر عرض النتائج');
       
       // البحث عن حقل الإدخال بطرق متعددة
       const codeInput = $('gradeSearchCode') || 
@@ -317,94 +310,120 @@ function setupFunctionalEvents() {
                        document.querySelector('#grades input[type="text"]');
       
       const code = codeInput ? codeInput.value.trim() : '';
-      console.log('Searching for code:', code);
       
       if (!code) {
-        alert('Veuillez entrer un code parcours');
+        alert('يرجى إدخال كود المسار');
         return;
       }
       
       searchGradesByCode(code);
-      return false;
     }
   });
 
-  // تسجيل الخروج
+  // أحداث أخرى
   document.addEventListener('click', function(e) {
+    // تسجيل الخروج
     if (e.target.id === 'studentLogoutBtn' || e.target.closest('#studentLogoutBtn')) {
       e.preventDefault();
       e.stopPropagation();
-      appData.currentUser = null;
-      appData.isAdmin = false;
-      saveData();
-      refreshUI();
-      showSection('home');
+      logoutUser();
     }
     
     if (e.target.id === 'logoutBtn' || e.target.closest('#logoutBtn')) {
       e.preventDefault();
       e.stopPropagation();
-      appData.currentUser = null;
-      appData.isAdmin = false;
-      saveData();
-      refreshUI();
-      showSection('home');
+      logoutUser();
+    }
+    
+    // حفظ الإعلان
+    if (e.target.id === 'btnSaveAnnouncement' || e.target.closest('#btnSaveAnnouncement')) {
+      e.preventDefault();
+      e.stopPropagation();
+      saveAnnouncement();
+    }
+    
+    // تصدير البيانات
+    if (e.target.id === 'btnExport' || e.target.closest('#btnExport')) {
+      e.preventDefault();
+      e.stopPropagation();
+      exportData();
     }
   });
 }
 
 /* =============================
-   Button Click Handler - NEW
+   AUTHENTICATION - التوثيق
    ============================= */
-function handleButtonClick(button) {
-  const id = button.id;
-  const text = button.textContent;
+function loginStudent(username, password) {
+  if (!username || !password) {
+    alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+    return;
+  }
   
-  console.log('Button handled:', id, text);
+  const student = appData.students.find(s => s.username === username && s.password === password);
+  if (!student) {
+    alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+    return;
+  }
   
-  switch(id) {
-    case 'btnAddDictionary':
-      addDictionaryTerm();
-      break;
-    case 'btnViewGrades':
-      const codeInput = $('gradeSearchCode');
-      const code = codeInput ? codeInput.value.trim() : '';
-      searchGradesByCode(code);
-      break;
-    case 'btnSaveAnnouncement':
-      saveAnnouncement();
-      break;
-    case 'btnExport':
-      exportData();
-      break;
-    // إضافة المزيد من الأزرار هنا
-    default:
-      if (text.includes('Voir les notes') || text.includes('عرض النتائج')) {
-        const codeInput = $('gradeSearchCode');
-        const code = codeInput ? codeInput.value.trim() : '';
-        searchGradesByCode(code);
-      }
-      break;
+  appData.currentUser = student;
+  appData.isAdmin = false;
+  saveData();
+  refreshUI();
+  
+  const modal = $('studentLoginModal');
+  if (modal) modal.style.display = 'none';
+  
+  showSection('student-dashboard');
+  alert('مرحبا، ' + student.fullname);
+}
+
+function loginAdmin(username, password) {
+  if (!username || !password) {
+    alert('يرجى إدخال اسم المستخدم وكلمة المرور');
+    return;
+  }
+  
+  if (username === 'admin' && password === 'admin123') {
+    appData.currentUser = { id: 'admin', fullname: 'المسؤول' };
+    appData.isAdmin = true;
+    saveData();
+    refreshUI();
+    
+    const modal = $('loginModal');
+    if (modal) modal.style.display = 'none';
+    
+    showSection('admin-panel');
+    alert('مرحبا، المسؤول');
+  } else {
+    alert('اسم المستخدم أو كلمة المرور غير صحيحة');
   }
 }
 
+function logoutUser() {
+  appData.currentUser = null;
+  appData.isAdmin = false;
+  saveData();
+  refreshUI();
+  showSection('home');
+}
+
 /* =============================
-   UI Switching - COMPLETELY FIXED
+   UI MANAGEMENT - إدارة الواجهة
    ============================= */
-function hideAllMainSections(){
+function hideAllMainSections() {
   const sections = document.querySelectorAll('.page-section, #student-dashboard, #admin-panel, #home-section');
   sections.forEach(section => {
     if (section) {
       section.style.display = 'none';
-      section.classList.remove('active');
     }
   });
 }
 
-function showSection(id){
-  console.log('=== SHOWING SECTION:', id, '===');
+function showSection(id) {
+  console.log('عرض القسم:', id);
   
-  // إلغاء أي scroll موجود
+  // التأكد من بقاء الصفحة في الأعلى
   window.scrollTo(0, 0);
   document.body.scrollTop = 0;
   document.documentElement.scrollTop = 0;
@@ -414,21 +433,20 @@ function showSection(id){
   const element = $(id);
   if (element) {
     element.style.display = 'block';
-    element.classList.add('active');
     
-    // منع أي scroll داخلي
-    element.style.overflow = 'hidden';
-    element.scrollTop = 0;
-    
-    // تحميل المحتوى المناسب
+    // تحميل المحتوى المناسب للقسم
     loadSectionContent(id);
   }
   
-  // التأكد من بقاء الصفحة في الأعلى
+  // إذا لم يكن هناك مستخدم مسجل، عرض الصفحة الرئيسية
+  if (!appData.currentUser && id !== 'home') {
+    const homeSection = $('home-section');
+    if (homeSection) homeSection.style.display = 'block';
+  }
+  
+  // التأكد مرة أخرى من عدم الانتقال للأعلى
   setTimeout(() => {
     window.scrollTo(0, 0);
-    document.body.scrollTop = 0;
-    document.documentElement.scrollTop = 0;
   }, 10);
 }
 
@@ -452,116 +470,138 @@ function loadSectionContent(sectionId) {
     case 'grades':
       renderGradesSection();
       break;
-    case 'home':
-      // لا شيء إضافي
-      break;
   }
 }
 
-function switchStudentTab(tabName){
-  console.log('Switching student tab:', tabName);
+function switchStudentTab(tabName) {
+  console.log('تبديل تبويب الطالب إلى:', tabName);
   
-  // إخفاء جميع المحتويات
+  // إخفاء جميع محتويات التبويبات
   document.querySelectorAll('.student-tab-content').forEach(content => {
-    content.style.display = 'none';
+    if (content) content.style.display = 'none';
   });
   
-  // إزالة النشاط من التبويبات
+  // إزالة النشاط من جميع التبويبات
   document.querySelectorAll('.student-tab').forEach(tab => {
-    tab.classList.remove('active');
+    if (tab) tab.classList.remove('active');
   });
   
-  // تفعيل التبويب الجديد
-  const activeTab = document.querySelector(`.student-tab[data-tab="${tabName}"]`);
-  const activeContent = document.getElementById(`student-${tabName}-tab`);
+  // تفعيل التبويب المحدد
+  const activeTab = document.querySelector('.student-tab[data-tab="' + tabName + '"]');
+  if (activeTab) {
+    activeTab.classList.add('active');
+  }
   
-  if (activeTab) activeTab.classList.add('active');
-  if (activeContent) activeContent.style.display = 'block';
+  // إظهار محتوى التبويب المحدد
+  const activeContent = document.getElementById('student-' + tabName + '-tab');
+  if (activeContent) {
+    activeContent.style.display = 'block';
+    
+    // تحميل المحتوى المناسب
+    switch(tabName) {
+      case 'dashboard':
+        loadStudentDashboard();
+        break;
+      case 'quiz':
+        renderQuizListForStudent();
+        break;
+      case 'exercises':
+        renderStudentExercises();
+        break;
+      case 'cours':
+        renderLatexListForStudents();
+        break;
+      case 'messages':
+        renderStudentMessages();
+        break;
+      case 'exams':
+        renderExams();
+        break;
+    }
+  }
 }
 
-function switchAdminTab(tabName){
-  console.log('Switching admin tab:', tabName);
+function switchAdminTab(tabName) {
+  console.log('تبديل تبويب المسؤول إلى:', tabName);
   
+  // إخفاء جميع أقسام الإدارة
   document.querySelectorAll('.admin-section').forEach(section => {
-    section.style.display = 'none';
+    if (section) section.style.display = 'none';
   });
   
+  // إزالة النشاط من جميع روابط التبويبات
   document.querySelectorAll('.admin-tab-link').forEach(link => {
-    link.classList.remove('active');
+    if (link) link.classList.remove('active');
   });
   
-  const activeLink = document.querySelector(`.admin-tab-link[data-tab="${tabName}"]`);
+  // تفعيل رابط التبويب المحدد
+  const activeLink = document.querySelector('.admin-tab-link[data-tab="' + tabName + '"]');
+  if (activeLink) {
+    activeLink.classList.add('active');
+  }
+  
+  // إظهار قسم الإدارة المحدد
   const activeSection = document.getElementById(tabName);
-  
-  if (activeLink) activeLink.classList.add('active');
-  if (activeSection) activeSection.style.display = 'block';
-}
-
-/* =============================
-   Authentication - FIXED
-   ============================= */
-function loginStudent(username, password){
-  if (!username || !password) {
-    alert('Veuillez saisir le nom d\'utilisateur et le mot de passe');
-    return;
-  }
-  
-  const student = appData.students.find(s => s.username === username && s.password === password);
-  if (!student) {
-    alert('Nom d\'utilisateur ou mot de passe incorrect');
-    return;
-  }
-  
-  appData.currentUser = student;
-  appData.isAdmin = false;
-  saveData();
-  refreshUI();
-  
-  const modal = $('studentLoginModal');
-  if (modal) modal.style.display = 'none';
-  
-  showSection('student-dashboard');
-}
-
-function loginAdmin(username, password){
-  if (username === 'admin' && password === 'admin123') {
-    appData.currentUser = { id: 'admin', fullname: 'Administrateur' };
-    appData.isAdmin = true;
-    saveData();
-    refreshUI();
+  if (activeSection) {
+    activeSection.style.display = 'block';
     
-    const modal = $('loginModal');
-    if (modal) modal.style.display = 'none';
-    
-    showSection('admin-panel');
-  } else {
-    alert('Nom d\'utilisateur ou mot de passe incorrect');
+    // تحميل المحتوى المناسب
+    switch(tabName) {
+      case 'tab-students':
+        loadStudentsTable();
+        break;
+      case 'tab-grades':
+        loadGradesTable();
+        break;
+      case 'tab-quiz':
+        renderQuizAdminListDetailed();
+        break;
+      case 'tab-latex':
+        loadLatexAdminList();
+        break;
+      case 'tab-messages':
+        renderAdminMessagesList();
+        break;
+      case 'tab-lessons':
+        renderLessonsAdminList();
+        break;
+      case 'tab-exercises':
+        renderExercisesAdminList();
+        break;
+      case 'tab-exams':
+        renderExamsAdminList();
+        renderRegradeRequestsAdminList();
+        break;
+      case 'tab-dictionary':
+        renderDictionaryAdminList();
+        break;
+    }
   }
 }
 
 /* =============================
-   Grades Functionality - COMPLETELY FIXED
+   GRADES FUNCTIONALITY - وظائف النتائج
    ============================= */
-function searchGradesByCode(code){
-  console.log('=== SEARCHING GRADES FOR CODE:', code, '===');
+function searchGradesByCode(code) {
+  console.log('البحث عن النتائج للكود:', code);
   
   if (!code) {
-    alert('Veuillez entrer un code parcours');
+    alert('يرجى إدخال كود المسار');
     return;
   }
   
   const student = appData.students.find(s => s.code === code);
   if (!student) {
-    alert('Code parcours non trouvé');
+    alert('لم يتم العثور على كود المسار');
     return;
   }
   
   const grades = appData.grades.filter(g => g.studentId === student.id);
   
-  // إظهار القسم أولاً
+  // إظهار قسم النتائج
   showSection('grades');
   
-  // ثم تحديث البيانات بعد تأخير بسيط لضمان أن العناصر موجودة
+  // تحديث العرض بعد تأخير بسيط لضمان تحميل العناصر
   setTimeout(() => {
     updateGradesDisplay(student, grades);
   }, 50);
@@ -569,36 +609,35 @@ function searchGradesByCode(code){
 
 function updateGradesDisplay(student, grades) {
   // تحديث معلومات الطالب
-  const studentInfo = $('studentInfo') || document.querySelector('#studentInfo');
+  const studentInfo = $('studentInfo');
   if (studentInfo) {
     studentInfo.innerHTML = `
       <div class="content-card">
         <div class="card-content">
           <h3>${escapeHtml(student.fullname)}</h3>
-          <p><strong>Classe:</strong> ${escapeHtml(student.classroom || 'Non spécifiée')}</p>
-          <p><strong>Code:</strong> ${escapeHtml(student.code || '')}</p>
+          <p><strong>الصف:</strong> ${escapeHtml(student.classroom || 'غير محدد')}</p>
+          <p><strong>الكود:</strong> ${escapeHtml(student.code || '')}</p>
         </div>
       </div>
     `;
   }
   
-  // تحديث الجدول
+  // تحديث جدول النتائج
   const tbody = document.querySelector('#gradesTable tbody');
   const noGradesMsg = $('noGradesMsg');
   
   if (tbody) {
     tbody.innerHTML = '';
     
-    if (grades.length === 0) {
+    if (!grades || grades.length === 0) {
       if (noGradesMsg) noGradesMsg.style.display = 'block';
-      if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">Aucune note disponible</td></tr>';
     } else {
       if (noGradesMsg) noGradesMsg.style.display = 'none';
       
       grades.forEach(grade => {
         const row = document.createElement('tr');
         row.innerHTML = `
-          <td>${new Date(grade.date).toLocaleDateString('fr-FR')}</td>
+          <td>${new Date(grade.date).toLocaleDateString()}</td>
           <td>${escapeHtml(grade.subject)}</td>
           <td>${escapeHtml(grade.title)}</td>
           <td>${grade.score}/20</td>
@@ -609,14 +648,14 @@ function updateGradesDisplay(student, grades) {
     }
   }
   
-  // إظهار النتائج
+  // إظهار قسم النتائج
   const gradesResults = $('gradesResults');
   if (gradesResults) {
     gradesResults.style.display = 'block';
   }
 }
 
-function renderGradesSection(){
+function renderGradesSection() {
   const container = $('grades');
   if (!container) return;
   
@@ -626,44 +665,59 @@ function renderGradesSection(){
         <h2>Consultation des Notes</h2>
         <div class="form-group">
           <label for="gradeSearchCode">Code Parcours:</label>
-          <input type="text" id="gradeSearchCode" placeholder="Entrez votre code parcours" 
-                 style="padding: 10px; margin: 5px; width: 200px; border: 1px solid #ddd; border-radius: 4px;">
-          <button id="btnViewGrades" class="btn-primary" 
-                  style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 5px;">
-            Voir les notes
-          </button>
+          <input type="text" id="gradeSearchCode" placeholder="Entrez votre code parcours">
+          <button id="btnViewGrades" class="btn-primary">Voir les notes</button>
         </div>
         <div id="gradesResults" style="display: none;">
           <div id="studentInfo"></div>
-          <table id="gradesTable" class="data-table" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+          <table id="gradesTable" class="data-table">
             <thead>
-              <tr style="background: #f8f9fa;">
-                <th style="padding: 12px; border: 1px solid #ddd;">Date</th>
-                <th style="padding: 12px; border: 1px solid #ddd;">Matière</th>
-                <th style="padding: 12px; border: 1px solid #ddd;">Intitulé</th>
-                <th style="padding: 12px; border: 1px solid #ddd;">Note</th>
-                <th style="padding: 12px; border: 1px solid #ddd;">Remarque</th>
+              <tr>
+                <th>Date</th>
+                <th>Matière</th>
+                <th>Intitulé</th>
+                <th>Note</th>
+                <th>Remarque</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
-          <p id="noGradesMsg" style="display: none; text-align: center; padding: 20px; color: #666;">
+          <p id="noGradesMsg" style="display: none; text-align: center; padding: 20px;">
             Aucune note disponible pour ce code parcours.
           </p>
         </div>
       </div>
     </div>
   `;
+  
+  // إعادة ربط الأحداث بعد إنشاء العناصر
+  setTimeout(() => {
+    const viewGradesBtn = $('btnViewGrades');
+    if (viewGradesBtn) {
+      viewGradesBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const code = $('gradeSearchCode').value.trim();
+        searchGradesByCode(code);
+      });
+    }
+  }, 100);
 }
 
 /* =============================
-   Dictionary Functions - FIXED
+   DICTIONARY FUNCTIONS - وظائف القاموس
    ============================= */
-function addDictionaryTerm(){
-  const arabicInput = $('dictArabic') || document.querySelector('input[placeholder*="arabe"]');
-  const frenchInput = $('dictFrench') || document.querySelector('input[placeholder*="français"]');
-  const definitionInput = $('dictDefinition') || document.querySelector('textarea');
+function addDictionaryTerm() {
+  // البحث عن حقول الإدخال
+  let arabicInput = $('dictArabic') || 
+                   document.querySelector('input[placeholder*="arabe"], input[placeholder*="عربي"]');
   
+  let frenchInput = $('dictFrench') || 
+                   document.querySelector('input[placeholder*="français"], input[placeholder*="فرنسي"]');
+  
+  let definitionInput = $('dictDefinition') || 
+                       document.querySelector('textarea');
+
   const arabic = arabicInput ? arabicInput.value.trim() : '';
   const french = frenchInput ? frenchInput.value.trim() : '';
   const definition = definitionInput ? definitionInput.value.trim() : '';
@@ -673,62 +727,131 @@ function addDictionaryTerm(){
     return;
   }
   
-  appData.dictionary.push({
+  const newTerm = {
     id: genId(),
     ar: arabic,
     fr: french,
     definition: definition
-  });
+  };
   
+  appData.dictionary.push(newTerm);
   saveData();
-  renderDictionary();
-  alert('تمت إضافة المصطلح بنجاح');
   
+  // تحديث الواجهات
+  renderDictionary();
+  renderDictionaryAdminList();
+  
+  // مسح الحقول
   if (arabicInput) arabicInput.value = '';
   if (frenchInput) frenchInput.value = '';
   if (definitionInput) definitionInput.value = '';
+  
+  alert('تمت إضافة المصطلح بنجاح');
+}
+
+function renderDictionaryAdminList() {
+  const container = $('dictionaryAdminList');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  if (!appData.dictionary.length) {
+    container.innerHTML = '<p class="muted">لا توجد مصطلحات</p>';
+    return;
+  }
+  
+  appData.dictionary.forEach(term => {
+    const div = document.createElement('div');
+    div.className = 'content-row';
+    div.innerHTML = `
+      <div style="margin-bottom: 5px;">
+        <strong>${escapeHtml(term.ar)}</strong> - ${escapeHtml(term.fr)}
+      </div>
+      <div style="margin-bottom: 5px; color: #666;">${escapeHtml(term.definition)}</div>
+      <button class="delete-dict-term" data-id="${term.id}">حذف</button>
+    `;
+    container.appendChild(div);
+  });
+
+  // ربط أحداث الحذف
+  container.querySelectorAll('.delete-dict-term').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const id = this.getAttribute('data-id');
+      if (confirm('هل تريد حذف هذا المصطلح؟')) {
+        appData.dictionary = appData.dictionary.filter(term => term.id !== id);
+        saveData();
+        renderDictionary();
+        renderDictionaryAdminList();
+      }
+    });
+  });
 }
 
 /* =============================
-   Refresh UI - FIXED
+   REFRESH UI - تحديث الواجهة
    ============================= */
-function refreshUI(){
-  // منع scroll أثناء التحديث
+function refreshUI() {
+  // التأكد من بقاء الصفحة في الأعلى
   window.scrollTo(0, 0);
   
-  // تحديث واجهة المستخدم
+  // تحديث الإعلان
   if ($('announcementText')) {
     $('announcementText').textContent = appData.announcement.text || '';
   }
   
   // التحكم في عرض الأقسام
-  if ($('admin-panel')) $('admin-panel').style.display = appData.isAdmin ? 'block' : 'none';
-  if ($('student-dashboard')) $('student-dashboard').style.display = (appData.currentUser && !appData.isAdmin) ? 'block' : 'none';
-  if ($('home-section')) $('home-section').style.display = !appData.currentUser ? 'block' : 'none';
+  if ($('admin-panel')) {
+    $('admin-panel').style.display = appData.isAdmin ? 'block' : 'none';
+  }
   
+  if ($('student-dashboard')) {
+    $('student-dashboard').style.display = (appData.currentUser && !appData.isAdmin) ? 'block' : 'none';
+  }
+  
+  if ($('home-section')) {
+    $('home-section').style.display = !appData.currentUser ? 'block' : 'none';
+  }
+
+  // تحديث رسالة الترحيب
+  if ($('studentWelcome') && appData.currentUser && !appData.isAdmin) {
+    $('studentWelcome').textContent = 'مرحبا، ' + (appData.currentUser.fullname || '');
+  }
+
+  // تحديث الإحصائيات
+  if ($('stats-students')) $('stats-students').textContent = appData.students.length;
+  if ($('stats-quiz')) $('stats-quiz').textContent = appData.quizzes.reduce((acc, q) => acc + (q.questions ? q.questions.length : 0), 0);
+  if ($('stats-dictionary')) $('stats-dictionary').textContent = appData.dictionary.length;
+  if ($('stats-grades')) $('stats-grades').textContent = appData.grades.length;
+
+  // تحديث القوائم المنسدلة
+  populateStudentsSelect();
+
+  // إعادة render المحتوى
   renderAll();
 }
 
 /* =============================
-   Render All - FIXED
+   RENDER ALL - عرض جميع المكونات
    ============================= */
-function renderAll(){
+function renderAll() {
   renderDictionary();
   renderGradesSection();
   // إضافة دوال render الأخرى هنا
 }
 
 /* =============================
-   Dictionary Render - FIXED
+   DICTIONARY RENDER - عرض القاموس
    ============================= */
-function renderDictionary(){
+function renderDictionary() {
   const container = $('dictionaryContent');
   if (!container) return;
   
   container.innerHTML = '';
   
-  if (appData.dictionary.length === 0) {
-    container.innerHTML = '<p style="text-align: center; padding: 20px; color: #666;">Aucun terme dans le lexique</p>';
+  if (!appData.dictionary.length) {
+    container.innerHTML = '<p class="muted">لا توجد مصطلحات في القاموس حالياً</p>';
     return;
   }
   
@@ -746,46 +869,70 @@ function renderDictionary(){
 }
 
 /* =============================
-   Utility Functions
+   UTILITY FUNCTIONS - دوال مساعدة
    ============================= */
-function saveAnnouncement(){
-  // دالة لحفظ الإعلان
+function populateStudentsSelect() {
+  const selects = [
+    { id: 'adminMessageStudent', defaultText: 'اختر طالب' },
+    { id: 'grStudent', defaultText: '-- اختر طالب --' },
+    { id: 'grFilterStudent', defaultText: 'جميع الطلاب' }
+  ];
+  
+  selects.forEach(selectInfo => {
+    const select = $(selectInfo.id);
+    if (select) {
+      select.innerHTML = `<option value="">${selectInfo.defaultText}</option>`;
+      
+      appData.students.forEach(student => {
+        const option = document.createElement('option');
+        option.value = student.id;
+        option.textContent = `${student.fullname} (${student.code || ''})`;
+        select.appendChild(option);
+      });
+    }
+  });
 }
 
-function exportData(){
-  // دالة لتصدير البيانات
+function saveAnnouncement() {
+  if ($('announcementInput')) {
+    appData.announcement.text = $('announcementInput').value;
+  }
+  saveData();
+  alert('تم حفظ الإعلان');
 }
 
-// دوال placeholders للوظائف الأخرى
-function renderQuizList(){}
-function renderLessons(){}
-function renderExercises(){}
-function renderExams(){}
+function exportData() {
+  const blob = new Blob([JSON.stringify(appData)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'lycee_data.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
 
 /* =============================
-   FINAL FIX: منع جميع أشكال Scroll
+   PLACEHOLDER FUNCTIONS - دوال مؤقتة
    ============================= */
-// منع scroll على مستوى المتصفح
-window.addEventListener('scroll', function(e) {
-  if (window.scrollY > 0) {
-    window.scrollTo(0, 0);
-  }
-});
+function loadStudentsTable() {}
+function loadGradesTable() {}
+function renderQuizList() {}
+function renderLessons() {}
+function renderExercises() {}
+function renderExams() {}
+function renderQuizAdminListDetailed() {}
+function loadLatexAdminList() {}
+function renderAdminMessagesList() {}
+function renderLessonsAdminList() {}
+function renderExercisesAdminList() {}
+function renderExamsAdminList() {}
+function renderRegradeRequestsAdminList() {}
+function renderLatexListForStudents() {}
+function renderStudentMessages() {}
+function renderQuizListForStudent() {}
+function renderStudentExercises() {}
+function loadStudentDashboard() {}
 
-// منع scroll على مستوى body
-document.body.addEventListener('scroll', function(e) {
-  document.body.scrollTop = 0;
-});
-
-// منع wheel events التي قد تسبب scroll
-document.addEventListener('wheel', function(e) {
-  if (e.ctrlKey) return; // السماح بالzoom
-  e.preventDefault();
-}, { passive: false });
-
-// منع touch events على الأجهزة اللوحية
-document.addEventListener('touchmove', function(e) {
-  e.preventDefault();
-}, { passive: false });
-
-console.log('=== APPLICATION LOADED COMPLETELY ==='); 
+console.log('تم تحميل كود الجافا سكريبت بنجاح');

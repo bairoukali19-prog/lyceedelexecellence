@@ -8,7 +8,7 @@
 /* =============================
    Data model (localStorage)
    ============================= */  
-const STORAGE_KEY = 'lyceeExcellence_v_22';
+const STORAGE_KEY = 'lyceeExcellence_v_23';
 let appData = {
   students: [
     { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },
@@ -28,7 +28,8 @@ let appData = {
   dictionary: [],
   lessons: [],
   exercises: [
-    { id: "mfj2mukk2edjb", title: "Série N'1 Physique-Chimie", driveLink: "https://drive.google.com/file/d/1Ck4CbEtKofWPd11xAOxJVCQI7b8v65vK/view?usp=sharing" }
+    { id: "mfj2mukk2edjb", title: "Série N'1 Physique-Chimie", driveLink: "https://drive.google.com/file/d/1Ck4CbEtKofWPd11xAOxJVCQI7b8v65vK/view?usp=sharing" },
+    { id: "mglipszl7zhay", title: "Série N'1 Physique-Chimie 2-bac pc", driveLink: "https://drive.google.com/file/d/1Ck4CbEtKofWPd11xAOxJVCQI7b8v65vK/view?usp=sharing" }
   ],
   exams: [],
   messages: [],
@@ -39,7 +40,7 @@ let appData = {
   currentUser: null,
   isAdmin: false,
   announcement: {
-    text: "ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة",
+    text: "امتحان المراقبة المستمرة رقم 01 سيكون ابتداء من يوم 28/10 حتى 11/11 \nبالنسبة ل  1bac و 2Bac و TC .",
     image: null
   },
   siteCover: { enabled: true, url: null }
@@ -1169,4 +1170,4 @@ function renderDictionary(){
 
 /* =============================
    End of file
-   ============================= */
+   ============================= */ 

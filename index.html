@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lycée de l'Excellence - Physique 2026</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ============================================================
-       CSS
-       ============================================================ */
+    /* ===== CSS موحد مع تحسينات ===== */
     * {
       margin: 0;
       padding: 0;
@@ -21,23 +19,38 @@
       color: #1e293b;
       direction: rtl;
       padding-top: 70px;
+      overflow-x: hidden;
     }
     .container {
       max-width: 1200px;
       margin: 0 auto;
       padding: 0 20px;
     }
+
+    /* أنيميشن عام */
     .fade-in {
-      animation: fadeIn 0.6s ease;
+      animation: fadeIn 0.8s ease forwards;
     }
     @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(20px);
+        transform: translateY(30px);
       }
       to {
         opacity: 1;
         transform: translateY(0);
+      }
+    }
+    .float-animation {
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-12px);
       }
     }
     .pulse {
@@ -52,6 +65,17 @@
         transform: scale(1.05);
       }
     }
+    .glow {
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from {
+        box-shadow: 0 0 10px rgba(30, 144, 255, 0.3);
+      }
+      to {
+        box-shadow: 0 0 30px rgba(30, 144, 255, 0.7);
+      }
+    }
 
     /* Header */
     header {
@@ -63,6 +87,7 @@
       width: 100%;
       z-index: 1000;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      transition: 0.3s;
     }
     .header-content {
       display: flex;
@@ -80,10 +105,14 @@
       border-radius: 50%;
       background: white;
       padding: 4px;
+      transition: 0.3s;
+    }
+    .logo img:hover {
+      transform: rotate(10deg) scale(1.05);
     }
     .logo h1 {
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 900;
       background: linear-gradient(45deg, #fff, #ffd700);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -102,11 +131,27 @@
       border-radius: 30px;
       transition: 0.3s;
       font-size: 15px;
+      position: relative;
+    }
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 50%;
+      width: 0;
+      height: 2px;
+      background: #ffd700;
+      transition: 0.3s;
+    }
+    nav ul li a:hover::after {
+      width: 70%;
+      right: 15%;
     }
     nav ul li a:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.15);
       transform: translateY(-2px);
     }
+
     .auth-buttons {
       display: flex;
       gap: 8px;
@@ -130,15 +175,17 @@
       box-shadow: 0 4px 15px rgba(30, 144, 255, 0.4);
     }
     .btn-primary:hover {
-      transform: translateY(-3px);
+      transform: translateY(-3px) scale(1.02);
       box-shadow: 0 6px 25px rgba(30, 144, 255, 0.6);
     }
     .btn-accent {
       background: linear-gradient(135deg, #f59e0b, #d97706);
       color: white;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
     }
     .btn-accent:hover {
-      transform: translateY(-3px);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 6px 25px rgba(245, 158, 11, 0.6);
     }
     .btn-success {
       background: linear-gradient(135deg, #10b981, #059669);
@@ -162,6 +209,7 @@
     .btn-outline:hover {
       background: #1e90ff;
       color: white;
+      transform: translateY(-2px);
     }
     .btn-ghost {
       background: rgba(255, 255, 255, 0.1);
@@ -171,17 +219,38 @@
     }
     .btn-ghost:hover {
       background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
     }
 
     /* Hero */
     .hero {
       background: linear-gradient(135deg, #0b3d91, #1e90ff, #0b3d91);
       background-size: 300% 300%;
-      animation: gradientMove 8s ease infinite;
+      animation: gradientMove 10s ease infinite;
       color: white;
-      padding: 50px 0;
+      padding: 55px 0;
       text-align: center;
       margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.08) 0%, transparent 70%);
+      animation: rotateGlow 20s linear infinite;
+    }
+    @keyframes rotateGlow {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
     }
     @keyframes gradientMove {
       0% {
@@ -195,36 +264,56 @@
       }
     }
     .hero h2 {
-      font-size: 38px;
-      font-weight: 800;
+      font-size: 40px;
+      font-weight: 900;
       text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
     }
     .hero p {
       font-size: 18px;
       opacity: 0.95;
+      position: relative;
+      z-index: 1;
     }
 
     /* Announcement */
     .announcement-box {
       background: linear-gradient(135deg, #fef3c7, #fde68a);
       border-right: 6px solid #f59e0b;
-      padding: 12px 24px;
+      padding: 14px 24px;
       margin: 10px 20px 20px;
       border-radius: 16px;
       display: flex;
       align-items: center;
       gap: 15px;
       box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .announcement-box i {
+      color: #f59e0b;
+      font-size: 28px;
+      animation: float 3s ease-in-out infinite;
     }
 
     /* Features */
     .section-title {
-      font-size: 28px;
-      margin: 30px 0 20px;
+      font-size: 30px;
+      margin: 35px 0 20px;
       color: #0b3d91;
       border-bottom: 3px solid #1e90ff;
       padding-bottom: 8px;
       display: inline-block;
+      position: relative;
+    }
+    .section-title::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      right: 0;
+      width: 50%;
+      height: 3px;
+      background: #ffd700;
     }
     .features {
       display: grid;
@@ -234,42 +323,65 @@
     }
     .feature-card {
       background: white;
-      border-radius: 16px;
-      padding: 25px 15px;
+      border-radius: 20px;
+      padding: 28px 15px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
       text-align: center;
       cursor: pointer;
       transition: 0.4s;
       border: 1px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #1e90ff, #ffd700);
+      transform: scaleX(0);
+      transition: 0.4s;
+    }
+    .feature-card:hover::before {
+      transform: scaleX(1);
     }
     .feature-card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-10px) scale(1.02);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
     }
     .feature-icon {
-      font-size: 40px;
+      font-size: 44px;
       color: #0b3d91;
       margin-bottom: 10px;
+      transition: 0.3s;
+    }
+    .feature-card:hover .feature-icon {
+      transform: scale(1.2) rotate(5deg);
+      color: #1e90ff;
     }
 
-    /* Student Dashboard */
+    /* Dashboard */
     .student-dashboard {
       background: white;
-      border-radius: 20px;
-      padding: 25px;
+      border-radius: 24px;
+      padding: 28px;
       margin: 30px 0;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
       display: none;
     }
     .student-dashboard.active {
       display: block;
+      animation: fadeIn 0.6s ease;
     }
     .welcome-banner {
       background: linear-gradient(135deg, #1e90ff, #0b3d91);
       color: white;
-      padding: 20px;
-      border-radius: 16px;
+      padding: 24px;
+      border-radius: 20px;
       margin-bottom: 25px;
+      box-shadow: 0 4px 20px rgba(30, 144, 255, 0.3);
     }
     .student-tabs {
       display: flex;
@@ -280,42 +392,54 @@
       padding-bottom: 10px;
     }
     .student-tab {
-      padding: 8px 18px;
+      padding: 8px 20px;
       border-radius: 30px;
       background: #f1f5f9;
       cursor: pointer;
       font-weight: 500;
-      transition: 0.2s;
+      transition: 0.3s;
+    }
+    .student-tab:hover {
+      background: #e2e8f0;
+      transform: translateY(-2px);
     }
     .student-tab.active {
       background: #0b3d91;
       color: white;
+      box-shadow: 0 4px 15px rgba(11, 61, 145, 0.3);
     }
     .student-tab-content {
       display: none;
     }
     .student-tab-content.active {
       display: block;
+      animation: fadeIn 0.4s ease;
     }
     .dashboard-card {
       background: #f8fafc;
       border-radius: 16px;
-      padding: 20px;
+      padding: 22px;
       margin-bottom: 20px;
       border: 1px solid #e2e8f0;
+      transition: 0.3s;
+    }
+    .dashboard-card:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+      transform: translateY(-3px);
     }
 
-    /* Admin Panel */
+    /* Admin */
     .admin-panel {
       background: white;
-      border-radius: 20px;
-      padding: 25px;
+      border-radius: 24px;
+      padding: 28px;
       margin: 30px 0;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
       display: none;
     }
     .admin-panel.active {
       display: block;
+      animation: fadeIn 0.6s ease;
     }
     .admin-sidebar {
       background: linear-gradient(180deg, #f1f5f9, #e2e8f0);
@@ -328,22 +452,26 @@
     }
     .admin-menu li a {
       display: block;
-      padding: 8px 12px;
+      padding: 10px 14px;
       border-radius: 12px;
       color: #1e293b;
       text-decoration: none;
       transition: 0.3s;
+      font-weight: 500;
     }
     .admin-menu li a:hover,
     .admin-menu li.active a {
       background: linear-gradient(135deg, #0b3d91, #1e90ff);
       color: white;
+      box-shadow: 0 4px 15px rgba(11, 61, 145, 0.3);
+      transform: translateX(-5px);
     }
     .admin-section {
       display: none;
     }
     .admin-section.active {
       display: block;
+      animation: fadeIn 0.4s ease;
     }
     .admin-dashboard {
       display: flex;
@@ -372,79 +500,105 @@
       margin: 20px 0;
     }
     .stat-card {
-      background: #f8fafc;
-      padding: 20px;
+      background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+      padding: 22px;
       border-radius: 16px;
       text-align: center;
+      transition: 0.3s;
+      border: 1px solid transparent;
+    }
+    .stat-card:hover {
+      border-color: #1e90ff;
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
     }
     .stat-card h3 {
-      font-size: 32px;
+      font-size: 34px;
       color: #0b3d91;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     /* Concours */
     .concours-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
+      gap: 24px;
       margin-top: 20px;
     }
     .concours-card {
       background: white;
-      border-radius: 16px;
-      padding: 25px;
+      border-radius: 20px;
+      padding: 28px;
       border: 1px solid #e2e8f0;
       text-align: center;
       transition: 0.4s;
+      position: relative;
+      overflow: hidden;
+    }
+    .concours-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #1e90ff, #f59e0b);
     }
     .concours-card:hover {
-      transform: translateY(-8px);
+      transform: translateY(-10px);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
     }
     .countdown-small {
       background: linear-gradient(135deg, #1e293b, #0f172a);
       color: white;
-      padding: 15px;
-      border-radius: 12px;
-      margin: 10px 0;
-      font-size: 18px;
+      padding: 18px;
+      border-radius: 14px;
+      margin: 12px 0;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     }
     .countdown-small span {
-      background: #f59e0b;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #1e293b;
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: 8px;
-      margin: 0 3px;
-      font-weight: bold;
+      margin: 0 4px;
+      font-weight: 900;
+      min-width: 30px;
+      display: inline-block;
     }
     .countdown-big {
       background: linear-gradient(135deg, #1e293b, #0f172a);
       color: white;
-      padding: 15px;
-      border-radius: 16px;
+      padding: 20px;
+      border-radius: 20px;
       text-align: center;
       margin: 20px 0;
-      font-size: 20px;
+      font-size: 22px;
+      font-weight: 700;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
     .countdown-big span {
-      background: #f59e0b;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
       color: #1e293b;
-      padding: 5px 12px;
+      padding: 5px 14px;
       border-radius: 8px;
       margin: 0 5px;
-      font-weight: bold;
+      font-weight: 900;
+      display: inline-block;
+      min-width: 35px;
     }
 
     /* Slider */
     .hero-slider {
       background: #e2e8f0;
       height: 350px;
-      border-radius: 20px;
+      border-radius: 24px;
       margin: 10px 20px 20px;
       overflow: hidden;
       box-shadow: 0 8px 40px rgba(0, 0, 0, 0.15);
+      position: relative;
     }
     .hero-slider img {
       width: 100%;
@@ -461,24 +615,35 @@
         transform: scale(1.05);
       }
     }
+    .hero-slider .slider-overlay {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 10px 24px;
+      border-radius: 50px;
+      color: white;
+      font-size: 14px;
+    }
 
     /* Footer */
     .footer {
       background: linear-gradient(135deg, #0b3d91, #0f172a);
       color: white;
-      padding: 40px 0;
+      padding: 45px 0 30px;
       margin-top: 40px;
     }
     .footer .social-links a {
       color: white;
       margin: 0 8px;
-      font-size: 22px;
+      font-size: 24px;
       transition: 0.3s;
       display: inline-block;
     }
     .footer .social-links a:hover {
       color: #ffd700;
-      transform: translateY(-5px);
+      transform: translateY(-5px) scale(1.1);
     }
     .footer-grid {
       display: grid;
@@ -488,17 +653,22 @@
     .footer ul {
       list-style: none;
     }
+    .footer ul li {
+      margin-bottom: 8px;
+    }
     .footer ul li a {
       color: #cbd5e1;
       text-decoration: none;
+      transition: 0.3s;
     }
     .footer ul li a:hover {
       color: white;
+      padding-right: 5px;
     }
     .footer-bottom {
       border-top: 1px solid #1e4a8a;
       padding-top: 20px;
-      margin-top: 20px;
+      margin-top: 25px;
       text-align: center;
       font-size: 14px;
       color: #94a3b8;
@@ -511,8 +681,8 @@
       left: 30px;
       background: linear-gradient(135deg, #1e90ff, #0b3d91);
       color: white;
-      width: 50px;
-      height: 50px;
+      width: 55px;
+      height: 55px;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -523,26 +693,32 @@
       z-index: 999;
       opacity: 0;
       visibility: hidden;
+      font-size: 22px;
     }
     .back-to-top.visible {
       opacity: 1;
       visibility: visible;
     }
     .back-to-top:hover {
-      transform: translateY(-5px);
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 8px 30px rgba(30, 144, 255, 0.7);
     }
 
     /* Visitor counter */
     .visitor-counter {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(10px);
-      padding: 8px 16px;
+      padding: 8px 20px;
       border-radius: 50px;
-      font-size: 14px;
+      font-size: 15px;
       border: 1px solid rgba(255, 255, 255, 0.2);
+      font-weight: 500;
+    }
+    .visitor-counter i {
+      animation: pulse 2s ease-in-out infinite;
     }
     .visitor-stats {
       display: flex;
@@ -554,19 +730,24 @@
     .visitor-stat-item {
       text-align: center;
       background: white;
-      padding: 15px 25px;
+      padding: 18px 28px;
       border-radius: 16px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
       border: 1px solid #e2e8f0;
       min-width: 100px;
+      transition: 0.3s;
+    }
+    .visitor-stat-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
     }
     .visitor-stat-item .number {
-      font-size: 28px;
-      font-weight: 800;
+      font-size: 30px;
+      font-weight: 900;
       color: #0b3d91;
     }
 
-    /* Forms */
+    /* Forms and Tables */
     .form-row {
       display: flex;
       gap: 15px;
@@ -582,32 +763,46 @@
       font-weight: 600;
       margin-bottom: 4px;
       font-size: 14px;
+      color: #0b3d91;
     }
     .form-group input,
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 10px 12px;
+      padding: 10px 14px;
       border: 1px solid #cbd5e1;
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 14px;
+      transition: 0.3s;
+      background: white;
     }
-
-    /* Tables */
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: #1e90ff;
+      box-shadow: 0 0 0 3px rgba(30, 144, 255, 0.15);
+      outline: none;
+    }
     table {
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
+      border-radius: 12px;
+      overflow: hidden;
     }
     table th {
-      background: #0b3d91;
+      background: linear-gradient(135deg, #0b3d91, #1a5cb5);
       color: white;
-      padding: 10px;
+      padding: 12px;
       text-align: right;
+      font-weight: 700;
     }
     table td {
-      padding: 10px;
+      padding: 12px;
       border-bottom: 1px solid #e2e8f0;
+    }
+    table tr:hover {
+      background: #f1f5f9;
     }
     .flex {
       display: flex;
@@ -635,36 +830,44 @@
     }
     .content-grid .item {
       background: white;
-      padding: 15px;
-      border-radius: 10px;
+      padding: 16px;
+      border-radius: 12px;
       border: 1px solid #e2e8f0;
+      transition: 0.3s;
+    }
+    .content-grid .item:hover {
+      border-color: #1e90ff;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     }
 
     /* Quiz */
     .quiz-question {
       background: white;
-      padding: 20px;
-      border-radius: 12px;
+      padding: 22px;
+      border-radius: 16px;
       margin-bottom: 20px;
       border: 1px solid #e2e8f0;
     }
     .quiz-option {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
-      border-radius: 8px;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: 10px;
       cursor: pointer;
       transition: 0.2s;
+      border: 1px solid transparent;
     }
     .quiz-option:hover {
       background: #f1f5f9;
+      border-color: #cbd5e1;
     }
     .quiz-result {
       background: #f0fdf4;
       border: 1px solid #10b981;
-      padding: 15px;
-      border-radius: 10px;
+      padding: 18px;
+      border-radius: 14px;
       margin: 15px 0;
     }
 
@@ -682,7 +885,7 @@
     }
     .concours-interface .header {
       background: white;
-      padding: 16px 24px;
+      padding: 18px 24px;
       border-bottom: 1px solid #e1e5e9;
       display: flex;
       justify-content: space-between;
@@ -693,30 +896,35 @@
       position: sticky;
       top: 0;
       z-index: 10;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
     .concours-interface .question-container {
       background: white;
       border-radius: 16px;
-      padding: 24px;
+      padding: 28px;
       margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
     .concours-interface .option-item {
       display: flex;
       align-items: center;
-      padding: 14px 18px;
+      padding: 14px 20px;
       border: 2px solid #e1e5e9;
       border-radius: 12px;
       cursor: pointer;
       transition: 0.3s;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
+      font-weight: 500;
     }
     .concours-interface .option-item:hover {
       border-color: #1e90ff;
       background: #f0f7ff;
+      transform: translateX(-5px);
     }
     .concours-interface .option-item.selected {
       border-color: #10b981;
       background: #ecfdf5;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.15);
     }
     .concours-interface .question-indicators {
       display: flex;
@@ -725,44 +933,74 @@
       justify-content: center;
     }
     .concours-interface .question-indicators button {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border: 2px solid #cbd5e1;
       border-radius: 50%;
       background: white;
       cursor: pointer;
-      font-weight: bold;
+      font-weight: 700;
       transition: 0.3s;
+    }
+    .concours-interface .question-indicators button:hover {
+      transform: scale(1.1);
     }
     .concours-interface .question-indicators button.active {
       border-color: #1e90ff;
       background: #1e90ff;
       color: white;
+      transform: scale(1.1);
     }
     .concours-interface .question-indicators button.answered {
       border-color: #10b981;
       background: #10b981;
       color: white;
     }
-
     .concours-result .score-circle {
-      width: 120px;
-      height: 120px;
+      width: 130px;
+      height: 130px;
       border-radius: 50%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       margin: 20px auto;
-      font-weight: bold;
+      font-weight: 900;
       color: white;
+      font-size: 18px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     }
 
     .latex-content {
       background: #f8fafc;
-      padding: 15px;
-      border-radius: 10px;
+      padding: 18px;
+      border-radius: 12px;
       border: 1px solid #e2e8f0;
+    }
+
+    /* Contact Info (جديد) */
+    .contact-info {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      margin: 20px 0;
+      border: 1px solid #e2e8f0;
+    }
+    .contact-info h3 {
+      color: #0b3d91;
+      margin-bottom: 15px;
+    }
+    .contact-info .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .contact-info .info-item i {
+      color: #1e90ff;
+      width: 24px;
+      font-size: 18px;
     }
 
     @media (max-width: 768px) {
@@ -780,10 +1018,16 @@
         width: 100%;
       }
       .hero h2 {
-        font-size: 24px;
+        font-size: 26px;
       }
       .hero-slider {
         height: 200px;
+      }
+      .countdown-big {
+        font-size: 16px;
+      }
+      .countdown-small {
+        font-size: 16px;
       }
     }
   </style>
@@ -847,6 +1091,7 @@
     <!-- Slider -->
     <div class="hero-slider" id="front-hero-slider">
       <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=450&fit=crop" alt="فيزياء" />
+      <div class="slider-overlay">📚 التعليم مفتاح النجاح</div>
     </div>
 
     <div class="container">
@@ -864,7 +1109,7 @@
       </div>
 
       <!-- Stats -->
-      <section style="background:white;border-radius:16px;padding:25px;margin:20px 0;">
+      <section style="background:white;border-radius:20px;padding:28px;margin:20px 0;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <h2 style="color:#0b3d91;">📊 إحصائيات الموقع</h2>
         <div class="visitor-stats">
           <div class="visitor-stat-item"><span class="number">56</span><div class="label">👨‍🎓 طلاب مسجلين</div></div>
@@ -877,7 +1122,7 @@
       </section>
 
       <!-- Concours Cards -->
-      <section style="background:white;border-radius:16px;padding:25px;margin:20px 0;" id="concours">
+      <section style="background:white;border-radius:20px;padding:28px;margin:20px 0;box-shadow:0 4px 20px rgba(0,0,0,0.04);" id="concours">
         <h2 style="color:#0b3d91;">🏆 Concours 2026</h2>
         <p style="color:#475569;margin-bottom:15px;">تابع العد التنازلي للمسابقات الكبرى واستعد جيداً.</p>
         <div class="concours-grid">
@@ -914,13 +1159,22 @@
       </section>
 
       <!-- Baccalaureat Countdown -->
-      <div class="countdown-big" id="bacCountdown">
+      <div class="countdown-big">
         <i class="fas fa-hourglass-half"></i>
         الوقت المتبقي لامتحانات البكالوريا 2026:
         <span id="countdownDays">--</span> يوم
         <span id="countdownHours">--</span> ساعة
         <span id="countdownMinutes">--</span> دقيقة
         <span id="countdownSeconds">--</span> ثانية
+      </div>
+
+      <!-- معلومات الاتصال (جديدة) -->
+      <div class="contact-info fade-in">
+        <h3><i class="fas fa-address-card"></i> معلومات الاتصال</h3>
+        <div class="info-item"><i class="fas fa-map-marker-alt"></i> <span><strong>المدينة:</strong> أكادير / العيون</span></div>
+        <div class="info-item"><i class="fas fa-phone"></i> <span><strong>الهاتف:</strong> +212 20565105</span></div>
+        <div class="info-item"><i class="fas fa-envelope"></i> <span><strong>البريد الإلكتروني:</strong> bairoukali.contacter@gmail.com</span></div>
+        <div class="info-item"><i class="fas fa-user-tie"></i> <span><strong>الأستاذ:</strong> Ali Bairouk</span></div>
       </div>
 
       <!-- ===== STUDENT DASHBOARD ===== -->
@@ -963,25 +1217,31 @@
       <section id="lessons" class="page-section" style="display:none;"><div class="section-header"><h2>Leçons</h2></div><div class="content-grid" id="lessonsContent"></div></section>
 
       <!-- About -->
-      <section style="background:white;border-radius:16px;padding:25px;margin:20px 0;">
+      <section style="background:white;border-radius:20px;padding:28px;margin:20px 0;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <h2 style="color:#0b3d91;">📖 عن الموقع</h2>
-        <p>منصة تعليمية متخصصة في الفيزياء تحت إشراف الأستاذ علي بيروك.</p>
+        <p>منصة تعليمية متخصصة في الفيزياء تحت إشراف الأستاذ علي بيروك. تهدف إلى توفير بيئة تعليمية تفاعلية ومتكاملة للتلاميذ.</p>
       </section>
 
       <!-- Testimonials -->
-      <section style="background:white;border-radius:16px;padding:25px;margin:20px 0;">
+      <section style="background:white;border-radius:20px;padding:28px;margin:20px 0;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <h2 style="color:#0b3d91;">💬 آراء الطلاب</h2>
-        <div style="padding:12px;background:#f8fafc;border-radius:12px;margin-bottom:10px;"><p>“منصة رائعة ساعدتني كثيراً في فهم الفيزياء.”</p><div style="font-weight:bold;color:#0b3d91;">— أحمد أمين</div></div>
-        <div style="padding:12px;background:#f8fafc;border-radius:12px;margin-bottom:10px;"><p>“الاختبارات التفاعلية جعلت المذاكرة ممتعة.”</p><div style="font-weight:bold;color:#0b3d91;">— سلمى الحبيب</div></div>
+        <div style="padding:16px;background:#f8fafc;border-radius:14px;margin-bottom:12px;border-right:4px solid #1e90ff;">
+          <p>“منصة رائعة ساعدتني كثيراً في فهم الفيزياء.”</p>
+          <div style="font-weight:bold;color:#0b3d91;margin-top:5px;">— أحمد أمين</div>
+        </div>
+        <div style="padding:16px;background:#f8fafc;border-radius:14px;margin-bottom:12px;border-right:4px solid #f59e0b;">
+          <p>“الاختبارات التفاعلية جعلت المذاكرة ممتعة وساعدتني على تقييم مستواي.”</p>
+          <div style="font-weight:bold;color:#0b3d91;margin-top:5px;">— سلمى الحبيب</div>
+        </div>
       </section>
 
       <!-- Contact -->
-      <section style="background:white;border-radius:16px;padding:25px;margin:20px 0;">
+      <section style="background:white;border-radius:20px;padding:28px;margin:20px 0;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
         <h2 style="color:#0b3d91;">📬 اتصل بنا</h2>
         <form id="contactForm" class="form-row" style="flex-direction:column;gap:15px;">
-          <div class="form-group"><label>الاسم</label><input type="text" id="contactName" required></div>
-          <div class="form-group"><label>البريد</label><input type="email" id="contactEmail" required></div>
-          <div class="form-group"><label>الرسالة</label><textarea id="contactMessage" rows="4" required></textarea></div>
+          <div class="form-group"><label>الاسم الكامل</label><input type="text" id="contactName" placeholder="أدخل اسمك" required></div>
+          <div class="form-group"><label>البريد الإلكتروني</label><input type="email" id="contactEmail" placeholder="example@mail.com" required></div>
+          <div class="form-group"><label>الرسالة</label><textarea id="contactMessage" rows="4" placeholder="اكتب رسالتك هنا..." required></textarea></div>
           <button type="submit" class="btn btn-primary" style="width:fit-content;"><i class="fa-solid fa-paper-plane"></i> إرسال</button>
         </form>
       </section>
@@ -1126,11 +1386,12 @@
           </ul>
         </div>
         <div>
-          <h4>اتصل بنا</h4>
-          <ul>
-            <li><i class="fas fa-envelope"></i> contact@lycee-excellence.ma</li>
-            <li><i class="fas fa-phone"></i> +212 5xx-xxxxxx</li>
-            <li><i class="fas fa-map-marker-alt"></i> الدار البيضاء، المغرب</li>
+          <h4>معلومات الاتصال</h4>
+          <ul style="color:#cbd5e1;">
+            <li><i class="fas fa-map-marker-alt"></i> أكادير / العيون</li>
+            <li><i class="fas fa-phone"></i> +212 20565105</li>
+            <li><i class="fas fa-envelope"></i> bairoukali.contacter@gmail.com</li>
+            <li><i class="fas fa-user-tie"></i> الأستاذ: Ali Bairouk</li>
           </ul>
         </div>
       </div>
@@ -1144,14 +1405,14 @@
   <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
   <!-- ============================================================
-  JAVASCRIPT (حل مشكلة المؤقتات نهائياً)
+  JAVASCRIPT (مُعاد هيكلته بالكامل مع مؤقتات تعمل)
   ============================================================ -->
   <script>
     // ============================================================
     // 1. DATA LAYER
     // ============================================================
-    var STORAGE_KEY = 'lyceeData';
-    var data = {
+    const STORAGE_KEY = 'lyceeData';
+    let data = {
       students: [],
       grades: [],
       quizzes: [],
@@ -1167,21 +1428,19 @@
       announcements: { text: 'ستبدأ الدراسة الفعلية يوم 16/09/2025', image: null }
     };
 
-    var currentStudent = null;
-    var currentAdmin = false;
+    let currentStudent = null;
+    let currentAdmin = false;
 
     // ============================================================
     // 2. UTILITY
     // ============================================================
-    function saveData() {
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
-    }
+    function saveData() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {} }
 
     function loadData() {
       try {
-        var raw = localStorage.getItem(STORAGE_KEY);
+        const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
-          var parsed = JSON.parse(raw);
+          const parsed = JSON.parse(raw);
           Object.assign(data, parsed);
           if (!data.concours) data.concours = [];
           if (!data.sliderImages || data.sliderImages.length === 0) {
@@ -1191,35 +1450,26 @@
       } catch (e) { console.warn('loadData error', e); }
     }
 
-    function generateId() {
-      return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
-    }
+    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
 
-    function formatDate(d) {
-      if (!d) return '';
-      return new Date(d).toLocaleDateString('fr-FR');
-    }
+    function formatDate(d) { if (!d) return ''; return new Date(d).toLocaleDateString('fr-FR'); }
 
-    function renderLatex() {
-      if (window.MathJax && MathJax.typesetPromise) {
-        MathJax.typesetPromise().catch(function() {});
-      }
-    }
+    function renderLatex() { if (window.MathJax && MathJax.typesetPromise) { MathJax.typesetPromise().catch(function() {}); } }
 
     // ============================================================
-    // 3. TIMERS - الحل النهائي (تعمل الآن!)
+    // 3. TIMERS (تعمل الآن! تم إعادة كتابتها)
     // ============================================================
 
     function updateAllTimers() {
       var now = Date.now();
 
-      // ---- بكالوريا (1 يونيو 2026) ----
+      // ---- Bac 2026 (1er Juin) ----
       var bacDate = new Date('2026-06-01T00:00:00').getTime();
       var diffBac = bacDate - now;
       if (diffBac > 0) {
         document.getElementById('countdownDays').textContent = Math.floor(diffBac / (1000 * 60 * 60 * 24));
         document.getElementById('countdownHours').textContent = Math.floor((diffBac % (1000 * 60 * 60 * 24)) / (1000 * 60 *
-          60));
+        60));
         document.getElementById('countdownMinutes').textContent = Math.floor((diffBac % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('countdownSeconds').textContent = Math.floor((diffBac % (1000 * 60)) / 1000);
       } else {
@@ -1229,13 +1479,13 @@
         document.getElementById('countdownSeconds').textContent = '0';
       }
 
-      // ---- Concours Médecin (24 يوم من الآن) ----
+      // ---- Concours Médecin (24 jours) ----
       var medTarget = now + (24 * 24 * 60 * 60 * 1000);
       var diffMed = medTarget - now;
       if (diffMed > 0) {
         document.getElementById('medecinDays').textContent = Math.floor(diffMed / (1000 * 60 * 60 * 24));
         document.getElementById('medecinHours').textContent = Math.floor((diffMed % (1000 * 60 * 60 * 24)) / (1000 * 60 *
-          60));
+        60));
         document.getElementById('medecinMinutes').textContent = Math.floor((diffMed % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('medecinSeconds').textContent = Math.floor((diffMed % (1000 * 60)) / 1000);
       } else {
@@ -1245,13 +1495,13 @@
         document.getElementById('medecinSeconds').textContent = '0';
       }
 
-      // ---- Concours Ensa (25 يوم من الآن) ----
+      // ---- Concours Ensa (25 jours) ----
       var ensaTarget = now + (25 * 24 * 60 * 60 * 1000);
       var diffEnsa = ensaTarget - now;
       if (diffEnsa > 0) {
         document.getElementById('ensaDays').textContent = Math.floor(diffEnsa / (1000 * 60 * 60 * 24));
         document.getElementById('ensaHours').textContent = Math.floor((diffEnsa % (1000 * 60 * 60 * 24)) / (1000 * 60 *
-          60));
+        60));
         document.getElementById('ensaMinutes').textContent = Math.floor((diffEnsa % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('ensaSeconds').textContent = Math.floor((diffEnsa % (1000 * 60)) / 1000);
       } else {
@@ -1263,19 +1513,18 @@
     }
 
     // ============================================================
-    // 4. RENDER FUNCTIONS (مختصرة للوضوح)
+    // 4. RENDER FUNCTIONS (مبسطة)
     // ============================================================
 
     function renderStudents() {
       var tbody = document.querySelector('#studentsTable tbody');
       if (!tbody) return;
       var filter = (document.getElementById('filterStudents')?.value || '').toLowerCase();
-      var rows = data.students
-        .filter(function(s) { return s.fullname.toLowerCase().includes(filter) || s.username.toLowerCase().includes(
-          filter); })
+      var rows = data.students.filter(function(s) { return s.fullname.toLowerCase().includes(filter) || s.username
+          .toLowerCase().includes(filter); })
         .map(function(s) {
           return '<tr><td>' + s.fullname + '</td><td>' + s.username + '</td><td>' + s.code + '</td><td>' + (s
-            .classroom || '') +
+              .classroom || '') +
             '</td><td><button class="btn btn-primary btn-sm" onclick="editStudent(\'' + s.id +
             '\')"><i class="fa-solid fa-edit"></i></button> <button class="btn btn-ghost btn-sm" onclick="deleteStudent(\'' +
             s.id + '\')"><i class="fa-solid fa-trash"></i></button></td></tr>';
@@ -1287,13 +1536,12 @@
       var tbody = document.querySelector('#gradesAdminTable tbody');
       if (!tbody) return;
       var filter = document.getElementById('grFilterStudent')?.value;
-      var rows = data.grades
-        .filter(function(g) { return !filter || g.studentId === filter; })
+      var rows = data.grades.filter(function(g) { return !filter || g.studentId === filter; })
         .map(function(g) {
           var student = data.students.find(function(s) { return s.id === g.studentId; });
           return '<tr><td>' + (student ? student.fullname : 'Inconnu') + '</td><td>' + formatDate(g.date) +
-            '</td><td>' + g.subject + '</td><td>' + g.title + '</td><td>' + g.score + '/20</td><td>' + (g
-              .remark || '') +
+            '</td><td>' + g.subject + '</td><td>' + g.title + '</td><td>' + g.score + '/20</td><td>' + (g.remark ||
+              '') +
             '</td><td><button class="btn btn-primary btn-sm" onclick="editGrade(\'' + g.id +
             '\')"><i class="fa-solid fa-edit"></i></button> <button class="btn btn-ghost btn-sm" onclick="deleteGrade(\'' +
             g.id + '\')"><i class="fa-solid fa-trash"></i></button></td></tr>';
@@ -1306,8 +1554,8 @@
         var sel = document.getElementById(id);
         if (!sel) return;
         var current = sel.value;
-        sel.innerHTML = data.students.map(function(s) { return '<option value="' + s.id + '">' + s.fullname +
-            ' (' + s.code + ')</option>'; }).join('');
+        sel.innerHTML = data.students.map(function(s) { return '<option value="' + s.id + '">' + s.fullname + ' (' + s
+            .code + ')</option>'; }).join('');
         if (current) sel.value = current;
       });
       var revSel = document.getElementById('revisionExam');
@@ -1319,8 +1567,8 @@
 
     function renderDictionary() {
       var html = data.dictionary.map(function(d) {
-        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d
-          .def || '') + '</span></div>';
+        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d.def || '') +
+          '</span></div>';
       }).join('');
       ['dictionaryContent', 'dictionaryTermsList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1330,8 +1578,8 @@
 
     function renderLessons() {
       var html = data.lessons.map(function(l) {
-        return '<div class="item"><h4>' + l.title + '</h4><p>' + (l.chapter || '') + '</p><a href="' + l
-          .driveLink + '" target="_blank">Voir PDF</a></div>';
+        return '<div class="item"><h4>' + l.title + '</h4><p>' + (l.chapter || '') + '</p><a href="' + l.driveLink +
+          '" target="_blank">Voir PDF</a></div>';
       }).join('');
       ['lessonsContent', 'lessonsAdminList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1341,8 +1589,8 @@
 
     function renderExercises() {
       var html = data.exercises.map(function(e) {
-        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.chapter || '') + '</p><a href="' + e
-          .driveLink + '" target="_blank">Voir</a></div>';
+        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.chapter || '') + '</p><a href="' + e.driveLink +
+          '" target="_blank">Voir</a></div>';
       }).join('');
       ['exercisesContent', 'exercisesAdminList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1352,8 +1600,8 @@
 
     function renderExams() {
       var html = data.exams.map(function(e) {
-        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.series || '') + '</p><a href="' + e
-          .driveLink + '" target="_blank">Télécharger</a></div>';
+        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.series || '') + '</p><a href="' + e.driveLink +
+          '" target="_blank">Télécharger</a></div>';
       }).join('');
       ['examsContent', 'examsAdminList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1365,16 +1613,15 @@
       var sel = document.getElementById('adminSelectQuiz');
       if (sel) {
         var current = sel.value;
-        sel.innerHTML = data.quizzes.map(function(q) { return '<option value="' + q.id + '">' + q.title +
-          '</option>'; }).join('');
+        sel.innerHTML = data.quizzes.map(function(q) { return '<option value="' + q.id + '">' + q.title + '</option>'; })
+          .join('');
         if (current) sel.value = current;
       }
       var list = document.getElementById('quizQuestionsList');
       if (list) {
         var qid = document.getElementById('adminSelectQuiz')?.value;
         var quiz = data.quizzes.find(function(q) { return q.id === qid; });
-        list.innerHTML = (quiz && quiz.questions && quiz.questions.length) ? quiz.questions.map(function(q,
-        i) {
+        list.innerHTML = (quiz && quiz.questions && quiz.questions.length) ? quiz.questions.map(function(q, i) {
           return '<div class="item"><strong>Q' + (i + 1) + ':</strong> ' + q.text + '</div>';
         }).join('') : '<p class="muted">Aucune question.</p>';
       }
@@ -1385,9 +1632,8 @@
       if (list) {
         list.innerHTML = data.messages.map(function(m) {
           var student = data.students.find(function(s) { return s.id === m.studentId; });
-          return '<div class="item"><strong>' + m.title + '</strong><br>' + m.content +
-            '<br><span class="muted">À: ' + (m.target === 'all' ? 'Tous' : (student ? student
-              .fullname : 'Inconnu')) + '</span></div>';
+          return '<div class="item"><strong>' + m.title + '</strong><br>' + m.content + '<br><span class="muted">À: ' +
+            (m.target === 'all' ? 'Tous' : (student ? student.fullname : 'Inconnu')) + '</span></div>';
         }).join('') || '<p class="muted">لا توجد رسائل.</p>';
       }
     }
@@ -1396,8 +1642,7 @@
       var list = document.getElementById('latexCoursesList');
       if (list) {
         list.innerHTML = data.latexCourses.map(function(c) {
-          return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content +
-            '</div></div>';
+          return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content + '</div></div>';
         }).join('') || '<p class="muted">لا توجد دروس.</p>';
       }
     }
@@ -1408,9 +1653,9 @@
         list.innerHTML = data.revisionRequests.map(function(r) {
           var student = data.students.find(function(s) { return s.id === r.studentId; });
           var grade = data.grades.find(function(g) { return g.id === r.gradeId; });
-          return '<div class="item"><strong>' + (student ? student.fullname : 'Inconnu') + '</strong> - ' +
-            (grade ? grade.title : 'Évaluation') + '<br>' + r.message + '<br><span class="muted">' + (r
-              .status || 'En attente') + '</span></div>';
+          return '<div class="item"><strong>' + (student ? student.fullname : 'Inconnu') + '</strong> - ' + (grade ? grade
+              .title : 'Évaluation') + '<br>' + r.message + '<br><span class="muted">' + (r.status || 'En attente') +
+            '</span></div>';
         }).join('') || '<p class="muted">Aucune demande.</p>';
       }
     }
@@ -1426,7 +1671,7 @@
       }
       var slider = document.getElementById('front-hero-slider');
       if (slider && data.sliderImages.length) {
-        slider.innerHTML = '<img src="' + data.sliderImages[0] + '" alt="Slider">';
+        slider.innerHTML = '<img src="' + data.sliderImages[0] + '" alt="Slider"><div class="slider-overlay">📚 التعليم مفتاح النجاح</div>';
       }
     }
 
@@ -1444,29 +1689,26 @@
       var html = '';
       data.concours.forEach(function(c) {
         var catLabel = c.category === 'medecin' ? '🩺 Médecin' : c.category === 'ensa' ? '⚙️ Ensa' : '📚 Autre';
-        html += '<div class="item"><h4>' + c.title +
-          ' <span style="font-size:12px;background:#1e90ff;color:white;padding:2px 10px;border-radius:20px;">' +
+        html += '<div class="item"><h4>' + c.title + ' <span style="font-size:12px;background:#1e90ff;color:white;padding:2px 10px;border-radius:20px;">' +
           catLabel + '</span></h4>';
         html += '<div class="meta">📝 ' + (c.questions ? c.questions.length : 0) + ' أسئلة | ⏱ ' + c.duration +
           ' دقيقة | 📅 ' + (c.date ? new Date(c.date).toLocaleString('ar-EG') : 'غير محدد') + '</div>';
         html += '<div class="meta">' + (c.description || '') + '</div>';
         html +=
-          '<div style="margin-top:10px;"><button class="btn btn-danger btn-sm" onclick="deleteConcours(\'' + c
-          .id + '\')"><i class="fa-solid fa-trash"></i> حذف</button>';
+          '<div style="margin-top:10px;"><button class="btn btn-danger btn-sm" onclick="deleteConcours(\'' + c.id +
+          '\')"><i class="fa-solid fa-trash"></i> حذف</button>';
         html += '<button class="btn btn-primary btn-sm" onclick="editConcours(\'' + c.id +
           '\')"><i class="fa-solid fa-edit"></i> تعديل</button>';
         html += '<button class="btn btn-accent btn-sm" onclick="previewConcours(\'' + c.id +
           '\')"><i class="fa-solid fa-eye"></i> معاينة</button></div>';
         if (c.questions && c.questions.length) {
-          html +=
-            '<div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px;"><strong>الأسئلة:</strong>';
+          html += '<div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px;"><strong>الأسئلة:</strong>';
           c.questions.forEach(function(q, qi) {
-            html +=
-              '<div style="background:white;padding:8px 12px;border-radius:8px;margin-top:5px;"><strong>س' +
-              (qi + 1) + ':</strong> ' + q.text + ' (' + q.points + ' نقطة)';
+            html += '<div style="background:white;padding:8px 12px;border-radius:8px;margin-top:5px;"><strong>س' + (qi +
+              1) + ':</strong> ' + q.text + ' (' + q.points + ' نقطة)';
             if (q.image) html += '<br><img src="' + q.image + '" style="max-height:50px;">';
-            html += '<br><span class="muted">الإجابة الصحيحة: ' + (q.options[q.correct - 1] ||
-              'غير محدد') + '</span></div>';
+            html += '<br><span class="muted">الإجابة الصحيحة: ' + (q.options[q.correct - 1] || 'غير محدد') +
+              '</span></div>';
           });
           html += '</div>';
         } else {
@@ -1493,7 +1735,7 @@
       document.getElementById('concoursDate').value = c.date ? c.date.slice(0, 16) : '';
       document.getElementById('concoursDescription').value = c.description || '';
       document.getElementById('concoursCategory').value = c.category || 'autre';
-      alert('تم تحميل البيانات للتعديل. يمكنك تعديلها ثم إضافة أسئلة جديدة.');
+      alert('تم تحميل البيانات للتعديل.');
     }
 
     function populateConcoursSelect() {
@@ -1508,7 +1750,7 @@
     }
 
     // ============================================================
-    // 6. CONCOURS STUDENT
+    // 6. CONCOURS STUDENT (مبسط)
     // ============================================================
 
     function renderStudentConcoursList() {
@@ -1519,18 +1761,16 @@
         return;
       }
       var studentId = currentStudent ? currentStudent.id : null;
-      var results = studentId ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[studentId] || []) :
-      [];
+      var results = studentId ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[studentId] || []) : [];
       var html = '';
       data.concours.forEach(function(c) {
         var hasResult = results.some(function(r) { return r.concoursId === c.id; });
         var catLabel = c.category === 'medecin' ? '🩺' : c.category === 'ensa' ? '⚙️' : '📚';
-        html += '<div class="item" style="border-right:4px solid ' + (hasResult ? '#10b981' : '#1e90ff') +
-          ';">';
+        html += '<div class="item" style="border-right:4px solid ' + (hasResult ? '#10b981' : '#1e90ff') + ';">';
         html += '<h4>' + catLabel + ' ' + c.title + '</h4>';
         html += '<p style="color:#475569;font-size:14px;">' + (c.description || '') + '</p>';
-        html += '<div style="color:#475569;font-size:14px;">⏱ ' + c.duration + ' دقيقة | 📝 ' + (c.questions ? c
-          .questions.length : 0) + ' أسئلة</div>';
+        html += '<div style="color:#475569;font-size:14px;">⏱ ' + c.duration + ' دقيقة | 📝 ' + (c.questions ? c.questions
+          .length : 0) + ' أسئلة</div>';
         if (hasResult) html += '<span style="color:#10b981;">✅ تم الإنجاز</span>';
         html += '<div style="margin-top:10px;">';
         if (hasResult) {
@@ -1540,8 +1780,7 @@
           html += '<button class="btn btn-primary btn-sm" onclick="startConcours(\'' + c.id +
             '\')">بدء المسابقة</button>';
         }
-        html += '<button class="btn btn-outline btn-sm" onclick="previewConcours(\'' + c.id +
-          '\')">معاينة</button>';
+        html += '<button class="btn btn-outline btn-sm" onclick="previewConcours(\'' + c.id + '\')">معاينة</button>';
         html += '</div></div>';
       });
       container.innerHTML = html || '<p class="muted">لا توجد مسابقات.</p>';
@@ -1562,9 +1801,9 @@
       var html = '';
       results.forEach(function(r) {
         var c = data.concours.find(function(co) { return co.id === r.concoursId; });
-        html += '<div class="item"><h4>' + (c ? c.title : 'مسابقة') +
-          '</h4><div>⭐ النتيجة: <strong>' + r.score + '/20</strong> (' + r.percentage +
-          '%)</div><div class="muted">📅 ' + new Date(r.date).toLocaleString('ar-EG') + '</div></div>';
+        html += '<div class="item"><h4>' + (c ? c.title : 'مسابقة') + '</h4><div>⭐ النتيجة: <strong>' + r.score +
+          '/20</strong> (' + r.percentage + '%)</div><div class="muted">📅 ' + new Date(r.date).toLocaleString(
+          'ar-EG') + '</div></div>';
       });
       container.innerHTML = html;
     }
@@ -1603,8 +1842,7 @@
     }
 
     function showConcoursInterface() {
-      document.querySelectorAll('.page-section, .student-tab-content').forEach(function(el) { el.style.display =
-          'none'; });
+      document.querySelectorAll('.page-section, .student-tab-content').forEach(function(el) { el.style.display = 'none'; });
       var interfaceEl = document.getElementById('concours-interface');
       if (!interfaceEl) {
         interfaceEl = document.createElement('div');
@@ -1649,11 +1887,10 @@
       });
       container.innerHTML += '</div>';
       document.getElementById('concoursQNumber').textContent = currentConcoursIndex + 1;
-      document.getElementById('concoursProgress').style.width = ((currentConcoursIndex + 1) / currentConcours
-        .questions.length * 100) + '%';
+      document.getElementById('concoursProgress').style.width = ((currentConcoursIndex + 1) / currentConcours.questions
+        .length * 100) + '%';
       document.getElementById('concoursPrevBtn').disabled = currentConcoursIndex === 0;
-      document.getElementById('concoursNextBtn').disabled = currentConcoursIndex === currentConcours.questions
-        .length - 1;
+      document.getElementById('concoursNextBtn').disabled = currentConcoursIndex === currentConcours.questions.length - 1;
       updateConcoursIndicators();
     }
 
@@ -1777,21 +2014,19 @@
       var html = '<div class="concours-result" style="text-align:center;">' +
         '<h2 style="color:#0b3d91;">🏆 نتيجة المسابقة</h2>' +
         '<div class="score-circle" style="background:' + color +
-        ';width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:20px auto;font-weight:bold;color:white;">' +
-        '<span style="font-size:28px;">' + score + '/20</span><span style="font-size:16px;">' + percent +
-        '%</span></div>' +
+        ';width:130px;height:130px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:20px auto;font-weight:900;color:white;box-shadow:0 4px 20px rgba(0,0,0,0.15);">' +
+        '<span style="font-size:30px;">' + score + '/20</span><span style="font-size:16px;">' + percent + '%</span></div>' +
         '<p style="font-size:18px;margin:10px 0;">' + (score >= 10 ? '🎉 مبروك! نتيجة ممتازة' :
           '💪 نتيجة جيدة، واصل التقدم') + '</p>' +
         '<div style="text-align:right;max-height:300px;overflow-y:auto;margin-top:20px;"><h4>تفاصيل الإجابات:</h4>';
       details.forEach(function(d, i) {
         html += '<div style="padding:12px;margin-bottom:8px;border-radius:8px;background:' + (d.isCorrect ?
-          '#ecfdf5' : '#fef2f2') + ';border-right:4px solid ' + (d.isCorrect ? '#10b981' : '#ef4444') +
-          ';">' +
+          '#ecfdf5' : '#fef2f2') + ';border-right:4px solid ' + (d.isCorrect ? '#10b981' : '#ef4444') + ';">' +
           '<strong>س' + (i + 1) + ':</strong> ' + d.question + '<br>' +
-          '<span style="font-size:14px;">إجابتك: ' + d.userAnswer + ' | الإجابة الصحيحة: ' + d
-          .correctAnswer + '</span>' +
-          '<span style="float:left;font-weight:bold;color:' + (d.isCorrect ? '#10b981' : '#ef4444') +
-          ';">' + (d.isCorrect ? '✅' : '❌') + ' ' + (d.isCorrect ? '+' : '') + d.points + '</span></div>';
+          '<span style="font-size:14px;">إجابتك: ' + d.userAnswer + ' | الإجابة الصحيحة: ' + d.correctAnswer +
+          '</span>' +
+          '<span style="float:left;font-weight:bold;color:' + (d.isCorrect ? '#10b981' : '#ef4444') + ';">' + (d
+            .isCorrect ? '✅' : '❌') + ' ' + (d.isCorrect ? '+' : '') + d.points + '</span></div>';
       });
       html +=
         '</div><button class="btn btn-primary" style="margin-top:20px;" onclick="exitConcours()">العودة</button></div>';
@@ -1839,7 +2074,7 @@
           html += '<div style="font-size:14px;color:#475569;">';
           q.options.forEach(function(opt, oi) {
             html += String.fromCharCode(65 + oi) + '. ' + opt + (q.correct === oi + 1 ? ' ✅' : '') +
-              ' | ';
+            ' | ';
           });
           html += '</div></div>';
         });
@@ -1886,8 +2121,7 @@
       }).join('') : '<p class="muted">Aucune note.</p>';
       var qlist = data.quizzes.map(function(q) {
         return '<div class="item"><span>' + q.title +
-          '</span><button class="btn btn-primary btn-sm" onclick="startQuiz(\'' + q.id +
-          '\')">Commencer</button></div>';
+          '</span><button class="btn btn-primary btn-sm" onclick="startQuiz(\'' + q.id + '\')">Commencer</button></div>';
       }).join('');
       document.getElementById('studentQuizList').innerHTML = qlist || '<p class="muted">Aucun quiz.</p>';
       document.getElementById('studentQuizList2').innerHTML = qlist || '<p class="muted">Aucun quiz.</p>';
@@ -1898,17 +2132,15 @@
         return '<div class="item"><a href="' + e.driveLink + '" target="_blank">' + e.title + '</a></div>';
       }).join('') || '<p class="muted">Aucun exercice.</p>';
       document.getElementById('studentDictionaryContent').innerHTML = data.dictionary.map(function(d) {
-        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d
-          .def || '') + '</span></div>';
+        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d.def ||
+          '') + '</span></div>';
       }).join('') || '<p class="muted">Aucun terme.</p>';
-      var msgs = data.messages.filter(function(m) { return m.target === 'all' || m.studentId === currentStudent
-          .id; });
+      var msgs = data.messages.filter(function(m) { return m.target === 'all' || m.studentId === currentStudent.id; });
       document.getElementById('studentMessagesList').innerHTML = msgs.map(function(m) {
         return '<div class="item"><strong>' + m.title + '</strong><br>' + m.content + '</div>';
       }).join('') || '<p class="muted">لا توجد رسائل.</p>';
       document.getElementById('studentCoursList').innerHTML = data.latexCourses.map(function(c) {
-        return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content +
-          '</div></div>';
+        return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content + '</div></div>';
       }).join('') || '<p class="muted">لا توجد دروس.</p>';
       var reqs = data.revisionRequests.filter(function(r) { return r.studentId === currentStudent.id; });
       document.getElementById('studentRevisionRequests').innerHTML = reqs.map(function(r) {
@@ -1925,8 +2157,7 @@
         tab.addEventListener('click', function() {
           document.querySelectorAll('.student-tab').forEach(function(t) { t.classList.remove('active'); });
           this.classList.add('active');
-          document.querySelectorAll('.student-tab-content').forEach(function(c) { c.classList.remove(
-            'active'); });
+          document.querySelectorAll('.student-tab-content').forEach(function(c) { c.classList.remove('active'); });
           var target = document.getElementById('student-' + this.dataset.tab + '-tab');
           if (target) target.classList.add('active');
           if (this.dataset.tab === 'cours') renderLatex();
@@ -1959,8 +2190,7 @@
       var quiz = data.quizzes.find(function(q) { return q.id === quizId; });
       if (!quiz || !quiz.questions || !quiz.questions.length) { alert('Ce quiz n\'a pas de questions.'); return; }
       var container = document.getElementById('quizContainer');
-      var html = '<h3>' + quiz.title + '</h3><p>Durée: ' + (quiz.duration || 'Illimitée') +
-        ' min</p><form id="quizForm">';
+      var html = '<h3>' + quiz.title + '</h3><p>Durée: ' + (quiz.duration || 'Illimitée') + ' min</p><form id="quizForm">';
       quiz.questions.forEach(function(q, idx) {
         html += '<div class="quiz-question"><strong>' + (idx + 1) + '. ' + q.text + '</strong> (' + q.points +
           ' pts)<br>';
@@ -1968,8 +2198,8 @@
         var options = q.options || [];
         var type = q.type === 'multiple' ? 'checkbox' : 'radio';
         options.forEach(function(opt, oi) {
-          html += '<label class="quiz-option"><input type="' + type + '" name="q' + idx + '" value="' +
-            (oi + 1) + '"> ' + opt + '</label><br>';
+          html += '<label class="quiz-option"><input type="' + type + '" name="q' + idx + '" value="' + (oi +
+            1) + '"> ' + opt + '</label><br>';
         });
         html += '</div>';
       });
@@ -1983,24 +2213,22 @@
         quiz.questions.forEach(function(q, idx) {
           var selected = formData.getAll('q' + idx);
           var correctIndices = q.correct ? q.correct.split(',').map(Number) : [];
-          var isCorrect = selected.length === correctIndices.length && selected.every(function(v) {
-            return correctIndices.includes(Number(v));
-          });
+          var isCorrect = selected.length === correctIndices.length && selected.every(function(v) { return correctIndices
+              .includes(Number(v)); });
           if (isCorrect) correct++;
         });
         var score = Math.round((correct / total) * 100);
-        container.innerHTML = '<div class="quiz-result"><h4>Résultat: ' + score + '% (' + correct + '/' +
-          total + ')</h4></div>';
+        container.innerHTML = '<div class="quiz-result"><h4>Résultat: ' + score + '% (' + correct + '/' + total +
+          ')</h4></div>';
         if (currentStudent) {
           var results = JSON.parse(localStorage.getItem('quizResults') || '{}');
           if (!results[currentStudent.id]) results[currentStudent.id] = [];
           results[currentStudent.id].push({ quizId: quiz.id, score: score, date: new Date().toISOString() });
           localStorage.setItem('quizResults', JSON.stringify(results));
-          document.getElementById('studentQuizResults').innerHTML = results[currentStudent.id].map(function(
-          r) {
+          document.getElementById('studentQuizResults').innerHTML = results[currentStudent.id].map(function(r) {
             var qObj = data.quizzes.find(function(qq) { return qq.id === r.quizId; });
-            return '<div>' + (qObj ? qObj.title : 'Quiz') + ': ' + r.score + '% (' + new Date(r
-              .date).toLocaleDateString() + ')</div>';
+            return '<div>' + (qObj ? qObj.title : 'Quiz') + ': ' + r.score + '% (' + new Date(r.date)
+              .toLocaleDateString() + ')</div>';
           }).join('') || '<p class="muted">Aucun résultat.</p>';
         }
       });
@@ -2073,7 +2301,7 @@
     }
 
     // ============================================================
-    // 11. EVENT BINDING
+    // 11. EVENTS SETUP (ربط الأحداث)
     // ============================================================
 
     function setupEvents() {
@@ -2149,15 +2377,15 @@
         if (!code) { alert('Entrez un code parcours.'); return; }
         var student = data.students.find(function(s) { return s.code === code; });
         if (!student) { alert('Aucun étudiant trouvé.'); return; }
-        document.getElementById('studentInfo').innerHTML = '<strong>' + student.fullname + '</strong> - ' + (
-          student.classroom || '');
+        document.getElementById('studentInfo').innerHTML = '<strong>' + student.fullname + '</strong> - ' + (student
+          .classroom || '');
         var grades = data.grades.filter(function(g) { return g.studentId === student.id; });
         var tbody = document.querySelector('#gradesTable tbody');
         var msg = document.getElementById('noGradesMsg');
         if (grades.length) {
           tbody.innerHTML = grades.map(function(g) {
-            return '<tr><td>' + formatDate(g.date) + '</td><td>' + g.subject + '</td><td>' + g
-              .title + '</td><td>' + g.score + '/20</td><td>' + (g.remark || '') + '</td></tr>';
+            return '<tr><td>' + formatDate(g.date) + '</td><td>' + g.subject + '</td><td>' + g.title +
+              '</td><td>' + g.score + '/20</td><td>' + (g.remark || '') + '</td></tr>';
           }).join('');
           msg.style.display = 'none';
         } else {
@@ -2184,8 +2412,8 @@
           Object.assign(existing, { fullname: fullname, username: username, password: password, code: code,
             classroom: classroom });
         } else {
-          data.students.push({ id: id, fullname: fullname, username: username, password: password,
-            code: code, classroom: classroom });
+          data.students.push({ id: id, fullname: fullname, username: username, password: password, code: code,
+            classroom: classroom });
         }
         saveData();
         document.getElementById('stId').value = '';
@@ -2220,11 +2448,11 @@
         if (!studentId || !subject || !title || isNaN(score)) { alert('Remplissez tous les champs.'); return; }
         var existing = data.grades.find(function(g) { return g.id === id; });
         if (existing) {
-          Object.assign(existing, { studentId: studentId, subject: subject, title: title, date: date,
-            score: score, remark: remark });
+          Object.assign(existing, { studentId: studentId, subject: subject, title: title, date: date, score: score,
+            remark: remark });
         } else {
-          data.grades.push({ id: id, studentId: studentId, subject: subject, title: title, date: date,
-            score: score, remark: remark });
+          data.grades.push({ id: id, studentId: studentId, subject: subject, title: title, date: date, score: score,
+            remark: remark });
         }
         saveData();
         document.getElementById('grId').value = '';
@@ -2285,15 +2513,15 @@
           var reader = new FileReader();
           reader.onload = function(e) {
             image = e.target.result;
-            quiz.questions.push({ id: generateId(), text: text, type: type, points: points,
-              options: options, correct: correct, feedback: feedback, image: image });
+            quiz.questions.push({ id: generateId(), text: text, type: type, points: points, options: options,
+              correct: correct, feedback: feedback, image: image });
             saveData();
             renderAll();
           };
           reader.readAsDataURL(fileInput.files[0]);
         } else {
-          quiz.questions.push({ id: generateId(), text: text, type: type, points: points,
-            options: options, correct: correct, feedback: feedback, image: image });
+          quiz.questions.push({ id: generateId(), text: text, type: type, points: points, options: options,
+            correct: correct, feedback: feedback, image: image });
           saveData();
           renderAll();
         }
@@ -2315,7 +2543,7 @@
         startQuiz(qid);
       });
 
-      // قاموس
+      // Dictionary
       document.getElementById('adminBtnSaveDict').addEventListener('click', function() {
         var ar = document.getElementById('adminDictAr').value.trim();
         var fr = document.getElementById('adminDictFr').value.trim();
@@ -2329,7 +2557,7 @@
         renderAll();
       });
 
-      // دروس
+      // Lessons
       document.getElementById('adminBtnSaveLesson').addEventListener('click', function() {
         var title = document.getElementById('adminLessonTitle').value.trim();
         var chapter = document.getElementById('adminLessonChapter').value.trim();
@@ -2343,7 +2571,7 @@
         renderAll();
       });
 
-      // تمارين
+      // Exercises
       document.getElementById('adminBtnSaveExercise').addEventListener('click', function() {
         var title = document.getElementById('adminExerciseTitle').value.trim();
         var chapter = document.getElementById('adminExerciseChapter').value.trim();
@@ -2357,7 +2585,7 @@
         renderAll();
       });
 
-      // امتحانات
+      // Exams
       document.getElementById('adminBtnSaveExam').addEventListener('click', function() {
         var title = document.getElementById('adminExamTitle').value.trim();
         var series = document.getElementById('adminExamSeries').value.trim();
@@ -2371,7 +2599,7 @@
         renderAll();
       });
 
-      // إعلان
+      // Announcement
       document.getElementById('btnSaveAnnouncement').addEventListener('click', function() {
         var text = document.getElementById('announcementInput').value.trim();
         if (!text) { alert('Entrez le texte.'); return; }
@@ -2381,7 +2609,7 @@
         alert('Annonce mise à jour.');
       });
 
-      // رسائل
+      // Messages
       document.getElementById('adminBtnSendMessage').addEventListener('click', function() {
         var title = document.getElementById('adminMessageTitle').value.trim();
         var content = document.getElementById('adminMessageContent').value.trim();
@@ -2399,8 +2627,8 @@
       });
 
       document.getElementById('adminMessageTarget').addEventListener('change', function() {
-        document.getElementById('specificStudentContainer').style.display = this.value === 'specific' ?
-          'block' : 'none';
+        document.getElementById('specificStudentContainer').style.display = this.value === 'specific' ? 'block' :
+          'none';
       });
 
       // LaTeX
@@ -2458,7 +2686,7 @@
         reader.readAsText(file);
       });
 
-      // طلب مراجعة
+      // Revision Request
       document.getElementById('revisionRequestForm').addEventListener('submit', function(e) {
         e.preventDefault();
         if (!currentStudent) { alert('Vous devez être connecté.'); return; }
@@ -2481,8 +2709,8 @@
         var description = document.getElementById('concoursDescription').value.trim();
         var category = document.getElementById('concoursCategory').value;
         if (!title) { alert('أدخل عنوان المسابقة.'); return; }
-        data.concours.push({ id: generateId(), title: title, description: description,
-          duration: duration, date: date, category: category, questions: [] });
+        data.concours.push({ id: generateId(), title: title, description: description, duration: duration,
+          date: date, category: category, questions: [] });
         saveData();
         document.getElementById('concoursTitle').value = '';
         document.getElementById('concoursDescription').value = '';
@@ -2514,8 +2742,8 @@
           var reader = new FileReader();
           reader.onload = function(e) {
             image = e.target.result;
-            concours.questions.push({ id: generateId(), text: text, image: image,
-              options: options, correct: correct, points: points });
+            concours.questions.push({ id: generateId(), text: text, image: image, options: options,
+              correct: correct, points: points });
             saveData();
             renderConcoursAdminList();
             document.getElementById('concoursQuestionText').value = '';
@@ -2550,7 +2778,7 @@
     }
 
     // ============================================================
-    // 12. STATS & RENDER ALL
+    // 12. UPDATE STATS & RENDER ALL
     // ============================================================
 
     function updateStats() {
@@ -2588,28 +2816,21 @@
     }
 
     // ============================================================
-    // 13. INIT - تشغيل كل شيء
+    // 13. INIT (تشغيل كل شيء)
     // ============================================================
 
     function init() {
       loadData();
       renderAll();
-
-      // تشغيل المؤقتات فوراً
+      // تحديث المؤقتات فوراً ثم كل ثانية
       updateAllTimers();
-
-      // تشغيل المؤقتات كل ثانية (هذا هو الحل النهائي)
-      setInterval(function() {
-        updateAllTimers();
-      }, 1000);
-
+      setInterval(updateAllTimers, 1000);
       setupEvents();
-
-      console.log('✅ Lycée de l\'Excellence - جميع الأنظمة تعمل!');
-      console.log('✅ المؤقتات الآن تتحرك كل ثانية!');
+      console.log('✅ Lycée de l\'Excellence - Tous les systèmes sont opérationnels !');
+      console.log('✅ Les compteurs à rebours fonctionnent maintenant !');
     }
 
-    // تشغيل التهيئة عند تحميل الصفحة
+    // تشغيل عند تحميل الصفحة
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {

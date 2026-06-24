@@ -30,6 +30,8 @@
     .btn-accent:hover { background:#d97706; }
     .btn-success { background:#10b981; color:white; }
     .btn-success:hover { background:#059669; }
+    .btn-danger { background:#ef4444; color:white; }
+    .btn-danger:hover { background:#dc2626; }
     .btn-outline { background:transparent; border:2px solid #1e90ff; color:#1e90ff; }
     .btn-outline:hover { background:#1e90ff; color:white; }
     .btn-ghost { background:transparent; color:#1e293b; border:1px solid #cbd5e1; }
@@ -94,7 +96,7 @@
     .muted { color:#94a3b8; font-size:14px; }
     .w-100 { width:100%; }
     .inline { display:flex; gap:8px; flex-wrap:wrap; }
-    .hero-slider { background:#e2e8f0; height:200px; border-radius:16px; margin:10px 20px 20px; display:flex; align-items:center; justify-content:center; color:#475569; font-size:18px; overflow:hidden; position:relative; }
+    .hero-slider { background:#e2e8f0; height:300px; border-radius:16px; margin:10px 20px 20px; display:flex; align-items:center; justify-content:center; color:#475569; font-size:18px; overflow:hidden; position:relative; }
     .hero-slider img { width:100%; height:100%; object-fit:cover; }
     .latex-content { background:#f8fafc; padding:15px; border-radius:10px; border:1px solid #e2e8f0; }
     @media (max-width:768px) { .header-content { flex-direction:column; gap:10px; } nav ul { justify-content:center; } .admin-dashboard { flex-direction:column; } .admin-sidebar { width:100%; } }
@@ -244,6 +246,157 @@
     .concours-card .btn-concours {
       margin-top: 15px;
     }
+
+    /* ===== أنماط نظام Concours Online ===== */
+    .concours-admin-list .item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    .concours-admin-list .item h4 {
+      color: #0b3d91;
+      margin-bottom: 8px;
+    }
+    .concours-admin-list .item .meta {
+      color: #475569;
+      font-size: 14px;
+    }
+    .concours-question-item {
+      background: #f1f5f9;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      border-right: 4px solid #1e90ff;
+    }
+    .concours-question-item img {
+      max-height: 80px;
+      border-radius: 8px;
+      margin-top: 5px;
+    }
+    .concours-interface {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #f8f9fa;
+      z-index: 9999;
+      overflow-y: auto;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .concours-interface .header {
+      background: white;
+      padding: 16px 24px;
+      border-bottom: 1px solid #e1e5e9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      border-radius: 12px 12px 0 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .concours-interface .header h2 {
+      margin: 0;
+      color: #0b3d91;
+    }
+    .concours-interface .question-container {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .concours-interface .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .concours-interface .option-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border: 2px solid #e1e5e9;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .concours-interface .option-item:hover {
+      border-color: #1e90ff;
+      background: #f0f7ff;
+    }
+    .concours-interface .option-item input[type="radio"] {
+      margin-left: 10px;
+      width: 18px;
+      height: 18px;
+    }
+    .concours-interface .option-item.selected {
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .concours-interface .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .concours-interface .question-indicators {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .concours-interface .question-indicators button {
+      width: 36px;
+      height: 36px;
+      border: 2px solid #cbd5e1;
+      border-radius: 50%;
+      background: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .concours-interface .question-indicators button.active {
+      border-color: #1e90ff;
+      background: #1e90ff;
+      color: white;
+    }
+    .concours-interface .question-indicators button.answered {
+      border-color: #10b981;
+      background: #10b981;
+      color: white;
+    }
+    .concours-result {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 700px;
+      margin: 0 auto;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .concours-result .score-circle {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 20px auto;
+      font-weight: bold;
+      color: white;
+    }
+    @media (max-width: 768px) {
+      .concours-interface .options-grid {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -294,9 +447,9 @@
     </div>
   </div>
 
-  <!-- SLIDER -->
+  <!-- SLIDER (صورة تعليمية جذابة) -->
   <div class="hero-slider" id="front-hero-slider" aria-label="عارض صور رئيسي">
-    <img src="https://picsum.photos/seed/phys2026/1200/400" alt="صورة تعليمية للفيزياء">
+    <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=400&fit=crop" alt="صورة تعليمية فيزياء">
   </div>
 
   <div class="container">
@@ -347,7 +500,7 @@
       <p style="text-align:center;color:#475569;margin-top:10px;">* يتم تحديث الأرقام تلقائياً من قاعدة البيانات</p>
     </section>
 
-    <!-- ===== أقسام CONCOURS (جديد) ===== -->
+    <!-- ===== أقسام CONCOURS ===== -->
     <section class="concours-section" id="concours" aria-labelledby="concours-title">
       <h2 id="concours-title">🏆 Concours 2026</h2>
       <p style="color:#475569;margin-bottom:15px;">تابع العد التنازلي للمسابقات الكبرى واستعد جيداً.</p>
@@ -408,6 +561,7 @@
         <div class="student-tab" data-tab="revision" role="tab">Récorrection</div>
         <div class="student-tab" data-tab="messages" role="tab">الرسائل</div>
         <div class="student-tab" data-tab="cours" role="tab">Cours online</div>
+        <div class="student-tab" data-tab="concours" role="tab">Concours</div>
       </div>
       <div id="student-dashboard-tab" class="student-tab-content active" role="tabpanel">
         <div class="dashboard-card"><h3>Vos Notes Récentes</h3><div id="studentRecentGrades"><p class="muted">Aucune note disponible.</p></div></div>
@@ -440,6 +594,10 @@
       </div>
       <div id="student-cours-tab" class="student-tab-content" role="tabpanel">
         <div class="dashboard-card"><h3>الدروس العلمية - Cours online</h3><div id="studentCoursList" class="latex-content"><p class="muted">لا توجد دروس.</p></div></div>
+      </div>
+      <div id="student-concours-tab" class="student-tab-content" role="tabpanel">
+        <div class="dashboard-card"><h3>🏆 Concours disponibles</h3><div id="studentConcoursList"><p class="muted">لا توجد مسابقات متاحة.</p></div></div>
+        <div class="dashboard-card"><h3>نتائج Concours</h3><div id="studentConcoursResults"><p class="muted">لم تشارك في أي مسابقة بعد.</p></div></div>
       </div>
       <div class="flex right"><button class="btn btn-ghost" id="studentLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>
     </section>
@@ -556,10 +714,11 @@
             <li><a href="#" class="admin-tab-link" data-tab="tab-messages" role="tab"><i class="fa-solid fa-envelope"></i> الرسائل</a></li>
             <li><a href="#" class="admin-tab-link" data-tab="tab-latex" role="tab"><i class="fa-solid fa-square-root-variable"></i> LaTeX Courses</a></li>
             <li><a href="#" class="admin-tab-link" data-tab="tab-slider" role="tab"><i class="fa-solid fa-images"></i> Slider</a></li>
+            <li><a href="#" class="admin-tab-link active" data-tab="tab-concours" role="tab"><i class="fa-solid fa-trophy"></i> Concours Online</a></li>
           </ul>
         </div>
         <div class="admin-content">
-          <div id="tab-dashboard" class="admin-section active" role="tabpanel">
+          <div id="tab-dashboard" class="admin-section" role="tabpanel">
             <h2>Tableau de Bord</h2>
             <div class="stats-grid">
               <div class="stat-card"><h3 id="stats-students">0</h3><p>Étudiants</p></div>
@@ -568,6 +727,7 @@
               <div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes</p></div>
               <div class="stat-card"><h3 id="stats-messages">0</h3><p>رسائل</p></div>
               <div class="stat-card"><h3 id="stats-latex">0</h3><p>دروس LaTeX</p></div>
+              <div class="stat-card"><h3 id="stats-concours">0</h3><p>Concours</p></div>
             </div>
           </div>
           <div id="tab-students" class="admin-section" role="tabpanel">
@@ -689,6 +849,63 @@
               <div class="mt-2"><div id="sliderImagesList"><p class="muted">لا توجد صور في السلايدر.</p></div></div>
             </div></div>
           </div>
+
+          <!-- ===== قسم CONCOURS ONLINE الجديد ===== -->
+          <div id="tab-concours" class="admin-section active" role="tabpanel">
+            <h2>🏆 Concours Online</h2>
+            <p style="color:#475569;margin-bottom:20px;">إدارة المسابقات الإلكترونية مع إمكانية إضافة أسئلة وصور وتحديد الإجابات الصحيحة.</p>
+
+            <!-- نموذج إضافة Concours -->
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3>إضافة Concours جديد</h3>
+                <div class="form-row">
+                  <div class="form-group"><label>عنوان المسابقة</label><input id="concoursTitle" type="text" placeholder="مثال: Concours Physique 2026"></div>
+                  <div class="form-group"><label>المدة (بالدقائق)</label><input id="concoursDuration" type="number" value="30" min="1"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>تاريخ المسابقة</label><input id="concoursDate" type="datetime-local"></div>
+                  <div class="form-group"><label>الوصف</label><input id="concoursDescription" type="text" placeholder="وصف مختصر للمسابقة"></div>
+                </div>
+                <div class="mt-2"><button class="btn btn-success" id="btnCreateConcours"><i class="fa-solid fa-plus"></i> إنشاء المسابقة</button></div>
+              </div>
+            </div>
+
+            <!-- نموذج إضافة سؤال -->
+            <div class="content-card mb-3">
+              <div class="card-content">
+                <h3>إضافة سؤال إلى Concours</h3>
+                <div class="form-group"><label>اختر المسابقة</label><select id="adminSelectConcours"></select></div>
+                <div class="form-group"><label>نص السؤال</label><textarea id="concoursQuestionText" rows="2"></textarea></div>
+                <div class="form-group"><label>صورة السؤال (اختياري)</label><input type="file" id="concoursQuestionImage" accept="image/*"></div>
+                <div class="form-row">
+                  <div class="form-group"><label>الخيار 1</label><input id="concoursOpt1" type="text"></div>
+                  <div class="form-group"><label>الخيار 2</label><input id="concoursOpt2" type="text"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>الخيار 3</label><input id="concoursOpt3" type="text"></div>
+                  <div class="form-group"><label>الخيار 4</label><input id="concoursOpt4" type="text"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>الخيار 5 (اختياري)</label><input id="concoursOpt5" type="text"></div>
+                  <div class="form-group"><label>الخيار 6 (اختياري)</label><input id="concoursOpt6" type="text"></div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group"><label>رقم الإجابة الصحيحة (1-6)</label><input id="concoursCorrect" type="number" min="1" max="6" value="1"></div>
+                  <div class="form-group"><label>نقاط السؤال (يساوي 20 تلقائياً)</label><input id="concoursPoints" type="number" value="2" min="1" step="0.5"></div>
+                </div>
+                <div class="mt-2"><button class="btn btn-success" id="btnAddConcoursQuestion"><i class="fa-solid fa-plus"></i> إضافة السؤال</button></div>
+              </div>
+            </div>
+
+            <!-- عرض المسابقات والأسئلة -->
+            <div class="content-card">
+              <div class="card-content">
+                <h3>المسابقات الموجودة</h3>
+                <div id="concoursAdminList" class="concours-admin-list"><p class="muted">لا توجد مسابقات.</p></div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -740,7 +957,7 @@
   </div>
 </footer>
 
-<!-- ===== JAVASCRIPT (تم تعديل بيانات الدخول وإضافة العد التنازلي للمسابقات) ===== -->
+<!-- ===== JAVASCRIPT (مع إضافة نظام Concours Online) ===== -->
 <script>
   // ============================================================
   // DATA LAYER
@@ -757,7 +974,8 @@
     messages: [],
     revisionRequests: [],
     latexCourses: [],
-    sliderImages: ['https://picsum.photos/seed/phys2026/1200/400']
+    sliderImages: ['https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=400&fit=crop'],
+    concours: [] // [{ id, title, description, duration, date, questions: [{ id, text, image, options, correct, points }] }]
   };
 
   let currentStudent = null;
@@ -765,6 +983,13 @@
   let editingStudentId = null;
   let editingGradeId = null;
   let currentQuizAttempt = null;
+
+  // متغيرات Concours
+  let currentConcours = null;
+  let currentConcoursIndex = 0;
+  let concoursAnswers = {};
+  let concoursTimer = null;
+  let concoursTimeLeft = 0;
 
   // ============================================================
   // UTILITY FUNCTIONS
@@ -783,6 +1008,8 @@
         for (let key in parsed) {
           if (data.hasOwnProperty(key)) data[key] = parsed[key];
         }
+        // التأكد من وجود حقل concours
+        if (!data.concours) data.concours = [];
       }
     } catch(e) {}
   }
@@ -955,19 +1182,452 @@
     }
   }
 
-  function updateStats() {
-    document.getElementById('stats-students').textContent = data.students.length;
-    document.getElementById('stats-quiz').textContent = data.quizzes.reduce((acc, q) => acc + (q.questions ? q.questions.length : 0), 0);
-    document.getElementById('stats-dictionary').textContent = data.dictionary.length;
-    document.getElementById('stats-grades').textContent = data.grades.length;
-    document.getElementById('stats-messages').textContent = data.messages.length;
-    document.getElementById('stats-latex').textContent = data.latexCourses.length;
-    // تحديث الإحصائيات الجديدة
-    document.getElementById('statStudents').textContent = data.students.length;
-    document.getElementById('statLessons').textContent = data.lessons.length;
-    document.getElementById('statExams').textContent = data.exams.length;
-    document.getElementById('statExercises').textContent = data.exercises.length;
-    document.getElementById('statQuizzes').textContent = data.quizzes.length;
+  // ============================================================
+  // CONCOURS ADMIN FUNCTIONS
+  // ============================================================
+  function renderConcoursAdminList() {
+    const container = document.getElementById('concoursAdminList');
+    if (!container) return;
+    if (!data.concours || data.concours.length === 0) {
+      container.innerHTML = '<p class="muted">لا توجد مسابقات.</p>';
+      return;
+    }
+    let html = '';
+    data.concours.forEach((c, idx) => {
+      html += `<div class="item">
+        <h4>${c.title}</h4>
+        <div class="meta">📝 ${c.questions ? c.questions.length : 0} أسئلة | ⏱ ${c.duration} دقيقة | 📅 ${c.date ? new Date(c.date).toLocaleString('ar-EG') : 'غير محدد'}</div>
+        <div class="meta" style="margin-top:5px;">${c.description || ''}</div>
+        <div style="margin-top:10px;">
+          <button class="btn btn-danger btn-sm" onclick="deleteConcours('${c.id}')"><i class="fa-solid fa-trash"></i> حذف</button>
+          <button class="btn btn-primary btn-sm" onclick="editConcours('${c.id}')"><i class="fa-solid fa-edit"></i> تعديل</button>
+          <button class="btn btn-accent btn-sm" onclick="previewConcours('${c.id}')"><i class="fa-solid fa-eye"></i> معاينة</button>
+        </div>
+        ${c.questions && c.questions.length > 0 ? `
+          <div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px;">
+            <strong>الأسئلة:</strong>
+            ${c.questions.map((q, qi) => `
+              <div class="concours-question-item">
+                <strong>س${qi+1}:</strong> ${q.text} (${q.points} نقطة)
+                ${q.image ? `<br><img src="${q.image}" style="max-height:60px;">` : ''}
+                <br><span class="muted">الإجابة الصحيحة: ${q.options[q.correct-1] || 'غير محدد'}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : '<p class="muted">لا توجد أسئلة مضافة.</p>'}
+      </div>`;
+    });
+    container.innerHTML = html;
+    updateStats();
+  }
+
+  function deleteConcours(id) {
+    if (!confirm('هل أنت متأكد من حذف هذه المسابقة؟')) return;
+    data.concours = data.concours.filter(c => c.id !== id);
+    saveData();
+    renderConcoursAdminList();
+    populateConcoursSelect();
+  }
+
+  function editConcours(id) {
+    const c = data.concours.find(co => co.id === id);
+    if (!c) return;
+    document.getElementById('concoursTitle').value = c.title;
+    document.getElementById('concoursDuration').value = c.duration;
+    document.getElementById('concoursDate').value = c.date ? c.date.slice(0,16) : '';
+    document.getElementById('concoursDescription').value = c.description || '';
+    // يمكن إضافة منطق لتعديل الأسئلة لاحقاً
+    alert('يمكنك تعديل البيانات ثم إضافة أسئلة جديدة. يتم التعديل يدوياً حالياً.');
+  }
+
+  function populateConcoursSelect() {
+    const sel = document.getElementById('adminSelectConcours');
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = data.concours.map(c => `<option value="${c.id}">${c.title}</option>`).join('');
+    if (current) sel.value = current;
+  }
+
+  // ============================================================
+  // CONCOURS STUDENT FUNCTIONS
+  // ============================================================
+  function renderStudentConcoursList() {
+    const container = document.getElementById('studentConcoursList');
+    if (!container) return;
+    if (!data.concours || data.concours.length === 0) {
+      container.innerHTML = '<p class="muted">لا توجد مسابقات متاحة حالياً.</p>';
+      return;
+    }
+    const studentId = currentStudent?.id;
+    const results = studentId ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[studentId] || []) : [];
+    
+    let html = '';
+    data.concours.forEach(c => {
+      const hasResult = results.some(r => r.concoursId === c.id);
+      html += `<div class="item" style="border-right: 4px solid ${hasResult ? '#10b981' : '#1e90ff'};">
+        <h4>${c.title}</h4>
+        <p style="color:#475569;font-size:14px;">${c.description || ''}</p>
+        <div class="meta">⏱ ${c.duration} دقيقة | 📝 ${c.questions ? c.questions.length : 0} أسئلة</div>
+        ${hasResult ? `<span style="color:#10b981;">✅ تم الإنجاز</span>` : ''}
+        <div style="margin-top:10px;">
+          ${hasResult ? 
+            `<button class="btn btn-ghost btn-sm" onclick="viewConcoursResult('${c.id}')">عرض النتيجة</button>` :
+            `<button class="btn btn-primary btn-sm" onclick="startConcours('${c.id}')">بدء المسابقة</button>`
+          }
+          <button class="btn btn-outline btn-sm" onclick="previewConcours('${c.id}')">معاينة</button>
+        </div>
+      </div>`;
+    });
+    container.innerHTML = html || '<p class="muted">لا توجد مسابقات.</p>';
+  }
+
+  function renderStudentConcoursResults() {
+    const container = document.getElementById('studentConcoursResults');
+    if (!container) return;
+    if (!currentStudent) {
+      container.innerHTML = '<p class="muted">سجل الدخول لعرض نتائجك.</p>';
+      return;
+    }
+    const results = JSON.parse(localStorage.getItem('concoursResults') || '{}')[currentStudent.id] || [];
+    if (results.length === 0) {
+      container.innerHTML = '<p class="muted">لم تشارك في أي مسابقة بعد.</p>';
+      return;
+    }
+    let html = '';
+    results.forEach(r => {
+      const c = data.concours.find(co => co.id === r.concoursId);
+      html += `<div class="item">
+        <h4>${c ? c.title : 'مسابقة'}</h4>
+        <div>⭐ النتيجة: <strong>${r.score}/20</strong> (${r.percentage}%)</div>
+        <div class="meta">📅 ${new Date(r.date).toLocaleString('ar-EG')}</div>
+      </div>`;
+    });
+    container.innerHTML = html;
+  }
+
+  // ============================================================
+  // CONCOURS ENGINE (Professional)
+  // ============================================================
+  function startConcours(concoursId) {
+    if (!currentStudent) {
+      alert('يجب تسجيل الدخول أولاً.');
+      return;
+    }
+    const concours = data.concours.find(c => c.id === concoursId);
+    if (!concours) { alert('المسابقة غير موجودة.'); return; }
+    if (!concours.questions || concours.questions.length === 0) {
+      alert('هذه المسابقة لا تحتوي على أسئلة.');
+      return;
+    }
+
+    // التحقق من وجود نتيجة سابقة
+    const results = JSON.parse(localStorage.getItem('concoursResults') || '{}');
+    const studentResults = results[currentStudent.id] || [];
+    if (studentResults.some(r => r.concoursId === concoursId)) {
+      if (!confirm('لقد أجريت هذه المسابقة من قبل. هل تريد إعادة المحاولة؟ (سيتم مسح النتيجة السابقة)')) {
+        return;
+      }
+      // حذف النتيجة السابقة
+      results[currentStudent.id] = studentResults.filter(r => r.concoursId !== concoursId);
+      localStorage.setItem('concoursResults', JSON.stringify(results));
+    }
+
+    currentConcours = concours;
+    currentConcoursIndex = 0;
+    concoursAnswers = {};
+    concoursTimeLeft = concours.duration * 60;
+
+    showConcoursInterface();
+    renderConcoursQuestion();
+    startConcoursTimer();
+  }
+
+  function showConcoursInterface() {
+    // إخفاء كل الأقسام
+    document.querySelectorAll('.page-section, .student-tab-content').forEach(el => el.style.display = 'none');
+    
+    let interfaceEl = document.getElementById('concours-interface');
+    if (!interfaceEl) {
+      interfaceEl = document.createElement('div');
+      interfaceEl.id = 'concours-interface';
+      interfaceEl.className = 'concours-interface';
+      document.body.appendChild(interfaceEl);
+    }
+    interfaceEl.style.display = 'block';
+    interfaceEl.innerHTML = `
+      <div class="header">
+        <div>
+          <h2>🏆 ${currentConcours.title}</h2>
+          <div style="display:flex;gap:15px;font-size:14px;color:#475569;">
+            <span>📝 السؤال <span id="concoursQNumber">1</span> من ${currentConcours.questions.length}</span>
+            <div style="width:200px;height:6px;background:#ecf0f1;border-radius:3px;overflow:hidden;">
+              <div id="concoursProgress" style="height:100%;background:#1e90ff;width:${(1/currentConcours.questions.length)*100}%;"></div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:15px;">
+          <div id="concoursTimer" style="background:${concoursTimeLeft < 120 ? '#ef4444' : '#10b981'};color:white;padding:8px 16px;border-radius:20px;font-weight:bold;">
+            ⏱ ${Math.floor(concoursTimeLeft/60)}:${(concoursTimeLeft%60).toString().padStart(2,'0')}
+          </div>
+          <button class="btn btn-ghost" onclick="exitConcours()">خروج</button>
+        </div>
+      </div>
+      <div style="max-width:800px;margin:20px auto;padding:0 20px;">
+        <div id="concoursQuestionContainer" class="question-container"></div>
+        <div class="nav-buttons">
+          <button class="btn btn-primary" id="concoursPrevBtn" onclick="concoursPrevQuestion()">السابق</button>
+          <div class="question-indicators" id="concoursIndicators"></div>
+          <button class="btn btn-primary" id="concoursNextBtn" onclick="concoursNextQuestion()">التالي</button>
+        </div>
+        <div style="text-align:center;margin:20px 0;">
+          <button class="btn btn-danger" style="padding:12px 30px;font-size:16px;" onclick="submitConcours()">إنهاء المسابقة</button>
+        </div>
+      </div>
+    `;
+    createConcoursIndicators();
+  }
+
+  function renderConcoursQuestion() {
+    const q = currentConcours.questions[currentConcoursIndex];
+    const container = document.getElementById('concoursQuestionContainer');
+    if (!container) return;
+
+    container.innerHTML = `
+      <h3 style="margin-bottom:15px;">السؤال ${currentConcoursIndex + 1}</h3>
+      <p style="font-size:18px;margin-bottom:20px;">${q.text}</p>
+      ${q.image ? `<img src="${q.image}" style="max-height:150px;border-radius:8px;margin-bottom:15px;">` : ''}
+      <div class="options-grid">
+        ${q.options.map((opt, idx) => `
+          <div class="option-item" onclick="selectConcoursOption(${idx})" data-opt="${idx}">
+            <input type="radio" name="concours-answer" value="${idx+1}" ${concoursAnswers[q.id] === idx+1 ? 'checked' : ''}>
+            <span>${String.fromCharCode(65 + idx)}. ${opt}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+
+    // تحديث الواجهة
+    document.getElementById('concoursQNumber').textContent = currentConcoursIndex + 1;
+    document.getElementById('concoursProgress').style.width = `${((currentConcoursIndex + 1) / currentConcours.questions.length) * 100}%`;
+    document.getElementById('concoursPrevBtn').disabled = currentConcoursIndex === 0;
+    document.getElementById('concoursNextBtn').disabled = currentConcoursIndex === currentConcours.questions.length - 1;
+    updateConcoursIndicators();
+  }
+
+  function selectConcoursOption(idx) {
+    const q = currentConcours.questions[currentConcoursIndex];
+    concoursAnswers[q.id] = idx + 1;
+    // تحديث المظهر
+    document.querySelectorAll('.option-item').forEach(el => {
+      const radio = el.querySelector('input');
+      if (radio) radio.checked = false;
+      el.classList.remove('selected');
+    });
+    const selectedEl = document.querySelector(`.option-item[data-opt="${idx}"]`);
+    if (selectedEl) {
+      const radio = selectedEl.querySelector('input');
+      if (radio) radio.checked = true;
+      selectedEl.classList.add('selected');
+    }
+    updateConcoursIndicators();
+  }
+
+  function concoursNextQuestion() {
+    if (currentConcoursIndex < currentConcours.questions.length - 1) {
+      currentConcoursIndex++;
+      renderConcoursQuestion();
+    }
+  }
+
+  function concoursPrevQuestion() {
+    if (currentConcoursIndex > 0) {
+      currentConcoursIndex--;
+      renderConcoursQuestion();
+    }
+  }
+
+  function createConcoursIndicators() {
+    const container = document.getElementById('concoursIndicators');
+    if (!container) return;
+    container.innerHTML = '';
+    currentConcours.questions.forEach((_, idx) => {
+      const btn = document.createElement('button');
+      btn.textContent = idx + 1;
+      btn.dataset.idx = idx;
+      btn.onclick = () => { currentConcoursIndex = idx; renderConcoursQuestion(); };
+      container.appendChild(btn);
+    });
+  }
+
+  function updateConcoursIndicators() {
+    const indicators = document.querySelectorAll('#concoursIndicators button');
+    indicators.forEach((btn, idx) => {
+      const q = currentConcours.questions[idx];
+      const answered = concoursAnswers[q.id] !== undefined && concoursAnswers[q.id] !== null;
+      btn.className = '';
+      if (idx === currentConcoursIndex) btn.classList.add('active');
+      else if (answered) btn.classList.add('answered');
+    });
+  }
+
+  function startConcoursTimer() {
+    if (concoursTimer) clearInterval(concoursTimer);
+    concoursTimer = setInterval(() => {
+      concoursTimeLeft--;
+      const timerEl = document.getElementById('concoursTimer');
+      if (timerEl) {
+        const mins = Math.floor(concoursTimeLeft / 60);
+        const secs = concoursTimeLeft % 60;
+        timerEl.textContent = `⏱ ${mins}:${secs.toString().padStart(2,'0')}`;
+        if (concoursTimeLeft < 120) timerEl.style.background = '#ef4444';
+        else if (concoursTimeLeft < 300) timerEl.style.background = '#f59e0b';
+      }
+      if (concoursTimeLeft <= 0) {
+        clearInterval(concoursTimer);
+        alert('انتهى الوقت!');
+        submitConcours();
+      }
+    }, 1000);
+  }
+
+  function submitConcours() {
+    // التحقق من الإجابات
+    const totalQuestions = currentConcours.questions.length;
+    let answeredCount = 0;
+    currentConcours.questions.forEach(q => {
+      if (concoursAnswers[q.id] !== undefined && concoursAnswers[q.id] !== null) answeredCount++;
+    });
+    if (answeredCount < totalQuestions) {
+      if (!confirm(`لديك ${totalQuestions - answeredCount} سؤال(اً) لم تتم الإجابة عليه. هل تريد إنهاء المسابقة مع ذلك؟`)) {
+        return;
+      }
+    }
+    if (!confirm('هل أنت متأكد من إنهاء المسابقة؟')) return;
+
+    clearInterval(concoursTimer);
+    calculateConcoursResult();
+  }
+
+  function calculateConcoursResult() {
+    let earnedPoints = 0;
+    let totalPoints = 0;
+    const details = [];
+
+    currentConcours.questions.forEach(q => {
+      totalPoints += q.points;
+      const userAnswer = concoursAnswers[q.id];
+      const isCorrect = userAnswer === q.correct;
+      if (isCorrect) earnedPoints += q.points;
+      details.push({
+        question: q.text,
+        userAnswer: userAnswer ? q.options[userAnswer-1] : 'لم يجب',
+        correctAnswer: q.options[q.correct-1],
+        isCorrect: isCorrect,
+        points: q.points
+      });
+    });
+
+    // حساب النتيجة على 20
+    const scoreOn20 = Math.round((earnedPoints / totalPoints) * 20 * 100) / 100;
+    const percentage = Math.round((earnedPoints / totalPoints) * 100);
+
+    // حفظ النتيجة
+    if (currentStudent) {
+      const results = JSON.parse(localStorage.getItem('concoursResults') || '{}');
+      if (!results[currentStudent.id]) results[currentStudent.id] = [];
+      results[currentStudent.id].push({
+        concoursId: currentConcours.id,
+        score: scoreOn20,
+        percentage: percentage,
+        date: new Date().toISOString(),
+        details: details
+      });
+      localStorage.setItem('concoursResults', JSON.stringify(results));
+    }
+
+    // عرض النتيجة
+    showConcoursResult(scoreOn20, percentage, details);
+  }
+
+  function showConcoursResult(score, percentage, details) {
+    const container = document.getElementById('concoursQuestionContainer');
+    if (!container) return;
+
+    const color = score >= 10 ? '#10b981' : '#ef4444';
+    container.innerHTML = `
+      <div class="concours-result">
+        <h2 style="color:#0b3d91;">🏆 نتيجة المسابقة</h2>
+        <div class="score-circle" style="background:${color};">
+          <span style="font-size:28px;">${score}/20</span>
+          <span style="font-size:16px;">${percentage}%</span>
+        </div>
+        <p style="font-size:18px;margin:10px 0;">${score >= 10 ? '🎉 مبروك! نتيجة ممتازة' : '💪 نتيجة جيدة، واصل التقدم'}</p>
+        <div style="text-align:right;max-height:300px;overflow-y:auto;margin-top:20px;">
+          <h4>تفاصيل الإجابات:</h4>
+          ${details.map((d, i) => `
+            <div style="padding:12px;margin-bottom:8px;border-radius:8px;background:${d.isCorrect ? '#ecfdf5' : '#fef2f2'};border-right:4px solid ${d.isCorrect ? '#10b981' : '#ef4444'};">
+              <strong>س${i+1}:</strong> ${d.question}<br>
+              <span style="font-size:14px;">إجابتك: ${d.userAnswer} | الإجابة الصحيحة: ${d.correctAnswer}</span>
+              <span style="float:left;font-weight:bold;color:${d.isCorrect ? '#10b981' : '#ef4444'};">${d.isCorrect ? '✅' : '❌'} ${d.isCorrect ? '+' : ''}${d.points}</span>
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn btn-primary" style="margin-top:20px;" onclick="exitConcours()">العودة</button>
+      </div>
+    `;
+    // إخفاء أزرار التنقل
+    document.querySelector('.nav-buttons').style.display = 'none';
+    document.querySelector('#concours-interface .header .btn-ghost').textContent = 'العودة';
+  }
+
+  function exitConcours() {
+    if (concoursTimer) clearInterval(concoursTimer);
+    const interfaceEl = document.getElementById('concours-interface');
+    if (interfaceEl) interfaceEl.style.display = 'none';
+    // إعادة عرض لوحة الطالب
+    if (currentStudent) {
+      document.getElementById('student-dashboard').style.display = 'block';
+      switchStudentTab('concours');
+    }
+    renderStudentConcoursList();
+    renderStudentConcoursResults();
+  }
+
+  function viewConcoursResult(concoursId) {
+    if (!currentStudent) return;
+    const results = JSON.parse(localStorage.getItem('concoursResults') || '{}');
+    const studentResults = results[currentStudent.id] || [];
+    const result = studentResults.find(r => r.concoursId === concoursId);
+    if (!result) { alert('لا توجد نتيجة لهذه المسابقة.'); return; }
+    showConcoursResult(result.score, result.percentage, result.details || []);
+  }
+
+  function previewConcours(concoursId) {
+    const concours = data.concours.find(c => c.id === concoursId);
+    if (!concours) return;
+    const previewHTML = `
+      <div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:99999;display:flex;align-items:center;justify-content:center;">
+        <div style="background:white;border-radius:16px;padding:30px;max-width:600px;max-height:80vh;overflow-y:auto;margin:20px;">
+          <h2 style="color:#0b3d91;">${concours.title}</h2>
+          <p>${concours.description || ''}</p>
+          <p>⏱ ${concours.duration} دقيقة | 📝 ${concours.questions ? concours.questions.length : 0} أسئلة</p>
+          <hr style="margin:15px 0;">
+          ${concours.questions ? concours.questions.map((q, i) => `
+            <div style="margin-bottom:15px;padding:10px;background:#f8fafc;border-radius:8px;">
+              <strong>س${i+1}:</strong> ${q.text}<br>
+              ${q.image ? `<img src="${q.image}" style="max-height:80px;margin:5px 0;">` : ''}
+              <div style="font-size:14px;color:#475569;">
+                ${q.options.map((opt, oi) => `${String.fromCharCode(65+oi)}. ${opt} ${q.correct === oi+1 ? '✅' : ''}`).join(' | ')}
+              </div>
+            </div>
+          `).join('') : '<p class="muted">لا توجد أسئلة.</p>'}
+          <button onclick="this.closest('div[style]').remove()" class="btn btn-primary" style="margin-top:15px;">إغلاق</button>
+        </div>
+      </div>
+    `;
+    const div = document.createElement('div');
+    div.innerHTML = previewHTML;
+    document.body.appendChild(div);
   }
 
   // ============================================================
@@ -1020,7 +1680,7 @@
   }
 
   // ============================================================
-  // ADMIN LOGIC (تم تعديل بيانات الدخول)
+  // ADMIN LOGIC (محدث)
   // ============================================================
   function loginAdmin() {
     const user = prompt('Nom d\'utilisateur administrateur:');
@@ -1084,6 +1744,8 @@
     const reqs = data.revisionRequests.filter(r => r.studentId === currentStudent.id);
     document.getElementById('studentRevisionRequests').innerHTML = reqs.map(r => `<div class="item">${r.message} - <span class="muted">${r.status || 'En attente'}</span></div>`).join('') || '<p class="muted">Aucune demande.</p>';
     renderLatex();
+    renderStudentConcoursList();
+    renderStudentConcoursResults();
   }
 
   function renderStudentTabs() {
@@ -1095,12 +1757,16 @@
         const target = document.getElementById(`student-${this.dataset.tab}-tab`);
         if (target) target.classList.add('active');
         if (this.dataset.tab === 'cours') renderLatex();
+        if (this.dataset.tab === 'concours') {
+          renderStudentConcoursList();
+          renderStudentConcoursResults();
+        }
       });
     });
   }
 
   // ============================================================
-  // QUIZ ENGINE
+  // QUIZ ENGINE (الموجود)
   // ============================================================
   function startQuiz(quizId) {
     const quiz = data.quizzes.find(q => q.id === quizId);
@@ -1229,6 +1895,10 @@
       const tab = this.dataset.tab;
       document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
       document.getElementById(tab).classList.add('active');
+      if (tab === 'tab-concours') {
+        renderConcoursAdminList();
+        populateConcoursSelect();
+      }
     });
   });
 
@@ -1522,6 +2192,94 @@
   });
 
   // ============================================================
+  // CONCOURS ADMIN EVENTS
+  // ============================================================
+  document.getElementById('btnCreateConcours')?.addEventListener('click', function() {
+    const title = document.getElementById('concoursTitle').value.trim();
+    const duration = parseInt(document.getElementById('concoursDuration').value) || 30;
+    const date = document.getElementById('concoursDate').value;
+    const description = document.getElementById('concoursDescription').value.trim();
+    if (!title) { alert('أدخل عنوان المسابقة.'); return; }
+    const concours = {
+      id: generateId(),
+      title,
+      description,
+      duration,
+      date,
+      questions: []
+    };
+    data.concours.push(concours);
+    saveData();
+    document.getElementById('concoursTitle').value = '';
+    document.getElementById('concoursDescription').value = '';
+    renderConcoursAdminList();
+    populateConcoursSelect();
+    alert('تم إنشاء المسابقة بنجاح.');
+  });
+
+  document.getElementById('btnAddConcoursQuestion')?.addEventListener('click', function() {
+    const concoursId = document.getElementById('adminSelectConcours').value;
+    if (!concoursId) { alert('اختر مسابقة أولاً.'); return; }
+    const concours = data.concours.find(c => c.id === concoursId);
+    if (!concours) { alert('المسابقة غير موجودة.'); return; }
+
+    const text = document.getElementById('concoursQuestionText').value.trim();
+    if (!text) { alert('أدخل نص السؤال.'); return; }
+
+    const options = [];
+    for (let i = 1; i <= 6; i++) {
+      const val = document.getElementById(`concoursOpt${i}`).value.trim();
+      if (val) options.push(val);
+    }
+    if (options.length < 2) { alert('أضف خيارين على الأقل.'); return; }
+
+    const correct = parseInt(document.getElementById('concoursCorrect').value);
+    if (isNaN(correct) || correct < 1 || correct > options.length) {
+      alert(`رقم الإجابة الصحيحة يجب أن يكون بين 1 و ${options.length}.`);
+      return;
+    }
+
+    const points = parseFloat(document.getElementById('concoursPoints').value) || 2;
+
+    let image = '';
+    const fileInput = document.getElementById('concoursQuestionImage');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        image = e.target.result;
+        concours.questions.push({ id: generateId(), text, image, options, correct, points });
+        saveData();
+        renderConcoursAdminList();
+        document.getElementById('concoursQuestionText').value = '';
+        document.getElementById('concoursOpt1').value = '';
+        document.getElementById('concoursOpt2').value = '';
+        document.getElementById('concoursOpt3').value = '';
+        document.getElementById('concoursOpt4').value = '';
+        document.getElementById('concoursOpt5').value = '';
+        document.getElementById('concoursOpt6').value = '';
+        document.getElementById('concoursCorrect').value = '1';
+        document.getElementById('concoursQuestionImage').value = '';
+        alert('تم إضافة السؤال بنجاح.');
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      concours.questions.push({ id: generateId(), text, image, options, correct, points });
+      saveData();
+      renderConcoursAdminList();
+      document.getElementById('concoursQuestionText').value = '';
+      document.getElementById('concoursOpt1').value = '';
+      document.getElementById('concoursOpt2').value = '';
+      document.getElementById('concoursOpt3').value = '';
+      document.getElementById('concoursOpt4').value = '';
+      document.getElementById('concoursOpt5').value = '';
+      document.getElementById('concoursOpt6').value = '';
+      document.getElementById('concoursCorrect').value = '1';
+      document.getElementById('concoursQuestionImage').value = '';
+      alert('تم إضافة السؤال بنجاح.');
+    }
+  });
+
+  // ============================================================
   // MAIN RENDER
   // ============================================================
   function renderAll() {
@@ -1537,9 +2295,31 @@
     renderLatexCourses();
     renderRevisions();
     renderSlider();
-    if (currentStudent) renderStudentDashboard();
+    renderConcoursAdminList();
+    populateConcoursSelect();
+    if (currentStudent) {
+      renderStudentDashboard();
+      renderStudentConcoursList();
+      renderStudentConcoursResults();
+    }
     updateStats();
     renderLatex();
+  }
+
+  function updateStats() {
+    document.getElementById('stats-students').textContent = data.students.length;
+    document.getElementById('stats-quiz').textContent = data.quizzes.reduce((acc, q) => acc + (q.questions ? q.questions.length : 0), 0);
+    document.getElementById('stats-dictionary').textContent = data.dictionary.length;
+    document.getElementById('stats-grades').textContent = data.grades.length;
+    document.getElementById('stats-messages').textContent = data.messages.length;
+    document.getElementById('stats-latex').textContent = data.latexCourses.length;
+    document.getElementById('stats-concours').textContent = data.concours.length;
+    
+    document.getElementById('statStudents').textContent = data.students.length;
+    document.getElementById('statLessons').textContent = data.lessons.length;
+    document.getElementById('statExams').textContent = data.exams.length;
+    document.getElementById('statExercises').textContent = data.exercises.length;
+    document.getElementById('statQuizzes').textContent = data.quizzes.length;
   }
 
   // ============================================================
@@ -1551,14 +2331,11 @@
   document.getElementById('studentLogoutBtn')?.addEventListener('click', logoutStudent);
 
   // ============================================================
-  // COUNTDOWNS (بكالوريا + Concours Médecin + Concours Ensa)
+  // COUNTDOWNS
   // ============================================================
   function updateCountdowns() {
-    // بكالوريا (تاريخ افتراضي)
     const bacDate = new Date('2026-06-01T00:00:00').getTime();
     const now = new Date().getTime();
-    
-    // بكالوريا
     let diffBac = bacDate - now;
     if (diffBac > 0) {
       const days = Math.floor(diffBac / (1000 * 60 * 60 * 24));
@@ -1569,42 +2346,26 @@
       document.getElementById('countdownHours').textContent = hours;
       document.getElementById('countdownMinutes').textContent = minutes;
       document.getElementById('countdownSeconds').textContent = seconds;
-    } else {
-      document.getElementById('countdownDays').textContent = '0';
-      document.getElementById('countdownHours').textContent = '0';
-      document.getElementById('countdownMinutes').textContent = '0';
-      document.getElementById('countdownSeconds').textContent = '0';
     }
 
-    // Concours Médecin (25 يوم من الآن)
     const medecinTarget = now + (25 * 24 * 60 * 60 * 1000);
     let diffMed = medecinTarget - now;
     if (diffMed > 0) {
-      const days = Math.floor(diffMed / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diffMed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diffMed % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diffMed % (1000 * 60)) / 1000);
-      document.getElementById('medecinDays').textContent = days;
-      document.getElementById('medecinHours').textContent = hours;
-      document.getElementById('medecinMinutes').textContent = minutes;
-      document.getElementById('medecinSeconds').textContent = seconds;
+      document.getElementById('medecinDays').textContent = Math.floor(diffMed / (1000 * 60 * 60 * 24));
+      document.getElementById('medecinHours').textContent = Math.floor((diffMed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      document.getElementById('medecinMinutes').textContent = Math.floor((diffMed % (1000 * 60 * 60)) / (1000 * 60));
+      document.getElementById('medecinSeconds').textContent = Math.floor((diffMed % (1000 * 60)) / 1000);
     }
 
-    // Concours Ensa (40 يوم من الآن - مثال)
     const ensaTarget = now + (40 * 24 * 60 * 60 * 1000);
     let diffEnsa = ensaTarget - now;
     if (diffEnsa > 0) {
-      const days = Math.floor(diffEnsa / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diffEnsa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diffEnsa % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diffEnsa % (1000 * 60)) / 1000);
-      document.getElementById('ensaDays').textContent = days;
-      document.getElementById('ensaHours').textContent = hours;
-      document.getElementById('ensaMinutes').textContent = minutes;
-      document.getElementById('ensaSeconds').textContent = seconds;
+      document.getElementById('ensaDays').textContent = Math.floor(diffEnsa / (1000 * 60 * 60 * 24));
+      document.getElementById('ensaHours').textContent = Math.floor((diffEnsa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      document.getElementById('ensaMinutes').textContent = Math.floor((diffEnsa % (1000 * 60 * 60)) / (1000 * 60));
+      document.getElementById('ensaSeconds').textContent = Math.floor((diffEnsa % (1000 * 60)) / 1000);
     }
   }
-
   setInterval(updateCountdowns, 1000);
   updateCountdowns();
 
@@ -1613,10 +2374,10 @@
   // ============================================================
   loadData();
   if (!data.sliderImages || !data.sliderImages.length) {
-    data.sliderImages = ['https://picsum.photos/seed/phys2026/1200/400'];
+    data.sliderImages = ['https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=400&fit=crop'];
   }
+  if (!data.concours) data.concours = [];
   renderAll();
-  renderLatex();
 
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', function(e) {

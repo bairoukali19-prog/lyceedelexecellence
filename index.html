@@ -9,7 +9,7 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
-    /* ========== CSS (نفسه مع تحسينات بسيطة) ========== */
+    /* ===== CSS ===== */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', 'Segoe UI', sans-serif; }
     body { background: #f0f4fa; color: #1e293b; direction: rtl; padding-top: 70px; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
@@ -446,7 +446,7 @@
 <!-- Back to top -->
 <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
-<!-- ========== JAVASCRIPT (مصلح بالكامل) ========== -->
+<!-- ========== JAVASCRIPT (مصلح) ========== -->
 <script>
   // ================================================================
   // DATA LAYER
@@ -502,7 +502,7 @@
   function renderLatex() { if (window.MathJax && MathJax.typesetPromise) { MathJax.typesetPromise().catch(()=>{}); } }
 
   // ================================================================
-  // RENDER FUNCTIONS (مختصرة ولكن كاملة)
+  // RENDER FUNCTIONS
   // ================================================================
   function renderStudents() {
     const tbody = document.querySelector('#studentsTable tbody');
@@ -724,7 +724,7 @@
   }
 
   // ================================================================
-  // CONCOURS ENGINE (مع مؤقت يعمل)
+  // CONCOURS ENGINE
   // ================================================================
   function startConcours(concoursId) {
     if (!currentStudent) { alert('يجب تسجيل الدخول أولاً.'); return; }
@@ -835,10 +835,15 @@
     });
   }
 
-  // ===== المؤقت =====
   function startConcoursTimer() {
     if (concoursTimer) clearInterval(concoursTimer);
     concoursTimer = setInterval(function() {
+      if (concoursTimeLeft <= 0) {
+        clearInterval(concoursTimer);
+        alert('⏰ انتهى الوقت! سيتم احتساب الإجابات الحالية.');
+        submitConcours();
+        return;
+      }
       concoursTimeLeft--;
       const timerEl = document.getElementById('concoursTimer');
       if (timerEl) {
@@ -847,11 +852,6 @@
         timerEl.textContent = `⏱ ${mins}:${secs.toString().padStart(2, '0')}`;
         if (concoursTimeLeft < 120) timerEl.style.background = '#ef4444';
         else if (concoursTimeLeft < 300) timerEl.style.background = '#f59e0b';
-      }
-      if (concoursTimeLeft <= 0) {
-        clearInterval(concoursTimer);
-        alert('⏰ انتهى الوقت! سيتم احتساب الإجابات الحالية.');
-        submitConcours();
       }
     }, 1000);
   }
@@ -1019,7 +1019,7 @@
   }
 
   // ================================================================
-  // AUTH
+  // AUTH (تم الإصلاح)
   // ================================================================
   function loginAdmin() {
     const user = prompt('Nom d\'utilisateur administrateur:');
@@ -1471,7 +1471,6 @@
   // UPDATE STATS (أرقام ثابتة)
   // ================================================================
   function updateStats() {
-    // نضع أرقاماً ثابتة كما طلب المستخدم
     document.getElementById('stats-students').textContent = '56';
     document.getElementById('stats-quiz').textContent = '15';
     document.getElementById('stats-dictionary').textContent = '0';
@@ -1479,17 +1478,7 @@
     document.getElementById('stats-messages').textContent = '0';
     document.getElementById('stats-latex').textContent = '0';
     document.getElementById('stats-concours').textContent = data.concours ? data.concours.length : '0';
-    
-    // الإحصائيات في الواجهة الأمامية ثابتة أيضاً
-    document.querySelector('.visitor-stat-item:nth-child(1) .number').textContent = '56';
-    document.querySelector('.visitor-stat-item:nth-child(2) .number').textContent = '100';
-    document.querySelector('.visitor-stat-item:nth-child(3) .number').textContent = '32';
-    document.querySelector('.visitor-stat-item:nth-child(4) .number').textContent = '300';
-    document.querySelector('.visitor-stat-item:nth-child(5) .number').textContent = '15';
-    document.querySelector('.visitor-stat-item:nth-child(6) .number').textContent = '44';
-    
-    // تحديث عداد الزوار في الهيدر
-    document.getElementById('visitorCount').textContent = '44';
+    // تحديث الأرقام الثابتة في واجهة المستخدم (تم تعيينها في الـ HTML)
   }
 
   // ================================================================
@@ -1520,10 +1509,10 @@
   }
 
   // ================================================================
-  // COUNTDOWNS (بكالوريا + ميدسين + إنسا)
+  // COUNTDOWNS (تعمل الآن)
   // ================================================================
   function updateCountdowns() {
-    const now = new Date().getTime();
+    const now = Date.now();
     // Bac
     const bacDate = new Date('2026-06-01T00:00:00').getTime();
     let diffBac = bacDate - now;
@@ -1532,6 +1521,11 @@
       document.getElementById('countdownHours').textContent = Math.floor((diffBac % (1000*60*60*24)) / (1000*60*60));
       document.getElementById('countdownMinutes').textContent = Math.floor((diffBac % (1000*60*60)) / (1000*60));
       document.getElementById('countdownSeconds').textContent = Math.floor((diffBac % (1000*60)) / 1000);
+    } else {
+      document.getElementById('countdownDays').textContent = '0';
+      document.getElementById('countdownHours').textContent = '0';
+      document.getElementById('countdownMinutes').textContent = '0';
+      document.getElementById('countdownSeconds').textContent = '0';
     }
     // Médecin 24 jours
     const medTarget = now + (24 * 24 * 60 * 60 * 1000);
@@ -1541,6 +1535,11 @@
       document.getElementById('medecinHours').textContent = Math.floor((diffMed % (1000*60*60*24)) / (1000*60*60));
       document.getElementById('medecinMinutes').textContent = Math.floor((diffMed % (1000*60*60)) / (1000*60));
       document.getElementById('medecinSeconds').textContent = Math.floor((diffMed % (1000*60)) / 1000);
+    } else {
+      document.getElementById('medecinDays').textContent = '0';
+      document.getElementById('medecinHours').textContent = '0';
+      document.getElementById('medecinMinutes').textContent = '0';
+      document.getElementById('medecinSeconds').textContent = '0';
     }
     // Ensa 25 jours
     const ensaTarget = now + (25 * 24 * 60 * 60 * 1000);
@@ -1550,10 +1549,13 @@
       document.getElementById('ensaHours').textContent = Math.floor((diffEnsa % (1000*60*60*24)) / (1000*60*60));
       document.getElementById('ensaMinutes').textContent = Math.floor((diffEnsa % (1000*60*60)) / (1000*60));
       document.getElementById('ensaSeconds').textContent = Math.floor((diffEnsa % (1000*60)) / 1000);
+    } else {
+      document.getElementById('ensaDays').textContent = '0';
+      document.getElementById('ensaHours').textContent = '0';
+      document.getElementById('ensaMinutes').textContent = '0';
+      document.getElementById('ensaSeconds').textContent = '0';
     }
   }
-  setInterval(updateCountdowns, 1000);
-  updateCountdowns();
 
   // ================================================================
   // BACK TO TOP
@@ -1566,20 +1568,38 @@
   backToTop.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
   // ================================================================
-  // INIT
+  // INIT (يتم تشغيله بعد تحميل الصفحة بالكامل)
   // ================================================================
-  loadData();
-  renderAll();
+  function init() {
+    loadData();
+    renderAll();
+    // بدء العد التنازلي
+    updateCountdowns();
+    setInterval(updateCountdowns, 1000);
 
-  // Fix hash links
-  document.querySelectorAll('a[href^="#"]').forEach(a => {
-    a.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href === '#' || href === '#!') e.preventDefault();
+    // ربط أزرار الدخول
+    document.getElementById('studentLoginBtn')?.addEventListener('click', loginStudent);
+    document.getElementById('loginBtn')?.addEventListener('click', loginAdmin);
+    document.getElementById('studentLogoutBtn')?.addEventListener('click', logoutStudent);
+    document.getElementById('logoutBtn')?.addEventListener('click', logoutAdmin);
+
+    // Fix hash links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', function(e) {
+        const href = this.getAttribute('href');
+        if (href === '#' || href === '#!') e.preventDefault();
+      });
     });
-  });
 
-  console.log('✅ Lycée de l\'Excellence chargé avec succès !');
+    console.log('✅ Lycée de l\'Excellence chargé avec succès !');
+  }
+
+  // تشغيل التهيئة بعد تحميل DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 </script>
 </body>
 </html>

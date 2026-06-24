@@ -978,7 +978,7 @@
       border: 1px solid #e2e8f0;
     }
 
-    /* Contact Info (جديد) */
+    /* Contact Info */
     .contact-info {
       background: white;
       border-radius: 16px;
@@ -1168,7 +1168,7 @@
         <span id="countdownSeconds">--</span> ثانية
       </div>
 
-      <!-- معلومات الاتصال (جديدة) -->
+      <!-- معلومات الاتصال -->
       <div class="contact-info fade-in">
         <h3><i class="fas fa-address-card"></i> معلومات الاتصال</h3>
         <div class="info-item"><i class="fas fa-map-marker-alt"></i> <span><strong>المدينة:</strong> أكادير / العيون</span></div>
@@ -1204,7 +1204,22 @@
         <div id="student-revision-tab" class="student-tab-content"><div class="dashboard-card"><h3>Demande de Récorrection</h3><form id="revisionRequestForm"><div class="form-group"><label>Examen</label><select id="revisionExam" required><option value="">Sélectionnez</option></select></div><div class="form-group"><label>Message</label><textarea id="revisionMessage" rows="3" required></textarea></div><button type="submit" class="btn btn-primary">Envoyer</button></form></div><div class="dashboard-card"><h3>Vos Demandes</h3><div id="studentRevisionRequests"></div></div></div>
         <div id="student-messages-tab" class="student-tab-content"><div class="dashboard-card"><h3>الرسائل</h3><div id="studentMessagesList"></div></div></div>
         <div id="student-cours-tab" class="student-tab-content"><div class="dashboard-card"><h3>Cours online</h3><div id="studentCoursList" class="latex-content"></div></div></div>
-        <div id="student-concours-tab" class="student-tab-content"><div class="dashboard-card"><h3>🏆 Concours disponibles</h3><div id="studentConcoursList"></div></div><div class="dashboard-card"><h3>نتائج Concours</h3><div id="studentConcoursResults"></div></div></div>
+
+        <!-- ===== CONCOURS TAB (المُصلح) ===== -->
+        <div id="student-concours-tab" class="student-tab-content">
+          <div class="dashboard-card">
+            <h3>🏆 Concours disponibles</h3>
+            <button class="btn btn-outline btn-sm" onclick="renderStudentConcoursList()" style="margin-bottom:10px;">
+              <i class="fas fa-sync"></i> تحديث القائمة
+            </button>
+            <div id="studentConcoursList"></div>
+          </div>
+          <div class="dashboard-card">
+            <h3>نتائج Concours</h3>
+            <div id="studentConcoursResults"></div>
+          </div>
+        </div>
+
         <div class="flex right"><button class="btn btn-ghost" id="studentLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>
       </section>
 
@@ -1405,7 +1420,7 @@
   <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
   <!-- ============================================================
-  JAVASCRIPT (مُعاد هيكلته بالكامل مع مؤقتات تعمل)
+  JAVASCRIPT (مُعاد هيكلته بالكامل مع إصلاح مشكلة Concours)
   ============================================================ -->
   <script>
     // ============================================================
@@ -1434,30 +1449,56 @@
     // ============================================================
     // 2. UTILITY
     // ============================================================
-    function saveData() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {} }
+    function saveData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      } catch (e) {}
+    }
 
     function loadData() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           const parsed = JSON.parse(raw);
-          Object.assign(data, parsed);
+          // دمج البيانات مع الحفاظ على المصفوفات
+          for (let key in parsed) {
+            if (data.hasOwnProperty(key)) {
+              // إذا كانت المفتاح مصفوفة، ندمجها بشكل آمن
+              if (Array.isArray(data[key]) && Array.isArray(parsed[key])) {
+                data[key] = parsed[key];
+              } else {
+                data[key] = parsed[key];
+              }
+            }
+          }
+          // التأكد من وجود concours
           if (!data.concours) data.concours = [];
           if (!data.sliderImages || data.sliderImages.length === 0) {
             data.sliderImages = ['https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=450&fit=crop'];
           }
         }
-      } catch (e) { console.warn('loadData error', e); }
+      } catch (e) {
+        console.warn('loadData error', e);
+      }
     }
 
-    function generateId() { return Date.now().toString(36) + Math.random().toString(36).substr(2, 5); }
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+    }
 
-    function formatDate(d) { if (!d) return ''; return new Date(d).toLocaleDateString('fr-FR'); }
+    function formatDate(d) {
+      if (!d) return '';
+      return new Date(d).toLocaleDateString('fr-FR');
+    }
 
-    function renderLatex() { if (window.MathJax && MathJax.typesetPromise) { MathJax.typesetPromise().catch(function() {}); } }
+    function renderLatex() {
+      if (window.MathJax && MathJax.typesetPromise) {
+        MathJax.typesetPromise().catch(function() {});
+      }
+    }
 
     // ============================================================
-    // 3. TIMERS (تعمل الآن! تم إعادة كتابتها)
+    // 3. TIMERS (تعمل الآن!)
     // ============================================================
 
     function updateAllTimers() {
@@ -1469,7 +1510,7 @@
       if (diffBac > 0) {
         document.getElementById('countdownDays').textContent = Math.floor(diffBac / (1000 * 60 * 60 * 24));
         document.getElementById('countdownHours').textContent = Math.floor((diffBac % (1000 * 60 * 60 * 24)) / (1000 * 60 *
-        60));
+          60));
         document.getElementById('countdownMinutes').textContent = Math.floor((diffBac % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('countdownSeconds').textContent = Math.floor((diffBac % (1000 * 60)) / 1000);
       } else {
@@ -1485,7 +1526,7 @@
       if (diffMed > 0) {
         document.getElementById('medecinDays').textContent = Math.floor(diffMed / (1000 * 60 * 60 * 24));
         document.getElementById('medecinHours').textContent = Math.floor((diffMed % (1000 * 60 * 60 * 24)) / (1000 * 60 *
-        60));
+          60));
         document.getElementById('medecinMinutes').textContent = Math.floor((diffMed % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('medecinSeconds').textContent = Math.floor((diffMed % (1000 * 60)) / 1000);
       } else {
@@ -1501,7 +1542,7 @@
       if (diffEnsa > 0) {
         document.getElementById('ensaDays').textContent = Math.floor(diffEnsa / (1000 * 60 * 60 * 24));
         document.getElementById('ensaHours').textContent = Math.floor((diffEnsa % (1000 * 60 * 60 * 24)) / (1000 * 60 *
-        60));
+          60));
         document.getElementById('ensaMinutes').textContent = Math.floor((diffEnsa % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('ensaSeconds').textContent = Math.floor((diffEnsa % (1000 * 60)) / 1000);
       } else {
@@ -1513,7 +1554,7 @@
     }
 
     // ============================================================
-    // 4. RENDER FUNCTIONS (مبسطة)
+    // 4. RENDER FUNCTIONS
     // ============================================================
 
     function renderStudents() {
@@ -1725,6 +1766,8 @@
       saveData();
       renderConcoursAdminList();
       populateConcoursSelect();
+      // تحديث قائمة الطلاب إذا كان هناك طالب مسجل
+      if (currentStudent) renderStudentConcoursList();
     }
 
     function editConcours(id) {
@@ -1750,23 +1793,34 @@
     }
 
     // ============================================================
-    // 6. CONCOURS STUDENT (مبسط)
+    // 6. CONCOURS STUDENT (المُصلح)
     // ============================================================
 
     function renderStudentConcoursList() {
       var container = document.getElementById('studentConcoursList');
       if (!container) return;
+
+      // التحقق من وجود مسابقات
       if (!data.concours || data.concours.length === 0) {
-        container.innerHTML = '<p class="muted">لا توجد مسابقات متاحة.</p>';
+        container.innerHTML = `
+          <div style="text-align:center;padding:30px;color:#475569;">
+            <i class="fas fa-trophy" style="font-size:40px;color:#cbd5e1;display:block;margin-bottom:10px;"></i>
+            <p>لا توجد مسابقات متاحة حالياً.</p>
+            <p style="font-size:14px;">سيتم إضافة مسابقات جديدة قريباً.</p>
+          </div>
+        `;
         return;
       }
+
       var studentId = currentStudent ? currentStudent.id : null;
       var results = studentId ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[studentId] || []) : [];
       var html = '';
+
       data.concours.forEach(function(c) {
         var hasResult = results.some(function(r) { return r.concoursId === c.id; });
         var catLabel = c.category === 'medecin' ? '🩺' : c.category === 'ensa' ? '⚙️' : '📚';
-        html += '<div class="item" style="border-right:4px solid ' + (hasResult ? '#10b981' : '#1e90ff') + ';">';
+        html += '<div class="item" style="border-right:4px solid ' + (hasResult ? '#10b981' : '#1e90ff') +
+          ';margin-bottom:15px;">';
         html += '<h4>' + catLabel + ' ' + c.title + '</h4>';
         html += '<p style="color:#475569;font-size:14px;">' + (c.description || '') + '</p>';
         html += '<div style="color:#475569;font-size:14px;">⏱ ' + c.duration + ' دقيقة | 📝 ' + (c.questions ? c.questions
@@ -1783,6 +1837,7 @@
         html += '<button class="btn btn-outline btn-sm" onclick="previewConcours(\'' + c.id + '\')">معاينة</button>';
         html += '</div></div>';
       });
+
       container.innerHTML = html || '<p class="muted">لا توجد مسابقات.</p>';
     }
 
@@ -2301,7 +2356,7 @@
     }
 
     // ============================================================
-    // 11. EVENTS SETUP (ربط الأحداث)
+    // 11. EVENTS SETUP
     // ============================================================
 
     function setupEvents() {
@@ -2701,7 +2756,7 @@
         alert('Demande envoyée.');
       });
 
-      // Concours Admin
+      // ===== CONCOURS ADMIN (مُصلح مع تحديث قائمة الطلاب) =====
       document.getElementById('btnCreateConcours').addEventListener('click', function() {
         var title = document.getElementById('concoursTitle').value.trim();
         var duration = parseInt(document.getElementById('concoursDuration').value) || 30;
@@ -2716,6 +2771,8 @@
         document.getElementById('concoursDescription').value = '';
         renderConcoursAdminList();
         populateConcoursSelect();
+        // تحديث قائمة الطلاب إذا كان هناك طالب مسجل
+        if (currentStudent) renderStudentConcoursList();
         alert('تم إنشاء المسابقة بنجاح.');
       });
 
@@ -2746,6 +2803,8 @@
               correct: correct, points: points });
             saveData();
             renderConcoursAdminList();
+            // تحديث قائمة الطلاب
+            if (currentStudent) renderStudentConcoursList();
             document.getElementById('concoursQuestionText').value = '';
             document.getElementById('concoursOpt1').value = '';
             document.getElementById('concoursOpt2').value = '';
@@ -2763,6 +2822,8 @@
             correct: correct, points: points });
           saveData();
           renderConcoursAdminList();
+          // تحديث قائمة الطلاب
+          if (currentStudent) renderStudentConcoursList();
           document.getElementById('concoursQuestionText').value = '';
           document.getElementById('concoursOpt1').value = '';
           document.getElementById('concoursOpt2').value = '';
@@ -2816,13 +2877,12 @@
     }
 
     // ============================================================
-    // 13. INIT (تشغيل كل شيء)
+    // 13. INIT
     // ============================================================
 
     function init() {
       loadData();
       renderAll();
-      // تحديث المؤقتات فوراً ثم كل ثانية
       updateAllTimers();
       setInterval(updateAllTimers, 1000);
       setupEvents();
@@ -2830,7 +2890,6 @@
       console.log('✅ Les compteurs à rebours fonctionnent maintenant !');
     }
 
-    // تشغيل عند تحميل الصفحة
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', init);
     } else {

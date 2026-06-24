@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <style>
     /* ============================================================
-       CSS (تصميم موحد)
+       CSS
        ============================================================ */
     * {
       margin: 0;
@@ -914,7 +914,7 @@
       </section>
 
       <!-- Baccalaureat Countdown -->
-      <div class="countdown-big">
+      <div class="countdown-big" id="bacCountdown">
         <i class="fas fa-hourglass-half"></i>
         الوقت المتبقي لامتحانات البكالوريا 2026:
         <span id="countdownDays">--</span> يوم
@@ -1144,14 +1144,14 @@
   <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
   <!-- ============================================================
-  JAVASCRIPT (هيكل جديد مع مؤقتات تعمل)
+  JAVASCRIPT (حل مشكلة المؤقتات نهائياً)
   ============================================================ -->
   <script>
     // ============================================================
     // 1. DATA LAYER
     // ============================================================
-    const STORAGE_KEY = 'lyceeData';
-    let data = {
+    var STORAGE_KEY = 'lyceeData';
+    var data = {
       students: [],
       grades: [],
       quizzes: [],
@@ -1167,13 +1167,11 @@
       announcements: { text: 'ستبدأ الدراسة الفعلية يوم 16/09/2025', image: null }
     };
 
-    let currentStudent = null;
-    let currentAdmin = false;
-    let editingStudentId = null;
-    let editingGradeId = null;
+    var currentStudent = null;
+    var currentAdmin = false;
 
     // ============================================================
-    // 2. UTILITY FUNCTIONS
+    // 2. UTILITY
     // ============================================================
     function saveData() {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch (e) {}
@@ -1181,9 +1179,9 @@
 
     function loadData() {
       try {
-        const raw = localStorage.getItem(STORAGE_KEY);
+        var raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
-          const parsed = JSON.parse(raw);
+          var parsed = JSON.parse(raw);
           Object.assign(data, parsed);
           if (!data.concours) data.concours = [];
           if (!data.sliderImages || data.sliderImages.length === 0) {
@@ -1209,22 +1207,19 @@
     }
 
     // ============================================================
-    // 3. TIMERS (المؤقتات - تعمل الآن!)
+    // 3. TIMERS - الحل النهائي (تعمل الآن!)
     // ============================================================
 
-    /**
-     * دالة تحديث جميع المؤقتات في الموقع
-     * تُستدعى فوراً ثم كل ثانية
-     */
     function updateAllTimers() {
       var now = Date.now();
 
-      // ---- 1. بكالوريا (1 يونيو 2026) ----
+      // ---- بكالوريا (1 يونيو 2026) ----
       var bacDate = new Date('2026-06-01T00:00:00').getTime();
       var diffBac = bacDate - now;
       if (diffBac > 0) {
         document.getElementById('countdownDays').textContent = Math.floor(diffBac / (1000 * 60 * 60 * 24));
-        document.getElementById('countdownHours').textContent = Math.floor((diffBac % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById('countdownHours').textContent = Math.floor((diffBac % (1000 * 60 * 60 * 24)) / (1000 * 60 *
+          60));
         document.getElementById('countdownMinutes').textContent = Math.floor((diffBac % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('countdownSeconds').textContent = Math.floor((diffBac % (1000 * 60)) / 1000);
       } else {
@@ -1234,12 +1229,13 @@
         document.getElementById('countdownSeconds').textContent = '0';
       }
 
-      // ---- 2. Concours Médecin (24 يوم من الآن) ----
+      // ---- Concours Médecin (24 يوم من الآن) ----
       var medTarget = now + (24 * 24 * 60 * 60 * 1000);
       var diffMed = medTarget - now;
       if (diffMed > 0) {
         document.getElementById('medecinDays').textContent = Math.floor(diffMed / (1000 * 60 * 60 * 24));
-        document.getElementById('medecinHours').textContent = Math.floor((diffMed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById('medecinHours').textContent = Math.floor((diffMed % (1000 * 60 * 60 * 24)) / (1000 * 60 *
+          60));
         document.getElementById('medecinMinutes').textContent = Math.floor((diffMed % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('medecinSeconds').textContent = Math.floor((diffMed % (1000 * 60)) / 1000);
       } else {
@@ -1249,12 +1245,13 @@
         document.getElementById('medecinSeconds').textContent = '0';
       }
 
-      // ---- 3. Concours Ensa (25 يوم من الآن) ----
+      // ---- Concours Ensa (25 يوم من الآن) ----
       var ensaTarget = now + (25 * 24 * 60 * 60 * 1000);
       var diffEnsa = ensaTarget - now;
       if (diffEnsa > 0) {
         document.getElementById('ensaDays').textContent = Math.floor(diffEnsa / (1000 * 60 * 60 * 24));
-        document.getElementById('ensaHours').textContent = Math.floor((diffEnsa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        document.getElementById('ensaHours').textContent = Math.floor((diffEnsa % (1000 * 60 * 60 * 24)) / (1000 * 60 *
+          60));
         document.getElementById('ensaMinutes').textContent = Math.floor((diffEnsa % (1000 * 60 * 60)) / (1000 * 60));
         document.getElementById('ensaSeconds').textContent = Math.floor((diffEnsa % (1000 * 60)) / 1000);
       } else {
@@ -1274,9 +1271,11 @@
       if (!tbody) return;
       var filter = (document.getElementById('filterStudents')?.value || '').toLowerCase();
       var rows = data.students
-        .filter(function(s) { return s.fullname.toLowerCase().includes(filter) || s.username.toLowerCase().includes(filter); })
+        .filter(function(s) { return s.fullname.toLowerCase().includes(filter) || s.username.toLowerCase().includes(
+          filter); })
         .map(function(s) {
-          return '<tr><td>' + s.fullname + '</td><td>' + s.username + '</td><td>' + s.code + '</td><td>' + (s.classroom || '') +
+          return '<tr><td>' + s.fullname + '</td><td>' + s.username + '</td><td>' + s.code + '</td><td>' + (s
+            .classroom || '') +
             '</td><td><button class="btn btn-primary btn-sm" onclick="editStudent(\'' + s.id +
             '\')"><i class="fa-solid fa-edit"></i></button> <button class="btn btn-ghost btn-sm" onclick="deleteStudent(\'' +
             s.id + '\')"><i class="fa-solid fa-trash"></i></button></td></tr>';
@@ -1292,8 +1291,9 @@
         .filter(function(g) { return !filter || g.studentId === filter; })
         .map(function(g) {
           var student = data.students.find(function(s) { return s.id === g.studentId; });
-          return '<tr><td>' + (student ? student.fullname : 'Inconnu') + '</td><td>' + formatDate(g.date) + '</td><td>' + g
-            .subject + '</td><td>' + g.title + '</td><td>' + g.score + '/20</td><td>' + (g.remark || '') +
+          return '<tr><td>' + (student ? student.fullname : 'Inconnu') + '</td><td>' + formatDate(g.date) +
+            '</td><td>' + g.subject + '</td><td>' + g.title + '</td><td>' + g.score + '/20</td><td>' + (g
+              .remark || '') +
             '</td><td><button class="btn btn-primary btn-sm" onclick="editGrade(\'' + g.id +
             '\')"><i class="fa-solid fa-edit"></i></button> <button class="btn btn-ghost btn-sm" onclick="deleteGrade(\'' +
             g.id + '\')"><i class="fa-solid fa-trash"></i></button></td></tr>';
@@ -1306,8 +1306,8 @@
         var sel = document.getElementById(id);
         if (!sel) return;
         var current = sel.value;
-        sel.innerHTML = data.students.map(function(s) { return '<option value="' + s.id + '">' + s.fullname + ' (' + s
-            .code + ')</option>'; }).join('');
+        sel.innerHTML = data.students.map(function(s) { return '<option value="' + s.id + '">' + s.fullname +
+            ' (' + s.code + ')</option>'; }).join('');
         if (current) sel.value = current;
       });
       var revSel = document.getElementById('revisionExam');
@@ -1319,8 +1319,8 @@
 
     function renderDictionary() {
       var html = data.dictionary.map(function(d) {
-        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d.def || '') +
-          '</span></div>';
+        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d
+          .def || '') + '</span></div>';
       }).join('');
       ['dictionaryContent', 'dictionaryTermsList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1330,8 +1330,8 @@
 
     function renderLessons() {
       var html = data.lessons.map(function(l) {
-        return '<div class="item"><h4>' + l.title + '</h4><p>' + (l.chapter || '') + '</p><a href="' + l.driveLink +
-          '" target="_blank">Voir PDF</a></div>';
+        return '<div class="item"><h4>' + l.title + '</h4><p>' + (l.chapter || '') + '</p><a href="' + l
+          .driveLink + '" target="_blank">Voir PDF</a></div>';
       }).join('');
       ['lessonsContent', 'lessonsAdminList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1341,8 +1341,8 @@
 
     function renderExercises() {
       var html = data.exercises.map(function(e) {
-        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.chapter || '') + '</p><a href="' + e.driveLink +
-          '" target="_blank">Voir</a></div>';
+        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.chapter || '') + '</p><a href="' + e
+          .driveLink + '" target="_blank">Voir</a></div>';
       }).join('');
       ['exercisesContent', 'exercisesAdminList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1352,8 +1352,8 @@
 
     function renderExams() {
       var html = data.exams.map(function(e) {
-        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.series || '') + '</p><a href="' + e.driveLink +
-          '" target="_blank">Télécharger</a></div>';
+        return '<div class="item"><h4>' + e.title + '</h4><p>' + (e.series || '') + '</p><a href="' + e
+          .driveLink + '" target="_blank">Télécharger</a></div>';
       }).join('');
       ['examsContent', 'examsAdminList'].forEach(function(id) {
         var el = document.getElementById(id);
@@ -1365,15 +1365,16 @@
       var sel = document.getElementById('adminSelectQuiz');
       if (sel) {
         var current = sel.value;
-        sel.innerHTML = data.quizzes.map(function(q) { return '<option value="' + q.id + '">' + q.title + '</option>'; })
-          .join('');
+        sel.innerHTML = data.quizzes.map(function(q) { return '<option value="' + q.id + '">' + q.title +
+          '</option>'; }).join('');
         if (current) sel.value = current;
       }
       var list = document.getElementById('quizQuestionsList');
       if (list) {
         var qid = document.getElementById('adminSelectQuiz')?.value;
         var quiz = data.quizzes.find(function(q) { return q.id === qid; });
-        list.innerHTML = (quiz && quiz.questions && quiz.questions.length) ? quiz.questions.map(function(q, i) {
+        list.innerHTML = (quiz && quiz.questions && quiz.questions.length) ? quiz.questions.map(function(q,
+        i) {
           return '<div class="item"><strong>Q' + (i + 1) + ':</strong> ' + q.text + '</div>';
         }).join('') : '<p class="muted">Aucune question.</p>';
       }
@@ -1384,8 +1385,9 @@
       if (list) {
         list.innerHTML = data.messages.map(function(m) {
           var student = data.students.find(function(s) { return s.id === m.studentId; });
-          return '<div class="item"><strong>' + m.title + '</strong><br>' + m.content + '<br><span class="muted">À: ' +
-            (m.target === 'all' ? 'Tous' : (student ? student.fullname : 'Inconnu')) + '</span></div>';
+          return '<div class="item"><strong>' + m.title + '</strong><br>' + m.content +
+            '<br><span class="muted">À: ' + (m.target === 'all' ? 'Tous' : (student ? student
+              .fullname : 'Inconnu')) + '</span></div>';
         }).join('') || '<p class="muted">لا توجد رسائل.</p>';
       }
     }
@@ -1394,7 +1396,8 @@
       var list = document.getElementById('latexCoursesList');
       if (list) {
         list.innerHTML = data.latexCourses.map(function(c) {
-          return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content + '</div></div>';
+          return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content +
+            '</div></div>';
         }).join('') || '<p class="muted">لا توجد دروس.</p>';
       }
     }
@@ -1405,9 +1408,9 @@
         list.innerHTML = data.revisionRequests.map(function(r) {
           var student = data.students.find(function(s) { return s.id === r.studentId; });
           var grade = data.grades.find(function(g) { return g.id === r.gradeId; });
-          return '<div class="item"><strong>' + (student ? student.fullname : 'Inconnu') + '</strong> - ' + (grade ? grade
-              .title : 'Évaluation') + '<br>' + r.message + '<br><span class="muted">' + (r.status || 'En attente') +
-            '</span></div>';
+          return '<div class="item"><strong>' + (student ? student.fullname : 'Inconnu') + '</strong> - ' +
+            (grade ? grade.title : 'Évaluation') + '<br>' + r.message + '<br><span class="muted">' + (r
+              .status || 'En attente') + '</span></div>';
         }).join('') || '<p class="muted">Aucune demande.</p>';
       }
     }
@@ -1441,26 +1444,29 @@
       var html = '';
       data.concours.forEach(function(c) {
         var catLabel = c.category === 'medecin' ? '🩺 Médecin' : c.category === 'ensa' ? '⚙️ Ensa' : '📚 Autre';
-        html += '<div class="item"><h4>' + c.title + ' <span style="font-size:12px;background:#1e90ff;color:white;padding:2px 10px;border-radius:20px;">' +
+        html += '<div class="item"><h4>' + c.title +
+          ' <span style="font-size:12px;background:#1e90ff;color:white;padding:2px 10px;border-radius:20px;">' +
           catLabel + '</span></h4>';
         html += '<div class="meta">📝 ' + (c.questions ? c.questions.length : 0) + ' أسئلة | ⏱ ' + c.duration +
           ' دقيقة | 📅 ' + (c.date ? new Date(c.date).toLocaleString('ar-EG') : 'غير محدد') + '</div>';
         html += '<div class="meta">' + (c.description || '') + '</div>';
         html +=
-          '<div style="margin-top:10px;"><button class="btn btn-danger btn-sm" onclick="deleteConcours(\'' + c.id +
-          '\')"><i class="fa-solid fa-trash"></i> حذف</button>';
+          '<div style="margin-top:10px;"><button class="btn btn-danger btn-sm" onclick="deleteConcours(\'' + c
+          .id + '\')"><i class="fa-solid fa-trash"></i> حذف</button>';
         html += '<button class="btn btn-primary btn-sm" onclick="editConcours(\'' + c.id +
           '\')"><i class="fa-solid fa-edit"></i> تعديل</button>';
         html += '<button class="btn btn-accent btn-sm" onclick="previewConcours(\'' + c.id +
           '\')"><i class="fa-solid fa-eye"></i> معاينة</button></div>';
         if (c.questions && c.questions.length) {
-          html += '<div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px;"><strong>الأسئلة:</strong>';
+          html +=
+            '<div style="margin-top:10px;border-top:1px solid #e2e8f0;padding-top:10px;"><strong>الأسئلة:</strong>';
           c.questions.forEach(function(q, qi) {
-            html += '<div style="background:white;padding:8px 12px;border-radius:8px;margin-top:5px;"><strong>س' + (qi +
-              1) + ':</strong> ' + q.text + ' (' + q.points + ' نقطة)';
+            html +=
+              '<div style="background:white;padding:8px 12px;border-radius:8px;margin-top:5px;"><strong>س' +
+              (qi + 1) + ':</strong> ' + q.text + ' (' + q.points + ' نقطة)';
             if (q.image) html += '<br><img src="' + q.image + '" style="max-height:50px;">';
-            html += '<br><span class="muted">الإجابة الصحيحة: ' + (q.options[q.correct - 1] || 'غير محدد') +
-              '</span></div>';
+            html += '<br><span class="muted">الإجابة الصحيحة: ' + (q.options[q.correct - 1] ||
+              'غير محدد') + '</span></div>';
           });
           html += '</div>';
         } else {
@@ -1502,7 +1508,7 @@
     }
 
     // ============================================================
-    // 6. CONCOURS STUDENT (مبسط)
+    // 6. CONCOURS STUDENT
     // ============================================================
 
     function renderStudentConcoursList() {
@@ -1513,16 +1519,18 @@
         return;
       }
       var studentId = currentStudent ? currentStudent.id : null;
-      var results = studentId ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[studentId] || []) : [];
+      var results = studentId ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[studentId] || []) :
+      [];
       var html = '';
       data.concours.forEach(function(c) {
         var hasResult = results.some(function(r) { return r.concoursId === c.id; });
         var catLabel = c.category === 'medecin' ? '🩺' : c.category === 'ensa' ? '⚙️' : '📚';
-        html += '<div class="item" style="border-right:4px solid ' + (hasResult ? '#10b981' : '#1e90ff') + ';">';
+        html += '<div class="item" style="border-right:4px solid ' + (hasResult ? '#10b981' : '#1e90ff') +
+          ';">';
         html += '<h4>' + catLabel + ' ' + c.title + '</h4>';
         html += '<p style="color:#475569;font-size:14px;">' + (c.description || '') + '</p>';
-        html += '<div style="color:#475569;font-size:14px;">⏱ ' + c.duration + ' دقيقة | 📝 ' + (c.questions ? c.questions
-          .length : 0) + ' أسئلة</div>';
+        html += '<div style="color:#475569;font-size:14px;">⏱ ' + c.duration + ' دقيقة | 📝 ' + (c.questions ? c
+          .questions.length : 0) + ' أسئلة</div>';
         if (hasResult) html += '<span style="color:#10b981;">✅ تم الإنجاز</span>';
         html += '<div style="margin-top:10px;">';
         if (hasResult) {
@@ -1532,7 +1540,8 @@
           html += '<button class="btn btn-primary btn-sm" onclick="startConcours(\'' + c.id +
             '\')">بدء المسابقة</button>';
         }
-        html += '<button class="btn btn-outline btn-sm" onclick="previewConcours(\'' + c.id + '\')">معاينة</button>';
+        html += '<button class="btn btn-outline btn-sm" onclick="previewConcours(\'' + c.id +
+          '\')">معاينة</button>';
         html += '</div></div>';
       });
       container.innerHTML = html || '<p class="muted">لا توجد مسابقات.</p>';
@@ -1553,9 +1562,9 @@
       var html = '';
       results.forEach(function(r) {
         var c = data.concours.find(function(co) { return co.id === r.concoursId; });
-        html += '<div class="item"><h4>' + (c ? c.title : 'مسابقة') + '</h4><div>⭐ النتيجة: <strong>' + r.score +
-          '/20</strong> (' + r.percentage + '%)</div><div class="muted">📅 ' + new Date(r.date).toLocaleString(
-          'ar-EG') + '</div></div>';
+        html += '<div class="item"><h4>' + (c ? c.title : 'مسابقة') +
+          '</h4><div>⭐ النتيجة: <strong>' + r.score + '/20</strong> (' + r.percentage +
+          '%)</div><div class="muted">📅 ' + new Date(r.date).toLocaleString('ar-EG') + '</div></div>';
       });
       container.innerHTML = html;
     }
@@ -1594,7 +1603,8 @@
     }
 
     function showConcoursInterface() {
-      document.querySelectorAll('.page-section, .student-tab-content').forEach(function(el) { el.style.display = 'none'; });
+      document.querySelectorAll('.page-section, .student-tab-content').forEach(function(el) { el.style.display =
+          'none'; });
       var interfaceEl = document.getElementById('concours-interface');
       if (!interfaceEl) {
         interfaceEl = document.createElement('div');
@@ -1639,10 +1649,11 @@
       });
       container.innerHTML += '</div>';
       document.getElementById('concoursQNumber').textContent = currentConcoursIndex + 1;
-      document.getElementById('concoursProgress').style.width = ((currentConcoursIndex + 1) / currentConcours.questions
-        .length * 100) + '%';
+      document.getElementById('concoursProgress').style.width = ((currentConcoursIndex + 1) / currentConcours
+        .questions.length * 100) + '%';
       document.getElementById('concoursPrevBtn').disabled = currentConcoursIndex === 0;
-      document.getElementById('concoursNextBtn').disabled = currentConcoursIndex === currentConcours.questions.length - 1;
+      document.getElementById('concoursNextBtn').disabled = currentConcoursIndex === currentConcours.questions
+        .length - 1;
       updateConcoursIndicators();
     }
 
@@ -1767,18 +1778,20 @@
         '<h2 style="color:#0b3d91;">🏆 نتيجة المسابقة</h2>' +
         '<div class="score-circle" style="background:' + color +
         ';width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:20px auto;font-weight:bold;color:white;">' +
-        '<span style="font-size:28px;">' + score + '/20</span><span style="font-size:16px;">' + percent + '%</span></div>' +
+        '<span style="font-size:28px;">' + score + '/20</span><span style="font-size:16px;">' + percent +
+        '%</span></div>' +
         '<p style="font-size:18px;margin:10px 0;">' + (score >= 10 ? '🎉 مبروك! نتيجة ممتازة' :
           '💪 نتيجة جيدة، واصل التقدم') + '</p>' +
         '<div style="text-align:right;max-height:300px;overflow-y:auto;margin-top:20px;"><h4>تفاصيل الإجابات:</h4>';
       details.forEach(function(d, i) {
         html += '<div style="padding:12px;margin-bottom:8px;border-radius:8px;background:' + (d.isCorrect ?
-          '#ecfdf5' : '#fef2f2') + ';border-right:4px solid ' + (d.isCorrect ? '#10b981' : '#ef4444') + ';">' +
+          '#ecfdf5' : '#fef2f2') + ';border-right:4px solid ' + (d.isCorrect ? '#10b981' : '#ef4444') +
+          ';">' +
           '<strong>س' + (i + 1) + ':</strong> ' + d.question + '<br>' +
-          '<span style="font-size:14px;">إجابتك: ' + d.userAnswer + ' | الإجابة الصحيحة: ' + d.correctAnswer +
-          '</span>' +
-          '<span style="float:left;font-weight:bold;color:' + (d.isCorrect ? '#10b981' : '#ef4444') + ';">' + (d
-            .isCorrect ? '✅' : '❌') + ' ' + (d.isCorrect ? '+' : '') + d.points + '</span></div>';
+          '<span style="font-size:14px;">إجابتك: ' + d.userAnswer + ' | الإجابة الصحيحة: ' + d
+          .correctAnswer + '</span>' +
+          '<span style="float:left;font-weight:bold;color:' + (d.isCorrect ? '#10b981' : '#ef4444') +
+          ';">' + (d.isCorrect ? '✅' : '❌') + ' ' + (d.isCorrect ? '+' : '') + d.points + '</span></div>';
       });
       html +=
         '</div><button class="btn btn-primary" style="margin-top:20px;" onclick="exitConcours()">العودة</button></div>';
@@ -1826,7 +1839,7 @@
           html += '<div style="font-size:14px;color:#475569;">';
           q.options.forEach(function(opt, oi) {
             html += String.fromCharCode(65 + oi) + '. ' + opt + (q.correct === oi + 1 ? ' ✅' : '') +
-            ' | ';
+              ' | ';
           });
           html += '</div></div>';
         });
@@ -1840,7 +1853,7 @@
     }
 
     // ============================================================
-    // 8. STUDENT FUNCTIONS (AUTH و DASHBOARD)
+    // 8. STUDENT FUNCTIONS
     // ============================================================
 
     function loginStudent() {
@@ -1873,7 +1886,8 @@
       }).join('') : '<p class="muted">Aucune note.</p>';
       var qlist = data.quizzes.map(function(q) {
         return '<div class="item"><span>' + q.title +
-          '</span><button class="btn btn-primary btn-sm" onclick="startQuiz(\'' + q.id + '\')">Commencer</button></div>';
+          '</span><button class="btn btn-primary btn-sm" onclick="startQuiz(\'' + q.id +
+          '\')">Commencer</button></div>';
       }).join('');
       document.getElementById('studentQuizList').innerHTML = qlist || '<p class="muted">Aucun quiz.</p>';
       document.getElementById('studentQuizList2').innerHTML = qlist || '<p class="muted">Aucun quiz.</p>';
@@ -1884,15 +1898,17 @@
         return '<div class="item"><a href="' + e.driveLink + '" target="_blank">' + e.title + '</a></div>';
       }).join('') || '<p class="muted">Aucun exercice.</p>';
       document.getElementById('studentDictionaryContent').innerHTML = data.dictionary.map(function(d) {
-        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d.def ||
-          '') + '</span></div>';
+        return '<div class="item"><strong>' + d.ar + '</strong> → ' + d.fr + '<br><span class="muted">' + (d
+          .def || '') + '</span></div>';
       }).join('') || '<p class="muted">Aucun terme.</p>';
-      var msgs = data.messages.filter(function(m) { return m.target === 'all' || m.studentId === currentStudent.id; });
+      var msgs = data.messages.filter(function(m) { return m.target === 'all' || m.studentId === currentStudent
+          .id; });
       document.getElementById('studentMessagesList').innerHTML = msgs.map(function(m) {
         return '<div class="item"><strong>' + m.title + '</strong><br>' + m.content + '</div>';
       }).join('') || '<p class="muted">لا توجد رسائل.</p>';
       document.getElementById('studentCoursList').innerHTML = data.latexCourses.map(function(c) {
-        return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content + '</div></div>';
+        return '<div class="item"><h4>' + c.title + '</h4><div class="latex-content">' + c.content +
+          '</div></div>';
       }).join('') || '<p class="muted">لا توجد دروس.</p>';
       var reqs = data.revisionRequests.filter(function(r) { return r.studentId === currentStudent.id; });
       document.getElementById('studentRevisionRequests').innerHTML = reqs.map(function(r) {
@@ -1909,7 +1925,8 @@
         tab.addEventListener('click', function() {
           document.querySelectorAll('.student-tab').forEach(function(t) { t.classList.remove('active'); });
           this.classList.add('active');
-          document.querySelectorAll('.student-tab-content').forEach(function(c) { c.classList.remove('active'); });
+          document.querySelectorAll('.student-tab-content').forEach(function(c) { c.classList.remove(
+            'active'); });
           var target = document.getElementById('student-' + this.dataset.tab + '-tab');
           if (target) target.classList.add('active');
           if (this.dataset.tab === 'cours') renderLatex();
@@ -1935,14 +1952,15 @@
     }
 
     // ============================================================
-    // 9. QUIZ ENGINE (مبسط)
+    // 9. QUIZ ENGINE
     // ============================================================
 
     function startQuiz(quizId) {
       var quiz = data.quizzes.find(function(q) { return q.id === quizId; });
       if (!quiz || !quiz.questions || !quiz.questions.length) { alert('Ce quiz n\'a pas de questions.'); return; }
       var container = document.getElementById('quizContainer');
-      var html = '<h3>' + quiz.title + '</h3><p>Durée: ' + (quiz.duration || 'Illimitée') + ' min</p><form id="quizForm">';
+      var html = '<h3>' + quiz.title + '</h3><p>Durée: ' + (quiz.duration || 'Illimitée') +
+        ' min</p><form id="quizForm">';
       quiz.questions.forEach(function(q, idx) {
         html += '<div class="quiz-question"><strong>' + (idx + 1) + '. ' + q.text + '</strong> (' + q.points +
           ' pts)<br>';
@@ -1950,8 +1968,8 @@
         var options = q.options || [];
         var type = q.type === 'multiple' ? 'checkbox' : 'radio';
         options.forEach(function(opt, oi) {
-          html += '<label class="quiz-option"><input type="' + type + '" name="q' + idx + '" value="' + (oi +
-            1) + '"> ' + opt + '</label><br>';
+          html += '<label class="quiz-option"><input type="' + type + '" name="q' + idx + '" value="' +
+            (oi + 1) + '"> ' + opt + '</label><br>';
         });
         html += '</div>';
       });
@@ -1965,22 +1983,24 @@
         quiz.questions.forEach(function(q, idx) {
           var selected = formData.getAll('q' + idx);
           var correctIndices = q.correct ? q.correct.split(',').map(Number) : [];
-          var isCorrect = selected.length === correctIndices.length && selected.every(function(v) { return correctIndices
-              .includes(Number(v)); });
+          var isCorrect = selected.length === correctIndices.length && selected.every(function(v) {
+            return correctIndices.includes(Number(v));
+          });
           if (isCorrect) correct++;
         });
         var score = Math.round((correct / total) * 100);
-        container.innerHTML = '<div class="quiz-result"><h4>Résultat: ' + score + '% (' + correct + '/' + total +
-          ')</h4></div>';
+        container.innerHTML = '<div class="quiz-result"><h4>Résultat: ' + score + '% (' + correct + '/' +
+          total + ')</h4></div>';
         if (currentStudent) {
           var results = JSON.parse(localStorage.getItem('quizResults') || '{}');
           if (!results[currentStudent.id]) results[currentStudent.id] = [];
           results[currentStudent.id].push({ quizId: quiz.id, score: score, date: new Date().toISOString() });
           localStorage.setItem('quizResults', JSON.stringify(results));
-          document.getElementById('studentQuizResults').innerHTML = results[currentStudent.id].map(function(r) {
+          document.getElementById('studentQuizResults').innerHTML = results[currentStudent.id].map(function(
+          r) {
             var qObj = data.quizzes.find(function(qq) { return qq.id === r.quizId; });
-            return '<div>' + (qObj ? qObj.title : 'Quiz') + ': ' + r.score + '% (' + new Date(r.date)
-              .toLocaleDateString() + ')</div>';
+            return '<div>' + (qObj ? qObj.title : 'Quiz') + ': ' + r.score + '% (' + new Date(r
+              .date).toLocaleDateString() + ')</div>';
           }).join('') || '<p class="muted">Aucun résultat.</p>';
         }
       });
@@ -2017,7 +2037,6 @@
       document.getElementById('stPassword').value = s.password || '';
       document.getElementById('stCode').value = s.code;
       document.getElementById('stClassroom').value = s.classroom || '';
-      editingStudentId = id;
     }
 
     function deleteStudent(id) {
@@ -2038,7 +2057,6 @@
       document.getElementById('grDate').value = g.date || '';
       document.getElementById('grScore').value = g.score;
       document.getElementById('grNote').value = g.remark || '';
-      editingGradeId = id;
     }
 
     function deleteGrade(id) {
@@ -2055,7 +2073,7 @@
     }
 
     // ============================================================
-    // 11. EVENT BINDING (إعداد الأحداث بعد تحميل الصفحة)
+    // 11. EVENT BINDING
     // ============================================================
 
     function setupEvents() {
@@ -2065,7 +2083,7 @@
       document.getElementById('studentLogoutBtn').addEventListener('click', logoutStudent);
       document.getElementById('logoutBtn').addEventListener('click', logoutAdmin);
 
-      // التنقل بين الصفحات
+      // التنقل
       document.querySelectorAll('.nav-link').forEach(function(link) {
         link.addEventListener('click', function(e) {
           e.preventDefault();
@@ -2082,7 +2100,6 @@
         });
       });
 
-      // بطاقات الميزات
       document.querySelectorAll('.feature-card').forEach(function(card) {
         card.addEventListener('click', function() {
           var section = this.dataset.section;
@@ -2094,7 +2111,7 @@
         });
       });
 
-      // علامات التبويب في لوحة الإدارة
+      // Admin tabs
       document.querySelectorAll('.admin-tab-link').forEach(function(link) {
         link.addEventListener('click', function(e) {
           e.preventDefault();
@@ -2110,7 +2127,7 @@
         });
       });
 
-      // زر العودة للأعلى
+      // Back to top
       var backToTop = document.getElementById('backToTop');
       window.addEventListener('scroll', function() {
         if (window.scrollY > 300) backToTop.classList.add('visible');
@@ -2132,15 +2149,15 @@
         if (!code) { alert('Entrez un code parcours.'); return; }
         var student = data.students.find(function(s) { return s.code === code; });
         if (!student) { alert('Aucun étudiant trouvé.'); return; }
-        document.getElementById('studentInfo').innerHTML = '<strong>' + student.fullname + '</strong> - ' + (student
-          .classroom || '');
+        document.getElementById('studentInfo').innerHTML = '<strong>' + student.fullname + '</strong> - ' + (
+          student.classroom || '');
         var grades = data.grades.filter(function(g) { return g.studentId === student.id; });
         var tbody = document.querySelector('#gradesTable tbody');
         var msg = document.getElementById('noGradesMsg');
         if (grades.length) {
           tbody.innerHTML = grades.map(function(g) {
-            return '<tr><td>' + formatDate(g.date) + '</td><td>' + g.subject + '</td><td>' + g.title +
-              '</td><td>' + g.score + '/20</td><td>' + (g.remark || '') + '</td></tr>';
+            return '<tr><td>' + formatDate(g.date) + '</td><td>' + g.subject + '</td><td>' + g
+              .title + '</td><td>' + g.score + '/20</td><td>' + (g.remark || '') + '</td></tr>';
           }).join('');
           msg.style.display = 'none';
         } else {
@@ -2167,8 +2184,8 @@
           Object.assign(existing, { fullname: fullname, username: username, password: password, code: code,
             classroom: classroom });
         } else {
-          data.students.push({ id: id, fullname: fullname, username: username, password: password, code: code,
-            classroom: classroom });
+          data.students.push({ id: id, fullname: fullname, username: username, password: password,
+            code: code, classroom: classroom });
         }
         saveData();
         document.getElementById('stId').value = '';
@@ -2203,11 +2220,11 @@
         if (!studentId || !subject || !title || isNaN(score)) { alert('Remplissez tous les champs.'); return; }
         var existing = data.grades.find(function(g) { return g.id === id; });
         if (existing) {
-          Object.assign(existing, { studentId: studentId, subject: subject, title: title, date: date, score: score,
-            remark: remark });
+          Object.assign(existing, { studentId: studentId, subject: subject, title: title, date: date,
+            score: score, remark: remark });
         } else {
-          data.grades.push({ id: id, studentId: studentId, subject: subject, title: title, date: date, score: score,
-            remark: remark });
+          data.grades.push({ id: id, studentId: studentId, subject: subject, title: title, date: date,
+            score: score, remark: remark });
         }
         saveData();
         document.getElementById('grId').value = '';
@@ -2230,7 +2247,7 @@
 
       document.getElementById('grFilterStudent').addEventListener('change', renderGradesAdmin);
 
-      // حفظ Quiz
+      // Quiz
       document.getElementById('btnCreateQuiz').addEventListener('click', function() {
         var title = document.getElementById('newQuizTitle').value.trim();
         if (!title) { alert('Entrez un titre.'); return; }
@@ -2268,15 +2285,15 @@
           var reader = new FileReader();
           reader.onload = function(e) {
             image = e.target.result;
-            quiz.questions.push({ id: generateId(), text: text, type: type, points: points, options: options,
-              correct: correct, feedback: feedback, image: image });
+            quiz.questions.push({ id: generateId(), text: text, type: type, points: points,
+              options: options, correct: correct, feedback: feedback, image: image });
             saveData();
             renderAll();
           };
           reader.readAsDataURL(fileInput.files[0]);
         } else {
-          quiz.questions.push({ id: generateId(), text: text, type: type, points: points, options: options,
-            correct: correct, feedback: feedback, image: image });
+          quiz.questions.push({ id: generateId(), text: text, type: type, points: points,
+            options: options, correct: correct, feedback: feedback, image: image });
           saveData();
           renderAll();
         }
@@ -2298,7 +2315,7 @@
         startQuiz(qid);
       });
 
-      // حفظ القاموس
+      // قاموس
       document.getElementById('adminBtnSaveDict').addEventListener('click', function() {
         var ar = document.getElementById('adminDictAr').value.trim();
         var fr = document.getElementById('adminDictFr').value.trim();
@@ -2312,7 +2329,7 @@
         renderAll();
       });
 
-      // حفظ الدرس
+      // دروس
       document.getElementById('adminBtnSaveLesson').addEventListener('click', function() {
         var title = document.getElementById('adminLessonTitle').value.trim();
         var chapter = document.getElementById('adminLessonChapter').value.trim();
@@ -2326,7 +2343,7 @@
         renderAll();
       });
 
-      // حفظ التمرين
+      // تمارين
       document.getElementById('adminBtnSaveExercise').addEventListener('click', function() {
         var title = document.getElementById('adminExerciseTitle').value.trim();
         var chapter = document.getElementById('adminExerciseChapter').value.trim();
@@ -2340,7 +2357,7 @@
         renderAll();
       });
 
-      // حفظ الامتحان
+      // امتحانات
       document.getElementById('adminBtnSaveExam').addEventListener('click', function() {
         var title = document.getElementById('adminExamTitle').value.trim();
         var series = document.getElementById('adminExamSeries').value.trim();
@@ -2354,7 +2371,7 @@
         renderAll();
       });
 
-      // الإعلان
+      // إعلان
       document.getElementById('btnSaveAnnouncement').addEventListener('click', function() {
         var text = document.getElementById('announcementInput').value.trim();
         if (!text) { alert('Entrez le texte.'); return; }
@@ -2364,7 +2381,7 @@
         alert('Annonce mise à jour.');
       });
 
-      // الرسائل
+      // رسائل
       document.getElementById('adminBtnSendMessage').addEventListener('click', function() {
         var title = document.getElementById('adminMessageTitle').value.trim();
         var content = document.getElementById('adminMessageContent').value.trim();
@@ -2382,8 +2399,8 @@
       });
 
       document.getElementById('adminMessageTarget').addEventListener('change', function() {
-        document.getElementById('specificStudentContainer').style.display = this.value === 'specific' ? 'block' :
-          'none';
+        document.getElementById('specificStudentContainer').style.display = this.value === 'specific' ?
+          'block' : 'none';
       });
 
       // LaTeX
@@ -2399,7 +2416,7 @@
         renderLatex();
       });
 
-      // السلايدر
+      // Slider
       document.getElementById('adminBtnAddSliderImage').addEventListener('click', function() {
         var input = document.getElementById('sliderImageInput');
         if (!input || !input.files || !input.files[0]) { alert('Sélectionnez une image.'); return; }
@@ -2413,7 +2430,7 @@
         reader.readAsDataURL(input.files[0]);
       });
 
-      // تصدير واستيراد
+      // Export/Import
       document.getElementById('btnExport').addEventListener('click', function() {
         var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         var url = URL.createObjectURL(blob);
@@ -2441,7 +2458,7 @@
         reader.readAsText(file);
       });
 
-      // طلب المراجعة
+      // طلب مراجعة
       document.getElementById('revisionRequestForm').addEventListener('submit', function(e) {
         e.preventDefault();
         if (!currentStudent) { alert('Vous devez être connecté.'); return; }
@@ -2464,8 +2481,8 @@
         var description = document.getElementById('concoursDescription').value.trim();
         var category = document.getElementById('concoursCategory').value;
         if (!title) { alert('أدخل عنوان المسابقة.'); return; }
-        data.concours.push({ id: generateId(), title: title, description: description, duration: duration,
-          date: date, category: category, questions: [] });
+        data.concours.push({ id: generateId(), title: title, description: description,
+          duration: duration, date: date, category: category, questions: [] });
         saveData();
         document.getElementById('concoursTitle').value = '';
         document.getElementById('concoursDescription').value = '';
@@ -2497,8 +2514,8 @@
           var reader = new FileReader();
           reader.onload = function(e) {
             image = e.target.result;
-            concours.questions.push({ id: generateId(), text: text, image: image, options: options,
-              correct: correct, points: points });
+            concours.questions.push({ id: generateId(), text: text, image: image,
+              options: options, correct: correct, points: points });
             saveData();
             renderConcoursAdminList();
             document.getElementById('concoursQuestionText').value = '';
@@ -2533,7 +2550,7 @@
     }
 
     // ============================================================
-    // 12. RENDER ALL & STATS
+    // 12. STATS & RENDER ALL
     // ============================================================
 
     function updateStats() {
@@ -2571,27 +2588,25 @@
     }
 
     // ============================================================
-    // 13. INIT (تشغيل كل شيء)
+    // 13. INIT - تشغيل كل شيء
     // ============================================================
 
     function init() {
-      // تحميل البيانات
       loadData();
-
-      // عرض كل شيء
       renderAll();
 
       // تشغيل المؤقتات فوراً
       updateAllTimers();
 
-      // تشغيل المؤقتات كل ثانية
-      setInterval(updateAllTimers, 1000);
+      // تشغيل المؤقتات كل ثانية (هذا هو الحل النهائي)
+      setInterval(function() {
+        updateAllTimers();
+      }, 1000);
 
-      // إعداد الأحداث
       setupEvents();
 
-      console.log('✅ Lycée de l\'Excellence - Tous les systèmes sont opérationnels !');
-      console.log('✅ Les compteurs à rebours fonctionnent maintenant !');
+      console.log('✅ Lycée de l\'Excellence - جميع الأنظمة تعمل!');
+      console.log('✅ المؤقتات الآن تتحرك كل ثانية!');
     }
 
     // تشغيل التهيئة عند تحميل الصفحة

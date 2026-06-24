@@ -1,1345 +1,1516 @@
-/* =============================
-   Unified dashboard JS - UPDATED with Professional Quiz System
-   =============================*/
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lycée de l'Excellence - Physique 2026</title>
+  <meta name="description" content="منصة تعليمية متخصصة في الفيزياء - السنة الدراسية 2026">
+  <meta name="keywords" content="فيزياء, تعليم, ثانوية, امتحانات, دروس, تمارين, quiz">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <style>
+    /* ===== كل الـ CSS الموجود كما هو ===== */
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI','Tahoma',sans-serif; }
+    body { background:#f4f7fc; color:#1e293b; direction:rtl; padding-top:70px; }
+    .container { max-width:1200px; margin:0 auto; padding:0 20px; }
+    header { background:#0b3d91; color:white; padding:12px 0; position:fixed; top:0; width:100%; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+    .header-content { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .logo { display:flex; align-items:center; gap:10px; }
+    .logo img { height:45px; border-radius:50%; background:white; padding:4px; }
+    .logo h1 { font-size:20px; font-weight:700; }
+    nav ul { display:flex; list-style:none; gap:10px; flex-wrap:wrap; }
+    nav ul li a { color:white; text-decoration:none; font-weight:500; padding:6px 12px; border-radius:6px; transition:0.2s; font-size:15px; }
+    nav ul li a:hover { background:#1e90ff; }
+    .auth-buttons { display:flex; gap:8px; flex-wrap:wrap; }
+    .btn { padding:8px 16px; border:none; border-radius:6px; font-weight:600; cursor:pointer; transition:0.2s; display:inline-flex; align-items:center; gap:6px; }
+    .btn-primary { background:#1e90ff; color:white; }
+    .btn-primary:hover { background:#0b6fd4; }
+    .btn-accent { background:#f59e0b; color:#1e293b; }
+    .btn-accent:hover { background:#d97706; }
+    .btn-success { background:#10b981; color:white; }
+    .btn-success:hover { background:#059669; }
+    .btn-outline { background:transparent; border:2px solid #1e90ff; color:#1e90ff; }
+    .btn-outline:hover { background:#1e90ff; color:white; }
+    .btn-ghost { background:transparent; color:#1e293b; border:1px solid #cbd5e1; }
+    .btn-ghost:hover { background:#e2e8f0; }
+    .hero { background:linear-gradient(135deg,#0b3d91,#1e90ff); color:white; padding:40px 0; text-align:center; margin-bottom:20px; }
+    .hero h2 { font-size:32px; }
+    .hero p { font-size:18px; opacity:0.9; }
+    .announcement-box { background:#fef3c7; border-right:6px solid #f59e0b; padding:12px 20px; margin:10px 20px 20px; border-radius:8px; display:flex; align-items:center; gap:15px; box-shadow:0 2px 6px rgba(0,0,0,0.06); }
+    .announcement-box i { color:#f59e0b; font-size:24px; }
+    .announcement-content { flex:1; font-size:16px; }
+    .section-title { font-size:26px; margin:30px 0 20px; color:#0b3d91; border-bottom:3px solid #1e90ff; padding-bottom:8px; display:inline-block; }
+    .features { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:20px; margin:30px 0; }
+    .feature-card { background:white; border-radius:12px; padding:20px 15px; box-shadow:0 4px 12px rgba(0,0,0,0.06); text-align:center; cursor:pointer; transition:0.3s; border:1px solid #e2e8f0; }
+    .feature-card:hover { transform:translateY(-5px); box-shadow:0 10px 25px rgba(0,0,0,0.1); }
+    .feature-icon { font-size:36px; color:#0b3d91; margin-bottom:10px; }
+    .student-dashboard { background:white; border-radius:16px; padding:25px; margin:30px 0; box-shadow:0 4px 20px rgba(0,0,0,0.05); display:none; }
+    .student-dashboard.active { display:block; }
+    .welcome-banner { background:linear-gradient(135deg,#1e90ff,#0b3d91); color:white; padding:20px; border-radius:12px; margin-bottom:25px; }
+    .student-tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; border-bottom:2px solid #e2e8f0; padding-bottom:10px; }
+    .student-tab { padding:8px 18px; border-radius:30px; background:#f1f5f9; cursor:pointer; font-weight:500; transition:0.2s; }
+    .student-tab.active { background:#0b3d91; color:white; }
+    .student-tab:hover { background:#cbd5e1; }
+    .student-tab-content { display:none; }
+    .student-tab-content.active { display:block; }
+    .dashboard-card { background:#f8fafc; border-radius:12px; padding:20px; margin-bottom:20px; border:1px solid #e2e8f0; }
+    .dashboard-card h3 { margin-bottom:15px; color:#0b3d91; }
+    .content-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:15px; }
+    .content-grid .item { background:white; padding:15px; border-radius:10px; box-shadow:0 2px 6px rgba(0,0,0,0.04); border:1px solid #e2e8f0; transition:0.2s; }
+    .content-grid .item:hover { border-color:#1e90ff; }
+    .page-section { display:none; margin:30px 0; }
+    .page-section.active { display:block; }
+    .admin-panel { display:none; background:white; border-radius:16px; padding:25px; margin:30px 0; box-shadow:0 4px 20px rgba(0,0,0,0.05); }
+    .admin-panel.active { display:block; }
+    .admin-header { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; margin-bottom:20px; border-bottom:2px solid #e2e8f0; padding-bottom:15px; }
+    .admin-dashboard { display:flex; gap:25px; flex-wrap:wrap; }
+    .admin-sidebar { width:220px; background:#f1f5f9; border-radius:12px; padding:15px; }
+    .admin-sidebar h3 { color:#0b3d91; margin-bottom:15px; }
+    .admin-menu { list-style:none; }
+    .admin-menu li { margin-bottom:8px; }
+    .admin-menu li a { display:block; padding:8px 12px; border-radius:8px; color:#1e293b; text-decoration:none; transition:0.2s; }
+    .admin-menu li a:hover, .admin-menu li.active a { background:#0b3d91; color:white; }
+    .admin-content { flex:1; min-width:280px; }
+    .admin-section { display:none; }
+    .admin-section.active { display:block; }
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:15px; margin:20px 0; }
+    .stat-card { background:#f1f5f9; padding:20px; border-radius:12px; text-align:center; }
+    .stat-card h3 { font-size:30px; color:#0b3d91; }
+    .form-row { display:flex; gap:15px; flex-wrap:wrap; margin-bottom:12px; }
+    .form-group { flex:1; min-width:150px; }
+    .form-group label { display:block; font-weight:600; margin-bottom:4px; font-size:14px; }
+    .form-group input, .form-group select, .form-group textarea { width:100%; padding:10px 12px; border:1px solid #cbd5e1; border-radius:8px; font-size:14px; }
+    .form-group textarea { resize:vertical; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    table th { background:#0b3d91; color:white; padding:10px; text-align:right; }
+    table td { padding:10px; border-bottom:1px solid #e2e8f0; }
+    table tr:hover { background:#f1f5f9; }
+    .flex { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .flex.right { justify-content:flex-end; }
+    .mt-2 { margin-top:12px; }
+    .mb-2 { margin-bottom:12px; }
+    .mb-3 { margin-bottom:20px; }
+    .muted { color:#94a3b8; font-size:14px; }
+    .w-100 { width:100%; }
+    .inline { display:flex; gap:8px; flex-wrap:wrap; }
+    .hero-slider { background:#e2e8f0; height:200px; border-radius:16px; margin:10px 20px 20px; display:flex; align-items:center; justify-content:center; color:#475569; font-size:18px; overflow:hidden; position:relative; }
+    .hero-slider img { width:100%; height:100%; object-fit:cover; }
+    .latex-content { background:#f8fafc; padding:15px; border-radius:10px; border:1px solid #e2e8f0; }
+    @media (max-width:768px) { .header-content { flex-direction:column; gap:10px; } nav ul { justify-content:center; } .admin-dashboard { flex-direction:column; } .admin-sidebar { width:100%; } }
+    .quiz-question { background:white; padding:20px; border-radius:12px; margin-bottom:20px; border:1px solid #e2e8f0; }
+    .quiz-option { display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px; cursor:pointer; transition:0.2s; }
+    .quiz-option:hover { background:#f1f5f9; }
+    .quiz-option input[type="radio"], .quiz-option input[type="checkbox"] { width:18px; height:18px; }
+    .quiz-result { background:#f0fdf4; border:1px solid #10b981; padding:15px; border-radius:10px; margin:15px 0; }
+    .quiz-result .correct { color:#059669; font-weight:bold; }
+    .quiz-result .wrong { color:#dc2626; font-weight:bold; }
 
-/* =============================
-   Data model (localStorage)
-   ============================= */  
-const STORAGE_KEY = 'lyceeExcellence_v_24';
-let appData = {
-  students: [
-    { id: "mfepslppvscwl", fullname: "Mohamed ali belhaj", username: "Mohamed.Ali", password: "1@20TC", code: "P-2024-001", classroom: "TC PC" },
-    { id: "mfepug3abdx5k", fullname: "Mohamed Abu Zaid", username: "Abu.Zaid", password: "2@2025", code: "P-2024-002", classroom: "1BAC" },
-    { id: "mfepwvs0jpxwe", fullname: "Sallam Elmohib", username: "Sallam.Elmohib", password: "3@2024", code: "P-2024-003", classroom: "1BAC" },
-    { id: "mfepyzyc4yh2a", fullname: "Ajwad Halab", username: "Ajwad.Halab", password: "3@2323", code: "P-2024-004", classroom: "TC PC" },
-    { id: "mfeq2kxyuh5pf", fullname: "Lwali Thali", username: "Lwali.Thali", password: "4@5252", code: "P-2024-005", classroom: "TC PC" }
-  ],
-  grades: [
-    { id: "mfeq5pgwl22cy", studentId: "mfepslppvscwl", subject: "Physique", title: "Evaluation diagnostique", date: "2025-09-10", score: 0.25, note: "F" },
-    { id: "mfeq6gtoehgov", studentId: "mfepug3abdx5k", subject: "physique", title: "Evaluation diagnostique", date: "2025-09-11T01:24:03.372Z", score: 0.5, note: "F" },
-    { id: "mfeq7oqrphzkw", studentId: "mfepwvs0jpxwe", subject: "physique", title: "Evaluation diagnostique", date: "2025-09-11T01:25:00.291Z", score: 10.5, note: "P" },
-    { id: "mfeq8wlcm55g2", studentId: "mfepyzyc4yh2a", subject: "Physique", title: "Evaluation diagnostique", date: "2025-09-11T01:25:57.121Z", score: 0.25, note: "F" },
-    { id: "mfeq9nfdiokin", studentId: "mfeq2kxyuh5pf", subject: "Physique", title: "Evaluation diagnostique", date: "2025-09-11T01:26:31.897Z", score: 2.5, note: "F" }
-  ],
-  quizzes: [
-    {
-      id: "quiz1",
-      title: "اختبار فيزياء تجريبي - القوة والحركة",
-      description: "اختبار تجريبي يشمل أساسيات القوة والحركة في الفيزياء",
-      durationMinutes: 20,
-      shuffle: true,
-      allowMultipleAttempts: true,
-      questions: [
-        {
-          id: "q1",
-          question: "ما هي وحدة قياس القوة في النظام الدولي للوحدات؟",
-          type: "single",
-          points: 2,
-          options: ["الجول", "النيتون", "الواط", "الباسكال"],
-          correctIndices: [1],
-          feedback: "النيتون هي وحدة قياس القوة في النظام الدولي للوحدات"
-        },
-        {
-          id: "q2", 
-          question: "اختر العبارات الصحيحة حول الحركة المتسارعة:",
-          type: "multiple",
-          points: 3,
-          options: [
-            "تتغير السرعة بمعدل ثابت",
-            "التسارع يكون صفراً",
-            "القوة المحصلة لا تساوي صفراً",
-            "السرعة تكون ثابتة"
-          ],
-          correctIndices: [0, 2],
-          feedback: "في الحركة المتسارعة تتغير السرعة بمعدل ثابت وتكون القوة المحصلة لا تساوي صفراً"
-        },
-        {
-          id: "q3",
-          question: "الكيلوجرام هو وحدة قياس الكتلة وليس الوزن",
-          type: "single",
-          points: 2,
-          options: ["صح", "خطأ"],
-          correctIndices: [0],
-          feedback: "نعم، الكيلوجرام وحدة كتلة بينما النيتون وحدة وزن"
-        },
-        {
-          id: "q4",
-          question: "ما هو قانون نيوتن الأول؟",
-          type: "single",
-          points: 3,
-          options: [
-            "القوة تساوي الكتلة في التسارع",
-            "لكل فعل رد فعل مساوٍ له في المقدار ومعاكس في الاتجاه",
-            "يظل الجسم في حالته من السكون أو الحركة ما لم تؤثر عليه قوة محصلة"
-          ],
-          correctIndices: [2],
-          feedback: "قانون نيوتن الأول يعرف بقانون القصور الذاتي"
-        }
-      ]
-    },
-    {
-      id: "quiz2",
-      title: "اختبار كيمياء - الجدول الدوري",
-      description: "اختبار في أساسيات الجدول الدوري والعناصر الكيميائية",
-      durationMinutes: 15,
-      shuffle: false,
-      allowMultipleAttempts: true,
-      questions: [
-        {
-          id: "q1",
-          question: "ما هو العدد الذري للهيدروجين؟",
-          type: "single",
-          points: 1,
-          options: ["1", "2", "3", "4"],
-          correctIndices: [0],
-          feedback: "العدد الذري للهيدروجين هو 1"
-        }
-      ]
-    }
-  ],
-  dictionary: [],
-  lessons: [],
-  exercises: [
-    { id: "mfj2mukk2edjb", title: "Série N'1 Physique-Chimie", driveLink: "https://drive.google.com/file/d/1Ck4CbEtKofWPd11xAOxJVCQI7b8v65vK/view?usp=sharing" },
-    { id: "mglipszl7zhay", title: "Série N'1 Physique-Chimie 2-bac pc", driveLink: "https://drive.google.com/file/d/1Ck4CbEtKofWPd11xAOxJVCQI7b8v65vK/view?usp=sharing" }
-  ],
-  exams: [],
-  messages: [],
-  latexContents: [],
-  slides: [],
-  responses: {},
-  regradeRequests: [],
-  currentUser: null,
-  isAdmin: false,
-  announcement: {
-    text: "امتحان المراقبة المستمرة رقم 01 سيكون ابتداء من يوم 28/10 حتى 11/11 \nبالنسبة ل  1bac و 2Bac و TC .",
-    image: null
-  },
-  siteCover: { enabled: true, url: null }
-};
-
-// متغيرات نظام الـ Quiz
-let currentQuiz = null;
-let currentQuestionIndex = 0;
-let quizTimer = null;
-let timeLeft = 0;
-let userAnswers = {};
-let quizStartTime = null;
-
-function loadData(){
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      Object.assign(appData, parsed);
-      appData.slides = appData.slides || [];
-      appData.regradeRequests = appData.regradeRequests || [];
-      appData.responses = appData.responses || {};
-      appData.quizzes = appData.quizzes || [];
-    }
-  } catch(e){ console.error('loadData', e); }
-}
-
-function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
-
-/* helpers */
-function $(id){ return document.getElementById(id); }
-function genId(){ return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-function escapeHtml(s){ return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
-
-// =============================
-// Defensive fixes to stop scroll-to-top and wire grade buttons
-// =============================
-function normalizeInteractiveElements(){
-  try {
-    document.querySelectorAll('button').forEach(b => {
-      if (!b.hasAttribute('type')) b.setAttribute('type', 'button');
-    });
-
-    document.querySelectorAll('a[href="#"], a[href="#!"]').forEach(a => {
-      if (!a.__preventedHash) {
-        a.addEventListener('click', e => { e.preventDefault(); });
-        a.__preventedHash = true;
-      }
-    });
-
-    document.querySelectorAll('a[href^="#"]').forEach(a => {
-      if (a.getAttribute('data-section')) return;
-      if (!a.__preventedHashAny) {
-        a.addEventListener('click', e => {
-          const targetHash = a.getAttribute('href');
-          if (!targetHash || targetHash === '#' || targetHash === '#!') { e.preventDefault(); return; }
-          try {
-            const id = targetHash.replace(/^#/, '');
-            if (!document.getElementById(id)) e.preventDefault();
-          } catch(err){ e.preventDefault(); }
-        });
-        a.__preventedHashAny = true;
-      }
-    });
-  } catch (err) { console.warn('normalizeInteractiveElements error', err); }
-}
-
-function attachGradeButtonsFallback(){
-  try {
-    const labels = [
-      'Consultation des Notes','Consultation des notes','Consultation Des Notes',
-      'Code Parcours','Code parcours','Code-parcours','CodeParcours',
-      'Voir les notes','Voir les Notes','Voir les notes'
-    ];
-    Array.from(document.querySelectorAll('button, a')).forEach(el => {
-      const txt = (el.textContent || '').trim();
-      if (!txt) return;
-      const matchesLabel = labels.some(lbl => txt.indexOf(lbl) !== -1);
-      if (!matchesLabel) return;
-      if (el.__gradeBound) return;
-      el.addEventListener('click', function(e){
-        e.preventDefault();
-        let input = null;
-        const frm = el.closest('form');
-        if (frm) input = frm.querySelector('input, textarea');
-        if (!input) input = document.querySelector('#codeParcours, #gradeCode, #code, input[name="code"], input[name="gradeCode"]');
-        if (!input) {
-          input = Array.from(document.querySelectorAll('input, textarea')).find(i => {
-            const p = (i.placeholder||'').toLowerCase();
-            const n = (i.name||'').toLowerCase();
-            const id = (i.id||'').toLowerCase();
-            return p.includes('code') || n.includes('code') || id.includes('code') || p.includes('parcours') || n.includes('parcours') || id.includes('parcours');
-          }) || null;
-        }
-        let code = '';
-        if (input) code = (input.value || '').trim();
-        if (!code) {
-          code = prompt('أدخل Code Parcours / Entrez le Code Parcours (مثال: P-2024-001):');
-          if (!code) return;
-        }
-        try { searchGradesByCode(code.trim()); } catch(err){ alert('خطأ أثناء محاولة عرض النقاط: ' + (err && err.message ? err.message : err)); console.error(err); }
-      });
-      el.__gradeBound = true;
-    });
-  } catch(err){ console.warn('attachGradeButtonsFallback error', err); }
-}
-
-/* =============================
-   Init
-   ============================= */
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-  wireEvents();
-  wireSliderAdminEvents();
-
-  // defensive fixes
-  normalizeInteractiveElements();
-  attachGradeButtonsFallback();
-
-  refreshUI();
-  setTimeout(()=>{ renderAll(); renderFrontSlider(); }, 50);
-});
-
-/* =============================
-   Wiring UI events
-   ============================= */
-function wireEvents(){
-  // nav links
-  document.querySelectorAll('.nav-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const s=a.getAttribute('data-section'); showSection(s); }));
-  document.querySelectorAll('.feature-card').forEach(c => c.addEventListener('click', ()=> { const s=c.getAttribute('data-section'); showSection(s); }));
-
-  // login modals
-  if ($('studentLoginBtn')) $('studentLoginBtn').addEventListener('click', ()=> { if ($('studentLoginModal')) $('studentLoginModal').style.display='block'; });
-  if ($('loginBtn')) $('loginBtn').addEventListener('click', ()=> { if ($('loginModal')) $('loginModal').style.display='block'; });
-  if ($('cancelStudentLogin')) $('cancelStudentLogin').addEventListener('click', ()=> { if ($('studentLoginModal')) $('studentLoginModal').style.display='none'; });
-  if ($('cancelLogin')) $('cancelLogin').addEventListener('click', ()=> { if ($('loginModal')) $('loginModal').style.display='none'; });
-
-  if ($('submitStudentLogin')) $('submitStudentLogin').addEventListener('click', ()=> {
-    const u = $('studentUsername').value.trim(), p = $('studentPassword').value;
-    loginStudent(u,p);
-  });
-  if ($('submitLogin')) $('submitLogin').addEventListener('click', ()=> {
-    const u = $('username').value.trim(), p = $('password').value;
-    loginAdmin(u,p);
-  });
-
-  if ($('studentLogoutBtn')) $('studentLogoutBtn').addEventListener('click', ()=> { appData.currentUser=null; appData.isAdmin=false; saveData(); refreshUI(); showSection('home'); });
-  if ($('logoutBtn')) $('logoutBtn').addEventListener('click', ()=> { appData.currentUser=null; appData.isAdmin=false; saveData(); refreshUI(); showSection('home'); });
-
-  // student tabs
-  document.querySelectorAll('.student-tab').forEach(t => t.addEventListener('click', ()=> { const name = t.getAttribute('data-tab'); switchStudentTab(name); }));
-
-  // admin tab links
-  document.querySelectorAll('.admin-tab-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); const tab = a.getAttribute('data-tab'); switchAdminTab(tab); }));
-
-  // announcement handlers
-  if ($('announcementImageInput')) $('announcementImageInput').addEventListener('change', handleAnnouncementImage);
-  if ($('btnSaveAnnouncement')) $('btnSaveAnnouncement').addEventListener('click', ()=> { if ($('announcementInput')) appData.announcement.text = $('announcementInput').value; if ($('announcementText')) $('announcementText').textContent = appData.announcement.text; saveData(); alert('Annonce enregistrée'); });
-  if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').addEventListener('click', ()=> { appData.announcement.image=null; saveData(); if ($('announcementImagePreview')) $('announcementImagePreview').style.display='none'; if ($('announcementImage')) $('announcementImage').style.display='none'; if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='none'; });
-
-  // export/import
-  if ($('btnExport')) $('btnExport').addEventListener('click', ()=> {
-    const blob = new Blob([JSON.stringify(appData)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='lycee_data.json'; a.click(); URL.revokeObjectURL(url);
-  });
-  if ($('importFile')) $('importFile').addEventListener('change', e => {
-    const f = e.target.files[0]; if (!f) return;
-    const fr = new FileReader(); fr.onload = function(ev){ try { if (!confirm('Importer va remplacer البيانات الحالية. Continuer?')) return; appData = JSON.parse(ev.target.result); saveData(); renderAll(); refreshUI(); alert('Import réussi'); } catch(err){ alert('Fichier invalide'); } }; fr.readAsText(f);
-  });
-
-  // student/admin functional buttons (guarded)
-  if ($('btnCreateQuiz')) $('btnCreateQuiz').addEventListener('click', adminCreateQuiz);
-  if ($('adminBtnSaveQuiz')) $('adminBtnSaveQuiz').addEventListener('click', adminAddQuestion);
-  if ($('adminBtnPreviewQuiz')) $('adminBtnPreviewQuiz').addEventListener('click', ()=> { const qid = $('adminSelectQuiz').value; if (!qid){ alert('Sélectionner quiz'); return;} previewQuizAsStudent(qid); });
-
-  if ($('adminBtnSaveLesson')) $('adminBtnSaveLesson').addEventListener('click', adminSaveLesson);
-  if ($('adminBtnSaveExercise')) $('adminBtnSaveExercise').addEventListener('click', adminSaveExercise);
-  if ($('adminBtnSaveExam')) $('adminBtnSaveExam').addEventListener('click', adminSaveExam);
-
-  if ($('btnSaveStudent')) $('btnSaveStudent').addEventListener('click', adminSaveStudent);
-  if ($('btnSaveGrade')) $('btnSaveGrade').addEventListener('click', adminSaveGrade);
-  if ($('adminBtnSendMessage')) $('adminBtnSendMessage').addEventListener('click', adminSendMessage);
-
-  // إضافة حدث لزر إضافة كلمة في القاموس
-  if ($('btnAddDictionary')) {
-    $('btnAddDictionary').addEventListener('click', addDictionaryTerm);
-  } else {
-    setTimeout(() => {
-      const buttons = document.querySelectorAll('button');
-      buttons.forEach(btn => {
-        if (btn.textContent.includes('Ajouter le terme') || btn.textContent.includes('Add term') || btn.textContent.includes('إضافة مصطلح')) {
-          btn.addEventListener('click', addDictionaryTerm);
-        }
-      });
-    }, 1000);
-  }
-
-  if ($('latexCode')) {
-    $('latexCode').addEventListener('input', updateLatexLineNumbers);
-    updateLatexLineNumbers();
-  }
-  if ($('btnSaveLatex')) $('btnSaveLatex').addEventListener('click', adminSaveLatex);
-}
-
-/* =============================
-   UI switching
-   ============================= */
-function hideAllMainSections(){
-  document.querySelectorAll('.page-section').forEach(s => s.style.display='none'); 
-  if ($('student-dashboard')) $('student-dashboard').style.display='none'; 
-  if ($('admin-panel')) $('admin-panel').style.display='none';
-  // إخفاء واجهة الـ Quiz إذا كانت مفتوحة
-  const quizInterface = $('quiz-interface');
-  if (quizInterface) quizInterface.style.display = 'none';
-}
-
-function showSection(id){
-  hideAllMainSections();
-  
-  const el = document.getElementById(id);
-  if (el) {
-    el.style.display='block';
-  }
-  
-  if (!appData.currentUser && id !== 'home') {
-    if ($('home-section')) $('home-section').style.display='block';
-    return;
-  }
-  
-  if (id === 'quiz') renderQuizList();
-  if (id === 'lessons') renderLessons();
-  if (id === 'exercises') renderExercises();
-  if (id === 'exams') renderExams();
-  if (id === 'dictionary') renderDictionary();
-}
-
-function switchStudentTab(tabName){
-  document.querySelectorAll('.student-tab-content').forEach(x=>x.style.display='none');
-  document.querySelectorAll('.student-tab').forEach(t=>t.classList.remove('active'));
-  const btn = document.querySelector('.student-tab[data-tab="'+tabName+'"]');
-  if (btn) btn.classList.add('active');
-  const content = document.getElementById('student-'+tabName+'-tab');
-  if (content) content.style.display='block';
-  if (tabName === 'dashboard') loadStudentDashboard();
-  if (tabName === 'quiz') renderQuizListForStudent();
-  if (tabName === 'exercises') renderStudentExercises();
-  if (tabName === 'cours') renderLatexListForStudents();
-  if (tabName === 'messages') renderStudentMessages();
-  if (tabName === 'exams') renderExams();
-}
-
-function switchAdminTab(tabName){
-  document.querySelectorAll('.admin-section').forEach(s=>s.style.display='none');
-  document.querySelectorAll('.admin-tab-link').forEach(l=>l.classList.remove('active'));
-  const link = document.querySelector('.admin-tab-link[data-tab="'+tabName+'"]'); 
-  if (link) link.classList.add('active');
-  const el = document.getElementById(tabName); 
-  if (el) el.style.display='block';
-  if (tabName === 'tab-students') loadStudentsTable();
-  if (tabName === 'tab-grades') loadGradesTable();
-  if (tabName === 'tab-quiz') renderQuizAdminListDetailed();
-  if (tabName === 'tab-latex') loadLatexAdminList();
-  if (tabName === 'tab-messages') renderAdminMessagesList();
-  if (tabName === 'tab-lessons') renderLessonsAdminList();
-  if (tabName === 'tab-exercises') renderExercisesAdminList();
-  if (tabName === 'tab-exams') { renderExamsAdminList(); renderRegradeRequestsAdminList(); }
-  if (tabName === 'tab-dictionary') renderDictionaryAdminList();
-}
-
-/* =============================
-   Authentication
-   ============================= */
-function loginStudent(username, password){
-  const s = appData.students.find(x=>x.username===username && x.password===password);
-  if (!s) { alert('Nom d\'utilisateur ou mot de passe incorrect'); return; }
-  appData.currentUser = s; 
-  appData.isAdmin = false; 
-  saveData(); 
-  refreshUI(); 
-  if ($('studentLoginModal')) $('studentLoginModal').style.display='none'; 
-  switchStudentTab('dashboard');
-}
-
-function loginAdmin(username, password){
-  if (username === 'admin' && password === 'admin123') {
-    appData.currentUser = { id:'admin', fullname:'Administrateur' }; 
-    appData.isAdmin = true; 
-    saveData(); 
-    refreshUI(); 
-  if ($('loginModal')) $('loginModal').style.display='none'; 
-    switchAdminTab('tab-dashboard'); 
-    return;
-  }
-  alert('Nom d\'utilisateur ou mot de passe incorrect');
-}
-
-/* =============================
-   نظام الـ Quiz المحسن - الجزء الرئيسي
-   ============================= */
-
-/* =============================
-   عرض قائمة الـ Quiz للطالب
-   ============================= */
-function renderQuizListForStudent() {
-  const container = $('studentQuizList');
-  if (!container) return;
-  
-  container.innerHTML = '';
-  
-  if (!appData.quizzes || appData.quizzes.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
-        <div style="font-size: 48px; margin-bottom: 16px;">📝</div>
-        <h3 style="margin: 0 0 8px 0;">لا توجد اختبارات متاحة حالياً</h3>
-        <p style="margin: 0;">سيتم إضافة اختبارات جديدة قريباً</p>
-      </div>
-    `;
-    return;
-  }
-  
-  appData.quizzes.forEach(quiz => {
-    const studentId = appData.currentUser?.id;
-    const previousAttempt = studentId ? appData.responses[studentId]?.[quiz.id] : null;
-    const canRetake = quiz.allowMultipleAttempts || !previousAttempt;
-    
-    const quizCard = document.createElement('div');
-    quizCard.className = 'quiz-card';
-    quizCard.style.cssText = `
+    /* ===== الأنماط الجديدة (تستخدم نفس الفئات) ===== */
+    .about-section, .stats-highlight, .testimonials, .contact-section {
       background: white;
-      border-radius: 12px;
+      border-radius: 16px;
+      padding: 30px;
+      margin: 30px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .about-section h2, .stats-highlight h2, .testimonials h2, .contact-section h2 {
+      color: #0b3d91;
+      margin-bottom: 15px;
+    }
+    .stats-highlight .stat-item {
+      display: inline-block;
+      margin: 10px 20px;
+      text-align: center;
+    }
+    .stats-highlight .stat-number {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1e90ff;
+      display: block;
+    }
+    .stats-highlight .stat-label {
+      color: #475569;
+    }
+    .testimonial-item {
+      background: #f8fafc;
       padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      border: 1px solid #e1e5e9;
-    `;
-    
-    quizCard.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <h3 style="margin: 0; color: #2c3e50; flex: 1;">${escapeHtml(quiz.title)}</h3>
-        <span style="background: #3498db; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold;">
-          ${quiz.questions.length} أسئلة
-        </span>
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border-right: 4px solid #1e90ff;
+    }
+    .testimonial-item .author {
+      font-weight: 600;
+      color: #0b3d91;
+      margin-top: 10px;
+    }
+    .footer {
+      background: #0b3d91;
+      color: white;
+      padding: 40px 0;
+      margin-top: 40px;
+    }
+    .footer .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+    }
+    .footer h4 {
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+    .footer ul {
+      list-style: none;
+      padding: 0;
+    }
+    .footer ul li {
+      margin-bottom: 8px;
+    }
+    .footer ul li a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .footer ul li a:hover {
+      color: white;
+    }
+    .footer .social-links a {
+      color: white;
+      margin: 0 8px;
+      font-size: 22px;
+      transition: 0.3s;
+    }
+    .footer .social-links a:hover {
+      color: #f59e0b;
+    }
+    .footer-bottom {
+      border-top: 1px solid #1e4a8a;
+      padding-top: 20px;
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+    .countdown {
+      background: #1e293b;
+      color: white;
+      padding: 15px;
+      border-radius: 12px;
+      text-align: center;
+      margin: 20px 0;
+      font-size: 20px;
+    }
+    .countdown span {
+      background: #f59e0b;
+      color: #1e293b;
+      padding: 5px 12px;
+      border-radius: 8px;
+      margin: 0 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER (نفسه) ===== -->
+<header role="banner">
+  <div class="container header-content">
+    <div class="logo">
+      <img id="mainLogo" alt="Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CjxkZWZzPgogIDxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHgyPSIxIj4KICAgIDxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzBiM2Q5MSIvPgogICAgPHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjMWU5MGZmIi8+CiAgPC9saW5lYXJHcmFkaWVudD4KPC9kZWZzPgo8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjY0IiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMjU2IDU2Yy02IDAtNTYgMjItODggNDgtMjggMjItNDAgNTItNDAgMTIwIDAgMTAwIDExMiAxNTIgMTI4IDE2MCAxNi04IDEyOC02MCAxMjgtMTYwIDAtNjgtMTItOTgtNDAtMTIwLTMyLTI2LTgyLTQ4LTg4LTQ4eiIgZmlsbD0idXJsKCNnKSIgc3Ryb2tlPSIjMDgzMDZiIiBzdHJva2Utd2lkdGg9IjQiLz4KPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTYwLDIwMCkgc2NhbGUoMC45KSI+CiAgPHBhdGggZD0iTTMyIDY0YzAtMTggNDAtNTYgOTYtNTZzOTYgMzggOTYgNTYtNDAgNDgtOTYgNDhTMzIgODIgMzIgNjR6IiBmaWxsPSIjZmZmIiBvcGFjaXR5PSIwLjk1Ii8+CiAgPHBhdGggZD0iTTIyNCA2NGMwLTYtNDQtNDAtOTYtNDBTMzIgNTggMzIgNjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4MzA2YiIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8cGF0aCBkPSJNNjQgOTZjNDAtMTIgNzItMTIgOTYgMCAyMCAxMCA1MiAxNCA5NiAwIiBmaWxsPSIjZjVmNWY1IiBzdHJva2U9IiMwODMwNmIiIHN0cm9rZS13aWR0aD0iMyIvPgo8L2c+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDgwLDMyMCkiPgogIDxwYXRoIGQ9Ik0wIDMyYzI0IDE4IDY0IDMyIDE3NiAzMnMxNTItMTQgMTc2LTMyIiBmaWxsPSJub25lIiBzdHJva2U9IiMwYjNkOTEiIHN0cm9rZS13aWR0aD0iNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPHBhdGggZD0iTTMyIDBjMzIgMjQgNjQgNDAgMTkyIDQwczE2MC0xNiAxOTItNDAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzA4MzA2YiIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNiIvPgo8L2c+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDYwLDgwKSBzY2FsZSgwLjkpIj4KICA8cGF0aCBkPSJNMjAgMTZjMzYgMjQgNDQgNTYgNDQgNjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSI2IiBvcGFjaXR5PSIwLjIiLz4KPC9nPgo8dGV4dCB4PSIyNTYiIHk9IjQ2OCIgZm9udC1mYW1pbHk9Ikdlb3JnaWEsIHNlcmlmIiBmb250LXNpemU9IjM2IiBmaWxsPSIjMDgzMDZiIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5MeWPDqWUgZGUgbCdFeGNlbGxlbmNlPC90ZXh0Pgo8L3N2Zz4=">
+      <h1 id="siteTitle">Lycée de l'Excellence</h1>
+    </div>
+    <nav role="navigation" aria-label="القائمة الرئيسية">
+      <ul>
+        <li><a href="#" class="nav-link" data-section="home">Accueil</a></li>
+        <li><a href="#" class="nav-link" data-section="dictionary">Lexique</a></li>
+        <li><a href="#" class="nav-link" data-section="quiz">Quiz</a></li>
+        <li><a href="#" class="nav-link" data-section="grades">Notes</a></li>
+        <li><a href="#" class="nav-link" data-section="exams">Examens</a></li>
+        <li><a href="#" class="nav-link" data-section="exercises">Exercices</a></li>
+        <li><a href="#" class="nav-link" data-section="lessons">Leçons</a></li>
+      </ul>
+    </nav>
+    <div class="auth-buttons">
+      <button class="btn btn-primary" id="studentLoginBtn"><i class="fa-solid fa-user-graduate"></i> Espace Élève</button>
+      <button class="btn btn-accent" id="loginBtn"><i class="fa-solid fa-user-shield"></i> Espace Professeur</button>
+    </div>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main role="main">
+
+  <!-- HERO -->
+  <section class="hero" id="home-section" aria-labelledby="hero-title">
+    <div class="container hero-content">
+      <h2 id="hero-title">Bienvenue au Lycée de l'Excellence</h2>
+      <p>Plateforme éducative dédiée à la physique sous la supervision du Professeur Ali Bairouk</p>
+      <p style="margin-top:10px;font-size:14px;opacity:0.8;">Année scolaire 2025-2026</p>
+    </div>
+  </section>
+
+  <!-- ANNOUNCEMENT -->
+  <div class="announcement-box" id="announcementBox" role="alert">
+    <i class="fas fa-bullhorn" aria-hidden="true"></i>
+    <div class="announcement-content">
+      <p id="announcementText">📢 ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</p>
+    </div>
+  </div>
+
+  <!-- SLIDER -->
+  <div class="hero-slider" id="front-hero-slider" aria-label="عارض صور رئيسي">
+    <img src="https://picsum.photos/seed/phys2026/1200/400" alt="صورة تعليمية للفيزياء">
+  </div>
+
+  <div class="container">
+
+    <!-- ===== FEATURES ===== -->
+    <h2 class="section-title">Sections du Site</h2>
+    <div class="features">
+      <div class="feature-card" data-section="dictionary" tabindex="0" role="button">
+        <div class="feature-icon"><i class="fas fa-book" aria-hidden="true"></i></div>
+        <div class="feature-content"><h3>Lexique Scientifique</h3><p>Traduction des termes scientifiques عربى → français.</p></div>
       </div>
-      <div style="margin-bottom: 12px;">
-        <p style="color: #7f8c8d; margin: 0 0 12px 0;">${quiz.description || 'اختبار تقييمي'}</p>
-        <div style="display: flex; gap: 16px; font-size: 14px; color: #95a5a6;">
-          <span>⏱ ${quiz.durationMinutes} دقيقة</span>
-          <span>🔄 ${quiz.allowMultipleAttempts ? 'محاولات متعددة' : 'محاولة واحدة'}</span>
-          ${previousAttempt ? `<span>🎯 آخر نتيجة: ${previousAttempt.percentage}%</span>` : ''}
+      <div class="feature-card" data-section="quiz" tabindex="0" role="button">
+        <div class="feature-icon"><i class="fas fa-question-circle" aria-hidden="true"></i></div>
+        <div class="feature-content"><h3>Quiz</h3><p>اختبارات تفاعلية احترافية.</p></div>
+      </div>
+      <div class="feature-card" data-section="grades" tabindex="0" role="button">
+        <div class="feature-icon"><i class="fas fa-chart-line" aria-hidden="true"></i></div>
+        <div class="feature-content"><h3>Notes</h3><p>عرض النقاط عبر حساب التلميذ أو Code Parcours.</p></div>
+      </div>
+      <div class="feature-card" data-section="exams" tabindex="0" role="button">
+        <div class="feature-icon"><i class="fas fa-file-alt" aria-hidden="true"></i></div>
+        <div class="feature-content"><h3>Examens Antérieurs</h3><p>امتحانات مع التصحيحات.</p></div>
+      </div>
+      <div class="feature-card" data-section="exercises" tabindex="0" role="button">
+        <div class="feature-icon"><i class="fas fa-tasks" aria-hidden="true"></i></div>
+        <div class="feature-content"><h3>Exercices et Solutions</h3><p>تمارين محلولة بتفصيل.</p></div>
+      </div>
+      <div class="feature-card" data-section="lessons" tabindex="0" role="button">
+        <div class="feature-icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
+        <div class="feature-content"><h3>Leçons</h3><p>دروس شاملة للبرنامج.</p></div>
+      </div>
+    </div>
+
+    <!-- ===== إحصائيات سريعة (جديدة) ===== -->
+    <section class="stats-highlight" aria-label="إحصائيات الموقع">
+      <h2>📊 إحصائيات الموقع</h2>
+      <div style="text-align:center;">
+        <div class="stat-item"><span class="stat-number" id="statStudents">0</span><span class="stat-label"> طالب</span></div>
+        <div class="stat-item"><span class="stat-number" id="statLessons">0</span><span class="stat-label"> درس</span></div>
+        <div class="stat-item"><span class="stat-number" id="statExams">0</span><span class="stat-label"> امتحان</span></div>
+        <div class="stat-item"><span class="stat-number" id="statExercises">0</span><span class="stat-label"> تمرين</span></div>
+        <div class="stat-item"><span class="stat-number" id="statQuizzes">0</span><span class="stat-label"> اختبار</span></div>
+      </div>
+      <p style="text-align:center;color:#475569;margin-top:10px;">* يتم تحديث الأرقام تلقائياً من قاعدة البيانات</p>
+    </section>
+
+    <!-- ===== عداد تنازلي ===== -->
+    <div class="countdown" aria-label="العد التنازلي لامتحانات البكالوريا">
+      <i class="fas fa-hourglass-half" aria-hidden="true"></i>
+      الوقت المتبقي لامتحانات البكالوريا 2026:
+      <span id="countdownDays">--</span> يوم
+      <span id="countdownHours">--</span> ساعة
+      <span id="countdownMinutes">--</span> دقيقة
+      <span id="countdownSeconds">--</span> ثانية
+    </div>
+
+    <!-- ===== STUDENT DASHBOARD ===== -->
+    <section id="student-dashboard" class="student-dashboard" aria-label="لوحة تحكم الطالب">
+      <div class="welcome-banner">
+        <h2 id="studentWelcome">Bienvenue, Élève</h2>
+        <p>Vous trouverez ici toutes vos ressources pédagogiques</p>
+      </div>
+      <div class="student-tabs" role="tablist">
+        <div class="student-tab active" data-tab="dashboard" role="tab" aria-selected="true">Tableau de bord</div>
+        <div class="student-tab" data-tab="quiz" role="tab">Quiz</div>
+        <div class="student-tab" data-tab="exercises" role="tab">Exercices</div>
+        <div class="student-tab" data-tab="dictionary" role="tab">Lexique</div>
+        <div class="student-tab" data-tab="revision" role="tab">Récorrection</div>
+        <div class="student-tab" data-tab="messages" role="tab">الرسائل</div>
+        <div class="student-tab" data-tab="cours" role="tab">Cours online</div>
+      </div>
+      <div id="student-dashboard-tab" class="student-tab-content active" role="tabpanel">
+        <div class="dashboard-card"><h3>Vos Notes Récentes</h3><div id="studentRecentGrades"><p class="muted">Aucune note disponible.</p></div></div>
+        <div class="dashboard-card"><h3>Quiz disponibles</h3><div id="studentQuizList"><p class="muted">Aucun quiz disponible.</p></div></div>
+        <div class="dashboard-card"><h3>Ressources Disponibles</h3><div class="content-grid" id="studentResources"></div></div>
+      </div>
+      <div id="student-quiz-tab" class="student-tab-content" role="tabpanel">
+        <div class="dashboard-card"><h3>Quiz Disponibles</h3><div id="studentQuizList2"><p class="muted">Aucun quiz disponible.</p></div></div>
+        <div class="dashboard-card"><h3>Résultats des Quiz</h3><div id="studentQuizResults"><p class="muted">Aucun résultat.</p></div></div>
+        <div id="quizContainer" class="quiz-container"></div>
+      </div>
+      <div id="student-exercises-tab" class="student-tab-content" role="tabpanel">
+        <div class="dashboard-card"><h3>Exercices Disponibles</h3><div class="content-grid" id="studentExercisesList"></div></div>
+      </div>
+      <div id="student-dictionary-tab" class="student-tab-content" role="tabpanel">
+        <div class="dashboard-card"><h3>Lexique Scientifique</h3><div class="content-grid" id="studentDictionaryContent"></div></div>
+      </div>
+      <div id="student-revision-tab" class="student-tab-content" role="tabpanel">
+        <div class="dashboard-card"><h3>Demande de Récorrection</h3>
+          <form id="revisionRequestForm">
+            <div class="form-group"><label for="revisionExam">Examen/Devoir</label><select id="revisionExam" required><option value="">Sélectionnez</option></select></div>
+            <div class="form-group"><label for="revisionMessage">Message</label><textarea id="revisionMessage" rows="3" required></textarea></div>
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+          </form>
+        </div>
+        <div class="dashboard-card"><h3>Vos Demandes</h3><div id="studentRevisionRequests"><p class="muted">Aucune demande.</p></div></div>
+      </div>
+      <div id="student-messages-tab" class="student-tab-content" role="tabpanel">
+        <div class="dashboard-card"><h3>الرسائل</h3><div id="studentMessagesList"><p class="muted">لا توجد رسائل.</p></div></div>
+      </div>
+      <div id="student-cours-tab" class="student-tab-content" role="tabpanel">
+        <div class="dashboard-card"><h3>الدروس العلمية - Cours online</h3><div id="studentCoursList" class="latex-content"><p class="muted">لا توجد دروس.</p></div></div>
+      </div>
+      <div class="flex right"><button class="btn btn-ghost" id="studentLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>
+    </section>
+
+    <!-- ===== PUBLIC SECTIONS ===== -->
+    <section id="dictionary" class="page-section" aria-labelledby="dict-title">
+      <div class="section-header"><h2 id="dict-title">Lexique Scientifique</h2><p>Ar → Fr</p></div>
+      <div class="content-grid" id="dictionaryContent"></div>
+    </section>
+
+    <section id="quiz" class="page-section" aria-labelledby="quiz-title">
+      <div class="section-header"><h2 id="quiz-title">Quiz de Physique</h2><p>Testez vos connaissances</p></div>
+      <div id="quizContent"></div>
+    </section>
+
+    <section id="grades" class="page-section" aria-labelledby="grades-title">
+      <div class="section-header"><h2 id="grades-title">Consultation des Notes</h2></div>
+      <div class="content-card mb-3"><div class="card-content">
+        <div class="form-row">
+          <div class="form-group"><label for="searchCode">Code Parcours</label><input type="text" id="searchCode" placeholder="Ex: P-2024-001"></div>
+          <div class="form-group"><label>&nbsp;</label><button class="btn btn-primary w-100" id="btnSearchByCode"><i class="fa-solid fa-magnifying-glass"></i> Voir les notes</button></div>
+        </div>
+      </div></div>
+      <div id="gradesResults">
+        <h3 class="section-title">Vos Résultats</h3>
+        <div id="studentInfo" class="mb-2"></div>
+        <div class="content-card"><div class="card-content">
+          <table id="gradesTable" aria-label="جدول العلامات">
+            <thead><tr><th>Date</th><th>Matière</th><th>Intitulé</th><th>Note /20</th><th>Remarque</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <p id="noGradesMsg">Aucune note.</p>
+        </div></div>
+      </div>
+    </section>
+
+    <section id="exams" class="page-section" aria-labelledby="exams-title">
+      <div class="section-header"><h2 id="exams-title">Examens Antérieurs</h2><p>Consultez & téléchargez</p></div>
+      <div class="content-grid" id="examsContent"></div>
+    </section>
+
+    <section id="exercises" class="page-section" aria-labelledby="exercises-title">
+      <div class="section-header"><h2 id="exercises-title">Exercices et Solutions</h2><p>تمارين محلولة بتفصيل</p></div>
+      <div class="content-grid" id="exercisesContent"></div>
+    </section>
+
+    <section id="lessons" class="page-section" aria-labelledby="lessons-title">
+      <div class="section-header"><h2 id="lessons-title">Leçons</h2><p>دروس شاملة للبرنامج</p></div>
+      <div class="content-grid" id="lessonsContent"></div>
+    </section>
+
+    <!-- ===== NOUVEAU: À propos ===== -->
+    <section class="about-section" aria-labelledby="about-title">
+      <h2 id="about-title">📖 عن الموقع / À propos</h2>
+      <p>هذه المنصة التعليمية مخصصة لتدريس مادة الفيزياء لتلاميذ الثانوي، تحت إشراف الأستاذ علي بيروك. توفر المنصة دروساً، تمارين، امتحانات سابقة، قاموساً علمياً، واختبارات تفاعلية لمساعدة التلاميذ على التفوق.</p>
+      <p>Cette plateforme éducative est dédiée à l'enseignement de la physique pour les élèves du secondaire, sous la supervision du Professeur Ali Bairouk. Elle propose des leçons, des exercices, des examens antérieurs, un lexique scientifique et des quiz interactifs.</p>
+      <p style="margin-top:10px;"><i class="fas fa-calendar-alt"></i> السنة الدراسية 2025-2026</p>
+    </section>
+
+    <!-- ===== NOUVEAU: Témoignages ===== -->
+    <section class="testimonials" aria-labelledby="testimonials-title">
+      <h2 id="testimonials-title">💬 آراء الطلاب</h2>
+      <div class="testimonial-item">
+        <p>“منصة رائعة ساعدتني كثيراً في فهم الفيزياء، الدروس واضحة والتمارين متنوعة.”</p>
+        <div class="author">— أحمد أمين، طالب 2باك</div>
+      </div>
+      <div class="testimonial-item">
+        <p>“الاختبارات التفاعلية جعلت المذاكرة ممتعة وساعدتني على تقييم مستواي.”</p>
+        <div class="author">— سلمى الحبيب، طالبة 1باك</div>
+      </div>
+      <div class="testimonial-item">
+        <p>“شكراً للأستاذ علي على هذا المجهود الرائع، الموقع متكامل وسهل الاستخدام.”</p>
+        <div class="author">— محمد الزيد، طالب TC</div>
+      </div>
+    </section>
+
+    <!-- ===== NOUVEAU: Contact ===== -->
+    <section class="contact-section" aria-labelledby="contact-title">
+      <h2 id="contact-title">📬 اتصل بنا</h2>
+      <form id="contactForm" class="form-row" style="flex-direction:column;gap:15px;">
+        <div class="form-group"><label for="contactName">الاسم الكامل</label><input type="text" id="contactName" placeholder="أدخل اسمك" required></div>
+        <div class="form-group"><label for="contactEmail">البريد الإلكتروني</label><input type="email" id="contactEmail" placeholder="example@mail.com" required></div>
+        <div class="form-group"><label for="contactMessage">الرسالة</label><textarea id="contactMessage" rows="4" placeholder="اكتب رسالتك هنا..." required></textarea></div>
+        <button type="submit" class="btn btn-primary" style="width:fit-content;"><i class="fa-solid fa-paper-plane"></i> إرسال</button>
+      </form>
+      <p style="margin-top:15px;color:#475569;">سيتم الرد عليكم في أقرب وقت ممكن.</p>
+    </section>
+
+    <!-- ===== ADMIN PANEL ===== -->
+    <section id="admin-panel" class="admin-panel" aria-label="لوحة تحكم الإدارة">
+      <div class="admin-header">
+        <h2>Panneau d'Administration</h2>
+        <div class="flex right">
+          <button id="btnExport" class="btn btn-outline"><i class="fa-solid fa-file-export"></i> Exporter JSON</button>
+          <label class="btn btn-outline" for="importFile"><i class="fa-solid fa-file-import"></i> Importer JSON</label>
+          <input type="file" id="importFile" accept="application/json" style="display:none">
+          <button id="logoutBtn" class="btn btn-ghost"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button>
         </div>
       </div>
-      <div style="display: flex; gap: 12px; margin-top: 16px;">
-        <button class="start-quiz-btn" data-quiz-id="${quiz.id}" 
-          style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; flex: 1;">
-          ${canRetake ? 'بدء الاختبار' : 'معاينة النتائج'}
-        </button>
-        <button class="preview-quiz-btn" data-quiz-id="${quiz.id}"
-          style="background: #ecf0f1; color: #2c3e50; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; flex: 1;">
-          معاينة الأسئلة
-        </button>
-      </div>
-    `;
-    
-    container.appendChild(quizCard);
-  });
-  
-  // إضافة الأحداث للأزرار
-  container.querySelectorAll('.start-quiz-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const quizId = e.target.getAttribute('data-quiz-id');
-      startQuizForStudent(quizId);
-    });
-  });
-  
-  container.querySelectorAll('.preview-quiz-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const quizId = e.target.getAttribute('data-quiz-id');
-      previewQuiz(quizId);
-    });
-  });
-}
-
-/* =============================
-   بدء الاختبار للطالب
-   ============================= */
-function startQuizForStudent(quizId) {
-  if (!appData.currentUser) {
-    alert('يجب تسجيل الدخول أولاً');
-    if ($('studentLoginModal')) $('studentLoginModal').style.display = 'block';
-    return;
-  }
-  
-  const quiz = appData.quizzes.find(q => q.id === quizId);
-  if (!quiz) {
-    alert('الاختبار غير موجود');
-    return;
-  }
-  
-  // التحقق من المحاولات السابقة
-  const studentId = appData.currentUser.id;
-  const previousAttempt = appData.responses[studentId]?.[quizId];
-  
-  if (previousAttempt && !quiz.allowMultipleAttempts) {
-    if (!confirm('لقد أجريت هذا الاختبار من قبل ولا يمكن إعادة المحاولة. هل تريد معاينة النتائج؟')) {
-      return;
-    }
-    showQuizResultsPage(quizId);
-    return;
-  }
-  
-  if (!confirm(`هل أنت مستعد لبدء الاختبار؟\n\n📝 عدد الأسئلة: ${quiz.questions.length}\n⏱ المدة: ${quiz.durationMinutes} دقيقة\n🎯 ${previousAttempt ? 'محاولة سابقة: ' + previousAttempt.percentage + '%' : 'أول محاولة'}`)) {
-    return;
-  }
-  
-  currentQuiz = quiz;
-  currentQuestionIndex = 0;
-  userAnswers = {};
-  quizStartTime = Date.now();
-  
-  // تهيئة المؤقت
-  timeLeft = quiz.durationMinutes * 60;
-  startTimer();
-  
-  // عرض واجهة الاختبار
-  showQuizInterface();
-  displayCurrentQuestion();
-}
-
-/* =============================
-   عرض واجهة الاختبار
-   ============================= */
-function showQuizInterface() {
-  // إخفاء كل الأقسام
-  document.querySelectorAll('.page-section, .student-tab-content').forEach(el => {
-    el.style.display = 'none';
-  });
-  
-  // إنشاء واجهة الاختبار إذا لم تكن موجودة
-  let quizInterface = $('quiz-interface');
-  if (!quizInterface) {
-    quizInterface = document.createElement('div');
-    quizInterface.id = 'quiz-interface';
-    document.body.appendChild(quizInterface);
-  }
-  
-  quizInterface.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #f8f9fa;
-    z-index: 1000;
-    overflow-y: auto;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  `;
-  
-  quizInterface.innerHTML = `
-    <div style="background: white; padding: 16px 24px; border-bottom: 1px solid #e1e5e9; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <h2 style="margin: 0 0 8px 0; color: #2c3e50;">${escapeHtml(currentQuiz.title)}</h2>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span style="color: #7f8c8d;">السؤال <span id="current-q-number">1</span> من ${currentQuiz.questions.length}</span>
-          <div style="width: 200px; height: 6px; background: #ecf0f1; border-radius: 3px; overflow: hidden;">
-            <div id="quiz-progress-fill" style="height: 100%; background: #3498db; transition: width 0.3s ease; width: ${(1/currentQuiz.questions.length)*100}%;"></div>
+      <div class="admin-dashboard">
+        <div class="admin-sidebar">
+          <h3>Tableau de Bord</h3>
+          <ul class="admin-menu" role="tablist">
+            <li class="active"><a href="#" class="admin-tab-link" data-tab="tab-dashboard" role="tab"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-students" role="tab"><i class="fa-solid fa-users"></i> Étudiants</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-grades" role="tab"><i class="fa-solid fa-chart-line"></i> Notes</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-quiz" role="tab"><i class="fa-solid fa-question-circle"></i> Quiz</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-dictionary" role="tab"><i class="fa-solid fa-book"></i> Lexique</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-lessons" role="tab"><i class="fa-solid fa-graduation-cap"></i> Leçons</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exercises" role="tab"><i class="fa-solid fa-tasks"></i> Exercices</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-exams" role="tab"><i class="fa-solid fa-file-alt"></i> Examens</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-announcement" role="tab"><i class="fa-solid fa-bullhorn"></i> Annonces</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-revisions" role="tab"><i class="fa-solid fa-edit"></i> Récorrections</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-messages" role="tab"><i class="fa-solid fa-envelope"></i> الرسائل</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-latex" role="tab"><i class="fa-solid fa-square-root-variable"></i> LaTeX Courses</a></li>
+            <li><a href="#" class="admin-tab-link" data-tab="tab-slider" role="tab"><i class="fa-solid fa-images"></i> Slider</a></li>
+          </ul>
+        </div>
+        <div class="admin-content">
+          <div id="tab-dashboard" class="admin-section active" role="tabpanel">
+            <h2>Tableau de Bord</h2>
+            <div class="stats-grid">
+              <div class="stat-card"><h3 id="stats-students">0</h3><p>Étudiants</p></div>
+              <div class="stat-card"><h3 id="stats-quiz">0</h3><p>Questions Quiz</p></div>
+              <div class="stat-card"><h3 id="stats-dictionary">0</h3><p>Termes Lexique</p></div>
+              <div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes</p></div>
+              <div class="stat-card"><h3 id="stats-messages">0</h3><p>رسائل</p></div>
+              <div class="stat-card"><h3 id="stats-latex">0</h3><p>دروس LaTeX</p></div>
+            </div>
+          </div>
+          <div id="tab-students" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Créer / Modifier Étudiant</h3>
+              <div class="form-row"><div class="form-group"><label for="stFullname">Nom complet</label><input id="stFullname" type="text"></div><div class="form-group"><label for="stUsername">Utilisateur</label><input id="stUsername" type="text"></div></div>
+              <div class="form-row"><div class="form-group"><label for="stPassword">Mot de passe</label><input id="stPassword" type="text"></div><div class="form-group"><label for="stCode">Code Parcours</label><input id="stCode" type="text"></div></div>
+              <div class="form-row"><div class="form-group"><label for="stClassroom">Classe</label><input id="stClassroom" type="text"></div><div class="form-group"><label>&nbsp;</label><button class="btn btn-success" id="btnSaveStudent"><i class="fa-solid fa-save"></i> Enregistrer</button> <button class="btn btn-ghost" id="btnResetStudent">Vider</button></div></div>
+              <input type="hidden" id="stId">
+            </div></div>
+            <div class="content-card"><div class="card-content"><div class="flex mb-2"><strong>Liste Étudiants</strong><input class="right" id="filterStudents" placeholder="Filtrer..." /></div><table id="studentsTable" aria-label="قائمة الطلاب"><thead><tr><th>Nom</th><th>Utilisateur</th><th>Code</th><th>Classe</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div>
+          </div>
+          <div id="tab-grades" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Ajouter une Note</h3>
+              <div class="form-row"><div class="form-group"><label for="grStudent">Étudiant</label><select id="grStudent"></select></div><div class="form-group"><label for="grSubject">Matière</label><input id="grSubject" type="text"></div></div>
+              <div class="form-row"><div class="form-group"><label for="grTitle">Intitulé</label><input id="grTitle" type="text"></div><div class="form-group"><label for="grDate">Date</label><input id="grDate" type="date"></div></div>
+              <div class="form-row"><div class="form-group"><label for="grScore">Note /20</label><input id="grScore" type="number" min="0" max="20" step="0.25"></div><div class="form-group"><label for="grNote">Remarque</label><input id="grNote" type="text"></div></div>
+              <input type="hidden" id="grId">
+              <div class="mt-2"><button class="btn btn-success" id="btnSaveGrade"><i class="fa-solid fa-plus"></i> Enregistrer</button> <button class="btn btn-ghost" id="btnResetGrade">Vider</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div class="flex mb-2"><strong>Notes par Étudiant</strong><select id="grFilterStudent" class="right"></select></div><table id="gradesAdminTable" aria-label="جدول العلامات للإدارة"><thead><tr><th>Étudiant</th><th>Date</th><th>Matière</th><th>Intitulé</th><th>Note</th><th>Remarque</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div>
+          </div>
+          <div id="tab-quiz" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Créer / Gérer Quiz</h3>
+              <div class="form-row"><div class="form-group"><label for="newQuizTitle">Titre</label><input id="newQuizTitle" type="text"></div><div class="form-group"><label for="newQuizDuration">Durée (min)</label><input id="newQuizDuration" type="number" min="0" value="0"></div></div>
+              <div class="form-row"><label><input type="checkbox" id="newQuizShuffle"> Mélanger</label><label><input type="checkbox" id="newQuizAllowMultipleAttempts"> Multi-tentatives</label></div>
+              <div class="mt-2"><button class="btn btn-success" id="btnCreateQuiz"><i class="fa-solid fa-plus"></i> Créer Quiz</button></div>
+            </div></div>
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Ajouter une question</h3>
+              <div class="form-group"><label for="adminSelectQuiz">Quiz</label><select id="adminSelectQuiz"></select></div>
+              <div class="form-group"><label for="adminQuizQuestion">Question</label><input id="adminQuizQuestion" type="text"></div>
+              <div class="form-row"><div class="form-group"><label for="adminQuestionType">Type</label><select id="adminQuestionType"><option value="single">Choix unique</option><option value="multiple">Choix multiple</option></select></div><div class="form-group"><label for="adminQuestionPoints">Points</label><input id="adminQuestionPoints" type="number" min="1" value="1"></div></div>
+              <div class="form-group"><label for="adminOption1">Option 1</label><input id="adminOption1" type="text"></div>
+              <div class="form-group"><label for="adminOption2">Option 2</label><input id="adminOption2" type="text"></div>
+              <div class="form-group"><label for="adminOption3">Option 3</label><input id="adminOption3" type="text"></div>
+              <div class="form-group"><label for="adminOption4">Option 4</label><input id="adminOption4" type="text"></div>
+              <div class="form-group"><label for="adminOption5">Option 5</label><input id="adminOption5" type="text"></div>
+              <div class="form-group"><label for="adminOption6">Option 6</label><input id="adminOption6" type="text"></div>
+              <div class="form-row"><div class="form-group"><label for="adminQuizCorrect">Indices corrects (1..6)</label><input id="adminQuizCorrect" type="text" value="1"></div><div class="form-group"><label for="adminQuizImage">Image</label><input id="adminQuizImage" type="file" accept="image/*"></div></div>
+              <div class="form-group"><label for="adminQuestionFeedback">Feedback</label><textarea id="adminQuestionFeedback" rows="2"></textarea></div>
+              <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveQuiz">Ajouter</button> <button id="adminBtnPreviewQuiz">Aperçu</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div id="quizQuestionsList"><p class="muted">Aucune question.</p></div></div></div>
+          </div>
+          <div id="tab-dictionary" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Ajouter terme lexique</h3>
+              <div class="form-row"><div class="form-group"><label for="adminDictAr">Arabe</label><input id="adminDictAr" type="text"></div><div class="form-group"><label for="adminDictFr">Français</label><input id="adminDictFr" type="text"></div></div>
+              <div class="form-group"><label for="adminDictDef">Définition</label><textarea id="adminDictDef" rows="3"></textarea></div>
+              <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveDict">Ajouter</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div id="dictionaryTermsList"><p class="muted">Aucun terme.</p></div></div></div>
+          </div>
+          <div id="tab-lessons" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Ajouter leçon</h3>
+              <div class="form-row"><div class="form-group"><label for="adminLessonTitle">Titre</label><input id="adminLessonTitle" type="text"></div><div class="form-group"><label for="adminLessonChapter">Chapitre</label><input id="adminLessonChapter" type="text"></div></div>
+              <div class="form-group"><label for="adminLessonDriveLink">Lien Google Drive (PDF)</label><input type="url" id="adminLessonDriveLink"></div>
+              <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveLesson">Ajouter</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div id="lessonsAdminList"><p class="muted">Aucune leçon.</p></div></div></div>
+          </div>
+          <div id="tab-exercises" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Ajouter exercice</h3>
+              <div class="form-row"><div class="form-group"><label for="adminExerciseTitle">Titre</label><input id="adminExerciseTitle" type="text"></div><div class="form-group"><label for="adminExerciseChapter">Chapitre</label><input id="adminExerciseChapter" type="text"></div></div>
+              <div class="form-group"><label for="adminExerciseDriveLink">Lien Google Drive</label><input type="url" id="adminExerciseDriveLink"></div>
+              <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExercise">Ajouter</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div id="exercisesAdminList"><p class="muted">Aucun exercice.</p></div></div></div>
+          </div>
+          <div id="tab-exams" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>Ajouter examen</h3>
+              <div class="form-row"><div class="form-group"><label for="adminExamTitle">Titre</label><input id="adminExamTitle" type="text"></div><div class="form-group"><label for="adminExamSeries">Série</label><input id="adminExamSeries" type="text"></div></div>
+              <div class="form-group"><label for="adminExamDriveLink">Lien Google Drive</label><input type="url" id="adminExamDriveLink"></div>
+              <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveExam">Ajouter</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><div id="examsAdminList"><p class="muted">Aucun examen.</p></div></div></div>
+          </div>
+          <div id="tab-announcement" class="admin-section" role="tabpanel">
+            <div class="content-card"><div class="card-content">
+              <h3>Annonce</h3>
+              <div class="form-group"><label for="announcementInput">Texte</label><textarea id="announcementInput" rows="4">ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة</textarea></div>
+              <div class="mt-2"><button class="btn btn-success" id="btnSaveAnnouncement">Enregistrer</button></div>
+            </div></div>
+          </div>
+          <div id="tab-revisions" class="admin-section" role="tabpanel">
+            <div class="content-card"><div class="card-content"><h3>Demandes de Récorrection</h3><div id="revisionRequestsList"><p class="muted">Aucune demande.</p></div></div></div>
+          </div>
+          <div id="tab-messages" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>إرسال رسالة</h3>
+              <div class="form-group"><label for="adminMessageTitle">عنوان</label><input id="adminMessageTitle" type="text"></div>
+              <div class="form-group"><label for="adminMessageContent">محتوى</label><textarea id="adminMessageContent" rows="4"></textarea></div>
+              <div class="form-group"><label for="adminMessageTarget">إرسال إلى</label><select id="adminMessageTarget"><option value="all">جميع الطلاب</option><option value="specific">طالب محدد</option></select></div>
+              <div class="form-group" id="specificStudentContainer"><label for="adminMessageStudent">اختر الطالب</label><select id="adminMessageStudent"><option value="">اختر طالباً</option></select></div>
+              <div class="mt-2"><button id="adminBtnSendMessage" class="btn btn-success">إرسال</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><h3>الرسائل المرسلة</h3><div id="adminMessagesList"><p class="muted">لا توجد رسائل.</p></div></div></div>
+          </div>
+          <div id="tab-latex" class="admin-section" role="tabpanel">
+            <div class="content-card mb-3"><div class="card-content">
+              <h3>إضافة درس LaTeX</h3>
+              <div class="form-group"><label for="latexCourseTitle">عنوان الدرس</label><input id="latexCourseTitle" type="text"></div>
+              <div class="form-group"><label for="latexCourseContent">محتوى LaTeX</label><textarea id="latexCourseContent" rows="6">\documentclass{article}\n\begin{document}\n\section{Physique}\nFormule: \(E = mc^2\)\n\end{document}</textarea></div>
+              <div class="mt-2"><button class="btn btn-success" id="adminBtnSaveLatex">إضافة درس LaTeX</button></div>
+            </div></div>
+            <div class="content-card"><div class="card-content"><h3>دروس LaTeX الحالية</h3><div id="latexCoursesList"><p class="muted">لا توجد دروس.</p></div></div></div>
+          </div>
+          <div id="tab-slider" class="admin-section" role="tabpanel">
+            <div class="content-card"><div class="card-content">
+              <h3>إدارة الصور المتحركة (Slider)</h3>
+              <div class="form-group"><label for="sliderImageInput">إضافة صورة جديدة</label><input type="file" id="sliderImageInput" accept="image/*"></div>
+              <div class="mt-2"><button class="btn btn-success" id="adminBtnAddSliderImage">إضافة صورة</button></div>
+              <div class="mt-2"><div id="sliderImagesList"><p class="muted">لا توجد صور في السلايدر.</p></div></div>
+            </div></div>
           </div>
         </div>
       </div>
-      <div style="display: flex; align-items: center; gap: 16px;">
-        <div id="quiz-timer" style="background: ${timeLeft < 300 ? '#e74c3c' : '#2ecc71'}; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 14px;">
-          ⏱ ${formatTime(timeLeft)}
-        </div>
-        <button id="exit-quiz-btn" style="background: #95a5a6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
-          خروج
-        </button>
-      </div>
-    </div>
-    
-    <div style="max-width: 800px; margin: 24px auto; padding: 0 20px;">
-      <div id="question-container" style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-        <!-- سيتم ملؤه ديناميكياً -->
-      </div>
-      
-      <div style="display: flex; justify-content: space-between; align-items: center; margin: 24px 0;">
-        <button id="prev-btn" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; min-width: 100px;" disabled>
-          السابق
-        </button>
-        
-        <div id="question-indicators" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-          <!-- سيتم ملؤه ديناميكياً -->
-        </div>
-        
-        <button id="next-btn" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; min-width: 100px;">
-          التالي
-        </button>
-      </div>
-      
-      <div style="text-align: center;">
-        <button id="submit-quiz-btn" style="background: #e74c3c; color: white; border: none; padding: 12px 24px; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer;">
-          إنهاء الاختبار
-        </button>
-      </div>
-    </div>
-  `;
-  
-  quizInterface.style.display = 'block';
-  
-  // إضافة الأحداث
-  $('prev-btn').addEventListener('click', goToPreviousQuestion);
-  $('next-btn').addEventListener('click', goToNextQuestion);
-  $('submit-quiz-btn').addEventListener('click', submitQuiz);
-  $('exit-quiz-btn').addEventListener('click', exitQuiz);
-  
-  // إنشاء مؤشرات الأسئلة
-  createQuestionIndicators();
-}
+    </section>
 
-/* =============================
-   عرض السؤال الحالي
-   ============================= */
-function displayCurrentQuestion() {
-  const question = currentQuiz.questions[currentQuestionIndex];
-  const container = $('question-container');
-  
-  if (!container) return;
-  
-  container.innerHTML = `
-    <div style="margin-bottom: 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 style="margin: 0; color: #2c3e50;">السؤال ${currentQuestionIndex + 1}</h3>
-        <span style="background: #27ae60; color: white; padding: 4px 8px; border-radius: 4px; font-size: 14px;">
-          ${question.points} نقطة
-        </span>
-      </div>
-      <div style="font-size: 18px; line-height: 1.6; color: #2c3e50;">
-        ${escapeHtml(question.question)}
-      </div>
-    </div>
-    
-    <div id="options-container">
-      ${renderOptions(question)}
-    </div>
-    
-    ${question.feedback ? `
-      <div style="margin-top: 16px; padding: 12px; background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 6px;">
-        <strong>💡 ملاحظة:</strong> ${escapeHtml(question.feedback)}
-      </div>
-    ` : ''}
-  `;
-  
-  // تحديث واجهة المستخدم
-  updateQuizUI();
-  
-  // تحميل الإجابة السابقة إن وجدت
-  loadPreviousAnswer();
-}
+  </div> <!-- end container -->
+</main>
 
-/* =============================
-   عرض خيارات الإجابة
-   ============================= */
-function renderOptions(question) {
-  if (question.type === 'single') {
-    return question.options.map((option, index) => `
-      <div class="option-radio" style="display: flex; align-items: center; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
-        <input type="radio" id="option-${index}" name="quiz-answer" value="${index}" style="margin-right: 12px;">
-        <label for="option-${index}" style="display: flex; align-items: center; cursor: pointer; width: 100%;">
-          <span style="display: inline-block; width: 24px; height: 24px; background: #3498db; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 12px; font-weight: bold;">
-            ${String.fromCharCode(65 + index)}
-          </span>
-          <span>${escapeHtml(option)}</span>
-        </label>
+<!-- ===== FOOTER ===== -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <h4>Lycée de l'Excellence</h4>
+        <p style="color:#cbd5e1;font-size:14px;">منصة تعليمية متخصصة في الفيزياء</p>
+        <div class="social-links" style="margin-top:10px;">
+          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="Email"><i class="fas fa-envelope"></i></a>
+        </div>
       </div>
-    `).join('');
-  } else {
-    return question.options.map((option, index) => `
-      <div class="option-checkbox" style="display: flex; align-items: center; padding: 12px 16px; border: 2px solid #e1e5e9; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; margin-bottom: 8px;">
-        <input type="checkbox" id="option-${index}" name="quiz-answer" value="${index}" style="margin-right: 12px;">
-        <label for="option-${index}" style="display: flex; align-items: center; cursor: pointer; width: 100%;">
-          <span style="display: inline-block; width: 24px; height: 24px; background: #9b59b6; color: white; border-radius: 50%; text-align: center; line-height: 24px; margin-right: 12px; font-weight: bold;">
-            ${String.fromCharCode(65 + index)}
-          </span>
-          <span>${escapeHtml(option)}</span>
-        </label>
+      <div>
+        <h4>روابط سريعة</h4>
+        <ul>
+          <li><a href="#" class="nav-link" data-section="home">Accueil</a></li>
+          <li><a href="#" class="nav-link" data-section="dictionary">Lexique</a></li>
+          <li><a href="#" class="nav-link" data-section="quiz">Quiz</a></li>
+          <li><a href="#" class="nav-link" data-section="grades">Notes</a></li>
+          <li><a href="#" class="nav-link" data-section="exams">Examens</a></li>
+          <li><a href="#" class="nav-link" data-section="exercises">Exercices</a></li>
+          <li><a href="#" class="nav-link" data-section="lessons">Leçons</a></li>
+        </ul>
       </div>
-    `).join('');
+      <div>
+        <h4>اتصل بنا</h4>
+        <ul>
+          <li><i class="fas fa-envelope"></i> contact@lycee-excellence.ma</li>
+          <li><i class="fas fa-phone"></i> +212 5xx-xxxxxx</li>
+          <li><i class="fas fa-map-marker-alt"></i> الدار البيضاء، المغرب</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      &copy; 2026 Lycée de l'Excellence - Tous droits réservés<br>
+      Professeur Ali Bairouk | Physique
+    </div>
+  </div>
+</footer>
+
+<!-- ===== JAVASCRIPT (نفس الكود الموجود، لم يتغير) ===== -->
+<script>
+  // ============================================================
+  // DATA LAYER
+  // ============================================================
+  let data = {
+    students: [],
+    grades: [],
+    quizzes: [],
+    dictionary: [],
+    lessons: [],
+    exercises: [],
+    exams: [],
+    announcements: { text: 'ستبدأ الدراسة الفعلية يوم 16/09/2025 نتمنى لتلاميذ والتلميذات سنة دراسية مليئة بالجد ومثمرة', image: null },
+    messages: [],
+    revisionRequests: [],
+    latexCourses: [],
+    sliderImages: ['https://picsum.photos/seed/phys2026/1200/400']
+  };
+
+  let currentStudent = null;
+  let currentAdmin = null;
+  let editingStudentId = null;
+  let editingGradeId = null;
+  let currentQuizAttempt = null;
+
+  // ============================================================
+  // UTILITY FUNCTIONS
+  // ============================================================
+  function saveData() {
+    try {
+      localStorage.setItem('lyceeData', JSON.stringify(data));
+    } catch(e) {}
   }
-}
 
-/* =============================
-   تحميل الإجابة السابقة
-   ============================= */
-function loadPreviousAnswer() {
-  const questionId = currentQuiz.questions[currentQuestionIndex].id;
-  const savedAnswer = userAnswers[questionId];
-  
-  if (savedAnswer !== undefined) {
-    if (Array.isArray(savedAnswer)) {
-      // إجابة متعددة
-      savedAnswer.forEach(index => {
-        const checkbox = $(`option-${index}`);
-        if (checkbox) checkbox.checked = true;
-      });
-    } else {
-      // إجابة وحيدة
-      const radio = $(`option-${savedAnswer}`);
-      if (radio) radio.checked = true;
+  function loadData() {
+    try {
+      const stored = localStorage.getItem('lyceeData');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        for (let key in parsed) {
+          if (data.hasOwnProperty(key)) data[key] = parsed[key];
+        }
+      }
+    } catch(e) {}
+  }
+
+  function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+  }
+
+  function renderLatex() {
+    if (window.MathJax && MathJax.typesetPromise) {
+      MathJax.typesetPromise().catch(() => {});
     }
   }
-  
-  // إضافة أحداث للتغيير
-  const options = document.querySelectorAll('#options-container input');
-  options.forEach(option => {
-    option.addEventListener('change', saveCurrentAnswer);
-  });
-  
-  // إضافة تأثير hover
-  const optionDivs = document.querySelectorAll('.option-radio, .option-checkbox');
-  optionDivs.forEach(div => {
-    div.addEventListener('mouseenter', function() {
-      this.style.borderColor = '#3498db';
-      this.style.background = '#f8f9fa';
-    });
-    div.addEventListener('mouseleave', function() {
-      if (!this.querySelector('input').checked) {
-        this.style.borderColor = '#e1e5e9';
-        this.style.background = 'white';
-      }
-    });
-  });
-}
 
-/* =============================
-   حفظ الإجابة الحالية
-   ============================= */
-function saveCurrentAnswer() {
-  const question = currentQuiz.questions[currentQuestionIndex];
-  const questionId = question.id;
-  
-  if (question.type === 'single') {
-    const selected = document.querySelector('input[name="quiz-answer"]:checked');
-    userAnswers[questionId] = selected ? parseInt(selected.value) : null;
-    
-    // تحديث المظهر
-    document.querySelectorAll('.option-radio').forEach(div => {
-      const input = div.querySelector('input');
-      if (input.checked) {
-        div.style.borderColor = '#27ae60';
-        div.style.background = '#d5f4e6';
+  function formatDate(d) {
+    if (!d) return '';
+    const dt = new Date(d);
+    return dt.toLocaleDateString('fr-FR');
+  }
+
+  // ============================================================
+  // RENDER FUNCTIONS
+  // ============================================================
+  function renderStudents() {
+    const tbody = document.querySelector('#studentsTable tbody');
+    const filter = (document.getElementById('filterStudents')?.value || '').toLowerCase();
+    const rows = data.students
+      .filter(s => s.fullname.toLowerCase().includes(filter) || s.username.toLowerCase().includes(filter))
+      .map(s => `<tr>
+        <td>${s.fullname}</td>
+        <td>${s.username}</td>
+        <td>${s.code}</td>
+        <td>${s.classroom || ''}</td>
+        <td>
+          <button class="btn btn-primary btn-sm" onclick="editStudent('${s.id}')"><i class="fa-solid fa-edit"></i></button>
+          <button class="btn btn-ghost btn-sm" onclick="deleteStudent('${s.id}')"><i class="fa-solid fa-trash"></i></button>
+        </td>
+      </tr>`).join('');
+    tbody.innerHTML = rows || '<tr><td colspan="5" class="muted">Aucun étudiant.</td></tr>';
+    updateStats();
+  }
+
+  function renderGradesAdmin() {
+    const tbody = document.querySelector('#gradesAdminTable tbody');
+    const filter = document.getElementById('grFilterStudent')?.value;
+    const rows = data.grades
+      .filter(g => !filter || g.studentId === filter)
+      .map(g => {
+        const student = data.students.find(s => s.id === g.studentId);
+        return `<tr>
+          <td>${student ? student.fullname : 'Inconnu'}</td>
+          <td>${formatDate(g.date)}</td>
+          <td>${g.subject}</td>
+          <td>${g.title}</td>
+          <td>${g.score}/20</td>
+          <td>${g.remark || ''}</td>
+          <td>
+            <button class="btn btn-primary btn-sm" onclick="editGrade('${g.id}')"><i class="fa-solid fa-edit"></i></button>
+            <button class="btn btn-ghost btn-sm" onclick="deleteGrade('${g.id}')"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>`;
+      }).join('');
+    tbody.innerHTML = rows || '<tr><td colspan="7" class="muted">Aucune note.</td></tr>';
+    updateStats();
+  }
+
+  function renderStudentSelects() {
+    const selects = ['grStudent', 'grFilterStudent', 'adminMessageStudent'];
+    selects.forEach(id => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const current = sel.value;
+      sel.innerHTML = data.students.map(s => `<option value="${s.id}">${s.fullname} (${s.code})</option>`).join('');
+      if (current) sel.value = current;
+    });
+    const revSel = document.getElementById('revisionExam');
+    if (revSel) {
+      revSel.innerHTML = '<option value="">Sélectionnez</option>' + data.grades.map(g => `<option value="${g.id}">${g.title} (${g.subject})</option>`).join('');
+    }
+  }
+
+  function renderDictionary() {
+    const container = document.getElementById('dictionaryContent');
+    const adminContainer = document.getElementById('dictionaryTermsList');
+    const html = data.dictionary.map(d => `<div class="item"><strong>${d.ar}</strong> → ${d.fr}<br><span class="muted">${d.def || ''}</span></div>`).join('');
+    if (container) container.innerHTML = html || '<p class="muted">Aucun terme.</p>';
+    if (adminContainer) adminContainer.innerHTML = html || '<p class="muted">Aucun terme.</p>';
+    updateStats();
+  }
+
+  function renderLessons() {
+    const container = document.getElementById('lessonsContent');
+    const adminContainer = document.getElementById('lessonsAdminList');
+    const html = data.lessons.map(l => `<div class="item"><h4>${l.title}</h4><p>Chapitre: ${l.chapter || ''}</p><a href="${l.driveLink}" target="_blank">Voir le PDF</a></div>`).join('');
+    if (container) container.innerHTML = html || '<p class="muted">Aucune leçon.</p>';
+    if (adminContainer) adminContainer.innerHTML = html || '<p class="muted">Aucune leçon.</p>';
+  }
+
+  function renderExercises() {
+    const container = document.getElementById('exercisesContent');
+    const adminContainer = document.getElementById('exercisesAdminList');
+    const html = data.exercises.map(e => `<div class="item"><h4>${e.title}</h4><p>Chapitre: ${e.chapter || ''}</p><a href="${e.driveLink}" target="_blank">Voir l\'exercice</a></div>`).join('');
+    if (container) container.innerHTML = html || '<p class="muted">Aucun exercice.</p>';
+    if (adminContainer) adminContainer.innerHTML = html || '<p class="muted">Aucun exercice.</p>';
+  }
+
+  function renderExams() {
+    const container = document.getElementById('examsContent');
+    const adminContainer = document.getElementById('examsAdminList');
+    const html = data.exams.map(e => `<div class="item"><h4>${e.title}</h4><p>Série: ${e.series || ''}</p><a href="${e.driveLink}" target="_blank">Télécharger</a></div>`).join('');
+    if (container) container.innerHTML = html || '<p class="muted">Aucun examen.</p>';
+    if (adminContainer) adminContainer.innerHTML = html || '<p class="muted">Aucun examen.</p>';
+  }
+
+  function renderQuizAdmin() {
+    const sel = document.getElementById('adminSelectQuiz');
+    if (sel) {
+      const current = sel.value;
+      sel.innerHTML = data.quizzes.map(q => `<option value="${q.id}">${q.title}</option>`).join('');
+      if (current) sel.value = current;
+    }
+    const list = document.getElementById('quizQuestionsList');
+    if (list) {
+      const qid = document.getElementById('adminSelectQuiz')?.value;
+      const quiz = data.quizzes.find(q => q.id === qid);
+      if (quiz && quiz.questions && quiz.questions.length) {
+        list.innerHTML = quiz.questions.map((q, i) => `<div class="item"><strong>Q${i+1}:</strong> ${q.text} (${q.type}) - Points: ${q.points}</div>`).join('');
       } else {
-        div.style.borderColor = '#e1e5e9';
-        div.style.background = 'white';
+        list.innerHTML = '<p class="muted">Aucune question pour ce quiz.</p>';
       }
+    }
+    updateStats();
+  }
+
+  function renderMessages() {
+    const list = document.getElementById('adminMessagesList');
+    if (list) {
+      list.innerHTML = data.messages.map(m => `<div class="item"><strong>${m.title}</strong><br>${m.content}<br><span class="muted">À: ${m.target === 'all' ? 'Tous' : data.students.find(s=>s.id===m.studentId)?.fullname || 'Inconnu'}</span></div>`).join('') || '<p class="muted">لا توجد رسائل.</p>';
+    }
+    updateStats();
+  }
+
+  function renderLatexCourses() {
+    const list = document.getElementById('latexCoursesList');
+    if (list) {
+      list.innerHTML = data.latexCourses.map(c => `<div class="item"><h4>${c.title}</h4><div class="latex-content">${c.content}</div></div>`).join('') || '<p class="muted">لا توجد دروس.</p>';
+    }
+    updateStats();
+  }
+
+  function renderRevisions() {
+    const list = document.getElementById('revisionRequestsList');
+    if (list) {
+      list.innerHTML = data.revisionRequests.map(r => {
+        const student = data.students.find(s => s.id === r.studentId);
+        const grade = data.grades.find(g => g.id === r.gradeId);
+        return `<div class="item"><strong>${student ? student.fullname : 'Inconnu'}</strong> - ${grade ? grade.title : 'Évaluation'}<br>${r.message}<br><span class="muted">Statut: ${r.status || 'En attente'}</span></div>`;
+      }).join('') || '<p class="muted">Aucune demande.</p>';
+    }
+  }
+
+  function renderSlider() {
+    const container = document.getElementById('sliderImagesList');
+    if (container) {
+      container.innerHTML = data.sliderImages.map((img, idx) => `<div class="item"><img src="${img}" style="max-height:80px;max-width:100%;"><button class="btn btn-ghost btn-sm" onclick="removeSliderImage(${idx})">Supprimer</button></div>`).join('') || '<p class="muted">لا توجد صور.</p>';
+    }
+    const slider = document.getElementById('front-hero-slider');
+    if (slider && data.sliderImages.length) {
+      slider.innerHTML = `<img src="${data.sliderImages[0]}" alt="Slider">`;
+    }
+  }
+
+  function updateStats() {
+    document.getElementById('stats-students').textContent = data.students.length;
+    document.getElementById('stats-quiz').textContent = data.quizzes.reduce((acc, q) => acc + (q.questions ? q.questions.length : 0), 0);
+    document.getElementById('stats-dictionary').textContent = data.dictionary.length;
+    document.getElementById('stats-grades').textContent = data.grades.length;
+    document.getElementById('stats-messages').textContent = data.messages.length;
+    document.getElementById('stats-latex').textContent = data.latexCourses.length;
+    // تحديث الإحصائيات الجديدة
+    document.getElementById('statStudents').textContent = data.students.length;
+    document.getElementById('statLessons').textContent = data.lessons.length;
+    document.getElementById('statExams').textContent = data.exams.length;
+    document.getElementById('statExercises').textContent = data.exercises.length;
+    document.getElementById('statQuizzes').textContent = data.quizzes.length;
+  }
+
+  // ============================================================
+  // STUDENT FUNCTIONS
+  // ============================================================
+  function editStudent(id) {
+    const s = data.students.find(st => st.id === id);
+    if (!s) return;
+    document.getElementById('stId').value = s.id;
+    document.getElementById('stFullname').value = s.fullname;
+    document.getElementById('stUsername').value = s.username;
+    document.getElementById('stPassword').value = s.password || '';
+    document.getElementById('stCode').value = s.code;
+    document.getElementById('stClassroom').value = s.classroom || '';
+    editingStudentId = id;
+  }
+
+  function deleteStudent(id) {
+    if (!confirm('Supprimer cet étudiant ?')) return;
+    data.students = data.students.filter(s => s.id !== id);
+    data.grades = data.grades.filter(g => g.studentId !== id);
+    saveData();
+    renderAll();
+  }
+
+  function editGrade(id) {
+    const g = data.grades.find(gr => gr.id === id);
+    if (!g) return;
+    document.getElementById('grId').value = g.id;
+    document.getElementById('grStudent').value = g.studentId;
+    document.getElementById('grSubject').value = g.subject;
+    document.getElementById('grTitle').value = g.title;
+    document.getElementById('grDate').value = g.date || '';
+    document.getElementById('grScore').value = g.score;
+    document.getElementById('grNote').value = g.remark || '';
+    editingGradeId = id;
+  }
+
+  function deleteGrade(id) {
+    if (!confirm('Supprimer cette note ?')) return;
+    data.grades = data.grades.filter(g => g.id !== id);
+    saveData();
+    renderAll();
+  }
+
+  function removeSliderImage(idx) {
+    data.sliderImages.splice(idx, 1);
+    saveData();
+    renderSlider();
+  }
+
+  // ============================================================
+  // ADMIN LOGIC
+  // ============================================================
+  function loginAdmin() {
+    const pass = prompt('Mot de passe administrateur:');
+    if (pass === 'admin123') {
+      currentAdmin = true;
+      document.getElementById('admin-panel').classList.add('active');
+      renderAll();
+    } else {
+      alert('Mot de passe incorrect.');
+    }
+  }
+
+  function logoutAdmin() {
+    currentAdmin = null;
+    document.getElementById('admin-panel').classList.remove('active');
+  }
+
+  // ============================================================
+  // STUDENT LOGIC
+  // ============================================================
+  function loginStudent() {
+    const username = prompt('Nom d\'utilisateur:');
+    if (!username) return;
+    const password = prompt('Mot de passe:');
+    const student = data.students.find(s => s.username === username && s.password === password);
+    if (student) {
+      currentStudent = student;
+      document.getElementById('student-dashboard').classList.add('active');
+      document.getElementById('studentWelcome').textContent = `Bienvenue, ${student.fullname}`;
+      renderStudentDashboard();
+      renderStudentTabs();
+    } else {
+      alert('Identifiants incorrects.');
+    }
+  }
+
+  function logoutStudent() {
+    currentStudent = null;
+    document.getElementById('student-dashboard').classList.remove('active');
+    renderAll();
+  }
+
+  function renderStudentDashboard() {
+    if (!currentStudent) return;
+    const recent = data.grades.filter(g => g.studentId === currentStudent.id).slice(0, 5);
+    document.getElementById('studentRecentGrades').innerHTML = recent.length ? recent.map(g => `<div>${g.title}: ${g.score}/20 (${g.subject})</div>`).join('') : '<p class="muted">Aucune note.</p>';
+    const qlist = data.quizzes.map(q => `<div class="item"><strong>${q.title}</strong> <button class="btn btn-primary btn-sm" onclick="startQuiz('${q.id}')">Commencer</button></div>`).join('');
+    document.getElementById('studentQuizList').innerHTML = qlist || '<p class="muted">Aucun quiz.</p>';
+    document.getElementById('studentQuizList2').innerHTML = qlist || '<p class="muted">Aucun quiz.</p>';
+    document.getElementById('studentResources').innerHTML = data.lessons.map(l => `<div class="item"><a href="${l.driveLink}" target="_blank">${l.title}</a></div>`).join('') || '<p class="muted">Aucune ressource.</p>';
+    document.getElementById('studentExercisesList').innerHTML = data.exercises.map(e => `<div class="item"><a href="${e.driveLink}" target="_blank">${e.title}</a></div>`).join('') || '<p class="muted">Aucun exercice.</p>';
+    document.getElementById('studentDictionaryContent').innerHTML = data.dictionary.map(d => `<div class="item"><strong>${d.ar}</strong> → ${d.fr}<br><span class="muted">${d.def || ''}</span></div>`).join('') || '<p class="muted">Aucun terme.</p>';
+    const msgs = data.messages.filter(m => m.target === 'all' || m.studentId === currentStudent.id);
+    document.getElementById('studentMessagesList').innerHTML = msgs.map(m => `<div class="item"><strong>${m.title}</strong><br>${m.content}</div>`).join('') || '<p class="muted">لا توجد رسائل.</p>';
+    document.getElementById('studentCoursList').innerHTML = data.latexCourses.map(c => `<div class="item"><h4>${c.title}</h4><div class="latex-content">${c.content}</div></div>`).join('') || '<p class="muted">لا توجد دروس.</p>';
+    const reqs = data.revisionRequests.filter(r => r.studentId === currentStudent.id);
+    document.getElementById('studentRevisionRequests').innerHTML = reqs.map(r => `<div class="item">${r.message} - <span class="muted">${r.status || 'En attente'}</span></div>`).join('') || '<p class="muted">Aucune demande.</p>';
+    renderLatex();
+  }
+
+  function renderStudentTabs() {
+    document.querySelectorAll('.student-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.student-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        document.querySelectorAll('.student-tab-content').forEach(c => c.classList.remove('active'));
+        const target = document.getElementById(`student-${this.dataset.tab}-tab`);
+        if (target) target.classList.add('active');
+        if (this.dataset.tab === 'cours') renderLatex();
+      });
     });
-  } else {
-    const selected = Array.from(document.querySelectorAll('input[name="quiz-answer"]:checked'))
-      .map(input => parseInt(input.value));
-    userAnswers[questionId] = selected;
-    
-    // تحديث المظهر
-    document.querySelectorAll('.option-checkbox').forEach(div => {
-      const input = div.querySelector('input');
-      if (input.checked) {
-        div.style.borderColor = '#9b59b6';
-        div.style.background = '#f4ecf7';
-      } else {
-        div.style.borderColor = '#e1e5e9';
-        div.style.background = 'white';
-      }
-    });
   }
-  
-  // تحديث مؤشر السؤال
-  updateQuestionIndicator(currentQuestionIndex, userAnswers[questionId] !== null && 
-    (Array.isArray(userAnswers[questionId]) ? userAnswers[questionId].length > 0 : true));
-}
 
-/* =============================
-   التنقل بين الأسئلة
-   ============================= */
-function goToPreviousQuestion() {
-  if (currentQuestionIndex > 0) {
-    currentQuestionIndex--;
-    displayCurrentQuestion();
-  }
-}
-
-function goToNextQuestion() {
-  if (currentQuestionIndex < currentQuiz.questions.length - 1) {
-    currentQuestionIndex++;
-    displayCurrentQuestion();
-  }
-}
-
-/* =============================
-   إنهاء الاختبار
-   ============================= */
-function submitQuiz() {
-  const unanswered = getUnansweredQuestions();
-  
-  if (unanswered.length > 0) {
-    if (!confirm(`لديك ${unanswered.length} أسئلة لم تتم الإجابة عليها. هل تريد إنهاء الاختبار مع ذلك؟`)) {
+  // ============================================================
+  // QUIZ ENGINE
+  // ============================================================
+  function startQuiz(quizId) {
+    const quiz = data.quizzes.find(q => q.id === quizId);
+    if (!quiz || !quiz.questions || !quiz.questions.length) {
+      alert('Ce quiz n\'a pas de questions.');
       return;
     }
+    currentQuizAttempt = { quizId, answers: [], startedAt: Date.now() };
+    renderQuizQuestions(quiz);
+    document.querySelectorAll('.student-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.student-tab[data-tab="quiz"]').classList.add('active');
+    document.querySelectorAll('.student-tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('student-quiz-tab').classList.add('active');
   }
-  
-  if (!confirm('هل أنت متأكد من إنهاء الاختبار؟ لا يمكنك العودة بعد الإنهاء.')) {
-    return;
-  }
-  
-  clearInterval(quizTimer);
-  showQuizResults();
-}
 
-/* =============================
-   الخروج من الاختبار
-   ============================= */
-function exitQuiz() {
-  if (confirm('هل تريد الخروج من الاختبار؟ سيتم فقدان تقدمك الحالي.')) {
-    clearInterval(quizTimer);
-    hideQuizInterface();
-    switchStudentTab('quiz');
+  function renderQuizQuestions(quiz) {
+    const container = document.getElementById('quizContainer');
+    let html = `<h3>${quiz.title}</h3><p>Durée: ${quiz.duration || 'Illimitée'} min</p><form id="quizForm">`;
+    quiz.questions.forEach((q, idx) => {
+      html += `<div class="quiz-question"><strong>${idx+1}. ${q.text}</strong> (${q.points} pts)<br>`;
+      if (q.image) html += `<img src="${q.image}" style="max-height:100px;"><br>`;
+      const options = q.options || [];
+      const type = q.type === 'multiple' ? 'checkbox' : 'radio';
+      options.forEach((opt, oi) => {
+        html += `<label class="quiz-option"><input type="${type}" name="q${idx}" value="${oi+1}"> ${opt}</label><br>`;
+      });
+      html += `</div>`;
+    });
+    html += `<button type="submit" class="btn btn-primary">Soumettre</button></form>`;
+    container.innerHTML = html;
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      submitQuiz(quiz);
+    });
   }
-}
 
-/* =============================
-   إخفاء واجهة الاختبار
-   ============================= */
-function hideQuizInterface() {
-  const quizInterface = $('quiz-interface');
-  if (quizInterface) {
-    quizInterface.style.display = 'none';
+  function submitQuiz(quiz) {
+    const form = document.getElementById('quizForm');
+    const formData = new FormData(form);
+    let correct = 0;
+    let total = quiz.questions.length;
+    let results = [];
+    quiz.questions.forEach((q, idx) => {
+      const selected = formData.getAll(`q${idx}`);
+      const correctIndices = q.correct ? q.correct.split(',').map(Number) : [];
+      const isCorrect = selected.length === correctIndices.length && selected.every(v => correctIndices.includes(Number(v)));
+      if (isCorrect) correct++;
+      results.push({ question: q.text, correct: isCorrect, feedback: q.feedback || '' });
+    });
+    const score = Math.round((correct / total) * 100);
+    const resultHtml = `<div class="quiz-result"><h4>Résultat: ${score}% (${correct}/${total})</h4>${results.map(r => `<div>${r.question} - ${r.correct ? '✅ Correct' : '❌ Incorrect'} ${r.feedback ? '<br><span class="muted">'+r.feedback+'</span>' : ''}</div>`).join('')}</div>`;
+    document.getElementById('quizContainer').innerHTML = resultHtml;
+    if (currentStudent) {
+      const studentResults = JSON.parse(localStorage.getItem('quizResults') || '{}');
+      if (!studentResults[currentStudent.id]) studentResults[currentStudent.id] = [];
+      studentResults[currentStudent.id].push({ quizId: quiz.id, score, date: new Date().toISOString() });
+      localStorage.setItem('quizResults', JSON.stringify(studentResults));
+      const res = studentResults[currentStudent.id] || [];
+      document.getElementById('studentQuizResults').innerHTML = res.map(r => `<div>${data.quizzes.find(q=>q.id===r.quizId)?.title || 'Quiz'}: ${r.score}% (${new Date(r.date).toLocaleDateString()})</div>`).join('') || '<p class="muted">Aucun résultat.</p>';
+    }
   }
-}
 
-/* =============================
-   المؤقت
-   ============================= */
-function startTimer() {
-  quizTimer = setInterval(() => {
-    timeLeft--;
-    
-    if ($('quiz-timer')) {
-      $('quiz-timer').textContent = `⏱ ${formatTime(timeLeft)}`;
-      
-      // تغيير اللون عندما يقل الوقت
-      if (timeLeft < 300) { // أقل من 5 دقائق
-        $('quiz-timer').style.background = '#e74c3c';
-      } else if (timeLeft < 600) { // أقل من 10 دقائق
-        $('quiz-timer').style.background = '#f39c12';
+  // ============================================================
+  // SEARCH GRADES BY CODE
+  // ============================================================
+  document.getElementById('btnSearchByCode')?.addEventListener('click', function() {
+    const code = document.getElementById('searchCode').value.trim();
+    if (!code) { alert('Entrez un code parcours.'); return; }
+    const student = data.students.find(s => s.code === code);
+    if (!student) { alert('Aucun étudiant trouvé avec ce code.'); return; }
+    document.getElementById('studentInfo').innerHTML = `<strong>${student.fullname}</strong> - ${student.classroom || ''}`;
+    const grades = data.grades.filter(g => g.studentId === student.id);
+    const tbody = document.querySelector('#gradesTable tbody');
+    const msg = document.getElementById('noGradesMsg');
+    if (grades.length) {
+      tbody.innerHTML = grades.map(g => `<tr><td>${formatDate(g.date)}</td><td>${g.subject}</td><td>${g.title}</td><td>${g.score}/20</td><td>${g.remark || ''}</td></tr>`).join('');
+      msg.style.display = 'none';
+    } else {
+      tbody.innerHTML = '';
+      msg.style.display = 'block';
+    }
+  });
+
+  // ============================================================
+  // NAVIGATION
+  // ============================================================
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const section = this.dataset.section;
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+      if (section === 'home') {
+        document.getElementById('home-section').scrollIntoView({ behavior: 'smooth' });
+        return;
       }
-    }
-    
-    if (timeLeft <= 0) {
-      clearInterval(quizTimer);
-      alert('انتهى الوقت!');
-      submitQuiz();
-    }
-  }, 1000);
-}
-
-/* =============================
-   حساب النتائج
-   ============================= */
-function calculateResults() {
-  let totalPoints = 0;
-  let earnedPoints = 0;
-  const results = [];
-  
-  currentQuiz.questions.forEach(question => {
-    totalPoints += question.points;
-    const userAnswer = userAnswers[question.id];
-    const isCorrect = checkAnswer(question, userAnswer);
-    
-    if (isCorrect) {
-      earnedPoints += question.points;
-    }
-    
-    results.push({
-      question: question.question,
-      userAnswer: userAnswer,
-      correctAnswer: question.correctIndices,
-      isCorrect: isCorrect,
-      points: question.points,
-      earnedPoints: isCorrect ? question.points : 0,
-      feedback: question.feedback,
-      type: question.type
+      const target = document.getElementById(section);
+      if (target) {
+        target.classList.add('active');
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+      document.getElementById('student-dashboard').classList.remove('active');
     });
   });
-  
-  const percentage = Math.round((earnedPoints / totalPoints) * 100);
-  const timeSpent = Math.round((Date.now() - quizStartTime) / 1000); // بالثواني
-  
-  // حفظ النتائج
-  const studentId = appData.currentUser.id;
-  if (!appData.responses[studentId]) {
-    appData.responses[studentId] = {};
-  }
-  
-  appData.responses[studentId][currentQuiz.id] = {
-    timestamp: Date.now(),
-    score: earnedPoints,
-    totalScore: totalPoints,
-    percentage: percentage,
-    timeSpent: timeSpent,
-    answers: userAnswers
-  };
-  
-  saveData();
-  
-  return {
-    earnedPoints,
-    totalPoints,
-    percentage,
-    timeSpent,
-    results
-  };
-}
 
-/* =============================
-   التحقق من الإجابة
-   ============================= */
-function checkAnswer(question, userAnswer) {
-  if (userAnswer === null || userAnswer === undefined) {
-    return false;
-  }
-  
-  const correctAnswers = question.correctIndices;
-  
-  if (question.type === 'single') {
-    return correctAnswers.includes(userAnswer);
-  } else {
-    if (!Array.isArray(userAnswer) || userAnswer.length !== correctAnswers.length) {
-      return false;
-    }
-    
-    return userAnswer.every(answer => correctAnswers.includes(answer)) &&
-           correctAnswers.every(answer => userAnswer.includes(answer));
-  }
-}
-
-/* =============================
-   عرض النتائج
-   ============================= */
-function showQuizResults() {
-  const results = calculateResults();
-  const container = $('question-container');
-  
-  if (!container) return;
-  
-  const timeSpentFormatted = `${Math.floor(results.timeSpent / 60)}:${(results.timeSpent % 60).toString().padStart(2, '0')}`;
-  
-  container.innerHTML = `
-    <div style="text-align: center;">
-      <div style="margin-bottom: 32px;">
-        <h2 style="color: #2c3e50; margin-bottom: 24px;">نتيجة الاختبار</h2>
-        <div style="width: 120px; height: 120px; border-radius: 50%; background: ${results.percentage >= 50 ? '#27ae60' : '#e74c3c'}; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 24px; font-weight: bold;">
-          <span style="font-size: 24px;">${results.percentage}%</span>
-          <span style="font-size: 14px;">${results.earnedPoints}/${results.totalPoints}</span>
-        </div>
-        <div style="color: #7f8c8d;">
-          <p>الوقت المستغرق: ${timeSpentFormatted}</p>
-          <p>الحالة: ${results.percentage >= 50 ? 'ناجح 🎉' : 'يحتاج تحسين 💪'}</p>
-        </div>
-      </div>
-      
-      <div style="text-align: left; max-width: 600px; margin: 0 auto;">
-        <h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 8px;">تفاصيل الإجابات:</h3>
-        <div style="max-height: 400px; overflow-y: auto;">
-          ${results.results.map((result, index) => `
-            <div style="padding: 16px; border-radius: 8px; margin-bottom: 16px; background: ${result.isCorrect ? '#d5f4e6' : '#fadbd8'}; border-left: 4px solid ${result.isCorrect ? '#27ae60' : '#e74c3c'};">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-weight: bold;">السؤال ${index + 1}</span>
-                <span style="background: ${result.isCorrect ? '#27ae60' : '#e74c3c'}; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px;">
-                  ${result.isCorrect ? '✓' : '✗'} ${result.earnedPoints}/${result.points}
-                </span>
-              </div>
-              <div style="margin-bottom: 8px; font-weight: 500;">${escapeHtml(result.question)}</div>
-              <div style="font-size: 14px;">
-                <div style="margin-bottom: 4px;"><strong>إجابتك:</strong> ${formatUserAnswer(result.userAnswer, currentQuiz.questions[index].options, result.type)}</div>
-                <div style="margin-bottom: 4px;"><strong>الإجابة الصحيحة:</strong> ${formatCorrectAnswer(result.correctAnswer, currentQuiz.questions[index].options)}</div>
-                ${result.feedback ? `
-                  <div style="margin-top: 8px; padding: 8px; background: rgba(255,255,255,0.5); border-radius: 4px;">
-                    <strong>💡 شرح:</strong> ${escapeHtml(result.feedback)}
-                  </div>
-                ` : ''}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-      
-      <div style="margin-top: 32px; display: flex; gap: 12px; justify-content: center;">
-        <button id="retry-quiz-btn" style="background: #3498db; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: bold;">
-          إعادة الاختبار
-        </button>
-        <button id="back-to-quizzes-btn" style="background: #95a5a6; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer;">
-          العودة إلى القائمة
-        </button>
-      </div>
-    </div>
-  `;
-  
-  // إضافة الأحداث
-  $('retry-quiz-btn').addEventListener('click', () => {
-    if (currentQuiz.allowMultipleAttempts) {
-      startQuizForStudent(currentQuiz.id);
-    } else {
-      alert('لا يمكن إعادة هذا الاختبار. المسموح بمحاولة واحدة فقط.');
-    }
-  });
-  
-  $('back-to-quizzes-btn').addEventListener('click', () => {
-    hideQuizInterface();
-    switchStudentTab('quiz');
-  });
-}
-
-/* =============================
-   عرض صفحة النتائج
-   ============================= */
-function showQuizResultsPage(quizId) {
-  const quiz = appData.quizzes.find(q => q.id === quizId);
-  const studentId = appData.currentUser.id;
-  const attempt = appData.responses[studentId]?.[quizId];
-  
-  if (!attempt) {
-    alert('لا توجد نتائج سابقة لهذا الاختبار');
-    return;
-  }
-  
-  const container = $('studentQuizList');
-  if (!container) return;
-  
-  container.innerHTML = `
-    <div style="background: white; border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-      <div style="text-align: center; margin-bottom: 24px;">
-        <h2 style="color: #2c3e50;">نتيجة الاختبار: ${escapeHtml(quiz.title)}</h2>
-        <div style="width: 100px; height: 100px; border-radius: 50%; background: ${attempt.percentage >= 50 ? '#27ae60' : '#e74c3c'}; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 16px; font-weight: bold;">
-          <span style="font-size: 20px;">${attempt.percentage}%</span>
-          <span style="font-size: 12px;">${attempt.score}/${attempt.totalScore}</span>
-        </div>
-        <p style="color: #7f8c8d;">تاريخ الإجراء: ${new Date(attempt.timestamp).toLocaleString('ar-EG')}</p>
-      </div>
-      
-      <button onclick="renderQuizListForStudent()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
-        العودة إلى قائمة الاختبارات
-      </button>
-    </div>
-  `;
-}
-
-/* =============================
-   دوال مساعدة للـ Quiz
-   ============================= */
-function formatUserAnswer(userAnswer, options, type) {
-  if (userAnswer === null || userAnswer === undefined) {
-    return '<span style="color: #e74c3c;">لم تتم الإجابة</span>';
-  }
-  
-  if (Array.isArray(userAnswer)) {
-    if (userAnswer.length === 0) {
-      return '<span style="color: #e74c3c;">لم تتم الإجابة</span>';
-    }
-    return userAnswer.map(index => 
-      `<span style="color: #e74c3c;">${String.fromCharCode(65 + index)}. ${options[index]}</span>`
-    ).join('، ');
-  } else {
-    return `<span style="color: #e74c3c;">${String.fromCharCode(65 + userAnswer)}. ${options[userAnswer]}</span>`;
-  }
-}
-
-function formatCorrectAnswer(correctIndices, options) {
-  return correctIndices.map(index => 
-    `<span style="color: #27ae60;">${String.fromCharCode(65 + index)}. ${options[index]}</span>`
-  ).join('، ');
-}
-
-function formatTime(seconds) {
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-}
-
-function updateQuizUI() {
-  // تحديث رقم السؤال
-  if ($('current-q-number')) {
-    $('current-q-number').textContent = currentQuestionIndex + 1;
-  }
-  
-  // تحديث شريط التقدم
-  if ($('quiz-progress-fill')) {
-    const progress = ((currentQuestionIndex + 1) / currentQuiz.questions.length) * 100;
-    $('quiz-progress-fill').style.width = `${progress}%`;
-  }
-  
-  // تحديث أزرار التنقل
-  if ($('prev-btn')) {
-    $('prev-btn').disabled = currentQuestionIndex === 0;
-  }
-  
-  if ($('next-btn')) {
-    $('next-btn').disabled = currentQuestionIndex === currentQuiz.questions.length - 1;
-  }
-}
-
-function createQuestionIndicators() {
-  const container = $('question-indicators');
-  if (!container) return;
-  
-  container.innerHTML = '';
-  
-  currentQuiz.questions.forEach((_, index) => {
-    const indicator = document.createElement('button');
-    indicator.textContent = index + 1;
-    indicator.style.cssText = `
-      width: 36px;
-      height: 36px;
-      border: 2px solid #bdc3c7;
-      border-radius: 50%;
-      background: white;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      transition: all 0.2s ease;
-    `;
-    
-    indicator.addEventListener('click', () => {
-      currentQuestionIndex = index;
-      displayCurrentQuestion();
+  document.querySelectorAll('.feature-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const section = this.dataset.section;
+      document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById(section);
+      if (target) {
+        target.classList.add('active');
+        target.scrollIntoView({ behavior: 'smooth' });
+      }
+      document.getElementById('student-dashboard').classList.remove('active');
     });
-    
-    container.appendChild(indicator);
   });
-  
-  updateAllQuestionIndicators();
-}
 
-function updateAllQuestionIndicators() {
-  const indicators = document.querySelectorAll('#question-indicators button');
-  indicators.forEach((indicator, index) => {
-    const questionId = currentQuiz.questions[index].id;
-    const answered = userAnswers[questionId] !== null && 
-      (Array.isArray(userAnswers[questionId]) ? userAnswers[questionId].length > 0 : true);
-    
-    if (index === currentQuestionIndex) {
-      indicator.style.borderColor = '#3498db';
-      indicator.style.background = '#3498db';
-      indicator.style.color = 'white';
-    } else if (answered) {
-      indicator.style.borderColor = '#27ae60';
-      indicator.style.background = '#27ae60';
-      indicator.style.color = 'white';
+  // ============================================================
+  // ADMIN TABS
+  // ============================================================
+  document.querySelectorAll('.admin-tab-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.querySelectorAll('.admin-menu li').forEach(li => li.classList.remove('active'));
+      this.parentElement.classList.add('active');
+      const tab = this.dataset.tab;
+      document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
+    });
+  });
+
+  // ============================================================
+  // ADMIN BUTTONS
+  // ============================================================
+  document.getElementById('btnSaveStudent')?.addEventListener('click', function() {
+    const id = document.getElementById('stId').value || generateId();
+    const fullname = document.getElementById('stFullname').value.trim();
+    const username = document.getElementById('stUsername').value.trim();
+    const password = document.getElementById('stPassword').value.trim();
+    const code = document.getElementById('stCode').value.trim();
+    const classroom = document.getElementById('stClassroom').value.trim();
+    if (!fullname || !username || !password || !code) { alert('Remplissez tous les champs obligatoires.'); return; }
+    if (data.students.some(s => s.username === username && s.id !== id)) { alert('Nom d\'utilisateur déjà utilisé.'); return; }
+    if (data.students.some(s => s.code === code && s.id !== id)) { alert('Code parcours déjà utilisé.'); return; }
+    const existing = data.students.find(s => s.id === id);
+    if (existing) {
+      Object.assign(existing, { fullname, username, password, code, classroom });
     } else {
-      indicator.style.borderColor = '#bdc3c7';
-      indicator.style.background = 'white';
-      indicator.style.color = '#2c3e50';
+      data.students.push({ id, fullname, username, password, code, classroom });
     }
+    saveData();
+    document.getElementById('stId').value = '';
+    document.getElementById('stFullname').value = '';
+    document.getElementById('stUsername').value = '';
+    document.getElementById('stPassword').value = '';
+    document.getElementById('stCode').value = '';
+    document.getElementById('stClassroom').value = '';
+    renderAll();
   });
-}
 
-function updateQuestionIndicator(index, answered) {
-  const indicators = document.querySelectorAll('#question-indicators button');
-  if (indicators[index]) {
-    if (index === currentQuestionIndex) {
-      indicators[index].style.borderColor = '#3498db';
-      indicators[index].style.background = '#3498db';
-      indicators[index].style.color = 'white';
-    } else if (answered) {
-      indicators[index].style.borderColor = '#27ae60';
-      indicators[index].style.background = '#27ae60';
-      indicators[index].style.color = 'white';
+  document.getElementById('btnResetStudent')?.addEventListener('click', function() {
+    document.getElementById('stId').value = '';
+    document.getElementById('stFullname').value = '';
+    document.getElementById('stUsername').value = '';
+    document.getElementById('stPassword').value = '';
+    document.getElementById('stCode').value = '';
+    document.getElementById('stClassroom').value = '';
+  });
+
+  document.getElementById('filterStudents')?.addEventListener('input', renderStudents);
+
+  document.getElementById('btnSaveGrade')?.addEventListener('click', function() {
+    const id = document.getElementById('grId').value || generateId();
+    const studentId = document.getElementById('grStudent').value;
+    const subject = document.getElementById('grSubject').value.trim();
+    const title = document.getElementById('grTitle').value.trim();
+    const date = document.getElementById('grDate').value;
+    const score = parseFloat(document.getElementById('grScore').value);
+    const remark = document.getElementById('grNote').value.trim();
+    if (!studentId || !subject || !title || isNaN(score)) { alert('Remplissez tous les champs.'); return; }
+    const existing = data.grades.find(g => g.id === id);
+    if (existing) {
+      Object.assign(existing, { studentId, subject, title, date, score, remark });
     } else {
-      indicators[index].style.borderColor = '#bdc3c7';
-      indicators[index].style.background = 'white';
-      indicators[index].style.color = '#2c3e50';
+      data.grades.push({ id, studentId, subject, title, date, score, remark });
+    }
+    saveData();
+    document.getElementById('grId').value = '';
+    document.getElementById('grSubject').value = '';
+    document.getElementById('grTitle').value = '';
+    document.getElementById('grDate').value = '';
+    document.getElementById('grScore').value = '';
+    document.getElementById('grNote').value = '';
+    renderAll();
+  });
+
+  document.getElementById('btnResetGrade')?.addEventListener('click', function() {
+    document.getElementById('grId').value = '';
+    document.getElementById('grSubject').value = '';
+    document.getElementById('grTitle').value = '';
+    document.getElementById('grDate').value = '';
+    document.getElementById('grScore').value = '';
+    document.getElementById('grNote').value = '';
+  });
+
+  document.getElementById('grFilterStudent')?.addEventListener('change', renderGradesAdmin);
+
+  document.getElementById('btnCreateQuiz')?.addEventListener('click', function() {
+    const title = document.getElementById('newQuizTitle').value.trim();
+    if (!title) { alert('Entrez un titre.'); return; }
+    const duration = parseInt(document.getElementById('newQuizDuration').value) || 0;
+    const shuffle = document.getElementById('newQuizShuffle').checked;
+    const multipleAttempts = document.getElementById('newQuizAllowMultipleAttempts').checked;
+    const quiz = { id: generateId(), title, duration, shuffle, multipleAttempts, questions: [] };
+    data.quizzes.push(quiz);
+    saveData();
+    document.getElementById('newQuizTitle').value = '';
+    renderAll();
+  });
+
+  document.getElementById('adminBtnSaveQuiz')?.addEventListener('click', function() {
+    const quizId = document.getElementById('adminSelectQuiz').value;
+    if (!quizId) { alert('Sélectionnez un quiz.'); return; }
+    const quiz = data.quizzes.find(q => q.id === quizId);
+    if (!quiz) return;
+    const text = document.getElementById('adminQuizQuestion').value.trim();
+    if (!text) { alert('Entrez la question.'); return; }
+    const type = document.getElementById('adminQuestionType').value;
+    const points = parseInt(document.getElementById('adminQuestionPoints').value) || 1;
+    const options = [];
+    for (let i = 1; i <= 6; i++) {
+      const val = document.getElementById(`adminOption${i}`).value.trim();
+      if (val) options.push(val);
+    }
+    if (options.length < 2) { alert('Ajoutez au moins 2 options.'); return; }
+    const correct = document.getElementById('adminQuizCorrect').value.trim();
+    if (!correct) { alert('Indiquez les indices corrects.'); return; }
+    const feedback = document.getElementById('adminQuestionFeedback').value.trim();
+    let image = '';
+    const fileInput = document.getElementById('adminQuizImage');
+    if (fileInput && fileInput.files && fileInput.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        image = e.target.result;
+        quiz.questions.push({ id: generateId(), text, type, points, options, correct, feedback, image });
+        saveData();
+        renderAll();
+      };
+      reader.readAsDataURL(fileInput.files[0]);
+    } else {
+      quiz.questions.push({ id: generateId(), text, type, points, options, correct, feedback, image });
+      saveData();
+      renderAll();
+    }
+    document.getElementById('adminQuizQuestion').value = '';
+    document.getElementById('adminOption1').value = '';
+    document.getElementById('adminOption2').value = '';
+    document.getElementById('adminOption3').value = '';
+    document.getElementById('adminOption4').value = '';
+    document.getElementById('adminOption5').value = '';
+    document.getElementById('adminOption6').value = '';
+    document.getElementById('adminQuizCorrect').value = '1';
+    document.getElementById('adminQuestionFeedback').value = '';
+    document.getElementById('adminQuizImage').value = '';
+  });
+
+  document.getElementById('adminBtnPreviewQuiz')?.addEventListener('click', function() {
+    const quizId = document.getElementById('adminSelectQuiz').value;
+    if (!quizId) { alert('Sélectionnez un quiz.'); return; }
+    startQuiz(quizId);
+  });
+
+  document.getElementById('adminBtnSaveDict')?.addEventListener('click', function() {
+    const ar = document.getElementById('adminDictAr').value.trim();
+    const fr = document.getElementById('adminDictFr').value.trim();
+    const def = document.getElementById('adminDictDef').value.trim();
+    if (!ar || !fr) { alert('Entrez les deux termes.'); return; }
+    data.dictionary.push({ id: generateId(), ar, fr, def });
+    saveData();
+    document.getElementById('adminDictAr').value = '';
+    document.getElementById('adminDictFr').value = '';
+    document.getElementById('adminDictDef').value = '';
+    renderAll();
+  });
+
+  document.getElementById('adminBtnSaveLesson')?.addEventListener('click', function() {
+    const title = document.getElementById('adminLessonTitle').value.trim();
+    const chapter = document.getElementById('adminLessonChapter').value.trim();
+    const driveLink = document.getElementById('adminLessonDriveLink').value.trim();
+    if (!title || !driveLink) { alert('Titre et lien requis.'); return; }
+    data.lessons.push({ id: generateId(), title, chapter, driveLink });
+    saveData();
+    document.getElementById('adminLessonTitle').value = '';
+    document.getElementById('adminLessonChapter').value = '';
+    document.getElementById('adminLessonDriveLink').value = '';
+    renderAll();
+  });
+
+  document.getElementById('adminBtnSaveExercise')?.addEventListener('click', function() {
+    const title = document.getElementById('adminExerciseTitle').value.trim();
+    const chapter = document.getElementById('adminExerciseChapter').value.trim();
+    const driveLink = document.getElementById('adminExerciseDriveLink').value.trim();
+    if (!title || !driveLink) { alert('Titre et lien requis.'); return; }
+    data.exercises.push({ id: generateId(), title, chapter, driveLink });
+    saveData();
+    document.getElementById('adminExerciseTitle').value = '';
+    document.getElementById('adminExerciseChapter').value = '';
+    document.getElementById('adminExerciseDriveLink').value = '';
+    renderAll();
+  });
+
+  document.getElementById('adminBtnSaveExam')?.addEventListener('click', function() {
+    const title = document.getElementById('adminExamTitle').value.trim();
+    const series = document.getElementById('adminExamSeries').value.trim();
+    const driveLink = document.getElementById('adminExamDriveLink').value.trim();
+    if (!title || !driveLink) { alert('Titre et lien requis.'); return; }
+    data.exams.push({ id: generateId(), title, series, driveLink });
+    saveData();
+    document.getElementById('adminExamTitle').value = '';
+    document.getElementById('adminExamSeries').value = '';
+    document.getElementById('adminExamDriveLink').value = '';
+    renderAll();
+  });
+
+  document.getElementById('btnSaveAnnouncement')?.addEventListener('click', function() {
+    const text = document.getElementById('announcementInput').value.trim();
+    if (!text) { alert('Entrez le texte.'); return; }
+    data.announcements.text = text;
+    document.getElementById('announcementText').textContent = text;
+    saveData();
+    alert('Annonce mise à jour.');
+  });
+
+  document.getElementById('adminBtnSendMessage')?.addEventListener('click', function() {
+    const title = document.getElementById('adminMessageTitle').value.trim();
+    const content = document.getElementById('adminMessageContent').value.trim();
+    const target = document.getElementById('adminMessageTarget').value;
+    const studentId = document.getElementById('adminMessageStudent').value;
+    if (!title || !content) { alert('Remplissez le titre et le contenu.'); return; }
+    if (target === 'specific' && !studentId) { alert('Sélectionnez un étudiant.'); return; }
+    data.messages.push({ id: generateId(), title, content, target, studentId: target === 'specific' ? studentId : null, date: new Date().toISOString() });
+    saveData();
+    document.getElementById('adminMessageTitle').value = '';
+    document.getElementById('adminMessageContent').value = '';
+    renderAll();
+    alert('Message envoyé.');
+  });
+
+  document.getElementById('adminMessageTarget')?.addEventListener('change', function() {
+    document.getElementById('specificStudentContainer').style.display = this.value === 'specific' ? 'block' : 'none';
+  });
+
+  document.getElementById('adminBtnSaveLatex')?.addEventListener('click', function() {
+    const title = document.getElementById('latexCourseTitle').value.trim();
+    const content = document.getElementById('latexCourseContent').value.trim();
+    if (!title || !content) { alert('Remplissez tous les champs.'); return; }
+    data.latexCourses.push({ id: generateId(), title, content });
+    saveData();
+    document.getElementById('latexCourseTitle').value = '';
+    document.getElementById('latexCourseContent').value = '';
+    renderAll();
+    renderLatex();
+  });
+
+  document.getElementById('adminBtnAddSliderImage')?.addEventListener('click', function() {
+    const input = document.getElementById('sliderImageInput');
+    if (!input || !input.files || !input.files[0]) { alert('Sélectionnez une image.'); return; }
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      data.sliderImages.push(e.target.result);
+      saveData();
+      renderSlider();
+      input.value = '';
+    };
+    reader.readAsDataURL(input.files[0]);
+  });
+
+  document.getElementById('btnExport')?.addEventListener('click', function() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'lycee_data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById('importFile')?.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        for (let key in imported) {
+          if (data.hasOwnProperty(key)) data[key] = imported[key];
+        }
+        saveData();
+        renderAll();
+        alert('Données importées avec succès.');
+      } catch(err) {
+        alert('Erreur lors de l\'importation.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
+  document.getElementById('revisionRequestForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (!currentStudent) { alert('Vous devez être connecté.'); return; }
+    const gradeId = document.getElementById('revisionExam').value;
+    const message = document.getElementById('revisionMessage').value.trim();
+    if (!gradeId || !message) { alert('Remplissez tous les champs.'); return; }
+    data.revisionRequests.push({ id: generateId(), studentId: currentStudent.id, gradeId, message, status: 'En attente' });
+    saveData();
+    document.getElementById('revisionMessage').value = '';
+    renderAll();
+    alert('Demande envoyée.');
+  });
+
+  // ============================================================
+  // MAIN RENDER
+  // ============================================================
+  function renderAll() {
+    renderStudents();
+    renderStudentSelects();
+    renderGradesAdmin();
+    renderDictionary();
+    renderLessons();
+    renderExercises();
+    renderExams();
+    renderQuizAdmin();
+    renderMessages();
+    renderLatexCourses();
+    renderRevisions();
+    renderSlider();
+    if (currentStudent) renderStudentDashboard();
+    updateStats();
+    renderLatex();
+  }
+
+  // ============================================================
+  // AUTH BUTTONS
+  // ============================================================
+  document.getElementById('loginBtn')?.addEventListener('click', loginAdmin);
+  document.getElementById('logoutBtn')?.addEventListener('click', logoutAdmin);
+  document.getElementById('studentLoginBtn')?.addEventListener('click', loginStudent);
+  document.getElementById('studentLogoutBtn')?.addEventListener('click', logoutStudent);
+
+  // ============================================================
+  // COUNTDOWN
+  // ============================================================
+  function updateCountdown() {
+    const targetDate = new Date('2026-06-01T00:00:00').getTime();
+    const now = new Date().getTime();
+    const diff = targetDate - now;
+    if (diff > 0) {
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      document.getElementById('countdownDays').textContent = days;
+      document.getElementById('countdownHours').textContent = hours;
+      document.getElementById('countdownMinutes').textContent = minutes;
+      document.getElementById('countdownSeconds').textContent = seconds;
+    } else {
+      document.getElementById('countdownDays').textContent = '0';
+      document.getElementById('countdownHours').textContent = '0';
+      document.getElementById('countdownMinutes').textContent = '0';
+      document.getElementById('countdownSeconds').textContent = '0';
     }
   }
-}
+  setInterval(updateCountdown, 1000);
+  updateCountdown();
 
-function getUnansweredQuestions() {
-  return currentQuiz.questions.filter((question, index) => {
-    const answer = userAnswers[question.id];
-    return answer === null || answer === undefined || 
-          (Array.isArray(answer) && answer.length === 0);
-  });
-}
-
-function previewQuiz(quizId) {
-  const quiz = appData.quizzes.find(q => q.id === quizId);
-  if (!quiz) return;
-  
-  const previewHTML = `
-    <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center;">
-      <div style="background: white; border-radius: 12px; padding: 24px; max-width: 600px; max-height: 80vh; overflow-y: auto; margin: 20px; position: relative;">
-        <button onclick="this.closest('div').remove()" style="position: absolute; top: 16px; right: 16px; background: #e74c3c; color: white; border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer;">×</button>
-        
-        <h3 style="margin: 0 0 16px 0; color: #2c3e50;">${escapeHtml(quiz.title)}</h3>
-        <p style="color: #7f8c8d; margin-bottom: 24px;">${quiz.description || ''}</p>
-        
-        <div>
-          ${quiz.questions.map((question, index) => `
-            <div style="margin-bottom: 24px; padding: 16px; border: 1px solid #e1e5e9; border-radius: 8px;">
-              <h4 style="margin: 0 0 8px 0; color: #2c3e50;">السؤال ${index + 1} (${question.points} نقطة)</h4>
-              <p style="margin: 0 0 12px 0;">${escapeHtml(question.question)}</p>
-              <div>
-                ${question.options.map((option, optIndex) => `
-                  <div style="display: flex; align-items: center; padding: 8px; margin-bottom: 4px; border-radius: 4px; background: ${question.correctIndices.includes(optIndex) ? '#d5f4e6' : '#f8f9fa'};">
-                    <span style="display: inline-block; width: 20px; height: 20px; background: ${question.correctIndices.includes(optIndex) ? '#27ae60' : '#95a5a6'}; color: white; border-radius: 50%; text-align: center; line-height: 20px; margin-right: 8px; font-size: 12px; font-weight: bold;">
-                      ${String.fromCharCode(65 + optIndex)}
-                    </span>
-                    <span>${escapeHtml(option)}</span>
-                    ${question.correctIndices.includes(optIndex) ? '<span style="margin-right: auto; color: #27ae60; font-weight: bold;">✓</span>' : ''}
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          `).join('')}
-        </div>
-        
-        <button onclick="this.closest('div').remove()" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; width: 100%; margin-top: 16px;">
-          إغلاق
-        </button>
-      </div>
-    </div>
-  `;
-  
-  const previewDiv = document.createElement('div');
-  previewDiv.innerHTML = previewHTML;
-  document.body.appendChild(previewDiv);
-}
-
-// =============================
-// باقي الدوال الأساسية (يجب أن تبقى كما هي)
-// =============================
-
-/* =============================
-   Refresh UI / render lists
-   ============================= */
-function refreshUI(){
-  if ($('announcementText')) $('announcementText').textContent = appData.announcement.text || '';
-  if (appData.announcement.image){ 
-    if ($('announcementImage')) { 
-      $('announcementImage').src = appData.announcement.image; 
-      $('announcementImage').style.display='block'; 
-    } 
-    if ($('announcementImagePreview')) { 
-      $('announcementImagePreview').src = appData.announcement.image; 
-      $('announcementImagePreview').style.display='block'; 
-    } 
-    if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='inline-block'; 
-  } else { 
-    if ($('announcementImage')) $('announcementImage').style.display='none'; 
-    if ($('announcementImagePreview')) $('announcementImagePreview').style.display='none'; 
-    if ($('btnDeleteAnnouncementImage')) $('btnDeleteAnnouncementImage').style.display='none'; 
+  // ============================================================
+  // INIT
+  // ============================================================
+  loadData();
+  if (!data.sliderImages || !data.sliderImages.length) {
+    data.sliderImages = ['https://picsum.photos/seed/phys2026/1200/400'];
   }
-
-  if ($('admin-panel')) {
-    $('admin-panel').style.display = appData.isAdmin ? 'block' : 'none';
-  }
-  
-  if ($('student-dashboard')) {
-    $('student-dashboard').style.display = (appData.currentUser && !appData.isAdmin) ? 'block' : 'none';
-  }
-  
-  if (!appData.currentUser) {
-    hideAllMainSections();
-    if ($('home-section')) $('home-section').style.display = 'block';
-  }
-
-  if (appData.currentUser && !appData.isAdmin && $('studentWelcome')) {
-    $('studentWelcome').textContent = 'Bienvenue, ' + (appData.currentUser.fullname || '');
-  }
-
-  if ($('stats-students')) $('stats-students').textContent = appData.students.length;
-  if ($('stats-quiz')) $('stats-quiz').textContent = appData.quizzes.reduce((acc,q)=>acc+q.questions.length,0);
-  if ($('stats-dictionary')) $('stats-dictionary').textContent = appData.dictionary.length;
-  if ($('stats-grades')) $('stats-grades').textContent = appData.grades.length;
-  if ($('stats-messages')) $('stats-messages').textContent = appData.messages.length;
-  if ($('stats-latex')) $('stats-latex').textContent = appData.latexContents.length;
-
-  populateStudentsSelect();
-  populateAdminSelectQuiz();
-
   renderAll();
-}
+  renderLatex();
 
-// ... (بقية الدوال الأساسية تبقى كما هي من الكود الأصلي)
-// مثل: adminCreateQuiz, adminAddQuestion, renderQuizAdminListDetailed, إلخ.
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href === '#' || href === '#!') {
+        e.preventDefault();
+      }
+    });
+  });
 
-// دوال الـ Quiz القديمة - نعطلها مؤقتاً
-function renderQuizList(){
-  // نستخدم النسخة المحسنة بدلاً من هذه
-  console.log('Using enhanced quiz system');
-}
-
-function startQuiz(quizId){
-  // نستخدم النسخة المحسنة بدلاً من هذه
-  startQuizForStudent(quizId);
-}
-
-// ... (بقية الدوال الأساسية)
-
-/* =============================
-   Utility & renderAll
-   ============================= */
-function shuffle(a){ for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
-
-function renderAll(){
-  renderQuizAdminListDetailed();
-  renderQuizListForStudent(); // استخدام النسخة المحسنة
-  renderLessons(); renderExercises(); renderExams();
-  renderLessonsAdminList(); renderExercisesAdminList(); renderExamsAdminList();
-  renderDictionary();
-  loadStudentsTable();
-  loadGradesTable();
-  loadLatexAdminList();
-  renderLatexListForStudents();
-  renderStudentMessages();
-  renderFrontSlider();
-  renderDictionaryAdminList();
-}
-
-// ... (بقية الدوال الأساسية)
-
-// نهاية الكود 
-
-/* =============================
-   End of file
-   ============================= */ 
+</script>
+</body>
+</html>

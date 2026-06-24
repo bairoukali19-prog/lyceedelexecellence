@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lycée de l'Excellence - Physique 2026</title>
   <meta name="description" content="منصة تعليمية متخصصة في الفيزياء - السنة الدراسية 2026">
-  <meta name="keywords" content="فيزياء, تعليم, ثانوية, امتحانات, دروس, تمارين, quiz, concours médecin">
+  <meta name="keywords" content="فيزياء, تعليم, ثانوية, امتحانات, دروس, تمارين, quiz, concours, médecine, ensa">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
-    /* ===== كل الـ CSS الموجود كما هو ===== */
+    /* ===== كل الـ CSS الموجود كما هو مع إضافة أنماط جديدة ===== */
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI','Tahoma',sans-serif; }
     body { background:#f4f7fc; color:#1e293b; direction:rtl; padding-top:70px; }
     .container { max-width:1200px; margin:0 auto; padding:0 20px; }
@@ -106,15 +106,15 @@
     .quiz-result .correct { color:#059669; font-weight:bold; }
     .quiz-result .wrong { color:#dc2626; font-weight:bold; }
 
-    /* ===== الأنماط الجديدة ===== */
-    .about-section, .stats-highlight, .testimonials, .contact-section {
+    /* ===== الأنماط الجديدة للأقسام ===== */
+    .about-section, .stats-highlight, .testimonials, .contact-section, .concours-section {
       background: white;
       border-radius: 16px;
       padding: 30px;
       margin: 30px 0;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    .about-section h2, .stats-highlight h2, .testimonials h2, .contact-section h2 {
+    .about-section h2, .stats-highlight h2, .testimonials h2, .contact-section h2, .concours-section h2 {
       color: #0b3d91;
       margin-bottom: 15px;
     }
@@ -208,9 +208,41 @@
       margin: 0 5px;
       font-weight: bold;
     }
-    .countdown .highlight {
-      background: #e74c3c;
+    .concours-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .concours-card {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+    }
+    .concours-card h3 {
+      color: #0b3d91;
+      margin-bottom: 10px;
+    }
+    .concours-card .countdown-small {
+      background: #1e293b;
       color: white;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+    .concours-card .countdown-small span {
+      background: #f59e0b;
+      color: #1e293b;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin: 0 3px;
+      font-weight: bold;
+    }
+    .concours-card .btn-concours {
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -232,7 +264,7 @@
         <li><a href="#" class="nav-link" data-section="exams">Examens</a></li>
         <li><a href="#" class="nav-link" data-section="exercises">Exercices</a></li>
         <li><a href="#" class="nav-link" data-section="lessons">Leçons</a></li>
-        <li><a href="#" class="nav-link" data-section="concours">Concours Médecin</a></li>
+        <li><a href="#" class="nav-link" data-section="concours">Concours</a></li>
       </ul>
     </nav>
     <div class="auth-buttons">
@@ -296,10 +328,9 @@
         <div class="feature-icon"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
         <div class="feature-content"><h3>Leçons</h3><p>دروس شاملة للبرنامج.</p></div>
       </div>
-      <!-- إضافة قسم Concours Médecin ضمن الميزات -->
-      <div class="feature-card" data-section="concours" tabindex="0" role="button" style="border-color:#e74c3c;">
-        <div class="feature-icon"><i class="fas fa-heartbeat" aria-hidden="true" style="color:#e74c3c;"></i></div>
-        <div class="feature-content"><h3 style="color:#e74c3c;">Concours Médecin</h3><p>تحضير مكثف لامتحانات كلية الطب.</p></div>
+      <div class="feature-card" data-section="concours" tabindex="0" role="button">
+        <div class="feature-icon"><i class="fas fa-trophy" aria-hidden="true"></i></div>
+        <div class="feature-content"><h3>Concours</h3><p>معلومات وعد تنازلي للمسابقات.</p></div>
       </div>
     </div>
 
@@ -316,14 +347,51 @@
       <p style="text-align:center;color:#475569;margin-top:10px;">* يتم تحديث الأرقام تلقائياً من قاعدة البيانات</p>
     </section>
 
-    <!-- ===== عداد تنازلي CONCOURS MÉDECIN (معدل) ===== -->
-    <div class="countdown" aria-label="العد التنازلي لامتحانات Concours Médecin">
+    <!-- ===== أقسام CONCOURS (جديد) ===== -->
+    <section class="concours-section" id="concours" aria-labelledby="concours-title">
+      <h2 id="concours-title">🏆 Concours 2026</h2>
+      <p style="color:#475569;margin-bottom:15px;">تابع العد التنازلي للمسابقات الكبرى واستعد جيداً.</p>
+      <div class="concours-grid">
+
+        <!-- Concours Médecin -->
+        <div class="concours-card">
+          <h3>🩺 Concours Médecin</h3>
+          <div class="countdown-small" id="concoursMedecinTimer">
+            <i class="fas fa-hourglass-half"></i>
+            <span id="medecinDays">--</span> يوم
+            <span id="medecinHours">--</span> ساعة
+            <span id="medecinMinutes">--</span> دقيقة
+            <span id="medecinSeconds">--</span> ثانية
+          </div>
+          <p style="color:#475569;font-size:14px;">المتبقي على امتحان Concours Médecin</p>
+          <button class="btn btn-primary btn-concours" onclick="alert('سيتم فتح التفاصيل قريباً')">تفاصيل المسابقة</button>
+        </div>
+
+        <!-- Concours Ensa -->
+        <div class="concours-card">
+          <h3>⚙️ Concours Ensa</h3>
+          <div class="countdown-small" id="concoursEnsaTimer">
+            <i class="fas fa-hourglass-half"></i>
+            <span id="ensaDays">--</span> يوم
+            <span id="ensaHours">--</span> ساعة
+            <span id="ensaMinutes">--</span> دقيقة
+            <span id="ensaSeconds">--</span> ثانية
+          </div>
+          <p style="color:#475569;font-size:14px;">المتبقي على امتحان Concours Ensa</p>
+          <button class="btn btn-accent btn-concours" onclick="alert('سيتم فتح التفاصيل قريباً')">تفاصيل المسابقة</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== عداد تنازلي عام (بكالوريا) ===== -->
+    <div class="countdown" aria-label="العد التنازلي لامتحانات البكالوريا">
       <i class="fas fa-hourglass-half" aria-hidden="true"></i>
-      <strong style="color:#f59e0b;">⏳ الوقت المتبقي لامتحانات Concours Médecin 2026:</strong>
-      <span id="countdownDays">25</span> يوم
-      <span id="countdownHours">00</span> ساعة
-      <span id="countdownMinutes">00</span> دقيقة
-      <span id="countdownSeconds">00</span> ثانية
+      الوقت المتبقي لامتحانات البكالوريا 2026:
+      <span id="countdownDays">--</span> يوم
+      <span id="countdownHours">--</span> ساعة
+      <span id="countdownMinutes">--</span> دقيقة
+      <span id="countdownSeconds">--</span> ثانية
     </div>
 
     <!-- ===== STUDENT DASHBOARD ===== -->
@@ -421,41 +489,6 @@
     <section id="lessons" class="page-section" aria-labelledby="lessons-title">
       <div class="section-header"><h2 id="lessons-title">Leçons</h2><p>دروس شاملة للبرنامج</p></div>
       <div class="content-grid" id="lessonsContent"></div>
-    </section>
-
-    <!-- ===== NOUVEAU: Section Concours Médecin ===== -->
-    <section id="concours" class="page-section" aria-labelledby="concours-title" style="border:2px solid #e74c3c; border-radius:16px; padding:20px; background:#fef9f9;">
-      <div class="section-header" style="border-bottom:3px solid #e74c3c;">
-        <h2 id="concours-title" style="color:#e74c3c;"><i class="fas fa-heartbeat"></i> Concours Médecin 2026</h2>
-        <p>تحضير شامل لاجتياز امتحانات كلية الطب</p>
-      </div>
-      
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); gap:20px; margin-top:20px;">
-        <div class="item" style="background:white; padding:20px; border-radius:12px; border-right:4px solid #e74c3c;">
-          <h4 style="color:#e74c3c;"><i class="fas fa-book-open"></i> دروس مكثفة</h4>
-          <p>ملخصات وشروحات لأهم مواد الامتحان: فيزياء، كيمياء، بيولوجيا، رياضيات.</p>
-        </div>
-        <div class="item" style="background:white; padding:20px; border-radius:12px; border-right:4px solid #e74c3c;">
-          <h4 style="color:#e74c3c;"><i class="fas fa-tasks"></i> تمارين تطبيقية</h4>
-          <p>سلسلة من التمارين المصممة خصيصاً لمستوى Concours مع حلول مفصلة.</p>
-        </div>
-        <div class="item" style="background:white; padding:20px; border-radius:12px; border-right:4px solid #e74c3c;">
-          <h4 style="color:#e74c3c;"><i class="fas fa-file-alt"></i> امتحانات سابقة</h4>
-          <p>نماذج امتحانات السنوات الماضية مع التصحيح لمعاينة نمط الأسئلة.</p>
-        </div>
-        <div class="item" style="background:white; padding:20px; border-radius:12px; border-right:4px solid #e74c3c;">
-          <h4 style="color:#e74c3c;"><i class="fas fa-user-md"></i> نصائح وتوجيه</h4>
-          <p>إرشادات من أساتذة ذوي خبرة حول كيفية اجتياز الامتحان بنجاح.</p>
-        </div>
-      </div>
-      
-      <div style="text-align:center; margin-top:25px; padding:20px; background:#e74c3c10; border-radius:12px;">
-        <p style="font-size:18px;"><strong>📌 موعد الامتحان: 15 يوليو 2026</strong></p>
-        <p style="color:#475569;">الاستعداد المبكر مفتاح النجاح. ابدأ الآن!</p>
-        <button class="btn btn-primary" style="background:#e74c3c; border-color:#e74c3c; margin-top:10px;" onclick="document.getElementById('exercises').scrollIntoView({behavior:'smooth'});">
-          <i class="fas fa-arrow-left"></i> ابدأ التحضير
-        </button>
-      </div>
     </section>
 
     <!-- ===== À propos ===== -->
@@ -688,7 +721,7 @@
           <li><a href="#" class="nav-link" data-section="exams">Examens</a></li>
           <li><a href="#" class="nav-link" data-section="exercises">Exercices</a></li>
           <li><a href="#" class="nav-link" data-section="lessons">Leçons</a></li>
-          <li><a href="#" class="nav-link" data-section="concours">Concours Médecin</a></li>
+          <li><a href="#" class="nav-link" data-section="concours">Concours</a></li>
         </ul>
       </div>
       <div>
@@ -707,10 +740,10 @@
   </div>
 </footer>
 
-<!-- ===== JAVASCRIPT ===== -->
+<!-- ===== JAVASCRIPT (تم تعديل بيانات الدخول وإضافة العد التنازلي للمسابقات) ===== -->
 <script>
   // ============================================================
-  // DATA LAYER (معدل قليلاً ليشمل العد التنازلي)
+  // DATA LAYER
   // ============================================================
   let data = {
     students: [],
@@ -771,7 +804,7 @@
   }
 
   // ============================================================
-  // RENDER FUNCTIONS (نفسها تماماً)
+  // RENDER FUNCTIONS
   // ============================================================
   function renderStudents() {
     const tbody = document.querySelector('#studentsTable tbody');
@@ -929,7 +962,7 @@
     document.getElementById('stats-grades').textContent = data.grades.length;
     document.getElementById('stats-messages').textContent = data.messages.length;
     document.getElementById('stats-latex').textContent = data.latexCourses.length;
-    // الإحصائيات الجديدة
+    // تحديث الإحصائيات الجديدة
     document.getElementById('statStudents').textContent = data.students.length;
     document.getElementById('statLessons').textContent = data.lessons.length;
     document.getElementById('statExams').textContent = data.exams.length;
@@ -987,11 +1020,16 @@
   }
 
   // ============================================================
-  // ADMIN LOGIC
+  // ADMIN LOGIC (تم تعديل بيانات الدخول)
   // ============================================================
   function loginAdmin() {
+    const user = prompt('Nom d\'utilisateur administrateur:');
+    if (user !== 'Adminali') {
+      alert('Nom d\'utilisateur incorrect.');
+      return;
+    }
     const pass = prompt('Mot de passe administrateur:');
-    if (pass === 'admin123') {
+    if (pass === 'aliali2001') {
       currentAdmin = true;
       document.getElementById('admin-panel').classList.add('active');
       renderAll();
@@ -1062,7 +1100,7 @@
   }
 
   // ============================================================
-  // QUIZ ENGINE (نفسها)
+  // QUIZ ENGINE
   // ============================================================
   function startQuiz(quizId) {
     const quiz = data.quizzes.find(q => q.id === quizId);
@@ -1195,7 +1233,7 @@
   });
 
   // ============================================================
-  // ADMIN BUTTONS (نفسها)
+  // ADMIN BUTTONS
   // ============================================================
   document.getElementById('btnSaveStudent')?.addEventListener('click', function() {
     const id = document.getElementById('stId').value || generateId();
@@ -1513,34 +1551,62 @@
   document.getElementById('studentLogoutBtn')?.addEventListener('click', logoutStudent);
 
   // ============================================================
-  // COUNTDOWN CONCOURS MÉDECIN (معدل ليبدأ من 25 يوماً)
+  // COUNTDOWNS (بكالوريا + Concours Médecin + Concours Ensa)
   // ============================================================
-  // نحدد تاريخ الامتحان: 15 يوليو 2026
-  const examDate = new Date('2026-07-15T00:00:00').getTime();
-  
-  function updateConcoursCountdown() {
+  function updateCountdowns() {
+    // بكالوريا (تاريخ افتراضي)
+    const bacDate = new Date('2026-06-01T00:00:00').getTime();
     const now = new Date().getTime();
-    const diff = examDate - now;
-    if (diff > 0) {
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    // بكالوريا
+    let diffBac = bacDate - now;
+    if (diffBac > 0) {
+      const days = Math.floor(diffBac / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffBac % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diffBac % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffBac % (1000 * 60)) / 1000);
       document.getElementById('countdownDays').textContent = days;
-      document.getElementById('countdownHours').textContent = hours.toString().padStart(2, '0');
-      document.getElementById('countdownMinutes').textContent = minutes.toString().padStart(2, '0');
-      document.getElementById('countdownSeconds').textContent = seconds.toString().padStart(2, '0');
+      document.getElementById('countdownHours').textContent = hours;
+      document.getElementById('countdownMinutes').textContent = minutes;
+      document.getElementById('countdownSeconds').textContent = seconds;
     } else {
       document.getElementById('countdownDays').textContent = '0';
-      document.getElementById('countdownHours').textContent = '00';
-      document.getElementById('countdownMinutes').textContent = '00';
-      document.getElementById('countdownSeconds').textContent = '00';
+      document.getElementById('countdownHours').textContent = '0';
+      document.getElementById('countdownMinutes').textContent = '0';
+      document.getElementById('countdownSeconds').textContent = '0';
+    }
+
+    // Concours Médecin (25 يوم من الآن)
+    const medecinTarget = now + (25 * 24 * 60 * 60 * 1000);
+    let diffMed = medecinTarget - now;
+    if (diffMed > 0) {
+      const days = Math.floor(diffMed / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffMed % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diffMed % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffMed % (1000 * 60)) / 1000);
+      document.getElementById('medecinDays').textContent = days;
+      document.getElementById('medecinHours').textContent = hours;
+      document.getElementById('medecinMinutes').textContent = minutes;
+      document.getElementById('medecinSeconds').textContent = seconds;
+    }
+
+    // Concours Ensa (40 يوم من الآن - مثال)
+    const ensaTarget = now + (40 * 24 * 60 * 60 * 1000);
+    let diffEnsa = ensaTarget - now;
+    if (diffEnsa > 0) {
+      const days = Math.floor(diffEnsa / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffEnsa % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diffEnsa % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffEnsa % (1000 * 60)) / 1000);
+      document.getElementById('ensaDays').textContent = days;
+      document.getElementById('ensaHours').textContent = hours;
+      document.getElementById('ensaMinutes').textContent = minutes;
+      document.getElementById('ensaSeconds').textContent = seconds;
     }
   }
-  
-  // تحديث كل ثانية
-  setInterval(updateConcoursCountdown, 1000);
-  updateConcoursCountdown();
+
+  setInterval(updateCountdowns, 1000);
+  updateCountdowns();
 
   // ============================================================
   // INIT

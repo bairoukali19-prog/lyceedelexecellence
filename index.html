@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ===== CSS (مختصر للطول) ===== */
+    /* ===== CSS مختصر ===== */
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Tajawal','Segoe UI',sans-serif; }
     body { background:#f0f4fa; color:#1e293b; direction:rtl; padding-top:70px; overflow-x:hidden; }
     .container { max-width:1200px; margin:0 auto; padding:0 20px; }
@@ -451,7 +451,6 @@
           <div id="tab-concours" class="admin-section active">
             <h2>🏆 Concours Online</h2>
             <p style="color:#475569;margin-bottom:20px;">إدارة المسابقات الإلكترونية مع إمكانية إضافة أسئلة وصور وتحديد الإجابات الصحيحة.</p>
-            <!-- زر إعادة تعيين المسابقة الافتراضية -->
             <div style="margin-bottom:20px;">
               <button class="btn btn-warning" onclick="resetDefaultConcours()">
                 <i class="fas fa-undo"></i> إعادة تعيين المسابقة الافتراضية (40 سؤالاً)
@@ -539,13 +538,13 @@
 <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
 <!-- ============================================================
-JAVASCRIPT (Complet avec version V3)
+JAVASCRIPT (إصدار V4 - يعمل بكامل طاقته)
 ============================================================ -->
 <script>
   // ============================================================
-  // 1. STORAGE & DEFAULT DATA (V3)
+  // 1. STORAGE & DEFAULT DATA (V4)
   // ============================================================
-  const STORAGE_KEY = 'lyceeData_v3';  // تم تغيير المفتاح لضمان تحديث البيانات
+  const STORAGE_KEY = 'lyceeData_v4';
 
   // بناء الأسئلة الافتراضية (40 سؤالاً)
   const defaultConcoursQuestions = (function() {
@@ -638,7 +637,7 @@ JAVASCRIPT (Complet avec version V3)
         feedback: feedbacks[i] || ''
       });
     }
-    // إضافة 20 سؤالاً إضافياً (لتكملة 40) من نفس النمط (نكرر الأسئلة مع تعديل بسيط)
+    // إضافة 20 سؤالاً إضافياً لتكملة 40
     for (var j = 0; j < 20; j++) {
       var idx = j % texts.length;
       qs.push({
@@ -690,7 +689,7 @@ JAVASCRIPT (Complet avec version V3)
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         var parsed = JSON.parse(raw);
-        // دمج مع الافتراضي لضمان وجود جميع الحقول
+        // دمج مع الافتراضي
         data = JSON.parse(JSON.stringify(defaultData));
         for (var key in parsed) {
           if (data.hasOwnProperty(key) && Array.isArray(data[key]) && Array.isArray(parsed[key])) {
@@ -699,7 +698,6 @@ JAVASCRIPT (Complet avec version V3)
             data[key] = parsed[key];
           }
         }
-        // التأكد من وجود concours
         if (!data.concours || data.concours.length === 0) {
           data.concours = [defaultConcours];
         }
@@ -710,7 +708,6 @@ JAVASCRIPT (Complet avec version V3)
       console.warn('loadData error, using defaults', e);
       data = JSON.parse(JSON.stringify(defaultData));
     }
-    // ضمان وجود concours
     if (!data.concours || data.concours.length === 0) {
       data.concours = [defaultConcours];
     }
@@ -718,7 +715,7 @@ JAVASCRIPT (Complet avec version V3)
       data.sliderImages = ['https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=450&fit=crop'];
     }
     saveData();
-    console.log('✅ Data loaded. Concours count:', data.concours.length);
+    console.log('✅ Data loaded (V4). Concours count:', data.concours.length);
   }
 
   function saveData() {
@@ -2518,7 +2515,7 @@ JAVASCRIPT (Complet avec version V3)
   // 17. INIT
   // ============================================================
   function init() {
-    console.log('🚀 Lycée de l\'Excellence - Initialisation (V3)...');
+    console.log('🚀 Lycée de l\'Excellence - Initialisation (V4)...');
     loadData();
     renderAll();
     updateAllTimers();

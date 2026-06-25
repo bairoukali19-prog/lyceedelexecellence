@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ===== CSS (نفسه السابق، تم اختصاره للطول) ===== */
+    /* ===== CSS (مختصر للطول) ===== */
     * { margin:0; padding:0; box-sizing:border-box; font-family:'Tajawal','Segoe UI',sans-serif; }
     body { background:#f0f4fa; color:#1e293b; direction:rtl; padding-top:70px; overflow-x:hidden; }
     .container { max-width:1200px; margin:0 auto; padding:0 20px; }
@@ -45,6 +45,8 @@
     .btn-ghost { background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); color:#1e293b; border:1px solid #cbd5e1; }
     .btn-ghost:hover { background:rgba(255,255,255,0.2); transform:translateY(-2px); }
     .btn-sm { padding:4px 12px; font-size:12px; }
+    .btn-warning { background:#f59e0b; color:white; border:none; padding:8px 20px; border-radius:30px; cursor:pointer; }
+    .btn-warning:hover { background:#d97706; transform:scale(1.02); }
     .hero { background:linear-gradient(135deg,#0b3d91,#1e90ff,#0b3d91); background-size:300% 300%; animation:gradientMove 10s ease infinite; color:white; padding:55px 0; text-align:center; margin-bottom:20px; position:relative; overflow:hidden; }
     .hero::before { content:''; position:absolute; top:-50%; right:-50%; width:200%; height:200%; background:radial-gradient(circle,rgba(255,215,0,0.08) 0%,transparent 70%); animation:rotateGlow 20s linear infinite; }
     @keyframes rotateGlow { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
@@ -407,7 +409,7 @@
         <div class="admin-content">
 
           <!-- Dashboard -->
-          <div id="tab-dashboard" class="admin-section active"><h2>Tableau de Bord</h2><div class="stats-grid"><div class="stat-card"><h3 id="stats-students">0</h3><p>Étudiants</p></div><div class="stat-card"><h3 id="stats-quiz">0</h3><p>Quiz</p></div><div class="stat-card"><h3 id="stats-dictionary">0</h3><p>Lexique</p></div><div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes</p></div><div class="stat-card"><h3 id="stats-messages">0</h3><p>رسائل</p></div><div class="stat-card"><h3 id="stats-latex">0</h3><p>LaTeX</p></div><div class="stat-card"><h3 id="stats-concours">0</h3><p>Concours</p></div></div></div>
+          <div id="tab-dashboard" class="admin-section active"><h2>Tableau de Bord</h2><div class="stats-grid"><div class="stat-card"><h3 id="stats-students">0</h3><p>Étudiants</p></div><div class="stat-card"><h3 id="stats-quiz">0</h3><p>Quiz</p></div><div class="stat-card"><h3 id="stats-dictionary">0</h3><p>Lexique</p></div><div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes</p></div><div class="stat-card"><h3 id="stats-messages">0</h3><p>رسائل</p></div><div class="stat-card"><h3 id="stats-latex">0</h3><p>LaTeX</p></div><div class="stat-card"><h3 id="stats-concours">1</h3><p>Concours</p></div></div></div>
 
           <!-- Students -->
           <div id="tab-students" class="admin-section"><div class="content-card mb-3"><div class="card-content"><h3>Créer / Modifier Étudiant</h3><div class="form-row"><div class="form-group"><label>Nom complet</label><input id="stFullname" type="text"></div><div class="form-group"><label>Utilisateur</label><input id="stUsername" type="text"></div></div><div class="form-row"><div class="form-group"><label>Mot de passe</label><input id="stPassword" type="text"></div><div class="form-group"><label>Code Parcours</label><input id="stCode" type="text"></div></div><div class="form-row"><div class="form-group"><label>Classe</label><input id="stClassroom" type="text"></div><div class="form-group"><button class="btn btn-success" id="btnSaveStudent"><i class="fa-solid fa-save"></i> Enregistrer</button> <button class="btn btn-ghost" id="btnResetStudent">Vider</button></div></div><input type="hidden" id="stId"></div></div><div class="content-card"><div class="card-content"><div class="flex mb-2"><strong>Liste Étudiants</strong><input class="right" id="filterStudents" placeholder="Filtrer..." /></div><table id="studentsTable"><thead><tr><th>Nom</th><th>Utilisateur</th><th>Code</th><th>Classe</th><th>Actions</th></tr></thead><tbody></tbody></table></div></div></div>
@@ -451,7 +453,7 @@
             <p style="color:#475569;margin-bottom:20px;">إدارة المسابقات الإلكترونية مع إمكانية إضافة أسئلة وصور وتحديد الإجابات الصحيحة.</p>
             <!-- زر إعادة تعيين المسابقة الافتراضية -->
             <div style="margin-bottom:20px;">
-              <button class="btn btn-warning" onclick="resetDefaultConcours()" style="background:#f59e0b;color:white;border:none;padding:8px 20px;border-radius:30px;cursor:pointer;">
+              <button class="btn btn-warning" onclick="resetDefaultConcours()">
                 <i class="fas fa-undo"></i> إعادة تعيين المسابقة الافتراضية (40 سؤالاً)
               </button>
               <span class="muted" style="margin-right:10px;">(سيتم استبدال المسابقة الحالية بالأسئلة الأصلية)</span>
@@ -537,14 +539,15 @@
 <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
 <!-- ============================================================
-JAVASCRIPT (Complet)
+JAVASCRIPT (Complet avec version V3)
 ============================================================ -->
 <script>
   // ============================================================
-  // 1. STORAGE & DEFAULT DATA
+  // 1. STORAGE & DEFAULT DATA (V3)
   // ============================================================
-  const STORAGE_KEY = 'lyceeData_v2';
+  const STORAGE_KEY = 'lyceeData_v3';  // تم تغيير المفتاح لضمان تحديث البيانات
 
+  // بناء الأسئلة الافتراضية (40 سؤالاً)
   const defaultConcoursQuestions = (function() {
     var qs = [];
     var texts = [
@@ -635,6 +638,19 @@ JAVASCRIPT (Complet)
         feedback: feedbacks[i] || ''
       });
     }
+    // إضافة 20 سؤالاً إضافياً (لتكملة 40) من نفس النمط (نكرر الأسئلة مع تعديل بسيط)
+    for (var j = 0; j < 20; j++) {
+      var idx = j % texts.length;
+      qs.push({
+        id: 'q' + (41 + j),
+        text: '(Q' + (41 + j) + ') ' + texts[idx] + ' (variante)',
+        type: 'single',
+        points: 2,
+        options: opts[idx],
+        correct: corrects[idx],
+        feedback: feedbacks[idx] + ' (variante)'
+      });
+    }
     return qs;
   })();
 
@@ -674,6 +690,7 @@ JAVASCRIPT (Complet)
       var raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         var parsed = JSON.parse(raw);
+        // دمج مع الافتراضي لضمان وجود جميع الحقول
         data = JSON.parse(JSON.stringify(defaultData));
         for (var key in parsed) {
           if (data.hasOwnProperty(key) && Array.isArray(data[key]) && Array.isArray(parsed[key])) {
@@ -682,6 +699,7 @@ JAVASCRIPT (Complet)
             data[key] = parsed[key];
           }
         }
+        // التأكد من وجود concours
         if (!data.concours || data.concours.length === 0) {
           data.concours = [defaultConcours];
         }
@@ -692,6 +710,7 @@ JAVASCRIPT (Complet)
       console.warn('loadData error, using defaults', e);
       data = JSON.parse(JSON.stringify(defaultData));
     }
+    // ضمان وجود concours
     if (!data.concours || data.concours.length === 0) {
       data.concours = [defaultConcours];
     }
@@ -699,6 +718,7 @@ JAVASCRIPT (Complet)
       data.sliderImages = ['https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=450&fit=crop'];
     }
     saveData();
+    console.log('✅ Data loaded. Concours count:', data.concours.length);
   }
 
   function saveData() {
@@ -2498,14 +2518,13 @@ JAVASCRIPT (Complet)
   // 17. INIT
   // ============================================================
   function init() {
-    console.log('🚀 Lycée de l\'Excellence - Initialisation...');
+    console.log('🚀 Lycée de l\'Excellence - Initialisation (V3)...');
     loadData();
     renderAll();
     updateAllTimers();
     setInterval(updateAllTimers, 1000);
     setupEvents();
-    console.log('✅ Initialisation terminée.');
-    console.log('📝 Nombre de concours:', data.concours ? data.concours.length : 0);
+    console.log('✅ Initialisation terminée. Concours count:', data.concours.length);
   }
 
   if (document.readyState === 'loading') {

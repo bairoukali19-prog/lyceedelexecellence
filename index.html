@@ -4,14 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Lycée de l'Excellence - Physique 2026</title>
-  <!-- أيقونات وخطوط -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet" />
-  <!-- MathJax (اختياري) -->
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <style>
-    /* ===== جميع الأنماط (نفس الـ CSS السابق) ===== */
+    /* ===== جميع الأنماط (نفس السابق مع تحسينات) ===== */
     * {
       margin: 0;
       padding: 0;
@@ -934,6 +932,8 @@
       width: 24px;
       font-size: 18px;
     }
+
+    /* ===== تصميم جديد لقسم Concours العام ===== */
     .concours-hero {
       background: linear-gradient(135deg, #0b3d91, #1e90ff);
       color: white;
@@ -950,6 +950,7 @@
     .concours-hero p {
       opacity: 0.9;
     }
+
     .concours-card-large {
       background: white;
       border-radius: 20px;
@@ -1004,6 +1005,7 @@
       cursor: not-allowed;
       transform: none;
     }
+
     @media (max-width: 768px) {
       .header-content {
         flex-direction: column;
@@ -1124,11 +1126,15 @@
         </div>
       </section>
 
-      <!-- Concours Cards (العرض العام) -->
+      <!-- ===== قسم CONCOURS العام (المعدل) ===== -->
       <section style="background:white;border-radius:20px;padding:28px;margin:20px 0;box-shadow:0 4px 20px rgba(0,0,0,0.04);" id="concours">
-        <h2 style="color:#0b3d91;">🏆 Concours 2026</h2>
-        <p style="color:#475569;margin-bottom:15px;">تابع العد التنازلي للمسابقات الكبرى واستعد جيداً.</p>
-        <div class="concours-grid">
+        <div class="concours-hero">
+          <h2>🏆 Concours Physique 2026</h2>
+          <p>اختبر معلوماتك في الفيزياء مع 40 سؤالاً من مستوى متقدم</p>
+        </div>
+
+        <!-- العدادات التنازلية -->
+        <div class="concours-grid" style="margin-bottom:30px;">
           <div class="concours-card">
             <h3>🩺 Concours Médecin</h3>
             <div class="countdown-small" id="concoursMedecinTimer">
@@ -1139,7 +1145,6 @@
               <span id="medecinSeconds">--</span> ثانية
             </div>
             <p style="color:#475569;font-size:14px;">المتبقي على امتحان Concours Médecin</p>
-            <button class="btn btn-primary" onclick="alert('سيتم فتح التفاصيل قريباً')">تفاصيل</button>
           </div>
           <div class="concours-card">
             <h3>⚙️ Concours Ensa</h3>
@@ -1151,8 +1156,12 @@
               <span id="ensaSeconds">--</span> ثانية
             </div>
             <p style="color:#475569;font-size:14px;">المتبقي على امتحان Concours Ensa</p>
-            <button class="btn btn-accent" onclick="alert('سيتم فتح التفاصيل قريباً')">تفاصيل</button>
           </div>
+        </div>
+
+        <!-- عرض Concours 1 (المسابقة الجاهزة) -->
+        <div id="publicConcoursContainer">
+          <!-- سيتم ملؤها بواسطة JavaScript -->
         </div>
       </section>
 
@@ -1177,6 +1186,7 @@
 
       <!-- ===== STUDENT DASHBOARD ===== -->
       <section id="student-dashboard" class="student-dashboard">
+        <!-- نفس المحتوى السابق ... -->
         <div class="welcome-banner">
           <h2 id="studentWelcome">Bienvenue, Élève</h2>
           <p>Vous trouverez ici toutes vos ressources pédagogiques</p>
@@ -1202,25 +1212,17 @@
         <div id="student-revision-tab" class="student-tab-content"><div class="dashboard-card"><h3>Demande de Récorrection</h3><form id="revisionRequestForm"><div class="form-group"><label>Examen</label><select id="revisionExam" required><option value="">Sélectionnez</option></select></div><div class="form-group"><label>Message</label><textarea id="revisionMessage" rows="3" required></textarea></div><button type="submit" class="btn btn-primary">Envoyer</button></form></div><div class="dashboard-card"><h3>Vos Demandes</h3><div id="studentRevisionRequests"></div></div></div>
         <div id="student-messages-tab" class="student-tab-content"><div class="dashboard-card"><h3>الرسائل</h3><div id="studentMessagesList"></div></div></div>
         <div id="student-cours-tab" class="student-tab-content"><div class="dashboard-card"><h3>Cours online</h3><div id="studentCoursList" class="latex-content"></div></div></div>
-
-        <!-- ===== قسم CONCOURS المحسن للطالب ===== -->
         <div id="student-concours-tab" class="student-tab-content">
-          <div class="concours-hero">
-            <h2>🏆 Concours Physique 2026</h2>
-            <p>اختبر معلوماتك في الفيزياء مع 40 سؤالاً من مستوى متقدم</p>
-          </div>
-
-          <!-- حاوية عرض Concours -->
-          <div id="concoursContainer">
-            <!-- سيتم ملؤها بواسطة JavaScript -->
-          </div>
-
           <div class="dashboard-card">
-            <h3>📊 نتائجي في Concours</h3>
+            <h3>🏆 Concours disponibles</h3>
+            <button class="btn btn-outline btn-sm" onclick="renderStudentConcours()" style="margin-bottom:10px;"><i class="fas fa-sync"></i> تحديث القائمة</button>
+            <div id="studentConcoursList"></div>
+          </div>
+          <div class="dashboard-card">
+            <h3>نتائج Concours</h3>
             <div id="studentConcoursResults"></div>
           </div>
         </div>
-
         <div class="flex right"><button class="btn btn-ghost" id="studentLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Déconnexion</button></div>
       </section>
 
@@ -1294,7 +1296,6 @@
             </ul>
           </div>
           <div class="admin-content">
-
             <!-- Dashboard -->
             <div id="tab-dashboard" class="admin-section"><h2>Tableau de Bord</h2><div class="stats-grid"><div class="stat-card"><h3 id="stats-students">56</h3><p>Étudiants</p></div><div class="stat-card"><h3 id="stats-quiz">15</h3><p>Quiz</p></div><div class="stat-card"><h3 id="stats-dictionary">0</h3><p>Lexique</p></div><div class="stat-card"><h3 id="stats-grades">0</h3><p>Notes</p></div><div class="stat-card"><h3 id="stats-messages">0</h3><p>رسائل</p></div><div class="stat-card"><h3 id="stats-latex">0</h3><p>LaTeX</p></div><div class="stat-card"><h3 id="stats-concours">1</h3><p>Concours</p></div></div></div>
 
@@ -1418,7 +1419,7 @@
   <!-- Back to top -->
   <div class="back-to-top" id="backToTop"><i class="fas fa-arrow-up"></i></div>
 
-  <!-- ===== JAVASCRIPT (كل الكود ===== -->
+  <!-- ===== JAVASCRIPT (كامل) ===== -->
   <script>
     // ============================================================
     // script.js - جميع دوال Lycée de l'Excellence
@@ -1574,24 +1575,64 @@
     }
 
     // ============================================================
-    // 6. عرض Concours للطالب (محسّن وجذاب)
+    // 6. عرض Concours في الصفحة العامة (جديد)
     // ============================================================
-    function renderStudentConcours() {
-      const container = document.getElementById('concoursContainer');
+    function renderPublicConcours() {
+      const container = document.getElementById('publicConcoursContainer');
       if (!container) return;
 
       if (!data.concours || data.concours.length === 0) {
         container.innerHTML = `
-          <div style="text-align:center;padding:40px;background:#f8fafc;border-radius:16px;border:1px dashed #cbd5e1;">
-            <i class="fas fa-trophy" style="font-size:48px;color:#cbd5e1;display:block;margin-bottom:15px;"></i>
-            <p style="color:#475569;font-size:18px;">لا توجد مسابقات متاحة حالياً.</p>
-            <p style="color:#94a3b8;font-size:14px;">سيتم إضافة مسابقات جديدة قريباً.</p>
+          <div style="text-align:center;padding:30px;background:#f8fafc;border-radius:16px;border:1px dashed #cbd5e1;">
+            <p style="color:#475569;">لا توجد مسابقات حالياً.</p>
           </div>
         `;
         return;
       }
 
-      // أخذ أول Concours (Concours 1)
+      const concours = data.concours[0];
+      const isLoggedIn = !!currentStudent;
+      const hasResult = isLoggedIn ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[currentStudent.id] || []).some(r => r.concoursId === concours.id) : false;
+
+      let buttonHTML = '';
+      if (hasResult) {
+        buttonHTML = `<button class="btn btn-ghost btn-sm" onclick="viewConcoursResult('${concours.id}')"><i class="fas fa-eye"></i> عرض النتيجة</button>`;
+      } else if (isLoggedIn) {
+        buttonHTML = `<button class="start-btn" onclick="startConcours('${concours.id}')"><i class="fas fa-play"></i> بدء المسابقة الآن</button>`;
+      } else {
+        buttonHTML = `<button class="btn btn-accent" onclick="document.getElementById('studentLoginBtn').click()"><i class="fas fa-sign-in-alt"></i> تسجيل الدخول للمشاركة</button>`;
+      }
+
+      container.innerHTML = `
+        <div class="concours-card-large">
+          <div class="badge">📘 Concours 1 · ${concours.category === 'medecin' ? '🩺 Médecin' : concours.category === 'ensa' ? '⚙️ Ensa' : '📚 Général'}</div>
+          <h3>${concours.title}</h3>
+          <p style="color:#475569;margin-bottom:12px;">${concours.description || ''}</p>
+          <div class="meta">
+            <span style="margin-left:15px;">⏱ ${concours.duration} دقيقة</span>
+            <span>📝 ${concours.questions ? concours.questions.length : 0} أسئلة</span>
+          </div>
+          <div style="margin:15px 0;">
+            ${buttonHTML}
+            <button class="btn btn-outline btn-sm" onclick="previewConcours('${concours.id}')" style="margin-right:8px;"><i class="fas fa-eye"></i> معاينة الأسئلة</button>
+          </div>
+          ${hasResult ? `<div style="background:#ecfdf5;border:1px solid #10b981;border-radius:12px;padding:12px;margin-top:10px;color:#065f46;font-weight:500;">✅ لقد أكملت هذه المسابقة.</div>` : ''}
+        </div>
+      `;
+    }
+
+    // ============================================================
+    // 7. عرض Concours للطالب في لوحة الطالب (نفس السابق)
+    // ============================================================
+    function renderStudentConcours() {
+      const container = document.getElementById('studentConcoursList');
+      if (!container) return;
+
+      if (!data.concours || data.concours.length === 0) {
+        container.innerHTML = '<p class="muted">لا توجد مسابقات متاحة حالياً.</p>';
+        return;
+      }
+
       const concours = data.concours[0];
       const studentId = currentStudent ? currentStudent.id : null;
       const results = studentId ? (JSON.parse(localStorage.getItem('concoursResults') || '{}')[studentId] || []) : [];
@@ -1599,32 +1640,24 @@
       const catLabel = concours.category === 'medecin' ? '🩺' : concours.category === 'ensa' ? '⚙️' : '📚';
 
       container.innerHTML = `
-        <div class="concours-card-large">
-          <div class="badge">${catLabel} · Concours 1</div>
-          <h3>${concours.title}</h3>
-          <p style="color:#475569;margin-bottom:12px;">${concours.description || ''}</p>
-          <div class="meta">
-            <span style="margin-left:15px;">⏱ ${concours.duration} دقيقة</span>
-            <span>📝 ${concours.questions ? concours.questions.length : 0} أسئلة</span>
-          </div>
-          ${hasResult
-            ? `<div style="background:#ecfdf5;border:1px solid #10b981;border-radius:12px;padding:12px;margin:15px 0;color:#065f46;font-weight:500;">
-                ✅ لقد أكملت هذه المسابقة. <a href="javascript:void(0)" onclick="viewConcoursResult('${concours.id}')" style="color:#1e90ff;font-weight:700;">عرض النتيجة</a>
-              </div>`
-            : `<button class="start-btn" onclick="startConcours('${concours.id}')">
-                <i class="fas fa-play"></i> بدء المسابقة الآن
-              </button>`
-          }
+        <div class="item" style="border-right:4px solid ${hasResult ? '#10b981' : '#1e90ff'};margin-bottom:15px;padding:18px;background:white;border-radius:12px;border:1px solid #e2e8f0;">
+          <h4 style="color:#0b3d91;">${catLabel} ${concours.title}</h4>
+          <p style="color:#475569;font-size:14px;margin:5px 0;">${concours.description || ''}</p>
+          <div style="color:#475569;font-size:14px;">⏱ ${concours.duration} دقيقة | 📝 ${concours.questions ? concours.questions.length : 0} أسئلة</div>
+          ${hasResult ? '<span style="color:#10b981;font-weight:bold;">✅ تم الإنجاز</span>' : ''}
           <div style="margin-top:12px;">
-            <button class="btn btn-outline btn-sm" onclick="previewConcours('${concours.id}')"><i class="fas fa-eye"></i> معاينة الأسئلة</button>
-            <button class="btn btn-ghost btn-sm" onclick="renderStudentConcours()" style="margin-right:8px;"><i class="fas fa-sync"></i> تحديث</button>
+            ${hasResult
+              ? `<button class="btn btn-ghost btn-sm" onclick="viewConcoursResult('${concours.id}')">عرض النتيجة</button>`
+              : `<button class="btn btn-primary btn-sm" onclick="startConcours('${concours.id}')">بدء المسابقة</button>`
+            }
+            <button class="btn btn-outline btn-sm" onclick="previewConcours('${concours.id}')">معاينة</button>
           </div>
         </div>
       `;
     }
 
     // ============================================================
-    // 7. عرض المسابقات في لوحة الإدارة
+    // 8. عرض المسابقات في لوحة الإدارة
     // ============================================================
     function renderConcoursAdminList() {
       const container = document.getElementById('concoursAdminList');
@@ -1659,7 +1692,7 @@
     }
 
     // ============================================================
-    // 8. المؤقتات العامة
+    // 9. المؤقتات العامة
     // ============================================================
     function updateAllTimers() {
       var now = Date.now();
@@ -1708,7 +1741,7 @@
     }
 
     // ============================================================
-    // 9. دوال Concours (بدء، عرض النتائج، معاينة، إلخ)
+    // 10. دوال Concours (بدء، عرض النتائج، معاينة، إلخ) - نفس السابق
     // ============================================================
     function startConcours(concoursId) {
       if (!currentStudent) { alert('يجب تسجيل الدخول أولاً.'); return; }
@@ -1917,6 +1950,8 @@
         document.getElementById('student-dashboard').style.display = 'block';
         switchStudentTab('concours');
       }
+      // تحديث العرض العام
+      renderPublicConcours();
     }
 
     function viewConcoursResult(concoursId) {
@@ -1955,6 +1990,7 @@
       saveData();
       renderConcoursAdminList();
       if (currentStudent) renderStudentConcours();
+      renderPublicConcours();
     }
 
     function editConcours(id) {
@@ -1969,7 +2005,7 @@
     }
 
     // ============================================================
-    // 10. دوال الطالب (تسجيل الدخول، عرض لوحة التحكم)
+    // 11. دوال الطالب (تسجيل الدخول، عرض لوحة التحكم)
     // ============================================================
     function loginStudent() {
       const username = prompt('Nom d\'utilisateur:');
@@ -1984,6 +2020,7 @@
         renderStudentTabs();
         renderStudentConcours();
         renderStudentConcoursResults();
+        renderPublicConcours(); // تحديث العرض العام بعد تسجيل الدخول
       } else {
         alert('Identifiants incorrects.');
       }
@@ -1993,11 +2030,11 @@
       currentStudent = null;
       document.getElementById('student-dashboard').classList.remove('active');
       renderAll();
+      renderPublicConcours(); // تحديث العرض العام بعد تسجيل الخروج
     }
 
     function renderStudentDashboard() {
       if (!currentStudent) return;
-      // باقي دوال عرض لوحة الطالب (مختصرة)
       renderStudentConcours();
       renderStudentConcoursResults();
     }
@@ -2047,7 +2084,7 @@
     }
 
     // ============================================================
-    // 11. دوال الإدارة (تسجيل الدخول، إلخ)
+    // 12. دوال الإدارة
     // ============================================================
     function loginAdmin() {
       const user = prompt('Nom d\'utilisateur administrateur:');
@@ -2066,7 +2103,7 @@
     }
 
     // ============================================================
-    // 12. دوال العرض الأساسية
+    // 13. دوال العرض الأساسية
     // ============================================================
     function renderAll() {
       renderConcoursAdminList();
@@ -2074,6 +2111,7 @@
         renderStudentConcours();
         renderStudentConcoursResults();
       }
+      renderPublicConcours();
       updateStats();
     }
 
@@ -2089,7 +2127,7 @@
     }
 
     // ============================================================
-    // 13. إعداد الأحداث
+    // 14. إعداد الأحداث
     // ============================================================
     function setupEvents() {
       document.getElementById('studentLoginBtn').addEventListener('click', loginStudent);
@@ -2107,6 +2145,8 @@
           if (target) { target.style.display = 'block';
             target.scrollIntoView({ behavior: 'smooth' }); }
           document.getElementById('student-dashboard').classList.remove('active');
+          // إذا كان القسم هو concours، تحديث العرض العام
+          if (section === 'concours') renderPublicConcours();
         });
       });
 
@@ -2118,6 +2158,7 @@
           if (target) { target.style.display = 'block';
             target.scrollIntoView({ behavior: 'smooth' }); }
           document.getElementById('student-dashboard').classList.remove('active');
+          if (section === 'concours') renderPublicConcours();
         });
       });
 
@@ -2230,6 +2271,7 @@
         renderConcoursAdminList();
         populateConcoursSelect();
         if (currentStudent) renderStudentConcours();
+        renderPublicConcours();
         alert('تم إنشاء المسابقة بنجاح.');
       });
 
@@ -2267,6 +2309,7 @@
             document.getElementById('concoursCorrect').value = '1';
             document.getElementById('concoursQuestionImage').value = '';
             if (currentStudent) renderStudentConcours();
+            renderPublicConcours();
             alert('تم إضافة السؤال بنجاح.');
           };
           reader.readAsDataURL(fileInput.files[0]);
@@ -2284,6 +2327,7 @@
           document.getElementById('concoursCorrect').value = '1';
           document.getElementById('concoursQuestionImage').value = '';
           if (currentStudent) renderStudentConcours();
+          renderPublicConcours();
           alert('تم إضافة السؤال بنجاح.');
         }
       });
@@ -2300,7 +2344,7 @@
     }
 
     // ============================================================
-    // 14. INIT (تشغيل كل شيء)
+    // 15. INIT (تشغيل كل شيء)
     // ============================================================
     function init() {
       console.log('🚀 بدء تشغيل Lycée de l\'Excellence...');
@@ -2315,10 +2359,8 @@
         console.log('📝 المسابقة الأولى:', data.concours[0].title);
         console.log('📝 عدد الأسئلة:', data.concours[0].questions.length);
       }
-      if (currentStudent) {
-        renderStudentConcours();
-        renderStudentConcoursResults();
-      }
+      // عرض المسابقة في الصفحة العامة فوراً
+      renderPublicConcours();
     }
 
     // تشغيل عند تحميل الصفحة
